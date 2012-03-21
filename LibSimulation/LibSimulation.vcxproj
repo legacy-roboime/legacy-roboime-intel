@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F34420F0-E007-4958-A665-5F402976E327}</ProjectGuid>
+    <Keyword>Qt4VSv1.0</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)build\d\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)build\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_CORE_LIB;QT_NETWORK_LIB;LIBSIMULATION_LIB;QT_OPENGL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtNetwork;.\;$(SolutionDir)LibCommunication;$(SolutionDir)include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32;$(QTDIR)\include\QtOpenGL;</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PhysXLoader.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;QT_NETWORK_LIB;LIBSIMULATION_LIB;QT_OPENGL_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtNetwork;.\;$(SolutionDir)LibCommunication;$(SolutionDir)include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32;$(QTDIR)\include\QtOpenGL;</AdditionalIncludeDirectories>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>PhysXLoader.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\ActorPicking.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\Actors.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\cooking.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\DebugRenderer.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\DrawObjects.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\GLFontRenderer.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\Joints.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\Stream.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\UserAllocator.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win\MediaPath_WIN.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win\Timing_WIN.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_Asc2Bin.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_ColladaExport.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_ColladaImport.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_cooking.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_customcopy.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_File.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_Geometry.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_GraphicsMesh.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_helper.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_hull.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_PhysicsExport.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_PhysicsInstantiator.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_ScaledCopy.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_schema.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_SchemaStream.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_Streaming.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_string.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_tinystr.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_tinyxml.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_tinyxmlerror.cpp" />
+    <ClCompile Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_tinyxmlparser.cpp" />
+    <ClCompile Include="GeneratedFiles\Debug\moc_Simulation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UDPMulticastSenderSSLVision.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UDPServerSimInt.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Simulation.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UDPMulticastSenderSSLVision.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UDPServerSimInt.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="MyContactReport.cpp" />
+    <ClCompile Include="MyUserNotify.cpp" />
+    <ClCompile Include="NxAllBalls.cpp" />
+    <ClCompile Include="NxAllFields.cpp" />
+    <ClCompile Include="NxAllRobots.cpp" />
+    <ClCompile Include="NxBall.cpp" />
+    <ClCompile Include="NxDribbler.cpp" />
+    <ClCompile Include="NxField.cpp" />
+    <ClCompile Include="NxKicker.cpp" />
+    <ClCompile Include="NxMath1.cpp" />
+    <ClCompile Include="NxRobot.cpp" />
+    <ClCompile Include="NxScene1.cpp" />
+    <ClCompile Include="NxVehicle.cpp" />
+    <ClCompile Include="NxWheel.cpp" />
+    <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="UDPMulticastSenderSSLVision.cpp" />
+    <ClCompile Include="UDPServerSimInt.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\ActorPicking.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\Actors.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\cooking.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\DebugRenderer.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\DrawObjects.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\GLFontRenderer.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\Joints.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\MediaPath.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\Stream.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\Timing.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\UserAllocator.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win\SampleMutex_WIN.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_Asc2Bin.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_ColladaExport.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_ColladaImport.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_cooking.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_customcopy.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_File.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_Geometry.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_GraphicsMesh.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_helper.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_hull.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_PhysicsExport.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_PhysicsInstantiator.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_ScaledCopy.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_schema.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_SchemaStream.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_SchemaTypes.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_Streaming.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_string.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_tinystr.h" />
+    <ClInclude Include="..\include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2\NXU_tinyxml.h" />
+    <ClInclude Include="MyContactReport.h" />
+    <ClInclude Include="MyUserNotify.h" />
+    <ClInclude Include="NxAllBalls.h" />
+    <ClInclude Include="NxAllFields.h" />
+    <ClInclude Include="NxAllRobots.h" />
+    <ClInclude Include="NxBall.h" />
+    <ClInclude Include="NxDribbler.h" />
+    <ClInclude Include="NxField.h" />
+    <ClInclude Include="NxKicker.h" />
+    <ClInclude Include="NxLinearInterpolate3Values.h" />
+    <ClInclude Include="NxLinearInterpolationValues.h" />
+    <ClInclude Include="NxMath1.h" />
+    <ClInclude Include="NxRobot.h" />
+    <ClInclude Include="NxScene1.h" />
+    <ClInclude Include="NxVehicle.h" />
+    <ClInclude Include="NxVehicleDesc.h" />
+    <ClInclude Include="NxVehicleMotor.h" />
+    <ClInclude Include="NxVehicleMotorDesc.h" />
+    <ClInclude Include="NxWheel.h" />
+    <ClInclude Include="NxWheelDesc.h" />
+    <CustomBuild Include="Simulation.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBSIMULATION_LIB -DQT_OPENGL_LIB -D_MBCS  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(NOINHERIT)\." "-I." "-I." "-I." "Simulation.h" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBSIMULATION_LIB -DQT_OPENGL_LIB  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(NOINHERIT)\." "-I." "-I." "Simulation.h" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+    </CustomBuild>
+    <CustomBuild Include="UDPMulticastSenderSSLVision.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBSIMULATION_LIB -DQT_OPENGL_LIB -D_MBCS  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(NOINHERIT)\." "-I." "-I." "-I." "UDPMulticastSenderSSLVision.h" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBSIMULATION_LIB -DQT_OPENGL_LIB  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(NOINHERIT)\." "-I." "-I." "UDPMulticastSenderSSLVision.h" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+    </CustomBuild>
+    <CustomBuild Include="UDPServerSimInt.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBSIMULATION_LIB -DQT_OPENGL_LIB -D_MBCS  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(NOINHERIT)\." "-I." "-I." "-I." "UDPServerSimInt.h" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBSIMULATION_LIB -DQT_OPENGL_LIB  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(NOINHERIT)\." "-I." "-I." "UDPServerSimInt.h" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LibCommunication\LibCommunication.vcxproj">
+      <Project>{35ae8a52-6d96-4ad9-9ffa-ae389adb3a6b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties UicDir=".\GeneratedFiles" MocDir=".\GeneratedFiles\$(ConfigurationName)" MocOptions="" RccDir=".\GeneratedFiles" lupdateOnBuild="0" lupdateOptions="" lreleaseOptions="" QtVersion_x0020_Win32="4.8.0" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

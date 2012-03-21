@@ -1,0 +1,1111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{a8b59073-80ba-4d86-a6ac-e4dd68fe59b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Tactics">
+      <UniqueIdentifier>{c5be8431-43f1-4715-81df-a6b94accb525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Plays">
+      <UniqueIdentifier>{da97c186-6c7a-4e19-b1be-64914ef00857}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Skills">
+      <UniqueIdentifier>{140e388a-cbf9-4490-8729-a9fed9815524}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Base">
+      <UniqueIdentifier>{eb95ded7-48f1-4788-b226-cb7ea7604d06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interface">
+      <UniqueIdentifier>{cbedd349-bafe-4046-8a02-95c2d7d37fe5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interface\Commanders">
+      <UniqueIdentifier>{003b5315-96bd-4291-9a52-82a78c614e76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Interface\Updaters">
+      <UniqueIdentifier>{aac62a9e-4838-42fd-9518-c3528385b029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{460f212d-436f-481c-9b3e-fa00056623c2}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{27c15690-f348-4746-a045-dcd9b89f610c}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Template">
+      <UniqueIdentifier>{d1f78a78-d64e-4ad7-9ca6-3269cd065a76}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Source Files\Prototypes">
+      <UniqueIdentifier>{fa8a0750-7935-44b8-8895-ff6c8886dc5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Core\Filters">
+      <UniqueIdentifier>{fc627f28-f9f2-4355-b137-66e0386867df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tools">
+      <UniqueIdentifier>{d8641ae8-9a26-40d9-8b4b-59d2f5494faa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Core">
+      <UniqueIdentifier>{957b9d66-1049-45dc-87ca-ddcb0d538466}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Skills">
+      <UniqueIdentifier>{2db2b935-9635-4aa3-a003-4f8f2b19fbda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Plays">
+      <UniqueIdentifier>{33049ee2-d8bd-4e0f-869b-010693f88d76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Filters">
+      <UniqueIdentifier>{91ef2780-2b06-4061-b9c5-40eb27b3498b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Tactics">
+      <UniqueIdentifier>{2cd60f4b-18fe-43e0-8442-31d83075b7bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Base">
+      <UniqueIdentifier>{3133dec9-06ce-4d22-ad0e-68daef4b654b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interface">
+      <UniqueIdentifier>{9903cf91-62a9-404c-b5c4-6396218115f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interface\Commanders">
+      <UniqueIdentifier>{5fc6262c-c652-4e71-a7cd-7d1e93e4f749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Interface\Updaters">
+      <UniqueIdentifier>{56baf950-4391-4004-a9c4-3dee8e7bbc20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Prototypes">
+      <UniqueIdentifier>{1df5b9dc-6691-4c06-8920-936525e0c38a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Tools">
+      <UniqueIdentifier>{f58ecad6-2e84-4cc0-b058-cf038768dc91}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyboardController.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="Tactic.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="Play.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="Goto.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="Loops.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="Move.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="Skill.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Body.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Dribbler.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Goal.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Kicker.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Robot.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Team.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Wheel.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Command.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Update.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateBall.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateReferee.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateRobot.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Commander.cpp">
+      <Filter>Source Files\Interface\Commanders</Filter>
+    </ClCompile>
+    <ClCompile Include="Updater.cpp">
+      <Filter>Source Files\Interface\Updaters</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdaterReferee.cpp">
+      <Filter>Source Files\Interface\Updaters</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdaterSIM.cpp">
+      <Filter>Source Files\Interface\Updaters</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdaterSIMi.cpp">
+      <Filter>Source Files\Interface\Updaters</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdaterVision.cpp">
+      <Filter>Source Files\Interface\Updaters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdaterVision.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdaterVision.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Component.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Component.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Component.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Ball.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Ball.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Ball.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Goal.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Goal.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Goal.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Stage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Stage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Stage.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Kicker.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Kicker.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Kicker.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Dribbler.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Dribbler.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Dribbler.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Body.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Body.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Body.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Robot.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Robot.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Robot.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Wheel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Wheel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Wheel.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Actuator.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Actuator.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Actuator.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Actuator.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Team.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Team.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Team.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Robots.cpp">
+      <Filter>Source Files\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Battery.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Battery.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Battery.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Battery.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Steer.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Skill.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Skill.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Skill.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Move.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Move.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Move.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Steer.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Steer.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Steer.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Wait.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Wait.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Wait.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Wait.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Sleep.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Sleep.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Sleep.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Sleep.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Goto.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Goto.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Goto.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ForceFieldMotion.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ForceFieldMotion.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_ForceFieldMotion.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="ForceFieldMotion.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="CommanderTx.cpp">
+      <Filter>Source Files\Interface\Commanders</Filter>
+    </ClCompile>
+    <ClCompile Include="CommanderTxOld.cpp">
+      <Filter>Source Files\Interface\Commanders</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CommanderTxOld.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CommanderTxOld.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_CommanderTxOld.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CommanderSim.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CommanderSim.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_CommanderSim.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="CommanderSim.cpp">
+      <Filter>Source Files\Interface\Commanders</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter.cpp">
+      <Filter>Source Files\Core\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Updater.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Updater.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Updater.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GetBall.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_GetBall.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_GetBall.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GetBall.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Filter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Filter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Filter.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_KickTo.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_KickTo.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_KickTo.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="KickTo.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Goalkeeper.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Goalkeeper.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Goalkeeper.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Goalkeeper.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="KalmanFilter.cpp">
+      <Filter>Source Files\Core\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="Updates.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="UpdateStageGeometry.cpp">
+      <Filter>Source Files\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="KalmanFilters.cpp">
+      <Filter>Source Files\Core\Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_KalmanFilters.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_KalmanFilters.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_KalmanFilters.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Blocker.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Blocker.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Blocker.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Blocker.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_StopReferee.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_StopReferee.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_StopReferee.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="StopReferee.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Play.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Play.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Play.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Attacker.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Defender.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Attacker.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Defender.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Attacker.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Defender.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Attacker.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="Defender.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="Halt.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Halt.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Halt.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Halt.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdaterReferee.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdaterReferee.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_UpdaterReferee.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Controller2.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="CXBOXController.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="PID.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_goalswitcheroo.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_goalswitcheroo.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_goalswitcheroo.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="goalswitcheroo.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MultiController.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MultiController.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_MultiController.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiController.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SteerToBall.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SteerToBall.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_SteerToBall.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="SteerToBall.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CBR2011.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CBR2011.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_CBR2011.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="CBR2011.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="AttackField.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AttackField.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AttackField.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_AttackField.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GotoOld.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_GotoOld.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_GotoOld.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeKickThem.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="GotoOld.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MainPlay.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_FreeKickThem.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MainPlay.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_FreeKickThem.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FreeKickThem.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_MainPlay.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_StageX.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_StageX.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_StageX.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="StageX.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_UpdaterSIMi.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_UpdaterSIMi.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_UpdaterSIMi.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Minmax.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Skill.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Skill.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Skill.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Tactic.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Tactic.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Tactic.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="DriveToBall.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="SampledDribble.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="SampledKick.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DriveToBall.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DriveToBall.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_DriveToBall.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="DriveTo.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DriveTo.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DriveTo.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_DriveTo.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Sampler.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Sampler.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Sampler.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SampledDribble.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SampledDribble.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_SampledDribble.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SampledKick.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SampledKick.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_SampledKick.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Zickler43.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Zickler43.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Zickler43.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="Zickler43.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="BGT.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_BGT.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_BGT.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_BGT.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Minmax.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Minmax.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_Minmax.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="StageY.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_StageY.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_StageY.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_StageY.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_StateMachine.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_StateMachine.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_StateMachine.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_State.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_State.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_State.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="MachineTransition.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="State.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="StateMachine.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MachineTransition.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MachineTransition.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_MachineTransition.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="LibIntelligence.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Skills.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </ClInclude>
+    <ClInclude Include="Plays.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardController.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </ClInclude>
+    <ClInclude Include="Tactics.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </ClInclude>
+    <ClInclude Include="Update.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateBall.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateReferee.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateRobot.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Commander.h">
+      <Filter>Header Files\Interface\Commanders</Filter>
+    </ClInclude>
+    <ClInclude Include="CommanderSIMi.h">
+      <Filter>Header Files\Interface\Commanders</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdaterSIM.h">
+      <Filter>Header Files\Interface\Updaters</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Robots.h">
+      <Filter>Header Files\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateStageGeometry.h">
+      <Filter>Header Files\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller2.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </ClInclude>
+    <ClInclude Include="CXBOXController.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="PID.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="UpdaterVision.h">
+      <Filter>Header Files\Interface\Updaters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Component.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Robot.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Ball.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Goal.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Stage.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Command.h">
+      <Filter>Header Files\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Kicker.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Dribbler.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Body.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Wheel.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Team.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Actuator.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Battery.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Skill.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Move.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Steer.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Loops.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Wait.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Sleep.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Goto.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ForceFieldMotion.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CommanderTx.h">
+      <Filter>Header Files\Interface\Commanders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CommanderTxOld.h">
+      <Filter>Header Files\Interface\Commanders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CommanderSim.h">
+      <Filter>Header Files\Interface\Commanders</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Updater.h">
+      <Filter>Header Files\Interface\Updaters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GetBall.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Filter.h">
+      <Filter>Header Files\Core\Filters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="KickTo.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Goalkeeper.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="KalmanFilter.h">
+      <Filter>Header Files\Core\Filters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Updates.h">
+      <Filter>Header Files\Interface</Filter>
+    </CustomBuild>
+    <CustomBuild Include="KalmanFilters.h">
+      <Filter>Header Files\Core\Filters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Blocker.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="StopReferee.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Play.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Attacker.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Defender.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Halt.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="UpdaterReferee.h">
+      <Filter>Header Files\Interface\Updaters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="goalswitcheroo.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MultiController.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SteerToBall.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="CBR2011.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AttackField.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FreeKickThem.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GotoOld.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MainPlay.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="StageX.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="UpdaterSIMi.h">
+      <Filter>Header Files\Interface\Updaters</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Tactic.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DriveToBall.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DriveTo.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Sampler.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SampledDribble.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SampledKick.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Zickler43.h">
+      <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BGT.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Minmax.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="StageY.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="StateMachine.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="State.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MachineTransition.h">
+      <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README" />
+    <None Include="TODO" />
+  </ItemGroup>
+</Project>
