@@ -8,3 +8,4 @@
 #include "FreeKickThem.h"
 #include "Minmax.h"
 #include "BGT.h"
+#include "LinearCombPlay.h"

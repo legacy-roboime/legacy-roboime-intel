@@ -23,9 +23,14 @@ Team::Team(Stage* stage, const Team& team)
 	yellowCards_(team.yellowCards()),
 	redCards_(team.redCards())
 {
-	for(int i=0; i<team.size(); i++)
-		this->push_back(new Robot( *(team.at(i)) ));
 	stage_ = stage;
+	for(int i=0; i<team.size(); i++){
+		Robot* r = new Robot( *(team.at(i)) );
+		r->setTeam(this);
+		r->setStage(stage);
+		this->push_back(r);
+	}
+	
 }
 
 void Team::setColor(TeamColor c)
@@ -76,22 +81,22 @@ quint8 Team::goals() const{
 	return goals_;
 }
 
-Team* Team::enemyTeam()
+Team* Team::enemyTeam() const
 {
 	return stage_ == 0 ? 0 : color_ == BLUE ? stage_->yellowTeam() : stage_->blueTeam();
 }
 
-Stage* Team::stage()
+Stage* Team::stage() const
 {
 	return stage_;
 }
 
-Goal* Team::goal()
+Goal* Team::goal() const
 {
 	return stage_ == 0 ? 0 : color_ == BLUE ? stage_->blueGoal() : stage_->yellowGoal();
 }
 
-Goal* Team::enemyGoal()
+Goal* Team::enemyGoal() const
 {
 	return stage_ == 0 ? 0 : color_ == BLUE ? stage_->yellowGoal() : stage_->blueGoal();
 }
@@ -104,6 +109,16 @@ Team& Team::operator=(const Team& team)
 	this->yellowCards_ = team.yellowCards();
 	this->redCards_ = team.redCards();
 	return *this;
+}
+
+Robot* Team::getClosestPlayerToBall() const
+{
+	return this->stage()->getClosestPlayerToBall(this);
+}
+
+Robot* Team::getClosestPlayerToBallThatCanKick() const
+{
+	return this->stage()->getClosestPlayerToBallThatCanKick(this);
 }
 
 //void Team::add(Robot& r)

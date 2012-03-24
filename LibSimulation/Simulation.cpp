@@ -275,7 +275,7 @@ void Simulation::append(const QString& d)
 	qCommand.enqueue(d);
 }
 
-void Simulation::simulateReal()
+void Simulation::simulateReal(float dt, int maxStepIter)
 {
 	//QTime time = QTime::currentTime();
 	//static double lTime = 0;
@@ -303,7 +303,7 @@ void Simulation::simulateReal()
 	//parseLegacyString("15 0 1 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0\n");
 
 	//cout << "a " << this->gScenes[0]->allRobots->getRobotByIdByTeam(0,1)->getGlobalPose().t.x << endl;
-	simulate(this->gBaseScene);
+	simulate(this->gBaseScene, dt, maxStepIter);
 	//cout << "d " << this->gScenes[0]->allRobots->getRobotByIdByTeam(0,1)->getGlobalPose().t.x << endl;
 }
 
@@ -342,7 +342,7 @@ void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 	//parseLegacyString("15 0 1 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0\n");
 	// Start simulation
 	// Physics code
-	//cout << "a " << this->gScenes[0]->allRobots->getRobotByIdByTeam(0,1)->getGlobalPose().t.x << endl;
+	//cout << "a " << this->gScenes[indexScene]->allRobots->getRobotByIdByTeam(4,1)->getGlobalPose().t.x << endl;
 	//if (gScenes[indexScene]->scene && !gPause)
 	//{
 		 gScenes[indexScene]->scene->setTiming(dt, maxStepIter, NX_TIMESTEP_FIXED);
@@ -350,7 +350,7 @@ void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 		 gScenes[indexScene]->scene->flushStream();
 		 gScenes[indexScene]->scene->fetchResults(NX_RIGID_BODY_FINISHED, true);
 	//}
-	//cout << "d " << this->gScenes[0]->allRobots->getRobotByIdByTeam(0,1)->getGlobalPose().t.x << endl;
+	//cout << "d " << this->gScenes[indexScene]->allRobots->getRobotByIdByTeam(4,1)->getGlobalPose().t.x << endl;
 	// ~Physics code
 }
 
@@ -933,16 +933,18 @@ bool Simulation::initSimulation( int nbScenes )
 	//Simulation::allFields.fields[Simulation::gBaseScene].setDimensions(7400, 5400, 6000, 0, 200., 700., 160.);
 	
 	NxAllRobots* allRobots = Simulation::gScenes[Simulation::gBaseScene]->allRobots;
-	allRobots->getRobotByIdByTeam(4, 1)->setGlobalPosition(NxVec3(-3000, 0, 30));
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(-2000, 1000, 30), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(-2000, -1000, 30), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(-1000, 1000, 30), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(-1000, -1000, 30), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 4, NxVec3(3000, 0, 30), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(2000, -1000, 30), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(2000, 1000, 30), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(1000, -1000, 30), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(1000, 1000, 30), 0);
+	NxReal z = allRobots->getRobotByIdByTeam(4, 1)->getInitialPose().t.z;
+	z=0;
+	allRobots->getRobotByIdByTeam(4, 1)->setGlobalPosition(NxVec3(-3000, 0, z));
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(-2000, 1000, z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(-2000, -1000, z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(-1000, 1000, z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(-1000, -1000, z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 4, NxVec3(3000, 0, 0), z);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(2000, -1000, z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(2000, 1000, z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(1000, -1000, z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(1000, 1000, z), 0);
 
 
 	for(int i=1; i<nbScenes; i++)

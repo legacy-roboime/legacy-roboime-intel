@@ -20,5 +20,6 @@
 #include "DriveToBall.h"
 #include "SampledDribble.h"
 #include "SampledKick.h"
+#include "LinearCombMotion.h"
 
 #endif // SKILLS_H

@@ -796,15 +796,6 @@
     <ClCompile Include="GeneratedFiles\Template\moc_BGT.cpp">
       <Filter>Generated Files\Template</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Minmax.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_Minmax.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Template\moc_Minmax.cpp">
-      <Filter>Generated Files\Template</Filter>
-    </ClCompile>
     <ClCompile Include="StageY.cpp">
       <Filter>Source Files\Base</Filter>
     </ClCompile>
@@ -852,6 +843,42 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Template\moc_MachineTransition.cpp">
       <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LinearCombMotion.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LinearCombMotion.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_LinearCombMotion.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LinearCombPlay.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LinearCombPlay.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_LinearCombPlay.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LinearCombTactic.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LinearCombTactic.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_LinearCombTactic.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearCombPlay.cpp">
+      <Filter>Source Files\Core\Plays</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearCombMotion.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearCombTactic.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1102,6 +1129,15 @@
     </CustomBuild>
     <CustomBuild Include="MachineTransition.h">
       <Filter>Header Files\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LinearCombPlay.h">
+      <Filter>Header Files\Core\Plays</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LinearCombMotion.h">
+      <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LinearCombTactic.h">
+      <Filter>Header Files\Core\Tactics</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

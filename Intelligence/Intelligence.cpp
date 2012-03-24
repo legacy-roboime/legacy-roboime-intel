@@ -72,7 +72,7 @@ Intelligence::Intelligence(QObject *parent)
 	//controller = new Tactics::Controller2(this, myTeam[0], 1, 1000); //controle no referencial do robo
 	//gotoold = new GotoOld(this, myTeam[3], 0.0, 0.0);
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
-	skill1 = new SampledKick(this, myTeam->at(1), enemyTeam->goal());
+	skill1 = new Goto(this, myTeam->at(1), 2000, 0, 3.14, 2000, true);
 	skill2 = new DriveToBall(this, myTeam->at(1), enemyTeam->goal());
 	skill3 = new KickTo(this, myTeam->at(1), 3.14);
 
@@ -88,7 +88,7 @@ Intelligence::Intelligence(QObject *parent)
 	
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	timer->start(1000.0/60.0); //frequencia sensor camera 	//30.
+	timer->start(30.);//1000.0/60.0); //frequencia sensor camera 	//
 	//connect(upd, SIGNAL(receiveUpdate()), filter, SLOT(step()));
 }
 

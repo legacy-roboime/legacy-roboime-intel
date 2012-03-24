@@ -21,7 +21,7 @@ CommanderSim::CommanderSim(QObject* parent, char* address, quint16 port)
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(send()));
 	//for(size_t n=0; n<5; n++) _robot.push_back(0);
-	timer->start(1000.0/60.0); //frequencia sensor camera 	//10.
+	timer->start(10.);//1000.0/60.0); //frequencia sensor camera 	//
 }
 
 CommanderSim::~CommanderSim()

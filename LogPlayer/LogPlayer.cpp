@@ -56,7 +56,7 @@ LogPlayer::LogPlayer(QWidget *parent, Qt::WFlags flags)
 
 	timerSim = new QTimer(this);
 	connect(timerSim, SIGNAL(timeout()), this, SLOT(step()));
-	timerSim->start(100);
+	timerSim->start(10);
 
 	log.open(QIODevice::ReadOnly);
 }
@@ -86,9 +86,14 @@ void LogPlayer::step()
 		cout << "FINAL DO ARQUIVO LOG" << endl;
 		//timerSim->stop();
 	}
-	std::string command = str.toStdString();
-	simulation->parseLegacyString(command);
-	//simulation->simulate();
+	if(str.at(0) == '$'){
+		cout << str.toStdString() << endl;
+	}
+	else{
+		std::string command = str.toStdString();
+		simulation->parseLegacyString(command);
+		//simulation->simulate();
+	}
 }
 
 void DrawForce(NxActor* actor, NxVec3& forceVec, const NxVec3& color)

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include "Sampler.h"
 #include "StateMachine.h"
+#include <QCoreApplication>
 
 #define LOGGING
 
@@ -21,8 +22,8 @@ Play(parent,myTeam,stage),
 	mi_(100.), //valor de mi igual ao usado pelo zickler no experimento da pagina 73
 	timer(new QTimer(this)),
 	planningInterruped_(false),
-	execSteps(1), //baseado em zickler pagina 92
-	planSteps(3), //baseado em zickler pagina 92
+	execSteps(3), //baseado em zickler pagina 92
+	planSteps(1), //baseado em zickler pagina 92
 	xInit(NULL)
 {
 	log.open(QIODevice::WriteOnly);
@@ -31,9 +32,6 @@ Play(parent,myTeam,stage),
 	for(int i=0; i<myTeam->size(); i++)
 		execSkills.push_back(new Goto(this, myTeam->at(i)));
 	tree_ = new tree<StageY*>();
-
-	//xInit = new StageY(*(this->stage()));//cria copia do stage em xInit
-	//populateTactics(xInit);
 }
 
 void BGT::populateTactics(const StageY* source, StageY* target)
@@ -46,28 +44,15 @@ void BGT::populateTactics(const StageY* source, StageY* target)
 		QQueue<Tactic*>* myTactics = myT->color() == TeamColor::BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
 		QQueue<Tactic*>* enemyTactics = enemyT->color() == TeamColor::BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
 
-		//Zickler43* z = new Zickler43(this, myT->at(0));
-		//z->setCurrentState( z->getStateByName( myTactics->at(0)->getCurrentState()->objectName() ) );
-		//target->pushTactic((Tactic*)z, myT->color());
 		for(int i=0; i<myT->size(); i++) {
-			//Goalkeeper* z = new Goalkeeper(this, myT->at(i), 1000);
-			//z->setCurrentState( z->getStateByName( myTactics->at(i)->getCurrentState()->objectName() ) );
-			//target->pushTactic((Tactic*)z, myT->color());
-			Zickler43* z = new Zickler43(this, myT->at(0));
-			z->setCurrentState( z->getStateByName( myTactics->at(0)->getCurrentState()->objectName() ) );
-			target->pushTactic((Tactic*)z, myT->color());
+			Zickler43* z = new Zickler43(this, myT->at(i));
+			z->setCurrentState( z->getStateByName( myTactics->at(i)->getCurrentState()->objectName() ) );
+			target->pushTactic(z, myT->color());
 		}
-		//Zickler43* z1 = new Zickler43(this, enemyT->at(0));
-		//z1->setCurrentState( z1->getStateByName( enemyTactics->at(0)->getCurrentState()->objectName() ) );
-		//target->pushTactic((Tactic*)z1, enemyT->color());
 		for(int i=0; i<enemyT->size(); i++) {
-			Zickler43* z1 = new Zickler43(this, enemyT->at(0));
-			z1->setCurrentState( z1->getStateByName( enemyTactics->at(0)->getCurrentState()->objectName() ) );
-			target->pushTactic((Tactic*)z1, enemyT->color());
-			//Goalkeeper* z = new Goalkeeper(this, enemyT->at(i), 1000);
-			//z->setCurrentState( z->getStateByName( enemyTactics->at(i)->getCurrentState()->objectName() ) );
-			//target->pushTactic((Tactic*)z, enemyT->color());
-
+			Zickler43* z = new Zickler43(this, enemyT->at(i));
+			z->setCurrentState( z->getStateByName( enemyTactics->at(i)->getCurrentState()->objectName() ) );
+			target->pushTactic(z, enemyT->color());
 		}
 	}
 	else{
@@ -76,9 +61,9 @@ void BGT::populateTactics(const StageY* source, StageY* target)
 		myT = target->getTeamFromColor(this->team()->color());
 		enemyT = target->getTeamFromOtherColor(this->team()->color());
 		for(int i=0; i<myT->size(); i++) 
-			target->pushTactic((Tactic*) new Zickler43(this, myT->at(i)), myT->color());
+			target->pushTactic(new Zickler43(this, myT->at(i)), myT->color());
 		for(int i=0; i<enemyT->size(); i++) 
-			target->pushTactic((Tactic*) new Zickler43(this, enemyT->at(i)), enemyT->color());
+			target->pushTactic(new Zickler43(this, enemyT->at(i)), enemyT->color());
 	}
 }
 
@@ -100,33 +85,32 @@ void BGT::step()
 
 	if((time % (planSteps + execSteps)) == 0){ //planejar e executar
 		solution.clear();
-		//timer->start(1000./60.);
-		timer->singleShot(1000./60., this, SLOT(planningInterruped()));
+		//timer->singleShot(1000./60., this, SLOT(planningInterruped()));
 		planning(&solution);
-		//timer->stop();
 		planningInterruped_ = false;
 		solution.pop_back();//remove xInit
-		StageY* stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
-		goToStage(stage);
+		StageY* stage = NULL;
+		stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
+		if(stage)
+			goToStage(stage);
 	}
 	else if(!solution.isEmpty()){ //executar
 		StageY* stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
-		goToStage(stage);
+		if(stage)
+			goToStage(stage);
 	}
 	else{
 		time = 0;
 		solution.clear();
-		//timer->start(1000./60.);
-		timer->singleShot(1000./60., this, SLOT(planningInterruped()));
+		//timer->singleShot(1000./60., this, SLOT(planningInterruped()));
 		planning(&solution);
-		//timer->stop();
 		planningInterruped_ = false;
 		solution.pop_back();//remove xInit
 		StageY* stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
-		goToStage(stage);
+		if(stage)
+			goToStage(stage);
 	}
 
-	//int t = tree_->size();
 	tree<StageY*>::iterator itr, end;
 	itr = tree_->begin();
 	end = tree_->end();
@@ -136,10 +120,8 @@ void BGT::step()
 			delete (*itr);
 		++itr;
 	}
-	//delete xInit;
 	xInit = NULL;
 	tree_->clear();
-	//xInit;
 	time++;
 	time %= planSteps + execSteps;
 }
@@ -163,6 +145,7 @@ void BGT::planning(QQueue<StageY*>* solution)
 	bool busyOtim;
 	unsigned int iter = 1;
 	while(planningInterruped_ == false && iter <= maxIter){
+		QCoreApplication::processEvents();
 		StageY* x;
 		StageY* xL;
 		iter++;
@@ -204,7 +187,6 @@ void BGT::planning(QQueue<StageY*>* solution)
 			//	rollBack(x);
 			busy=false;
 		}
-		//printf("%f\n",xL->blueTeam()->at(0)->x());
 		lastXL = xL;
 		//kptree::print_tree_bracketed(*tree_, std::cout);
 	}
@@ -233,8 +215,7 @@ void BGT::planning(QQueue<StageY*>* solution)
 		}
 		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
 		out << str;
-		out << "\n";
-		out << (*itr)->getBlueTactics()->at(4)->getCurrentState()->objectName() << "\n";
+		out << "$" + (*itr)->getBlueTactics()->at(4)->getCurrentState()->objectName() + "\n";
 		log.flush();
 		++itr;
 	}
@@ -392,15 +373,15 @@ StageY* BGT::tacticsDrivenPropagate(const StageY& stage)
 	populateTactics(&stage, xL);
 	QQueue<Tactics::Tactic*>* blueTactics = xL->getBlueTactics();
 	QQueue<Tactics::Tactic*>* yellowTactics = xL->getYellowTactics();
-	for(int i=4; i<blueTactics->size(); i++){
+	for(int i=0; i<blueTactics->size(); i++){
 		blueTactics->at(i)->step();
 	}
-	for(int i=4; i<yellowTactics->size(); i++){
+	for(int i=0; i<yellowTactics->size(); i++){
 		yellowTactics->at(i)->step();
 	}
 	cout << "a1 " << xL->blueTeam()->at(4)->x() << endl;
 	xL->simulate();
-	cout << "d1 " << xL->blueTeam()->at(4)->x() << "\n\n";
+	cout << "d1 " << xL->blueTeam()->at(4)->x() << "\n";
 	xL->releaseScene();
 	return xL;
 }

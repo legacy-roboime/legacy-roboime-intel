@@ -122,7 +122,7 @@ private:
 	void cloneScene(int indexSceneSource, int indexCloneScene);
 	void deleteScene(int indexScene);
 	//advance simulation
-	void simulateReal();
+	void simulateReal(float dt = 1./60., int maxStepIter = 4);
 	void simulate();
 	
 public:

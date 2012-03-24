@@ -13,7 +13,6 @@ namespace LibIntelligence
 	namespace Plays
 	{
 		class Minmax: public Play {
-			Q_OBJECT
 
 		private:
 			QFile log; 
@@ -32,7 +31,7 @@ namespace LibIntelligence
 			qreal getMinValue(StageX s, int depth );
 
 		public:
-			Minmax(QObject *parent, Team* team ,Stage* stage, int depth = 2, int best_action = 2);
+			Minmax(QObject *parent, Team* team ,Stage* stage, int depth = 2, int best_action = 0);
 			~Minmax(); 
 			void step();
 

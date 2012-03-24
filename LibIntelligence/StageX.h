@@ -23,6 +23,7 @@ namespace LibIntelligence
 		void simulate(const qreal timeStep = -1);
 		void releaseScene();
 		void build();
+		uint getSceneNumber();
 
 	private:
 		friend class Simulation;

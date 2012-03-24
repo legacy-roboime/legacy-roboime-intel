@@ -735,7 +735,6 @@ void NxWheel2::tick(bool handBrake, NxReal axleTorque, NxReal brakeTorque, NxRea
 	//wheelShape->setWheelFlags(NX_WF_AXLE_SPEED_OVERRIDE);
 	//wheelShape->setWheelFlags(NX_WF_ACCELERATED);
 
-
 	//motorTorque *= 0.1f;
 	//brakeTorque *= 500.0f;
 	//if(handBrake && getWheelFlag(NX_WF_AFFECTED_BY_HANDBRAKE))

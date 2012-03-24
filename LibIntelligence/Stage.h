@@ -84,8 +84,8 @@ namespace LibIntelligence
 		void setTimeLeft(double);
 		double getTimeLeft() const;
 
-		Robot* getCloserPlayerToBall(Team*);
-		Robot* getCloserPlayerToBallThatCanKick(Team*);
+		Robot* getClosestPlayerToBall(const Team*) const;
+		Robot* getClosestPlayerToBallThatCanKick(const Team*) const;
 		Team* getTeamFromColor(const TeamColor& color);
 		Team* getTeamFromOtherColor(const TeamColor& color);
 		Goal* getGoalFromOtherColor(const TeamColor& color);

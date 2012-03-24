@@ -9,3 +9,4 @@
 #include "Attacker.h"
 #include "goalswitcheroo.h" 
 #include "Zickler43.h"
+#include "LinearCombTactic.h"

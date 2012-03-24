@@ -47,7 +47,7 @@
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_CORE_LIB;QT_GUI_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>.\GeneratedFiles;.\GeneratedFiles\$(ConfigurationName);$(QTDIR)\include;$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtNetwork;$(QTDIR)\include\QtOpenGL;.\;$(SolutionDir)LibCommunication;$(SolutionDir)LibSimulation;$(SolutionDir)include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32</AdditionalIncludeDirectories>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>

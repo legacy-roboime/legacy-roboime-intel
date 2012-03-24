@@ -176,7 +176,7 @@ namespace ControleRobo
             {
                 transmitter = new LR.TransmissorRFM12USB();
                 transmitter.Inicializar("VIVATxRx", "IME");
-                sendTimer = new System.Timers.Timer(1000.0 / 60.0);//70); //frequencia sensor camera
+                sendTimer = new System.Timers.Timer(70); //1000.0 / 60.0);//frequencia sensor camera
                 sendTimer.Elapsed += new ElapsedEventHandler(TxSendReceiveCompetition);
                 sendTimer.Enabled = true;
 
@@ -190,7 +190,7 @@ namespace ControleRobo
             else
             {
                 this.simulationClient = new UdpClient("127.0.0.1", clientPort);
-                sendTimer = new System.Timers.Timer(1000.0 / 60.0);//70); //frequencia sensor camera
+                sendTimer = new System.Timers.Timer(70); //1000.0 / 60.0);//frequencia sensor camera
                 sendTimer.Elapsed += new ElapsedEventHandler(UDPSend);
                 sendTimer.Enabled = true;
 

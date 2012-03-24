@@ -42,7 +42,7 @@ void Goalkeeper::step()
 	QLineF bolaGol(myGoal->x(), myGoal->y(), ball->x(), ball->y());
 
 	//Nova versao
-	Robot* Inimigo = stage->getCloserPlayerToBall(robot->enemyTeam());
+	Robot* Inimigo = stage->getClosestPlayerToBall(robot->enemyTeam());
 	qreal IniX = Inimigo->x();
 	qreal IniY = Inimigo->y();
 

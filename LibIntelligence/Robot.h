@@ -50,7 +50,9 @@ namespace LibIntelligence
 		QVector<Wheel>& wheels();
 
 		Stage* stage() const;
+		void setStage(Stage* stage);
 		Team* team() const;
+		void setTeam(Team* team);
 		Team* enemyTeam() const;
 		Goal* goal() const;
 		Goal* enemyGoal() const;

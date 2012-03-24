@@ -125,6 +125,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>messages_internal_command_out.proto</DependentUpon>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Protocols.cs" />
     <Compile Include="RobotControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -177,6 +182,10 @@
     <None Include="messages_internal_command.proto">
       <Generator>ProtoBufTool</Generator>
       <LastGenOutput>messages_internal_command.cs</LastGenOutput>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

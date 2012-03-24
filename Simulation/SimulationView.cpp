@@ -58,6 +58,7 @@ SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	timerSim = new QTimer(this);
 	connect(timerSim, SIGNAL(timeout()), this, SLOT(simulate()));
 	timerSim->start(simulation->timeStep * 1000);
+	//timerSim->start(1000./60.);
 }
 
 SimulationView::~SimulationView()
@@ -81,7 +82,7 @@ SimulationView::~SimulationView()
 void SimulationView::simulate()
 {
 	//cout << "a " << simulation->gScenes[0]->allRobots->getRobotByIdByTeam(0,0)->getGlobalPose().t.x << endl;
-	simulation->simulateReal();
+	simulation->simulateReal(1./600.);
 	//cout << "d " << simulation->gScenes[0]->allRobots->getRobotByIdByTeam(0,0)->getGlobalPose().t.x << endl;
 }
 

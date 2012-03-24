@@ -113,7 +113,6 @@ void StageX::build()
 	for(int indexRobot=0; indexRobot<5; indexRobot++){
 		//yellow
 		const Robot* r = yellowTeam->at(indexRobot);
-
 		NxRobot* robot = robots->getRobotByIdByTeam(indexRobot, TeamColor::YELLOW);
 		NxMat34 initPose = robot->getInitialPose();
 		robot->setGlobalPosition(NxVec3(r->x(), r->y(), initPose.t.z));
@@ -129,7 +128,6 @@ void StageX::build()
 
 		//blue
 		const Robot* rr = blueTeam->at(indexRobot);
-		
 		NxRobot* robott = robots->getRobotByIdByTeam(indexRobot, TeamColor::BLUE);
 		NxMat34 initPosee = robott->getInitialPose();
 		robott->setGlobalPosition(NxVec3(rr->x(), rr->y(), initPosee.t.z));
@@ -183,7 +181,7 @@ void StageX::simulate(const qreal t)
 				break;
 			}
 
-			robots->getRobotByIdByTeam(n, TeamColor::YELLOW)->controlRobotByWheels(c.wheelSpeedAt(0), c.wheelSpeedAt(1), c.wheelSpeedAt(2), c.wheelSpeedAt(3), c.dribbleSpeed(), c.kickSpeed());
+			robots->getRobotByIdByTeam(n, TeamColor::YELLOW)->controlRobotByWheels(c.wheelSpeedAt(0) * M_2PI, c.wheelSpeedAt(1) * M_2PI, c.wheelSpeedAt(2) * M_2PI, c.wheelSpeedAt(3) * M_2PI, c.dribbleSpeed(), c.kickSpeed());
 
 			r->newCommand();
 		} else {
@@ -209,11 +207,19 @@ void StageX::simulate(const qreal t)
 	}
 
 	// simular
-	sim->simulate(sceneNumber);
+	if(t>0)
+		sim->simulate(sceneNumber, t);
+	else
+		sim->simulate(sceneNumber);
 
 	// atualizar StageX pelos dados da cena (pelo SSL_WrapperPacket)
 	SSL_WrapperPacket packet = sim->getSSLWrapper(sceneNumber);
 	updater->addPacket(&packet);
 	updater->step();
 	updater->apply();
+}
+
+uint StageX::getSceneNumber()
+{
+	return sceneNumber;
 }

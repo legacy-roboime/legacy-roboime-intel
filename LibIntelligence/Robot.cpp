@@ -154,9 +154,19 @@ Stage* Robot::stage() const
 	return stage_;
 }
 
+void Robot::setStage(Stage* stage)
+{
+	stage_ = stage;
+}
+
 Team* Robot::team() const
 {
 	return team_;
+}
+
+void Robot::setTeam(Team* team)
+{
+	team_ = team;
 }
 
 Team* Robot::enemyTeam() const

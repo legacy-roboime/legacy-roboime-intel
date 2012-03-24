@@ -147,6 +147,7 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 	//NxBounds3 bodyBounds;
 	//robotShapes[0]->getWorldBounds(bodyBounds);
 	NxVehicleDesc vehicleDesc;
+	NxReal wheelRadius = 27.6;
 
 	vehicleDesc.position				= NxVec3(robotActor->getGlobalPosition());
 	float mass = 3.;
@@ -158,7 +159,7 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 	//vehicleDesc.differentialRatio = 3.42f;
 	//vehicleDesc.transmissionEfficiency
 	vehicleDesc.actor = robotActor;
-	//vehicleDesc.actor->setMaxAngularVelocity(6.2);
+	vehicleDesc.actor->setMaxAngularVelocity(6.2);
 	vehicleDesc.actor->setMass(mass);
 
 	//TODO: LEVANTAR DAMPING
@@ -212,7 +213,7 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 		wheelDesc[i].position.set(actorWheel->getGlobalPosition()-robotActor->getGlobalPosition());
 		//wheelDesc[i].position.z = 0;
 		wheelDesc[i].id = i;
-		wheelDesc[i].wheelRadius = 27.6;
+		wheelDesc[i].wheelRadius = wheelRadius;
 		//wheelDesc[i].wheelWidth = 100;
 		wheelDesc[i].wheelSuspension = 0;
 		wheelDesc[i].springRestitution = 0;
@@ -270,7 +271,8 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 		}
 
 		//Initial Pose
-		robot->setInitialPose(robotActor->getGlobalPose());
+		robot->setInitialPose(NxMat34(robotActor->getGlobalPose().M, NxVec3(robotActor->getGlobalPose().t.x, robotActor->getGlobalPose().t.y, 0) ));
+		//robot->setInitialPose(robotActor->getGlobalPose());
 
 		robotActor->putToSleep();
 
@@ -399,7 +401,7 @@ void NxRobot::cloneRobot(int indexNewScene, int indexNewRobot, NxVec3 newPositio
 	//Initial Pose
 	robot->setInitialPose(robotActor->getGlobalPose());
 
-	//robotActor->putToSleep();
+	robotActor->putToSleep();
 
 	//Transladando o robo
 	robot->getActor()->setGlobalPosition(newPosition);
@@ -683,7 +685,7 @@ void NxRobot::controlWheels( NxReal* wheelsSpeeds )
 	NxReal biggestValue = NxMath1::getBiggestAbsoluteValue(torqueWheels, nbWheels);
 	if(biggestValue > 0.00001){
 		//TODO: Levantar esse parametro http://www.robotshop.com/lynxmotion-ghm-04-gear-head-motor.html Torque: 99.04oz.in (7.1 Kg-cm) Reduction: 50:1
-		NxReal maxTorque = 4100.;//7100.;//
+		NxReal maxTorque = 7100.;//4100.;//
 		if(biggestValue > maxTorque){
 			for( int i = 0; i < nbWheels; i++ ){
 				torqueWheels[i] = torqueWheels[i] / biggestValue * maxTorque;

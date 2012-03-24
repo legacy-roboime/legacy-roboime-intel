@@ -32,10 +32,13 @@ namespace LibIntelligence
 		void addYellowCard();
 		void addRedCard();
 
-		Team* enemyTeam();
-		Stage* stage();
-		Goal* goal();
-		Goal* enemyGoal();
+		Robot* getClosestPlayerToBall() const;
+		Robot* getClosestPlayerToBallThatCanKick() const;
+
+		Team* enemyTeam() const;
+		Stage* stage() const;
+		Goal* goal() const;
+		Goal* enemyGoal() const;
 
 		Team& operator=(const Team& team);
 
