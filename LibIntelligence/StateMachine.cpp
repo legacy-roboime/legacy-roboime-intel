@@ -39,7 +39,7 @@ void StateMachine::execute()
 		}
 		if(deterministic_){
 			if(!transitions.isEmpty())
-				current_ = transitions.at(0)->getTarget();
+				current_ = transitions.at(0)->getTarget(); //colocar a transicao deterministica na posicao 0
 		}
 		else{
 			qreal rndVal = Sampler::randFloat();

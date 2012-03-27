@@ -140,13 +140,9 @@ NxVehicle* NxVehicle::createVehicle(NxScene1* scene, NxVehicleDesc* vehicleDesc)
 {
 	if (vehicleDesc == NULL)
 		return NULL;
-	NxVehicle* vehicle = NxVehicle::_createVehicle(scene, vehicleDesc);
-	//NxAllRobots allRobots = Simulation::allRobots;
-	scene->allRobots->AddRobot((NxRobot*)vehicle);
-	//int nbRobots = allRobots.getNumberOfRobots();
-	//if (allRobots.getActiveRobotNumber() != -1 || nbRobots == 1)
-	//	allRobots.setActiveRobot(nbRobots-1);
 
+	NxVehicle* vehicle = NxVehicle::_createVehicle(scene, vehicleDesc);
+	scene->allRobots->AddRobot((NxRobot*)vehicle);
 	return vehicle;
 }
 

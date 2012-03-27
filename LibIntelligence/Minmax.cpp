@@ -301,59 +301,26 @@ void Minmax::expandMin( StageX *s, int action )
 	_min_plays[action]->step();
 
 	for(int i=0; i<steps_per_turn; i++){
-		cout << "a1 " << s->blueTeam()->at(4)->x() << endl;
 		s->simulate(2./60.);
-		cout << "d1 " << s->blueTeam()->at(4)->x() << "\n";
 
 #ifdef LOGGING
-		string label = "";
-		stringstream out;
-		out << "3 " << s->getSceneNumber() << " ";
-
-		//yellow
-		for(int indexRobot=0; indexRobot<5; indexRobot++){
-			const Robot* robot = s->yellowTeam()->at(indexRobot);
-			qreal x = robot->x();
-			qreal y = robot->y();
-			qreal ang = robot->orientation();
-			qreal vX = robot->speedX();
-			qreal vY = robot->speedY();
-			qreal vAng = 0;
-			qreal kSpeed = robot->kicker().speed();
-			qreal dSpeed = robot->dribbler().speed();
-			out << x << " " << y << " " << ang << " " << vX << " " << vY << " " << vAng << " " << kSpeed << " " << dSpeed << " ";
+		QDataStream out(&log);   // write the data
+		Ball* ball = s->ball();
+		Team* yellowTeam = s->yellowTeam();
+		Team* blueTeam = s->blueTeam();
+		QString str("3 0 ");
+		for(int i=0; i<5; i++){
+			Robot* robot = yellowTeam->at(i);
+			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 		}
-
-		//blue
-		for(int indexRobot=0; indexRobot<5; indexRobot++){
-			const Robot* robot = s->blueTeam()->at(indexRobot);
-			qreal x = robot->x();
-			qreal y = robot->y();
-			qreal ang = robot->orientation();
-			qreal vX = robot->speedX();
-			qreal vY = robot->speedY();
-			qreal vAng = 0;
-			qreal kSpeed = robot->kicker().speed();
-			qreal dSpeed = robot->dribbler().speed();
-
-			out << x << " " << y << " " << ang << " " << vX << " " << vY << " " << vAng << " " << kSpeed << " " << dSpeed << " ";
+		//cout << str.toStdString() << endl;
+		for(int i=0; i<5; i++){
+			Robot* robot = blueTeam->at(i);
+			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 		}
-
-		//ball
-		const Ball* ball = s->ball();
-		qreal x = ball->x();
-		qreal y = ball->y();
-		qreal vX = ball->speedX();
-		qreal vY = ball->speedY();
-		qreal vAng = 0;
-		out << x << " " << y << " " << vX << " " << vY << " " << vAng << "\n";
-		label.append(out.str());
-
-		QString str = QString::fromStdString(label);
-		QDataStream output(&log);   // write the data
-		output << str;
+		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
+		out << str;
 		log.flush();
-
 #endif
 	}
 }

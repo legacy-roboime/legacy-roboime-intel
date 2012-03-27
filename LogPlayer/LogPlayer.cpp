@@ -56,7 +56,7 @@ LogPlayer::LogPlayer(QWidget *parent, Qt::WFlags flags)
 
 	timerSim = new QTimer(this);
 	connect(timerSim, SIGNAL(timeout()), this, SLOT(step()));
-	timerSim->start(10);
+	timerSim->start(10.);
 
 	log.open(QIODevice::ReadOnly);
 }

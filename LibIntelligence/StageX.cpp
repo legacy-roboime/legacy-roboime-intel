@@ -121,7 +121,7 @@ void StageX::build()
 		robot->setGlobalOrientation(newOri);
 		//robot->putToSleep();
 		NxActor* actor = robot->getActor();
-		actor->setLinearVelocity(NxVec3(r->speedX(), r->speedY(), 0));
+		actor->setLinearVelocity(NxVec3(0, 0/*r->speedX(), r->speedY()*/, 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
 		actor->setAngularVelocity(NxVec3(0, 0, 0)); //TODO: implementar vAng eixo z
 		robot->dribbler->speedToExecute = r->dribbler().speed();
 		robot->kicker->controlKicker(r->kicker().speed(), robot);
@@ -136,7 +136,7 @@ void StageX::build()
 		robott->setGlobalOrientation(newOrii);
 		//robott->putToSleep();
 		NxActor* actorr = robott->getActor();
-		actorr->setLinearVelocity(NxVec3(rr->speedX(), rr->speedY(), 0));
+		actorr->setLinearVelocity(NxVec3(0, 0/*r->speedX(), r->speedY()*/, 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
 		actorr->setAngularVelocity(NxVec3(0, 0, 0)); // TODO: implementar vAng eixo z
 		robott->dribbler->speedToExecute = rr->dribbler().speed();
 		robott->kicker->controlKicker(rr->kicker().speed(), robott);
@@ -145,8 +145,8 @@ void StageX::build()
 	//ball
 	qreal x = b->x();
 	qreal y = b->y();
-	qreal vX = b->speedX();
-	qreal vY = b->speedY();
+	qreal vX = 0;//b->speedX(); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
+	qreal vY = 0;//b->speedY(); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
 	qreal vAng = 0;
 	NxBall* ball = scene->ball;
 	NxMat34 initPose = ball->initialPose;
@@ -197,6 +197,8 @@ void StageX::simulate(const qreal t)
 				qCritical("prepare: Wrong number of wheels!");
 				break;
 			}
+
+			//cout << cc.wheelSpeedAt(0) << " " << cc.wheelSpeedAt(1) << " " << cc.wheelSpeedAt(2) << " " << cc.wheelSpeedAt(3) << " " << n << endl;
 
 			robots->getRobotByIdByTeam(n, TeamColor::BLUE)->controlRobotByWheels(cc.wheelSpeedAt(0) * M_2PI, cc.wheelSpeedAt(1) * M_2PI, cc.wheelSpeedAt(2) * M_2PI, cc.wheelSpeedAt(3) * M_2PI, cc.dribbleSpeed(), cc.kickSpeed());
 

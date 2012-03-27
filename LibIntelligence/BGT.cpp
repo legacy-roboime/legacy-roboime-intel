@@ -50,7 +50,7 @@ void BGT::populateTactics(const StageY* source, StageY* target)
 			target->pushTactic(z, myT->color());
 		}
 		for(int i=0; i<enemyT->size(); i++) {
-			Zickler43* z = new Zickler43(this, enemyT->at(i));
+			Zickler43* z = new Zickler43(this, enemyT->at(i), 3000, true);
 			z->setCurrentState( z->getStateByName( enemyTactics->at(i)->getCurrentState()->objectName() ) );
 			target->pushTactic(z, enemyT->color());
 		}
@@ -63,7 +63,7 @@ void BGT::populateTactics(const StageY* source, StageY* target)
 		for(int i=0; i<myT->size(); i++) 
 			target->pushTactic(new Zickler43(this, myT->at(i)), myT->color());
 		for(int i=0; i<enemyT->size(); i++) 
-			target->pushTactic(new Zickler43(this, enemyT->at(i)), enemyT->color());
+			target->pushTactic(new Zickler43(this, enemyT->at(i), 3000, true), enemyT->color());
 	}
 }
 
@@ -84,44 +84,60 @@ void BGT::step()
 	static QQueue<StageY*> solution = QQueue<StageY*>();
 
 	if((time % (planSteps + execSteps)) == 0){ //planejar e executar
-		solution.clear();
+		//libera memoria e limpa estruturas
+		if(!tree_->empty()){
+			solution.clear();
+			tree<StageY*>::iterator itr, end;
+			itr = tree_->begin();
+			end = tree_->end();
+			while(itr!=end){
+				if(*itr)
+					delete (*itr);
+				++itr;
+			}
+			xInit = NULL;
+			tree_->clear();
+		}
+
 		//timer->singleShot(1000./60., this, SLOT(planningInterruped()));
 		planning(&solution);
 		planningInterruped_ = false;
 		solution.pop_back();//remove xInit
-		StageY* stage = NULL;
-		stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
-		if(stage)
+		if(!solution.isEmpty()){
+			StageY* stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
 			goToStage(stage);
+		}
 	}
 	else if(!solution.isEmpty()){ //executar
 		StageY* stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
-		if(stage)
-			goToStage(stage);
+		goToStage(stage);
 	}
 	else{
 		time = 0;
+
+		//libera memoria e limpa estruturas
 		solution.clear();
+		tree<StageY*>::iterator itr, end;
+		itr = tree_->begin();
+		end = tree_->end();
+		while(itr!=end){
+			if(*itr)
+				delete (*itr);
+			++itr;
+		}
+		xInit = NULL;
+		tree_->clear();
+
 		//timer->singleShot(1000./60., this, SLOT(planningInterruped()));
 		planning(&solution);
 		planningInterruped_ = false;
 		solution.pop_back();//remove xInit
-		StageY* stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
-		if(stage)
+		if(!solution.isEmpty()){
+			StageY* stage = solution.takeLast(); //solucao invertica <xBest, ..., x2, x1, xInit>
 			goToStage(stage);
+		}
 	}
 
-	tree<StageY*>::iterator itr, end;
-	itr = tree_->begin();
-	end = tree_->end();
-	while(itr!=end){
-		//cout << (*itr)->blueTeam()->at(0)->x() << endl;
-		if(*itr)
-			delete (*itr);
-		++itr;
-	}
-	xInit = NULL;
-	tree_->clear();
 	time++;
 	time %= planSteps + execSteps;
 }
@@ -161,7 +177,7 @@ void BGT::planning(QQueue<StageY*>* solution)
 		}
 		busyOtim = busy;	
 		xL = tacticsDrivenPropagate(*x);
-		busy = xL->busy();
+		busy = xL->busy(team()->color());
 		if(validate(xL)){
 			tmpEval = evalState(xL);
 
@@ -215,7 +231,7 @@ void BGT::planning(QQueue<StageY*>* solution)
 		}
 		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
 		out << str;
-		out << "$" + (*itr)->getBlueTactics()->at(4)->getCurrentState()->objectName() + "\n";
+		out << "$" + (*itr)->getBlueTactics()->at(0)->getCurrentState()->objectName() + "\n";
 		log.flush();
 		++itr;
 	}
@@ -256,14 +272,23 @@ bool BGT::isGoal(StageY* stage)
 
 qreal BGT::evalState(StageY* stage)
 {
-	// avaliacao do estado do jogo conmsiderando.
+	// avaliacao do estado do jogo considerando.
 	// Valor alto ruim e valor baixo bom.
-	Team* team = stage->getTeamFromColor(this->team()->color());
+	Team* team = this->team_;
 	Ball* ball = stage->ball();
 	Goal* enemyGoal;
 	Goal* myGoal;
-	enemyGoal = stage->getGoalFromOtherColor(team->color());
-	myGoal = stage->getGoalFromColor(team->color());
+	Object* enemy_closest_to_ball = team->enemyTeam()->getClosestPlayerToBall();
+	Object* player_closest_to_ball = team->getClosestPlayerToBall(); 
+
+	if(team->color() == YELLOW){
+		enemyGoal = stage->blueGoal();
+		myGoal = stage->yellowGoal();
+	}
+	else{
+		enemyGoal = stage->yellowGoal();
+		myGoal = stage->blueGoal();
+	}
 
 	qreal dx1 = enemyGoal->x() - stage->ball()->x();
 	qreal dy1 = enemyGoal->y() - stage->ball()->y();
@@ -271,10 +296,27 @@ qreal BGT::evalState(StageY* stage)
 	qreal dx2 = myGoal->x() - stage->ball()->x();
 	qreal dy2 = myGoal->y() - stage->ball()->y();
 
+	qreal dx3 = stage->ball()->x() - player_closest_to_ball->x() ;
+	qreal dy3 = stage->ball()->y() - player_closest_to_ball->y();
+
+	qreal dx4 = enemy_closest_to_ball ->x() - stage->ball()->x();
+	qreal dy4 = enemy_closest_to_ball ->y() - stage->ball()->y();
+
+	qreal dx5 =  enemyGoal->x() - player_closest_to_ball->x();
+	qreal dy5 =  enemyGoal->y() - player_closest_to_ball->y();
+
+
+
 	qreal dist1 = sqrt(dx1*dx1 + dy1*dy1);
 	qreal dist2 = sqrt(dx2*dx2 + dy2*dy2);
+	qreal dist3 = sqrt(dx3*dx3 + dy3*dy3);
+	qreal dist4 = sqrt(dx4*dx4 + dy4*dy4);
+	qreal dist5 = sqrt(dx5*dx5 + dy5*dy5);
 
-	return (-dist2 + dist1);
+	qreal attack_cos_angle = (dx3*dx5 + dy3*dy5)/(dist3*dist5);
+
+	//printf("d= %f, cos_angle = %f\n",dist3, attack_cos_angle);
+	return  -(( dist2<300? 100000*dist2: 0)  -dist1 + (dist3<1000? 50*attack_cos_angle :0)+ /*(dist1>500? .1*dist4: 0 )*/ +(dist1>300?  -.8*dist3: 0 )) ;// //-dist3 -20*dist1; /*+ (dist3<50? 20*attack_cos_angle :0);// -10*dist1 ;*/
 }
 
 void BGT::traceBack(StageY* stage, QQueue<StageY*>* solution)
@@ -345,7 +387,7 @@ StageY* BGT::randomLeaf()
 	loc = tree_->begin_leaf();
 	QVector<StageY*> nodes = QVector<StageY*>();
 	while(loc!=tree_->end_leaf()){ //TODO: colocar uma flag em cada no para em tempo de execucao atualizar se eh folha ou nao eh, dai nao precisaria varrer todos os nos em cada itr
-		if(!(*loc)->busy())
+		if(!(*loc)->busy(team()->color()))
 			nodes.push_back(*loc);
 		++loc;
 	}
@@ -359,7 +401,7 @@ StageY* BGT::randomNonLeaf()
 	loc = tree_->begin();
 	QVector<StageY*> nodes = QVector<StageY*>(); //TODO: colocar uma flag em cada no para em tempo de execucao atualizar se eh folha ou nao eh, dai nao precisaria varrer todos os nos em cada itr
 	while(loc!=tree_->end()){
-		if(!(*loc)->busy() && loc.number_of_children() > 0)
+		if(!(*loc)->busy(team()->color()) && loc.number_of_children() > 0)
 			nodes.push_back(*loc);
 		++loc;
 	}
@@ -373,15 +415,15 @@ StageY* BGT::tacticsDrivenPropagate(const StageY& stage)
 	populateTactics(&stage, xL);
 	QQueue<Tactics::Tactic*>* blueTactics = xL->getBlueTactics();
 	QQueue<Tactics::Tactic*>* yellowTactics = xL->getYellowTactics();
-	for(int i=0; i<blueTactics->size(); i++){
+	for(int i=0; i<1/*blueTactics->size()*/; i++){
 		blueTactics->at(i)->step();
 	}
-	for(int i=0; i<yellowTactics->size(); i++){
+	for(int i=0; i<1/*yellowTactics->size()*/; i++){
 		yellowTactics->at(i)->step();
 	}
-	cout << "a1 " << xL->blueTeam()->at(4)->x() << endl;
+	//cout << "a1 " << xL->blueTeam()->at(4)->x() << endl;
 	xL->simulate();
-	cout << "d1 " << xL->blueTeam()->at(4)->x() << "\n";
+	//cout << "d1 " << xL->blueTeam()->at(4)->x() << "\n";
 	xL->releaseScene();
 	return xL;
 }

@@ -144,13 +144,10 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 	//Veiculo descricao
 	//Body Descricao
 	NxActor* robotActor = Simulation::getActorRobot(indexScene, indexRobot);
-	//NxBounds3 bodyBounds;
-	//robotShapes[0]->getWorldBounds(bodyBounds);
 	NxVehicleDesc vehicleDesc;
 	NxReal wheelRadius = 27.6;
-
 	vehicleDesc.position				= NxVec3(robotActor->getGlobalPosition());
-	float mass = 3.;
+	float mass = 5.;
 	vehicleDesc.mass					= mass;//robotActor->getMass(); //PLUGIN TAH COM PROBLEMA XML ERRADO
 	//vehicleDesc.motorForce				= 70000;
 	//vehicleDesc.maxVelocity				= 300.f;
@@ -169,46 +166,19 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 	vehicleDesc.actor->setLinearDamping(0.5);
 
 	//TODO: LEVANTAR CMASS E INERTIA TENSOR
-	
 	//vehicleDesc.actor->setCMassOffsetGlobalPosition(NxVec3(0, 0, 0));
 	NxMat33 inertiaTensor = NxMat33(NxVec3(1294.4362, 3.14502, -66.954), NxVec3(3.14502, 1094.42351, -0.24279), NxVec3(-66.954, -0.24279, 1754.80511));
 	vehicleDesc.actor->setCMassOffsetLocalPose( NxMat34( inertiaTensor, NxVec3(0,0,0) ) );
 	//TODO: Diagonalizar inertiaTensor e passar para setMassSpaceInertiaTensor
 	vehicleDesc.actor->setMassSpaceInertiaTensor(/*vehicleDesc.actor->getMassSpaceInertiaTensor()*1000.*/NxVec3(1764.3, 1284.9, 1094.4) );
 
-	//Motor descricao
-	//NxVehicleMotorDesc motorsDesc[4];
-	//for(NxU32 i=0;i<4;i++)
-	//{
-		//motorsDesc[i].setToCorvette();
-		//vehicleDesc.motorsDesc.push_back(&motorsDesc[i]);
-	//}
-
 	//Roda (Wheel) descricao
 	int numberWheels = Simulation::getNumberWheels(indexScene, indexRobot);
 	NxWheelDesc* wheelDesc = new NxWheelDesc[numberWheels];
 	for(NxU32 i=0;i<numberWheels;i++)
 	{
-		wheelDesc[i].setToDefault();
-		//NxActor* wheelModel = Simulation::getActorWheel(indexScene,indexRobot,i);
-		//NxActorDesc wheelActorDesc;
-		//wheelModel->saveToDesc(wheelActorDesc);
-		//Simulation::gScenes[0]->releaseActor(*wheelModel);
+		//wheelDesc[i].setToDefault();
 		NxActor* actorWheel = Simulation::getActorWheel(indexScene,indexRobot,i);//wheelModel;//Simulation::gScenes[0]->createActor(wheelActorDesc);
-		//NxShape*const* wheelShapes = actorWheel->getShapes();
-		//NxBounds3 wheelBounds;
-		//wheelShapes[0]->getWorldBounds(wheelBounds);
-
-		//Para exportar modelo da roda do 3ds Max
-		//	NxWhee
-		//wheelDesc[i]
-		//robot1Shapes[0]->isConvexMesh()->getConvexMesh().saveToDesc(convexMesh);
-		//NxWheelShape* wheelShape = (NxWheelShape*)wheel;
-		//NxTriangleMeshDesc meshDesc = *((NxTriangleMeshDesc*)(mesh->userData));
-		//robot1Shapes[0]->isWheel()->
-
-		//wheelDesc[i].wheelApproximation = 10;
-
 		wheelDesc[i].wheelOrientation = actorWheel->getGlobalOrientation();
 		wheelDesc[i].position.set(actorWheel->getGlobalPosition()-robotActor->getGlobalPosition());
 		//wheelDesc[i].position.z = 0;
@@ -231,12 +201,8 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 		vehicleDesc.robotWheels.pushBack(&wheelDesc[i]);
 		Simulation::gScenes[indexScene]->scene->releaseActor(*actorWheel);
 
-		//NxU32 flags = NX_WF_BUILD_LOWER_HALF;
-		
 		wheelDesc[i].wheelFlags = NX_WF_ACCELERATED | NX_WF_AFFECTED_BY_HANDBRAKE | NX_WF_USE_WHEELSHAPE | NX_WF_BUILD_LOWER_HALF ;//| NxWheelFlags::NX_WF_STEERABLE_AUTO;// |/*NX_WF_STEERABLE_INPUT |*/ flags;
 	}
-
-	//NxBall* teste = Simulation::gScenes[indexScene]->ball;
 
 	//Criar robot, vehicle base
 	NxRobot* robot = (NxRobot*)NxRobot::createVehicle(Simulation::gScenes[indexScene], &vehicleDesc);
@@ -276,15 +242,6 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 
 		robotActor->putToSleep();
 
-		//Mudar pose do robo
-		//NxQuat q;
-		//q.
-		//q.fromAngleAxis(180.0f, NxVec3(0.0f, 1.0f, 0.0f));
-		//robot->getActor()->setGlobalPose(pose);
-
-		//Release no actor importado do 3ds Max
-		//gScenes[0]->releaseActor(*robotActor);
-
 		string label;
 		string plabel = "Robo";
 		stringstream out;
@@ -306,13 +263,9 @@ void Simulation::buildModelRobot(int indexRobot, int indexScene, int indexTeam)
 void NxRobot::cloneRobot(int indexNewScene, int indexNewRobot, NxVec3 newPosition, int indexNewTeam)
 {
 	NxRobot* nxRobotSource = simulation->gScenes[this->indexScene]->allRobots->getRobotByIdByTeam(this->id, this->idTeam);
-
 	NxActor* robotActor = simulation->cloneActor(nxRobotSource->getActor(),indexNewScene);
-	//NxBounds3 bodyBounds;
-	//robotShapes[0]->getWorldBounds(bodyBounds);
-	
+
 	NxVehicleDesc vehicleDesc;
-	
 	vehicleDesc.position				= NxVec3(robotActor->getGlobalPosition());
 	vehicleDesc.mass					= robotActor->getMass();
 	//vehicleDesc.motorForce				= 70000;
@@ -323,28 +276,11 @@ void NxRobot::cloneRobot(int indexNewScene, int indexNewRobot, NxVec3 newPositio
 	//vehicleDesc.transmissionEfficiency
 	vehicleDesc.actor = robotActor;
 
-	//Motor descricao
-	//NxVehicleMotorDesc motorsDesc[4];
-	//for(NxU32 i=0;i<4;i++)
-	//{
-		//motorsDesc[i].setToCorvette();
-		//vehicleDesc.motorsDesc.push_back(&motorsDesc[i]);
-	//}
-
 	//Roda (Wheel) descricao
 	int numberWheels = nxRobotSource->getNbWheels();
 	NxWheelDesc* wheelDesc = new NxWheelDesc[numberWheels];
 	for(NxU32 i=0;i<numberWheels;i++)
 	{
-		//NxActor* wheelModel = Simulation::getActorWheel(indexSourceScene,indexNewRobot,i);
-		//NxActorDesc wheelActorDesc;
-		//wheelModel->saveToDesc(wheelActorDesc);
-		//Simulation::gScenes[0]->releaseActor(*wheelModel);
-		
-		//NxShape*const* wheelShapes = actorWheel->getShapes();
-		//NxBounds3 wheelBounds;
-		//wheelShapes[0]->getWorldBounds(wheelBounds);
-
 		const NxWheel* wheel = nxRobotSource->getWheel(i);
 		NxWheelShape* wheelShape = ((NxWheel2*)wheel)->getWheelShape();
 		//wheelDesc[i].wheelApproximation = 10;
@@ -372,7 +308,6 @@ void NxRobot::cloneRobot(int indexNewScene, int indexNewRobot, NxVec3 newPositio
 
 	//Criar robot, vehicle base
 	NxRobot* robot = (NxRobot*)NxRobot::createVehicle(simulation->gScenes[indexNewScene], &vehicleDesc);
-	//NxRobot* robot = (NxRobot*)NxRobot::createVehicle(gScenes[indexSourceScene], &vehicleDesc);
 	robot->setId(indexNewRobot);
 	robot->setIdTeam(indexNewTeam);
 	robot->indexScene = indexNewScene;
@@ -412,8 +347,6 @@ void NxRobot::cloneRobot(int indexNewScene, int indexNewRobot, NxVec3 newPositio
 	out << indexNewRobot;
 	out << "-";
 	out << indexNewTeam;
-	//out << "-";
-	//out << indexNewScene;
 	label.append(plabel);
 	label.append(out.str());
 	char* arrayLabel = new char[label.size()+1];
@@ -683,7 +616,7 @@ void NxRobot::controlWheels( NxReal* wheelsSpeeds )
 	//printf("TORQUES: %f %f %f %f\n",torqueWheels[0], torqueWheels[1], torqueWheels[2], torqueWheels[3] );
 	//LIMITANTE DE TORQUE
 	NxReal biggestValue = NxMath1::getBiggestAbsoluteValue(torqueWheels, nbWheels);
-	if(biggestValue > 0.00001){
+	if(biggestValue > 1.){
 		//TODO: Levantar esse parametro http://www.robotshop.com/lynxmotion-ghm-04-gear-head-motor.html Torque: 99.04oz.in (7.1 Kg-cm) Reduction: 50:1
 		NxReal maxTorque = 7100.;//4100.;//
 		if(biggestValue > maxTorque){
@@ -698,6 +631,7 @@ void NxRobot::controlWheels( NxReal* wheelsSpeeds )
 		}
 	}
 
+	//cout << torqueWheels[0] << " " << torqueWheels[1] << " " << torqueWheels[2] << " " << torqueWheels[3] << " " << id << " " << idTeam << endl;
 
 	this->control( torqueWheels );//torqueWheels[0], torqueWheels[1], torqueWheels[2], torqueWheels[3] );
 

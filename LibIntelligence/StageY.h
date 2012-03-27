@@ -17,7 +17,7 @@ namespace LibIntelligence
 		StageY(const StageY& stage);
 		~StageY(void);
 		void pushTactic(Tactics::Tactic* tactic, TeamColor color);
-		bool busy();
+		bool busy(TeamColor color);
 		QQueue<Tactics::Tactic*>* getBlueTactics();
 		QQueue<Tactics::Tactic*>* getYellowTactics();
 		//StageY& operator=(const StageY& stage);

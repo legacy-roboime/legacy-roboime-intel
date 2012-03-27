@@ -48,7 +48,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;.\;$(SolutionDir)include;$(SolutionDir)LibIntelligence;$(SolutionDir)LibCommunication</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;.\;$(SolutionDir)include;$(SolutionDir)LibIntelligence;$(SolutionDir)LibCommunication;$(SolutionDir)LibSimulation;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32;.\;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)include\tree-2.81\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_NO_DEBUG;NDEBUG;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
@@ -56,16 +56,16 @@
       </DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtNetwork4.lib;</AdditionalDependencies>
+      <AdditionalDependencies>qtmain.lib;QtCore4.lib;QtGui4.lib;QtNetwork4.lib;QtOpenGL4.lib;opengl32.lib;glu32.lib</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;$(SolutionDir)lib;$(SolutionDir)build\d</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <Optimization>Full</Optimization>
+      <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(QTDIR)\include;.\GeneratedFiles\$(Configuration);$(QTDIR)\include\qtmain;$(QTDIR)\include\QtCore;.\;$(SolutionDir)include;$(SolutionDir)LibIntelligence;$(SolutionDir)LibCommunication;$(SolutionDir)LibSimulation;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win;$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32;.\;.\GeneratedFiles\$(ConfigurationName);$(SolutionDir)include\tree-2.81\src</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;WIN32;QT_LARGEFILE_SUPPORT;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -108,7 +108,7 @@
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(Configuration)\moc_%(Filename).cpp;%(Outputs)</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Filename)%(Extension)...</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB  "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(Configuration)\." "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I." "-I$(SolutionDir)include" "-I$(SolutionDir)LibIntelligence" "-I$(SolutionDir)LibCommunication" "-I$(NOINHERIT)\." "-I." "-I." "-I." "Intelligence.h" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"   -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB  "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(Configuration)\." "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I." "-I$(SolutionDir)include" "-I$(SolutionDir)LibIntelligence" "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)LibSimulation" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I." "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(SolutionDir)include\tree-2.81\src" "-I$(NOINHERIT)\." "-I." "-I." "-I." "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(Configuration)\moc_%(Filename).cpp;%(Outputs)</Outputs>
     </CustomBuild>
