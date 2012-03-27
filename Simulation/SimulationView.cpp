@@ -82,7 +82,7 @@ SimulationView::~SimulationView()
 void SimulationView::simulate()
 {
 	//cout << "a " << simulation->gScenes[0]->allRobots->getRobotByIdByTeam(0,0)->getGlobalPose().t.x << endl;
-	simulation->simulateReal(1./600.);
+	simulation->simulateReal(1./60.);
 	//cout << "d " << simulation->gScenes[0]->allRobots->getRobotByIdByTeam(0,0)->getGlobalPose().t.x << endl;
 }
 

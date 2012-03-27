@@ -16,7 +16,7 @@ Play(parent,team,stage),
 	_current_state(stage),
 	_best_action(best_action),
 	log("C:\\Users\\Bill\\Desktop\\log.dat"),
-	steps_per_turn(30)
+	steps_per_turn(18)
 {
 	log.open(QIODevice::WriteOnly);
 
@@ -205,6 +205,7 @@ void Minmax::step()
 	//cout << "d " << stage()->blueTeam()->at(0)->x() << endl;
 	printf("%d ", _best_action);
 	_max_plays[_best_action]->setStage( this->stage() );
+	//_max_plays[_best_action]->setTeam( this->stage()->getTeamFromColor(this->team()->color()) );//(Team*) this->team() ) ;
 	_max_plays[_best_action]->step();
 }
 
@@ -247,7 +248,7 @@ qreal Minmax::evaluate( Stage* stage )
 {
 	// avaliacao do estado do jogo conmsiderando.
 	// Valor alto bom para Max e ruim para Min.
-	Team* team = this->team_;
+	Team* team = stage->getTeamFromColor(this->team()->color());//this->team_;
 	Ball* ball = stage->ball();
 	Goal* enemyGoal;
 	Goal* myGoal;
@@ -298,10 +299,11 @@ qreal Minmax::evaluate( Stage* stage )
 void Minmax::expandMin( StageX *s, int action )
 {
 	_min_plays[action]->setStage(s);
+	//_min_plays[action]->setTeam(s->getTeamFromColor(this->team()->color()));
 	_min_plays[action]->step();
 
 	for(int i=0; i<steps_per_turn; i++){
-		s->simulate(2./60.);
+		s->simulate(0.1);
 
 #ifdef LOGGING
 		QDataStream out(&log);   // write the data
@@ -329,5 +331,6 @@ void Minmax::expandMin( StageX *s, int action )
 void Minmax::expandMax( StageX *s, int action )
 {
 	_max_plays[action]->setStage(s);
+	//_max_plays[action]->setTeam(s->getTeamFromColor(this->team()->color()));
 	_max_plays[action]->step();
 }

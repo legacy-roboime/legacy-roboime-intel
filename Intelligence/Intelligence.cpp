@@ -82,8 +82,8 @@ Intelligence::Intelligence(QObject *parent)
 	stopReferee = new Plays::StopReferee(this, myTeam, sta);
 	cbr2011 = new Plays::CBR2011(this, myTeam, sta);
 	//play = new Plays::CBR2011(this, enemyTeam, sta);
-	//play = new Plays::BGT(this, myTeam, sta);
-	play = new Plays::Minmax(this, myTeam, sta);
+	play = new Plays::BGT(this, myTeam, sta);
+	//play = new Plays::Minmax(this, myTeam, sta);
 	//freeKickThem = new Plays::FreeKickThem(this, &myTeam, sta);
 	
 	timer = new QTimer(this);
@@ -200,9 +200,9 @@ void Intelligence::update() {
 	//machine->step();
 	//((Skill*)machine->configuration().toList().at(1))->step();
 	//cbr2011->step();
-	play->step();
+	//play->step();
 	//skill1->step();
-	//tactic->step();
+	tactic->step();
 
 	comB->step();
 	comB2->step();

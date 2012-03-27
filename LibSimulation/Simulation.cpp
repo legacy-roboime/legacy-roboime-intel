@@ -282,29 +282,21 @@ void Simulation::simulateReal(float dt, int maxStepIter)
 	//double mSec = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec() - lTime;
 	//printf("SIM %f\n",mSec);
 	//lTime = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec();
-	
-	/*while(!qCommand.empty()) {
-		QString& string = qCommand.dequeue();
-		parseLegacyString(string.toStdString());
-	}*/
 
-	static int count=0; //coloca para executar o ultimo comando um periodo de tempo assim como o nosso robo real TODO: perguntar pro renault qual é o tempo
-	static QString& stringO = QString("");
-	if(!qCommand.isEmpty()) {
-		stringO = qCommand.last();
-		parseLegacyString(stringO.toStdString());
-		qCommand.clear();
-		count = 0;
-	}
-	else if(!stringO.isEmpty() && count<60){ //acho q era um segundo
-		parseLegacyString(stringO.toStdString()); 
-		count++;
-	}
-	//parseLegacyString("15 0 1 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0\n");
+	//static int count=0; //coloca para executar o ultimo comando um periodo de tempo assim como o nosso robo real TODO: perguntar pro renault qual é o tempo
+	//static QString& stringO = QString("");
+	//if(!qCommand.isEmpty()) {
+	//	stringO = qCommand.last();
+	//	parseLegacyString(stringO.toStdString());
+	//	qCommand.clear();
+	//	count = 0;
+	//}
+	//else if(!stringO.isEmpty() && count<60){ //acho q era um segundo
+	//	parseLegacyString(stringO.toStdString()); 
+	//	count++;
+	//}
 
-	//cout << "a " << this->gScenes[0]->allRobots->getRobotByIdByTeam(0,1)->getGlobalPose().t.x << endl;
 	simulate(this->gBaseScene, dt, maxStepIter);
-	//cout << "d " << this->gScenes[0]->allRobots->getRobotByIdByTeam(0,1)->getGlobalPose().t.x << endl;
 }
 
 void Simulation::simulate()

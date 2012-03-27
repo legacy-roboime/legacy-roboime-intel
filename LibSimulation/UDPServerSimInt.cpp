@@ -39,8 +39,8 @@ void UDPServerSimInt::parsing()
         udpSocket->readDatagram(datagram.data(), datagram.size(),
                                  &sender, &senderPort);
 		
-		simulation->append(QString(datagram.data()));
-		//string sendString = simulation->parseLegacyString(string(datagram.data()));
+		//simulation->append(QString(datagram.data()));
+		string sendString = simulation->parseLegacyString(string(datagram.data()));
 		//udpSocket->writeDatagram(sendString.c_str(), sendString.length(), sender, senderPort);
 	}
 }

@@ -274,7 +274,7 @@ qreal BGT::evalState(StageY* stage)
 {
 	// avaliacao do estado do jogo considerando.
 	// Valor alto ruim e valor baixo bom.
-	Team* team = this->team_;
+	Team* team = stage->getTeamFromColor(this->team()->color());//this->team_;
 	Ball* ball = stage->ball();
 	Goal* enemyGoal;
 	Goal* myGoal;
