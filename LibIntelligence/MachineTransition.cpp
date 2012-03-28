@@ -3,10 +3,8 @@
 
 using namespace LibIntelligence;
 
-MachineTransition::MachineTransition(QObject* parent, QObject* metaObj, const char* method, State* source, State* target, qreal probability) 
+MachineTransition::MachineTransition(QObject* parent, State* source, State* target, qreal probability) 
 	: QObject(parent),
-	metaObj_(metaObj),
-	method_(method),
 	probability_(probability),
 	source_(source),
 	target_(target)
@@ -18,13 +16,6 @@ MachineTransition::~MachineTransition(void)
 {
 }
 
-bool MachineTransition::condition()
-{
-	bool cond;
-	QMetaObject::invokeMethod(metaObj_, method_, Qt::DirectConnection, Q_RETURN_ARG(bool, cond));
-	return cond;
-}
-
 qreal MachineTransition::probability()
 {
 	return probability_;
@@ -33,5 +24,10 @@ qreal MachineTransition::probability()
 State* MachineTransition::getTarget()
 {
 	return target_;
+}
+
+State* MachineTransition::getSource()
+{
+	return source_;
 }
 

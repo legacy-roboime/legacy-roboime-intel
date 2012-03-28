@@ -7,11 +7,14 @@
 #include "DriveToBall.h"
 #include "SampledDribble.h"
 #include "SampledKick.h"
+#include "MachineTransition.h"
 
 namespace LibIntelligence
 {
 	namespace Tactics
 	{
+		
+
 		class Zickler43 : public Tactic
 		{
 			Q_OBJECT
@@ -21,7 +24,7 @@ namespace LibIntelligence
 			//Zickler43(QObject* p, Robot* r, const Zickler43& zickler);
 			~Zickler43();
 			void step();
-			
+
 
 		protected:
 			Skills::DriveToBall* driveToBall_; //pegar a bola de forma a preparar o chute pro gol
@@ -31,16 +34,38 @@ namespace LibIntelligence
 			Skills::Wait* wait_;
 
 			qreal speed;
-
-		private:
-			Q_INVOKABLE bool driveToDribble();
-			//Q_INVOKABLE bool dribbleToDrive();
-			Q_INVOKABLE bool dribbleToGoalKick();
-			Q_INVOKABLE bool dribbleToMiniKick();
-			Q_INVOKABLE bool dribbleToDribble();
-			Q_INVOKABLE bool defaultTrue();
 		};
 	}	
+
+	class DriveToDribbleT : public MachineTransition{ 
+	public:
+		DriveToDribbleT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+		bool condition();
+	};
+
+	class DribbleToGoalKickT : public MachineTransition{ 
+	public:
+		DribbleToGoalKickT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+		bool condition();
+	};
+
+	class DribbleToMiniKickT : public MachineTransition{ 
+	public:
+		DribbleToMiniKickT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+		bool condition();
+	};
+
+	class DribbleToDribbleT : public MachineTransition{ 
+	public:
+		DribbleToDribbleT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+		bool condition();
+	};
+
+	class DefaultTrueT : public MachineTransition{ 
+	public:
+		DefaultTrueT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+		bool condition();
+	};
 }
 
 #endif // ZICKLER43_H

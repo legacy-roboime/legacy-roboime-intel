@@ -24,7 +24,7 @@ namespace LibIntelligence
 		void setCurrentState(State* current);
 		void pushState(State* state);
 		void execute(); //avança a máquina de estado no tempo
-		void createTransition(QObject* metaObj = 0, const char* method = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+		void pushTransition(State* source, MachineTransition* transition);
 		void setInitialState(State* initial);
 		void setFinalState(State* final);
 		void reset(); //set o current para initial

@@ -104,9 +104,9 @@ void StateMachine::pushState(State* state)
 	states_.push_back(state);
 }
 
-void StateMachine::createTransition(QObject* metaObj, const char* method, State* source, State* target, qreal probability)
+void StateMachine::pushTransition(State* source, MachineTransition* transition)
 {
-	source->pushTransition(new MachineTransition(this, metaObj, method, source, target, probability));
+	source->pushTransition(transition);
 }
 
 void StateMachine::setInitialState(State* initial)

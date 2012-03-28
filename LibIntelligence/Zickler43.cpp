@@ -40,13 +40,13 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	sampledMiniKick_->setObjectName("SampledMiniKick");
 	wait_->setObjectName("Wait");
 
-	this->createTransition(this, "driveToDribble", driveToBall_, sampledDribble_, 1.);
-	this->createTransition(this, "dribbleToGoalKick", sampledDribble_, sampledGoalKick_, .1);
-	this->createTransition(this, "dribbleToMiniKick", sampledDribble_, sampledMiniKick_, .2);
-	this->createTransition(this, "dribbleToDribble", sampledDribble_, sampledDribble_, .8);
-	this->createTransition(this, "defaultTrue", sampledMiniKick_, driveToBall_);
-	this->createTransition(this, "defaultTrue", sampledGoalKick_, wait_);
-	this->createTransition(this, "defaultTrue", wait_, driveToBall_); //loop maquina
+	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledDribble_, 1.));
+	this->pushTransition(sampledDribble_, new DribbleToGoalKickT(this, sampledDribble_, sampledGoalKick_, .1));
+	this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
+	this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
+	this->pushTransition(sampledMiniKick_, new DefaultTrueT(this, sampledMiniKick_, driveToBall_));
+	this->pushTransition(sampledGoalKick_, new DefaultTrueT(this, sampledGoalKick_, wait_));
+	this->pushTransition(wait_, new DefaultTrueT(this, wait_, driveToBall_)); //loop maquina
 
 	this->setInitialState(driveToBall_);
 
@@ -100,32 +100,37 @@ void Zickler43::step()
 	//cout << current->objectName().toStdString() << endl;
 }
 
-bool Zickler43::driveToDribble()
+bool DriveToDribbleT::condition()
 {
-	return !driveToBall_->busy();
+	return !source_->busy();
 }
 
-//bool Zickler43::dribbleToDrive()
-//{
-//	return sampledDribble_->busy();
-//}
+DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
-bool Zickler43::dribbleToDribble()
+bool DribbleToDribbleT::condition()
 {
-	return !sampledDribble_->busy();
+	return !source_->busy();
 }
 
-bool Zickler43::dribbleToGoalKick()
+DribbleToDribbleT::DribbleToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
+bool DribbleToGoalKickT::condition()
 {
-	return !sampledDribble_->busy();
+	return !source_->busy();
 }
 
-bool Zickler43::dribbleToMiniKick()
+DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
+bool DribbleToMiniKickT::condition()
 {
-	return !sampledDribble_->busy();
+	return !source_->busy();
 }
 
-bool Zickler43::defaultTrue()
+DribbleToMiniKickT::DribbleToMiniKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
+bool DefaultTrueT::condition()
 {
 	return true;
 }
+
+DefaultTrueT::DefaultTrueT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
