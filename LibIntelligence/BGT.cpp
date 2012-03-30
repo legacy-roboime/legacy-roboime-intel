@@ -209,33 +209,33 @@ void BGT::planning(QQueue<StageY*>* solution)
 
 	traceBack(xBest, solution);
 
-#ifdef LOGGING
-	tree<StageY*>::pre_order_iterator itr, end;
-	itr = tree_->begin();
-	end = tree_->end();
-
-	QDataStream out(&log);   // write the data
-	while(itr!=end){
-		Ball* ball = (*itr)->ball();
-		Team* yellowTeam = (*itr)->yellowTeam();
-		Team* blueTeam = (*itr)->blueTeam();
-		QString str("3 0 ");
-		for(int i=0; i<5; i++){
-			Robot* robot = yellowTeam->at(i);
-			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
-		}
-		//cout << str.toStdString() << endl;
-		for(int i=0; i<5; i++){
-			Robot* robot = blueTeam->at(i);
-			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
-		}
-		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
-		out << str;
-		out << "$" + (*itr)->getBlueTactics()->at(0)->getCurrentState()->objectName() + "\n";
-		log.flush();
-		++itr;
-	}
-#endif
+//#ifdef LOGGING
+//	tree<StageY*>::pre_order_iterator itr, end;
+//	itr = tree_->begin();
+//	end = tree_->end();
+//
+//	QDataStream out(&log);   // write the data
+//	while(itr!=end){
+//		Ball* ball = (*itr)->ball();
+//		Team* yellowTeam = (*itr)->yellowTeam();
+//		Team* blueTeam = (*itr)->blueTeam();
+//		QString str("3 0 ");
+//		for(int i=0; i<5; i++){
+//			Robot* robot = yellowTeam->at(i);
+//			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+//		}
+//		//cout << str.toStdString() << endl;
+//		for(int i=0; i<5; i++){
+//			Robot* robot = blueTeam->at(i);
+//			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+//		}
+//		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
+//		out << str;
+//		out << "$" + (*itr)->getBlueTactics()->at(0)->getCurrentState()->objectName() + "\n";
+//		log.flush();
+//		++itr;
+//	}
+//#endif
 }
 
 void BGT::goToStage(StageY* stage)
@@ -422,8 +422,30 @@ StageY* BGT::tacticsDrivenPropagate(const StageY& stage)
 		yellowTactics->at(i)->step();
 	}
 	//cout << "a1 " << xL->blueTeam()->at(4)->x() << endl;
-	xL->simulate();
+	xL->simulate(1./60.);
 	//cout << "d1 " << xL->blueTeam()->at(4)->x() << "\n";
 	xL->releaseScene();
+
+#ifdef LOGGING
+	QDataStream out(&log);   // write the data
+	
+	Team* yellowTeam = xL->yellowTeam();
+	Team* blueTeam = xL->blueTeam();
+	Ball* ball = xL->ball();
+	QString str("3 0 ");
+	for(int i=0; i<5; i++){
+		Robot* robot = yellowTeam->at(i);
+		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+	}
+	//cout << str.toStdString() << endl;
+	for(int i=0; i<5; i++){
+		Robot* robot = blueTeam->at(i);
+		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+	}
+	str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
+	out << str;
+	log.flush();
+#endif
+
 	return xL;
 }

@@ -95,8 +95,8 @@ void StageX::releaseScene()
 {
 	if(sceneNumber!=-1)
 		busyScenes[sceneNumber] = false; 
-	//if(updater)
-	//	delete updater;
+	if(updater)
+		delete updater;
 	built = false;
 }
 
@@ -121,7 +121,7 @@ void StageX::build()
 		robot->setGlobalOrientation(newOri);
 		//robot->putToSleep();
 		NxActor* actor = robot->getActor();
-		actor->setLinearVelocity(NxVec3(0, 0/*r->speedX(), r->speedY()*/, 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
+		actor->setLinearVelocity(NxVec3(/*0, 0*/r->speedX(), r->speedY(), 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
 		actor->setAngularVelocity(NxVec3(0, 0, 0)); //TODO: implementar vAng eixo z
 		robot->dribbler->speedToExecute = r->dribbler().speed();
 		robot->kicker->controlKicker(r->kicker().speed(), robot);
@@ -136,7 +136,7 @@ void StageX::build()
 		robott->setGlobalOrientation(newOrii);
 		//robott->putToSleep();
 		NxActor* actorr = robott->getActor();
-		actorr->setLinearVelocity(NxVec3(0, 0/*r->speedX(), r->speedY()*/, 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
+		actorr->setLinearVelocity(NxVec3(/*0, 0*/r->speedX(), r->speedY(), 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
 		actorr->setAngularVelocity(NxVec3(0, 0, 0)); // TODO: implementar vAng eixo z
 		robott->dribbler->speedToExecute = rr->dribbler().speed();
 		robott->kicker->controlKicker(rr->kicker().speed(), robott);
@@ -145,8 +145,8 @@ void StageX::build()
 	//ball
 	qreal x = b->x();
 	qreal y = b->y();
-	qreal vX = 0;//b->speedX(); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
-	qreal vY = 0;//b->speedY(); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
+	qreal vX = b->speedX(); //0;//TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
+	qreal vY = b->speedY(); //0;//TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
 	qreal vAng = 0;
 	NxBall* ball = scene->ball;
 	NxMat34 initPose = ball->initialPose;

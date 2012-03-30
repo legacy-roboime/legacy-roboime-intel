@@ -3,6 +3,7 @@
 
 #include "Plays.h"
 #include "Tactics.h"
+#include <QFile>
 
 namespace LibIntelligence
 {
@@ -16,6 +17,9 @@ namespace LibIntelligence
 			CBR2011(QObject *parent, Team* team ,Stage* stage);
 			~CBR2011();
 			void step();
+
+		private:
+			QFile log; 
 		};
 	}
 }

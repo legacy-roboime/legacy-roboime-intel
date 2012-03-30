@@ -1,8 +1,5 @@
 #include "Object.h"
 #include <qvector.h>
-#include <qpoint.h>
-#include <qline.h>
-#include <qqueue.h>
 #include <qlist.h>
 
 using namespace LibIntelligence;
@@ -13,8 +10,8 @@ Object::Object(qreal x, qreal y, qreal z, qreal sx, qreal sy, qreal sz)
 	z_(z),
 	speedX_(sx),
 	speedY_(sy),
-	speedZ_(sz)//,
-    //speedQueue(new QQueue<QPointF>( )) 
+	speedZ_(sz),
+    speedQueue(QQueue<QPointF>()) 
 {}
 
 Object::Object(const Object& object)
@@ -30,23 +27,6 @@ Object::Object(const Object& object)
 void Object::setX(qreal x)
 {
 	x_ = x;
-}
-
-void Object::setX(qreal x, qreal time_capture)
-{
-	static qreal last_time_capture;
-
-	//TODO: tirar daqui e colocar o estimador de velocidade no tracker
-	qreal diffTime = time_capture - last_time_capture;
-	qreal speed = (x - x_)/(diffTime);
-	
-	if(abs(speed) < 10000 && diffTime>0){ //margem limiar para velocidade maxima dos objetos
-		speedX_ = (speedX_ + 2.*speed)/3.;
-		//printf("SPEEDX: %f\n",speed);
-	}
-	
-	x_ = x;
-	last_time_capture = time_capture;
 }
 
 qreal Object::x() const
@@ -159,7 +139,7 @@ Object& Object::operator=(const Object& object)
 }
 
 
-/*qreal Object::getLinearSpeed() {
+qreal Object::getLinearSpeed() {
 	return linearSpeed;
 }
 
@@ -170,11 +150,11 @@ QLineF Object::getSpeedVector() {
 QLineF Object::regression() {
 	
 	double r[2],div,*iden;
-	int n = speedQueue->count();
+	int n = speedQueue.count();
 	double *pt = new double[20];
 
-	for(int i=0; i<n; i++) pt[i] = speedQueue->at(i).x();
-	for(int i=0; i<n; i++) pt[i+n] = speedQueue->at(i).y();
+	for(int i=0; i<n; i++) pt[i] = speedQueue.at(i).x();
+	for(int i=0; i<n; i++) pt[i+n] = speedQueue.at(i).y();
 
 	regressao(pt,r,n);
 
@@ -185,32 +165,25 @@ QLineF Object::regression() {
 
 	QLineF reta(x2,y2,x1,1);
 
-
 	return reta;
-
-
-
-
-	
 	//return QLineF(0,0,1,1);
 }
 
 void Object::updateSpeed() {
 	
 	QPointF point(this->x(),this->y());
-	
-	speedQueue->pop_front();
-	speedQueue->push_back(point);
+	speedQueue.pop_front();
+	speedQueue.push_back(point);
 	speedVector = regression();
 	calculateLinearSpeed();
 }
 
 qreal Object::calculateLinearSpeed() {
 
-	int n = speedQueue->count();
+	int n = speedQueue.count();
 
-	qreal deltaX = speedQueue->first().x() - speedQueue->last().x();
-	qreal deltaY = speedQueue->first().y() - speedQueue->last().y();
+	qreal deltaX = speedQueue.first().x() - speedQueue.last().x();
+	qreal deltaY = speedQueue.first().y() - speedQueue.last().y();
 
 	qreal deltaT = n * 3/100; //Intervalo de tempo entre as duas medicoes
 
@@ -225,7 +198,8 @@ double Object::InnerProduct(double *x,double *y,int n)
 	int i;
 	double r=0;
 	
-	for (i=0; i<n; i++)		r=r+(x[i]*y[i]);
+	for (i=0; i<n; i++)		
+		r=r+(x[i]*y[i]);
 	
 	return r;
 }
@@ -249,4 +223,4 @@ void Object::regressao(double *pt,double *a,int n)//pt=[x1,...,xn,y1,...,yn] e a
 	a[1]=((InnerProduct(&pt[n],pt,n)*n)-(InnerProduct(pt,iden,n))*(InnerProduct(&pt[n],iden,n)))/div;
 	
 	//printf("\nreta: y = (%f)*x + (%f)\n",a[1],a[0]);
-}*/
+}

@@ -2,7 +2,10 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include <qline.h>
 #include "LibIntelligence.h"
+#include <qqueue.h>
+#include <qpoint.h>
 
 namespace LibIntelligence
 {
@@ -13,7 +16,6 @@ namespace LibIntelligence
 		Object(const Object& object);
 
 		void setX(qreal);
-		void setX(qreal, qreal);
 		qreal x() const;
 
 		void setY(qreal);
@@ -41,9 +43,22 @@ namespace LibIntelligence
 		void setSpeedXYZ(qreal, qreal, qreal);
 		
 		Object& operator=(const Object& object);
+
+		qreal getLinearSpeed();
+		QLineF getSpeedVector();
+		void updateSpeed();
+
 	protected:
 		qreal x_, y_, z_, speedX_, speedY_, speedZ_;
 		//TODO: colocar velocidades angulares
+	private:
+		QLineF regression();
+		qreal calculateLinearSpeed();
+		double InnerProduct(double *x,double *y,int n);
+		void regressao(double *pt,double *a,int n);
+		qreal linearSpeed;
+		QLineF speedVector;
+		QQueue<QPointF> speedQueue;
 	};
 }
 
