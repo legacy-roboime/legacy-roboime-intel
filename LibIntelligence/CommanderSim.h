@@ -6,8 +6,6 @@
 #include "UdpServer.h"
 #include "Commander.h"
 
-class QTimer;
-
 namespace LibIntelligence
 {
 	class CommanderSim : public UdpServer, public Commander
@@ -20,9 +18,6 @@ namespace LibIntelligence
 
 		//void add(Robot*);
 		void step();
-
-	private:
-		QTimer* timer;
 	};
 }
 

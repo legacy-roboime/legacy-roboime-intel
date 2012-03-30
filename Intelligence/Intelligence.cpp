@@ -16,6 +16,7 @@
 #include "UpdateStageGeometry.h"
 #include "UpdaterReferee.h"
 #include <QThread>
+#include <QCoreApplication>
 
 using namespace LibIntelligence;
 
@@ -80,9 +81,9 @@ Intelligence::Intelligence(QObject *parent)
 
 	halt = new Plays::Halt(this, myTeam, sta);
 	stopReferee = new Plays::StopReferee(this, myTeam, sta);
-	cbr2011 = new Plays::CBR2011(this, myTeam, sta);
+	cbr2011 = new Plays::CBR2011(this, enemyTeam, sta);
 	//play = new Plays::CBR2011(this, enemyTeam, sta);
-	play = new Plays::BGT(this, myTeam, sta);
+	//play = new Plays::BGT(this, myTeam, sta);
 	//play = new Plays::Minmax(this, myTeam, sta);
 	//freeKickThem = new Plays::FreeKickThem(this, &myTeam, sta);
 	
@@ -204,10 +205,12 @@ void Intelligence::update() {
 	//skill1->step();
 	tactic->step();
 
+	emit(readySend());
+	//QCoreApplication::processEvents();
+
 	comB->step();
 	comB2->step();
 	comY->step();
-
 
 	//int duracao=Tempo.elapsed();
 	//printf("TEMPO: %i ms\n",duracao);

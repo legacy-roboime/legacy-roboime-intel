@@ -2,7 +2,6 @@
 #include "Command.h"
 #include "Robot.h"
 #include <sstream>
-#include <QTimer>
 #include <QtNetwork>
 #include <QHostAddress>
 #include <QVector>
@@ -15,14 +14,11 @@ CommanderTx::CommanderTx(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(send()));
-	timer->start(10);	
+	connect(parent, SIGNAL(readySend()), this, SLOT(send()));
 }
 
 CommanderTx::~CommanderTx()
 {
-	delete timer;
 }
 
 void CommanderTx::step()

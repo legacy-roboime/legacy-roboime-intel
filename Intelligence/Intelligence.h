@@ -30,6 +30,9 @@ public:
 private slots:
 	void update();
 
+signals:
+	void readySend();
+
 private:
 	Skill* test[10];
 	QTimer* timer;

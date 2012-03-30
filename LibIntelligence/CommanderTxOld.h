@@ -6,8 +6,6 @@
 #include "UdpServer.h"
 #include "Commander.h"
 
-class QTimer;
-
 namespace LibIntelligence
 {
 	//Legacy commander Tx, will be removed eventually
@@ -21,9 +19,6 @@ namespace LibIntelligence
 		
 		void add(Robot*);
 		void step();
-
-	private:
-		QTimer* timer;
 	};
 }
 

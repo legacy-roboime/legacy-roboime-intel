@@ -3,7 +3,6 @@
 #include "Robot.h"
 #include <iostream>
 #include <sstream>
-#include <QTimer>
 #include <QtNetwork>
 #include <QVector>
 #include "messages_internal_command.pb.h"
@@ -15,15 +14,12 @@ CommanderTxOld::CommanderTxOld(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
-	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(send()));
+	connect(parent, SIGNAL(readySend()), this, SLOT(send()));
 	for(size_t n=0; n<5; n++) robots.push_back(0);
-	timer->start(1000.0/60.0);//10);	//frequencia sensor camera
 }
 
 CommanderTxOld::~CommanderTxOld()
 {
-	delete timer;
 }
 
 void CommanderTxOld::add(Robot* r)
