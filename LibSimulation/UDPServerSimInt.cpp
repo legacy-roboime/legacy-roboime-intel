@@ -24,11 +24,11 @@ void UDPServerSimInt::setSimulation(Simulation* simulation)
 
 void UDPServerSimInt::parsing()
 {
-	QTime time = QTime::currentTime();
-	static double lTime = 0;
-	double mSec = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec() - lTime;
-	printf("REC %f\n",mSec);
-	lTime = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec();
+	//QTime time = QTime::currentTime();
+	//static double lTime = 0;
+	//double mSec = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec() - lTime;
+	//printf("REC %f\n",mSec);
+	//lTime = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec();
 
 	while(udpSocket->hasPendingDatagrams()){
 		QByteArray datagram;

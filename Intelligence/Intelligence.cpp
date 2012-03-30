@@ -83,7 +83,7 @@ Intelligence::Intelligence(QObject *parent)
 	stopReferee = new Plays::StopReferee(this, myTeam, sta);
 	cbr2011 = new Plays::CBR2011(this, enemyTeam, sta);
 	//play = new Plays::CBR2011(this, enemyTeam, sta);
-	//play = new Plays::BGT(this, myTeam, sta);
+	play = new Plays::BGT(this, myTeam, sta);
 	//play = new Plays::Minmax(this, myTeam, sta);
 	//freeKickThem = new Plays::FreeKickThem(this, &myTeam, sta);
 	

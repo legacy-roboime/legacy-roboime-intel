@@ -124,6 +124,7 @@ private:
 	//advance simulation
 	void simulateReal(float dt = 1./60., int maxStepIter = 4);
 	void simulate();
+	void sleepComponents();
 	
 public:
 	Simulation(QObject* parent=0);

@@ -297,6 +297,21 @@ void Simulation::simulateReal(float dt, int maxStepIter)
 	//}
 
 	simulate(this->gBaseScene, dt, maxStepIter);
+	sleepComponents();
+}
+
+void Simulation::sleepComponents()
+{
+	NxArray<NxRobot*> robots = this->gScenes[gBaseScene]->allRobots->getRobots();
+	int t  = robots.size();
+	for(int i=0; i<robots.size(); i++){
+		for(int j=0; j<robots[i]->getNbWheels(); j++){
+			NxWheel2* wheel = (NxWheel2*)robots[i]->getWheel(j);
+			wheel->getWheelShape()->setMotorTorque(0);
+		}
+		robots[i]->dribbler->speedToExecute = 0;
+		robots[i]->kicker->controlKicker(0, robots[i]);
+	}
 }
 
 void Simulation::simulate()
