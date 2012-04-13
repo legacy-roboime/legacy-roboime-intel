@@ -20,7 +20,7 @@ namespace LibIntelligence
 		StageX(const StageY& stage);
 		~StageX();
 		
-		void simulate(const qreal timeStep = -1);
+		void simulate(const qreal timeStep = 1./60.);
 		void releaseScene();
 		void build();
 		uint getSceneNumber();

@@ -109,52 +109,33 @@ void StageX::build()
 
 	NxScene1* scene = sim->gScenes[sceneNumber];
 	NxAllRobots* robots = scene->allRobots;
+	NxArray<NxRobot*> robotsA = robots->getRobots();
 
-	for(int indexRobot=0; indexRobot<5; indexRobot++){
-		//yellow
-		const Robot* r = yellowTeam->at(indexRobot);
-		NxRobot* robot = robots->getRobotByIdByTeam(indexRobot, TeamColor::YELLOW);
+	for(int i=0; i<robotsA.size(); i++){
+		NxRobot* robot = robotsA[i];
+		int idTeam = robot->getIdTeam();
+		const Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
 		NxMat34 initPose = robot->getInitialPose();
-		robot->setGlobalPosition(NxVec3(r->x(), r->y(), initPose.t.z));
+		robot->setGlobalPosition(NxVec3(r->x(), r->y(), r->z()));//initPose.t.z));
 		NxMat33 newOri = initPose.M;
 		newOri.rotZ(r->orientation());
 		robot->setGlobalOrientation(newOri);
 		//robot->putToSleep();
 		NxActor* actor = robot->getActor();
-		actor->setLinearVelocity(NxVec3(/*0, 0*/r->speedX(), r->speedY(), 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
-		actor->setAngularVelocity(NxVec3(0, 0, 0)); //TODO: implementar vAng eixo z
+		actor->setLinearVelocity(NxVec3(r->speedX(), r->speedY(), r->speedZ()));
+		actor->setAngularVelocity(NxVec3(0, 0, r->angSpeedZ()));
 		robot->dribbler->speedToExecute = r->dribbler().speed();
 		robot->kicker->controlKicker(r->kicker().speed(), robot);
-
-		//blue
-		const Robot* rr = blueTeam->at(indexRobot);
-		NxRobot* robott = robots->getRobotByIdByTeam(indexRobot, TeamColor::BLUE);
-		NxMat34 initPosee = robott->getInitialPose();
-		robott->setGlobalPosition(NxVec3(rr->x(), rr->y(), initPosee.t.z));
-		NxMat33 newOrii = initPosee.M;
-		newOrii.rotZ(rr->orientation());
-		robott->setGlobalOrientation(newOrii);
-		//robott->putToSleep();
-		NxActor* actorr = robott->getActor();
-		actorr->setLinearVelocity(NxVec3(/*0, 0*/r->speedX(), r->speedY(), 0)); //TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
-		actorr->setAngularVelocity(NxVec3(0, 0, 0)); // TODO: implementar vAng eixo z
-		robott->dribbler->speedToExecute = rr->dribbler().speed();
-		robott->kicker->controlKicker(rr->kicker().speed(), robott);
 	}
 
 	//ball
-	qreal x = b->x();
-	qreal y = b->y();
-	qreal vX = b->speedX(); //0;//TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
-	qreal vY = b->speedY(); //0;//TODO: implementar velocidade na inteligencia (a implementacao na classe object nao tah legal)
-	qreal vAng = 0;
 	NxBall* ball = scene->ball;
 	NxMat34 initPose = ball->initialPose;
 	NxActor* actor = ball->ball;
-	actor->setGlobalPosition(NxVec3(x, y, initPose.t.z));
+	actor->setGlobalPosition(NxVec3(b->x(), b->y(), b->z()));//initPose.t.z));
 	//ball->putToSleep();
-	actor->setLinearVelocity(NxVec3(vX, vY, 0));
-	actor->setAngularVelocity(NxVec3(0, 0, vAng));
+	actor->setLinearVelocity(NxVec3(b->speedX(), b->speedY(), b->speedZ()));
+	actor->setAngularVelocity(NxVec3(0, 0, b->angSpeedZ()));
 
 	built = true;
 }
@@ -168,57 +149,45 @@ void StageX::simulate(const qreal t)
 
 	NxScene1* scene = sim->gScenes[sceneNumber];
 	NxAllRobots* robots = scene->allRobots;
+	NxArray<NxRobot*> robotsA = robots->getRobots();
 
 	// enviar comandos dos robos do StageX pra simulação
-	for(int n = 0; n < 5; n++) {
-		if(yellowTeam->at(n)!=0) {
-			Robot* r = yellowTeam->at(n);
-			Command& c = r->command();
-			//TODO: implement logging
-			//QVector<qreal> w = c.wheelsSpeed();
-			if(c.wheelsSize() != 4) {
-				qCritical("prepare: Wrong number of wheels!");
-				break;
-			}
-
-			robots->getRobotByIdByTeam(n, TeamColor::YELLOW)->controlRobotByWheels(c.wheelSpeedAt(0) * M_2PI, c.wheelSpeedAt(1) * M_2PI, c.wheelSpeedAt(2) * M_2PI, c.wheelSpeedAt(3) * M_2PI, c.dribbleSpeed(), c.kickSpeed());
-
-			r->newCommand();
-		} else {
-			robots->getRobotByIdByTeam(n, TeamColor::YELLOW)->controlRobotByWheels(0, 0, 0, 0, 0, 0);
+	for(int n = 0; n < robotsA.size(); n++) {
+		NxRobot* robot = robotsA[n];
+		int idTeam = robot->getIdTeam();
+		Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
+		Command& c = r->command();
+		//TODO: implement logging
+		//QVector<qreal> w = c.wheelsSpeed();
+		if(c.wheelsSize() != 4) {
+			qCritical("prepare: Wrong number of wheels!");
+			break;
 		}
-
-		if(blueTeam->at(n)!=0) {
-			Robot* rr = blueTeam->at(n);
-			Command& cc = rr->command();
-			//TODO: implement logging
-			//QVector<qreal> w = c.wheelsSpeed();
-			if(cc.wheelsSize() != 4) {
-				qCritical("prepare: Wrong number of wheels!");
-				break;
-			}
-
-			//cout << cc.wheelSpeedAt(0) << " " << cc.wheelSpeedAt(1) << " " << cc.wheelSpeedAt(2) << " " << cc.wheelSpeedAt(3) << " " << n << endl;
-
-			robots->getRobotByIdByTeam(n, TeamColor::BLUE)->controlRobotByWheels(cc.wheelSpeedAt(0) * M_2PI, cc.wheelSpeedAt(1) * M_2PI, cc.wheelSpeedAt(2) * M_2PI, cc.wheelSpeedAt(3) * M_2PI, cc.dribbleSpeed(), cc.kickSpeed());
-
-			rr->newCommand();
-		} else {
-			robots->getRobotByIdByTeam(n, TeamColor::BLUE)->controlRobotByWheels(0, 0, 0, 0, 0, 0);
-		}
+		robot->controlRobotByWheels(c.wheelSpeedAt(0) * M_2PI, c.wheelSpeedAt(1) * M_2PI, c.wheelSpeedAt(2) * M_2PI, c.wheelSpeedAt(3) * M_2PI, c.dribbleSpeed(), c.kickSpeed());
+		r->newCommand();
 	}
 
 	// simular
-	if(t>0)
-		sim->simulate(sceneNumber, t);
-	else
-		sim->simulate(sceneNumber);
+	sim->simulate(sceneNumber, t);
 
 	// atualizar StageX pelos dados da cena (pelo SSL_WrapperPacket)
 	SSL_WrapperPacket packet = sim->getSSLWrapper(sceneNumber);
 	updater->addPacket(&packet);
 	updater->step();
 	updater->apply();
+	// atualizar StageX com dados 3D
+	for(int n = 0; n < robotsA.size(); n++) {
+		NxRobot* robot = robotsA[n];
+		int idTeam = robot->getIdTeam();
+		Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
+		NxActor* actor = robot->getActor();
+		r->setZ(actor->getGlobalPosition().z);
+		r->setSpeedZ(actor->getLinearVelocity().z);
+	}
+	Ball* ball = this->ball();
+	NxActor* b = scene->ball->ball;
+	ball->setZ(b->getGlobalPosition().z);
+	ball->setSpeedZ(b->getLinearVelocity().z);
 }
 
 uint StageX::getSceneNumber()
