@@ -3,8 +3,9 @@
 
 using namespace LibIntelligence;
 
-State::State(QObject* parent) : 
+State::State(QObject* parent, bool deterministic) : 
 	QObject(parent),
+	deterministic_(deterministic),
 	outs_(QVector<MachineTransition*>())
 {
 }

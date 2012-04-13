@@ -13,13 +13,16 @@ namespace LibIntelligence
 		Q_OBJECT
 
 	public:
-		State(QObject* parent = 0);
+		State(QObject* parent = 0, bool deterministic = false);
 		State(const State& state);
 		~State(void);
 		void pushTransition(MachineTransition* transition); //transicao saindo desse estado
 		virtual bool busy() = 0; //o estado esta ocupado, ou seja, a maquina que contem esse estado nao poder ir para uma das targets
 		int sizeTransitions();
 		MachineTransition* getTransition(int pos);
+
+	protected:
+		bool deterministic_;
 
 	private:
 		QVector<MachineTransition*> outs_; //transicao saindo desse estado
