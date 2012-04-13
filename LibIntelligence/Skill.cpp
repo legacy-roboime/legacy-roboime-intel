@@ -8,7 +8,7 @@ Skill::Skill(QObject* p, Robot* r, bool deterministic)
 	: //QObject(p),
 	robot_(r),
 	stage_(r->stage()),
-	State(p)
+	State(p, deterministic)
 {
 }
 
