@@ -15,10 +15,10 @@ using namespace Skills;
 
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
-	driveToBall_(new DriveToBall(this, r, NULL, 3000)),
-	sampledDribble_(new SampledDribble(this, r, NULL, 0., 1., 1000.)),
-	sampledGoalKick_(new SampledKick(this, r, NULL, 0.9, 1., 1000.)),
-	sampledMiniKick_(new SampledKick(this, r, NULL, 0., 0.3, 1000.)),
+	driveToBall_(new DriveToBall(this, r, r->enemyGoal(), speed, true)),
+	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), true, 0., 1., speed/.3)),
+	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), true, 0.9, 1., speed/.3)),
+	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), true, 0., 0.3, speed/.3)),
 	wait_(new Wait(p, r)),
 	speed(speed)
 {
@@ -27,12 +27,6 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	this->pushState(sampledDribble_);
 	this->pushState(sampledMiniKick_);
 	this->pushState(wait_);
-
-	Goal* enemyGoal = this->robot()->enemyGoal();
-	driveToBall_->setRefLookPoint(enemyGoal);
-	sampledDribble_->setRefLookPoint(enemyGoal);
-	sampledMiniKick_->setRefLookPoint(enemyGoal);
-	sampledGoalKick_->setRefLookPoint(enemyGoal);
 
 	driveToBall_->setObjectName("DriveToBall");
 	sampledDribble_->setObjectName("SampledDribble");
@@ -92,13 +86,13 @@ Zickler43::~Zickler43()
 	delete wait_;
 }
 
-void Zickler43::step()
-{
-	Skill* current = (Skill*)this->getCurrentState();
-	this->execute();
-	current->step();
-	//cout << current->objectName().toStdString() << endl;
-}
+//void Zickler43::step()
+//{
+//	Skill* current = (Skill*)this->getCurrentState();
+//	this->execute();
+//	current->step();
+//	//cout << current->objectName().toStdString() << endl;
+//}
 
 bool DriveToDribbleT::condition()
 {

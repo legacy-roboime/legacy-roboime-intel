@@ -28,7 +28,7 @@ namespace LibIntelligence
 			Tactic(QObject* p, Robot* s, const Tactic& tactic);
 			~Tactic();
 
-			virtual void step() = 0;
+			void step();
 
 			void setStage(Stage*);
 			void setRobot(Robot*);

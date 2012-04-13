@@ -5,6 +5,7 @@
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Tactics;
+using namespace LibIntelligence::Skills;
 
 Tactic::Tactic(QObject* p, Robot* s, bool deterministic)
 	: //QObject(p),
@@ -59,4 +60,12 @@ Robot* Tactic::robot()
 Stage* Tactic::stage()
 {
 	return stage_;
+}
+
+void Tactic::step()
+{
+	Skill* current = (Skill*)this->getCurrentState();
+	this->execute();
+	current->step();
+	cout << current->objectName().toStdString() << endl;
 }

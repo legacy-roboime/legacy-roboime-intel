@@ -23,7 +23,7 @@ namespace LibIntelligence
 			Zickler43(QObject* parent, Robot* slave, qreal speed=3000, bool deterministic = false);
 			//Zickler43(QObject* p, Robot* r, const Zickler43& zickler);
 			~Zickler43();
-			void step();
+			//void step();
 
 
 		protected:
