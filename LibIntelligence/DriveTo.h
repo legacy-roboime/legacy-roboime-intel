@@ -16,10 +16,12 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			DriveTo(QObject* parent, Robot* slave, qreal bAngle = 0., QPointF bPoint = QPointF(0.,0.), qreal threshold = 10., qreal speed = 3000.);
+			DriveTo(QObject* parent, Robot* slave, qreal bAngle = 0., QPointF bPoint = QPointF(0.,0.), qreal threshold = 10., qreal tAngle = 0, qreal speed = 3000.);
 			DriveTo::~DriveTo(void);
+
 			bool busy(); 
 			void step();
+
 			qreal getSpeed();
 
 		protected:
@@ -27,12 +29,10 @@ namespace LibIntelligence
 			qreal bAngle; //base angle
 			QPointF bPoint; //base point
 			qreal threshold;
-			Wait* wait;
+			qreal tAngle; //target angle
 
 		private:
-			qreal tAngle; //target angle
 			QPointF tPoint; //target point 
-			//TODO: deixar o tAngle flexivel pois dessa forma vai da pra implementar os blockers tb
 		};
 	}
 }

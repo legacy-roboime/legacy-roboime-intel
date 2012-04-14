@@ -10,43 +10,35 @@
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-DriveTo::DriveTo(QObject* parent, Robot* slave, qreal angle, QPointF point, qreal threshold, qreal speed)
-	: Goto(parent, slave),
-	wait(new Wait(parent, slave))
+DriveTo::DriveTo(QObject* parent, Robot* slave, qreal angle, QPointF point, qreal threshold, qreal tAngle, qreal speed)
+	: Goto(parent, slave)
 {
 	this->speed = speed;
 	this->bAngle = angle;
 	this->threshold = threshold;
 	this->bPoint = point;
+	this->tAngle = tAngle;
 	ignoreBall = false;
 	ignoreEnemy = false;
 	ignoreFriend = false;
 	ignoreBrake = false;
+	Skill::deterministic_ = true;
 }
 
 
 DriveTo::~DriveTo(void)
 {
-	delete wait;
 }
 
 //Goto em coordenadas polares
 void DriveTo::step()
 {
-	Stage* stage = this->stage();
-	Robot* robot = this->robot();
-
 	QLineF target = QLineF(bPoint.x(), bPoint.y(), bPoint.x() + cos(bAngle), bPoint.y() + sin(bAngle));
 	target.setLength(threshold);
 	QPointF p = target.p2();
 	qreal x = p.x();
 	qreal y = p.y();
-
-	tAngle = M_PI + bAngle;
 	tPoint = p;
-
-	if(tAngle > 2*M_PI)
-		tAngle -= 2*M_PI;
 
 	Goto::setPoint(x, y);
 	Goto::setSpeed(speed);
@@ -55,7 +47,6 @@ void DriveTo::step()
 }
 
 bool DriveTo::busy(){
-	Stage* stage = this->stage();
 	Robot* robot = this->robot();
 	
 	qreal x = robot->x();
@@ -65,11 +56,15 @@ bool DriveTo::busy(){
 	qreal errorD = sqrt(errorX*errorX + errorY*errorY);
 
 	qreal orientation = robot->orientation();
+	if(tAngle > M_PI)
+		tAngle -= 2*M_PI;
+	if(orientation > M_PI)
+		orientation -= 2*M_PI;
 	qreal errorA = abs(tAngle - orientation);
 
-	//printf("%f\n", errorA * 180. / M_PI);
+	//printf("%f %f %f\n", errorA * 180. / M_PI, tAngle, orientation);
 
-	if(errorD < 50. && errorA < M_PI/90.)
+	if(errorD < 50. && errorA < 5 * M_PI/180.)
 		return false;
 	else
 		return true;
