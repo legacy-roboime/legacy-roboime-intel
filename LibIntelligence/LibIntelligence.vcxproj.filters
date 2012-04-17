@@ -880,6 +880,21 @@
     <ClCompile Include="LinearCombTactic.cpp">
       <Filter>Source Files\Core\Tactics</Filter>
     </ClCompile>
+    <ClCompile Include="DriveToObject.cpp">
+      <Filter>Source Files\Core\Skills</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DriveToObject.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DriveToObject.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_DriveToObject.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
+    <ClCompile Include="LinearRegression.cpp">
+      <Filter>Source Files\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LibIntelligence.h">
@@ -938,6 +953,9 @@
     </ClInclude>
     <ClInclude Include="PID.h">
       <Filter>Header Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearRegression.h">
+      <Filter>Header Files\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1138,6 +1156,9 @@
     </CustomBuild>
     <CustomBuild Include="LinearCombTactic.h">
       <Filter>Header Files\Core\Tactics</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DriveToObject.h">
+      <Filter>Header Files\Core\Skills</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
