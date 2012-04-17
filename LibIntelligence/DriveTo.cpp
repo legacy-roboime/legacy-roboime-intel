@@ -46,7 +46,8 @@ void DriveTo::step()
 	Goto::step();
 }
 
-bool DriveTo::busy(){
+bool DriveTo::busy()
+{
 	Robot* robot = this->robot();
 	
 	qreal x = robot->x();
@@ -56,11 +57,10 @@ bool DriveTo::busy(){
 	qreal errorD = sqrt(errorX*errorX + errorY*errorY);
 
 	qreal orientation = robot->orientation();
-	if(tAngle > M_PI)
-		tAngle -= 2*M_PI;
-	if(orientation > M_PI)
-		orientation -= 2*M_PI;
-	qreal errorA = abs(tAngle - orientation);
+
+	qreal errorA = abs(tAngle - orientation); //tAngle e orientation entre 0 e 2PI
+	if( errorA > M_PI )
+		errorA = 2 * M_PI - errorA;
 
 	//printf("%f %f %f\n", errorA * 180. / M_PI, tAngle, orientation);
 

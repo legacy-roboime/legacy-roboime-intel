@@ -43,6 +43,12 @@ namespace LibIntelligence
 		bool condition();
 	};
 
+	class DribbleToDriveT : public MachineTransition{ 
+	public:
+		DribbleToDriveT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+		bool condition();
+	};
+
 	class DribbleToGoalKickT : public MachineTransition{ 
 	public:
 		DribbleToGoalKickT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);

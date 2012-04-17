@@ -16,9 +16,9 @@ using namespace Skills;
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
 	driveToBall_(new DriveToBall(this, r, r->enemyGoal(), speed, true)),
-	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), true, 0., 1., speed/.3)),
-	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), true, 0.9, 1., speed/.3)),
-	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), true, 0., 0.3, speed/.3)),
+	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., speed/.6)),
+	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., speed/.6, false)),
+	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, speed/.6, false)),
 	wait_(new Wait(p, r)),
 	speed(speed)
 {
@@ -35,6 +35,7 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	wait_->setObjectName("Wait");
 
 	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledDribble_, 1.));
+	this->pushTransition(sampledDribble_, new DribbleToDriveT(this, sampledDribble_, driveToBall_, 1.));
 	this->pushTransition(sampledDribble_, new DribbleToGoalKickT(this, sampledDribble_, sampledGoalKick_, .1));
 	this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
 	this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
@@ -96,35 +97,66 @@ Zickler43::~Zickler43()
 
 bool DriveToDribbleT::condition()
 {
-	return !source_->busy();
+	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
 }
 
 DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
+bool DribbleToDriveT::condition()
+{
+	return source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
+}
+
+DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
 bool DribbleToDribbleT::condition()
 {
-	return !source_->busy();
+	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
 }
 
 DribbleToDribbleT::DribbleToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToGoalKickT::condition()
 {
-	return !source_->busy();
+	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
 }
 
 DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToMiniKickT::condition()
 {
-	return !source_->busy();
+	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
 }
 
 DribbleToMiniKickT::DribbleToMiniKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
-bool DefaultTrueT::condition()
+bool DefaultTrueT::condition() 
 {
 	return true;
 }
 
 DefaultTrueT::DefaultTrueT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
+//bool DriveTo::busy()
+//{
+//	Robot* robot = this->robot();
+//	
+//	qreal x = robot->x();
+//	qreal y = robot->y();
+//	qreal errorX = tPoint.x() - x;
+//	qreal errorY = tPoint.y() - y;
+//	qreal errorD = sqrt(errorX*errorX + errorY*errorY);
+//
+//	qreal orientation = robot->orientation();
+//
+//	qreal errorA = abs(tAngle - orientation); //tAngle e orientation entre 0 e 2PI
+//	if( errorA > M_PI )
+//		errorA = 2 * M_PI - errorA;
+//
+//	//printf("%f %f %f\n", errorA * 180. / M_PI, tAngle, orientation);
+//
+//	if(errorD < 30. && errorA < 5 * M_PI/180.)
+//		return false;
+//	else
+//		return true;
+//}

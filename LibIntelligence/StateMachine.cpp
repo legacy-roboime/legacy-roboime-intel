@@ -39,17 +39,17 @@ void StateMachine::execute()
 		}
 		if(deterministic_){
 			if(!transitions.isEmpty())
-				current_ = transitions.at(0)->getTarget(); //colocar a transicao deterministica na posicao 0
+				current_ = transitions.at(0)->getTarget(); //colocar a transicao deterministica na posicao 0 caso haja mais de uma condicao satisfeita
 		}
 		else{
 			qreal rndVal = Sampler::randFloat();
 			qreal tempSum = 0;
 			qreal probSum = 0;
-			for(int i=0; i<current_->sizeTransitions(); i++)
-				probSum += current_->getTransition(i)->probability();
+			for(int i=0; i<transitions.size(); i++)
+				probSum += transitions.at(i)->probability();
 			rndVal *= probSum;
-			for(int i=0; i<current_->sizeTransitions(); i++){
-				MachineTransition* transition = current_->getTransition(i);
+			for(int i=0; i<transitions.size(); i++){
+				MachineTransition* transition = transitions.at(i);
 				tempSum += transition->probability();
 				if(tempSum > rndVal){
 					current_ = transition->getTarget();

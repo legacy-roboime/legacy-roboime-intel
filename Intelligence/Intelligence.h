@@ -12,6 +12,7 @@
 #include "Tactic.h"
 #include "Play.h"
 #include "KalmanFilters.h"
+#include "Tactics.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
@@ -58,7 +59,7 @@ private:
 	Skill* skill2;
 	Skill* skill3;
 	Tactic* machine;
-	Tactic* tactic;
+	Tactics::Attacker* tactic;
 };
 
 #endif // INTELLIGENCE_H

@@ -5,15 +5,19 @@
 #include "Ball.h"
 #include "Sampler.h"
 
+#define CART	82.6
+
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, qreal minPower, qreal maxPower, qreal speed)
-	: DriveToBall(parent, slave, lookPoint, speed),
+SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic, qreal minPower, qreal maxPower, qreal speed, bool pass)
+	: DriveToBall(parent, slave, lookPoint, speed, deterministic),
 	minPower_(minPower),
-	maxPower_(maxPower)
+	maxPower_(maxPower),
+	pass_(pass)
 {
 	//this->setObjectName("SampledKick");
+	threshold = CART;
 }
 
 SampledKick::~SampledKick(void)
@@ -23,37 +27,38 @@ SampledKick::~SampledKick(void)
 void SampledKick::step()
 {
 	Robot* robot = this->robot();
-	Stage* stage = this->stage();
-	Goal* enemyGoal = stage->getGoalFromOtherColor(robot->color());
-	lookPoint = Object(*refLookPoint_);
-	static qreal y = DriveToBall::lookPoint.y();
-	static qreal power = Sampler::sampledPowerKick(minPower_, maxPower_);
-	
-	if(!this->busy()){
-		power = Sampler::sampledPowerKick(minPower_, maxPower_);
-		y = DriveToBall::lookPoint.y();
-		qreal width = enemyGoal->width();
-		width /= 2;
-		width *= Sampler::randFloat();
-		qreal signal = Sampler::randFloat();
-		if(signal < 0.5)
-			signal = -1.;
+
+	qreal power;
+	if(!deterministic_){
+		if(pass_){
+			const Object* lkPoint = getLookPoint();
+			Object* distVec = &(robot->distance(lkPoint));
+			qreal distReal = distVec->module();
+			distReal /= 3000.;
+			power = Sampler::sampledPowerKick(minPower_, distReal);
+		}
 		else
-			signal = 1.;
-		y += width * signal;
-		//cout << "SetY: " << y << endl;
-
-		robot->kick(power);
+			power = Sampler::sampledPowerKick(minPower_, maxPower_);
 	}
-	else {
-		robot->kick(0.);
+	else{
+		if(pass_){
+			const Object* lkPoint = getLookPoint();
+			Object* distVec = &(robot->distance(lkPoint));
+			qreal distReal = distVec->module();
+			distReal /= 3000.;
+			power = distReal;
+		}
+		else
+			power = maxPower_;
 	}
 
-	DriveToBall::lookPoint.setY(y);
+	robot->kick(power);
+	robot->dribble(0.5); //pegar bola
+
 	DriveToBall::step();
 }
 
 bool SampledKick::busy()
 {
-	return DriveToBall::busy();
+	return false;//DriveToBall::busy();
 }
