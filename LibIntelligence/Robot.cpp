@@ -18,7 +18,6 @@ Robot::Robot(const Robot& r)
 	battery_(r.battery_),
 	wheels_(r.wheels_),
 	command_(r.command_),
-	orientation_(r.orientation_),
 	stage_(r.stage_),
 	team_(r.team_)/*,
 	enemyTeam_(r.enemyTeam_),
@@ -45,8 +44,7 @@ Robot::Robot(QObject* parent, int id, int cc, TeamColor color)
 	wheels_(0),
 	//body_(this, 150.0, 90.0),
 	//wheels_(4, Wheel(this)),//TODO: think about this
-	command_(id),//1,5707963267948966192313216916398
-	orientation_(1.57079632)
+	command_(id)//1,5707963267948966192313216916398
 {
 	//try to identify the Team, Stage and Enemy Team
 	team_ = qobject_cast<Team*>(parent);
@@ -89,8 +87,7 @@ Robot::Robot(const Dribbler& d, const Kicker& k, const Body& b, const Battery& a
 	body_(b),
 	battery_(a),
 	wheels_(w),
-	command_(0),
-	orientation_(0.0) {}
+	command_(0) {}
 
 Robot::~Robot() {}
 
@@ -209,11 +206,6 @@ void Robot::setPatternId(quint8 i)
 	patternId_ = i;
 }
 
-void Robot::setOrientation(qreal o)
-{
-	orientation_ = o;
-}
-
 string Robot::_summary() const
 {
 	stringstream out;
@@ -296,11 +288,6 @@ quint8 Robot::id() const
 quint8 Robot::patternId() const
 {
 	return patternId_;
-}
-
-qreal Robot::orientation() const
-{
-	return orientation_;
 }
 
 void Robot::setCommand(const Command& c)

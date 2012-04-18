@@ -56,7 +56,6 @@ void UpdaterVision::prepare() {
 		SSL_WrapperPacket packet = *(packets.front());
 		if (packet.has_detection()) {
 			SSL_DetectionFrame detection = packet.detection();
-			//TODO: implement UpdateStage
 			//double t_now = GetTimeSec();
 			//printf("Camera ID=%d FRAME=%d T_CAPTURE=%.4f\n",detection.camera_id(),detection.frame_number(),detection.t_capture());
 			//printf("SSL-Vision Processing Latency                   %7.3fms\n",(detection.t_sent()-detection.t_capture())*1000.0);

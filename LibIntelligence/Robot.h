@@ -76,9 +76,6 @@ namespace LibIntelligence
 		void setPatternId(quint8);
 		quint8 patternId() const;
 
-		void setOrientation(qreal);
-		qreal orientation() const;
-
 		void setAllWorking();
 		void setAllNotWorking();
 
@@ -105,7 +102,6 @@ namespace LibIntelligence
 
 		quint8 id_;
 		quint8 patternId_;
-		qreal orientation_;
 		TeamColor color_;
 		Command command_;
 

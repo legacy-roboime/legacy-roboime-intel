@@ -38,7 +38,7 @@ void UpdateBall::apply(Updater* u) {
 		//if(u->ball(k-1)->i()==_i) {
 			u->ball(k-1)->setX(pimpl->x);
 			u->ball(k-1)->setY(pimpl->y);
-			//u->ball(k-1)->updateSpeed();
+			u->ball(k-1)->updateSpeed(time_capture());
 		//}
 	}
 }

@@ -2,17 +2,20 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#define MAX_SIZE_QUEUE 50
+
 #include <qline.h>
 #include "LibIntelligence.h"
 #include <qqueue.h>
 #include <qpoint.h>
+#include "LinearRegression.h"
 
 namespace LibIntelligence
 {
 	class Object
 	{
 	public:
-		Object(qreal x=-10000.0, qreal y=-10000.0, qreal z=0.0, qreal speedX=0.0, qreal speedY=0.0, qreal speedZ=0.0);
+		Object(qreal x=-10000.0, qreal y=-10000.0, qreal z=0.0, qreal speedX=0.0, qreal speedY=0.0, qreal speedZ=0.0, qreal orientation = 0.0, qreal angSpeedZ = 0.0);
 		Object(const Object& object);
 
 		void setX(qreal);
@@ -26,6 +29,9 @@ namespace LibIntelligence
 		void setZ(qreal, qreal);
 		qreal z() const;
 
+		void setOrientation(qreal);
+		qreal orientation() const;
+
 		//TODO: implement speed estimation
 		void setSpeedX(qreal);
 		qreal speedX() const;
@@ -36,6 +42,9 @@ namespace LibIntelligence
 		void setSpeedZ(qreal);
 		qreal speedZ() const;
 
+		void setAngSpeedZ(qreal);
+		qreal angSpeedZ() const;
+
 		//syntatic sugars:
 		void setXY(qreal, qreal);
 		void setXYZ(qreal, qreal, qreal);
@@ -44,21 +53,19 @@ namespace LibIntelligence
 		
 		Object& operator=(const Object& object);
 
-		qreal getLinearSpeed();
-		QLineF getSpeedVector();
-		void updateSpeed();
+		void updateSpeed(double time);
+
+		Object distance(const Object* object2) const;
+		qreal module() const;
 
 	protected:
-		qreal x_, y_, z_, speedX_, speedY_, speedZ_;
-		//TODO: colocar velocidades angulares
+		qreal x_, y_, z_, orientation_, speedX_, speedY_, speedZ_, angSpeedZ_;
+
 	private:
-		QLineF regression();
-		qreal calculateLinearSpeed();
-		double InnerProduct(double *x,double *y,int n);
-		void regressao(double *pt,double *a,int n);
-		qreal linearSpeed;
-		QLineF speedVector;
-		QQueue<QPointF> speedQueue;
+		LinearRegression linearRegressionVx;
+		LinearRegression linearRegressionVy;
+		LinearRegression linearRegressionVang;
+		double xOld,yOld, orientationOld;
 	};
 }
 

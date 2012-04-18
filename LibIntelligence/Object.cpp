@@ -4,14 +4,21 @@
 
 using namespace LibIntelligence;
 
-Object::Object(qreal x, qreal y, qreal z, qreal sx, qreal sy, qreal sz)
+Object::Object(qreal x, qreal y, qreal z, qreal sx, qreal sy, qreal sz, qreal orien, qreal asz)
 	: x_(x),
 	y_(y),
 	z_(z),
+	orientation_(orien),
 	speedX_(sx),
 	speedY_(sy),
 	speedZ_(sz),
-    speedQueue(QQueue<QPointF>()) 
+	angSpeedZ_(asz),
+	linearRegressionVx(LinearRegression()),
+	linearRegressionVy(LinearRegression()),
+	linearRegressionVang(LinearRegression()),
+	xOld(x),
+	yOld(y),
+	orientationOld(orien)
 {}
 
 Object::Object(const Object& object)
@@ -71,6 +78,11 @@ qreal Object::z() const
 	return z_;
 }
 
+qreal Object::orientation() const
+{
+	return orientation_;
+}
+
 void Object::setSpeedX(qreal sx)
 {
 	speedX_ = sx;
@@ -99,6 +111,16 @@ void Object::setSpeedZ(qreal sz)
 qreal Object::speedZ() const
 {
 	return speedZ_;
+}
+
+void Object::setAngSpeedZ(qreal asz)
+{
+	angSpeedZ_ = asz;
+}
+
+qreal Object::angSpeedZ() const
+{
+	return angSpeedZ_;
 }
 
 void Object::setXY(qreal x, qreal y)
@@ -138,89 +160,63 @@ Object& Object::operator=(const Object& object)
 	return *this;
 }
 
-
-qreal Object::getLinearSpeed() {
-	return linearSpeed;
+void Object::setOrientation(qreal o)
+{
+	orientation_ = o;
 }
 
-QLineF Object::getSpeedVector() {
-	return regression();
+void Object::updateSpeed(double time) {
+	static double lastTime = 0;
+	double velocity;
+	double deltaTime = (time - lastTime);
+	lastTime = time;
+	QPointF oldPoint;
+
+	//regressão speedX
+	double deltaX = this->x() - xOld;
+	xOld = this->x();
+	velocity = deltaX/deltaTime;
+	QPointF vX(time,velocity);
+	linearRegressionVx.addPoint(vX);
+	speedX_ = linearRegressionVx.estimateY(time);
+	//cout << "Velocidade X: " << speedX_ << endl;
+
+	//regressão speedY
+	double deltaY = this->y() - yOld;
+	yOld = this->y();
+	velocity = deltaY/deltaTime;
+	QPointF vY(time,velocity);
+	linearRegressionVy.addPoint(vY);
+	speedY_ = linearRegressionVy.estimateY(time);
+	//cout << "Velocidade Y: " << speedY_ << endl;
+
+
+	//regressão speed
+	double deltaOrientation = this->orientation() - orientationOld;
+	orientationOld = this->orientation();
+	velocity = deltaOrientation/deltaTime;
+	QPointF vAng(time,velocity);
+	linearRegressionVang.addPoint(vAng);
+	angSpeedZ_ = linearRegressionVang.estimateY(time);
+	//cout << "Velocidade Ang: " << angSpeedZ_ << endl;
 }
 
-QLineF Object::regression() {
-	
-	double r[2],div,*iden;
-	int n = speedQueue.count();
-	double *pt = new double[20];
-
-	for(int i=0; i<n; i++) pt[i] = speedQueue.at(i).x();
-	for(int i=0; i<n; i++) pt[i+n] = speedQueue.at(i).y();
-
-	regressao(pt,r,n);
-
-	int x1 = this->x();
-	int y1 = this->y();
-	int x2 = 0;
-	int y2 = r[1] * x2 + r[0];
-
-	QLineF reta(x2,y2,x1,1);
-
-	return reta;
-	//return QLineF(0,0,1,1);
-}
-
-void Object::updateSpeed() {
-	
-	QPointF point(this->x(),this->y());
-	speedQueue.pop_front();
-	speedQueue.push_back(point);
-	speedVector = regression();
-	calculateLinearSpeed();
-}
-
-qreal Object::calculateLinearSpeed() {
-
-	int n = speedQueue.count();
-
-	qreal deltaX = speedQueue.first().x() - speedQueue.last().x();
-	qreal deltaY = speedQueue.first().y() - speedQueue.last().y();
-
-	qreal deltaT = n * 3/100; //Intervalo de tempo entre as duas medicoes
-
-	this->setSpeedX(deltaX/deltaT);
-	this->setSpeedY(deltaY/deltaT);
-	linearSpeed = sqrt( deltaX*deltaX + deltaY*deltaY) / deltaT;
-	return linearSpeed;
-}
-
-double Object::InnerProduct(double *x,double *y,int n)
+double pesq(double *x,double *y,int n)
 {
 	int i;
 	double r=0;
 	
-	for (i=0; i<n; i++)		
-		r=r+(x[i]*y[i]);
+	for (i=0; i<n; i++)		r=r+(x[i]*y[i]);
 	
 	return r;
 }
 
-void Object::regressao(double *pt,double *a,int n)//pt=[x1,...,xn,y1,...,yn] e a=[independente, termo de primeiro grau]
+Object Object::distance(const Object* object2) const
 {
-	double div,*iden;
-	
-	//alocando memoria
-	iden = new double[n];//=malloc(n*sizeof(double));
-	
-	//vetor unitario
-	for (int i=0; i<n; i++) iden[i]=1;
-	
-	//reta y= a*x+b
+	return Object(object2->x() - x_, object2->y() - y_, object2->z() - z_);
+}
 
-	div=(n*(InnerProduct(pt,pt,n))-(InnerProduct(pt,iden,n))*(InnerProduct(pt,iden,n)));
-
-	a[0]=((InnerProduct(pt,pt,n))*(InnerProduct(&pt[n],iden,n))-(InnerProduct(&pt[n],pt,n))*(InnerProduct(pt,iden,n)))/div;
-	
-	a[1]=((InnerProduct(&pt[n],pt,n)*n)-(InnerProduct(pt,iden,n))*(InnerProduct(&pt[n],iden,n)))/div;
-	
-	//printf("\nreta: y = (%f)*x + (%f)\n",a[1],a[0]);
+qreal Object::module() const
+{
+	return sqrt(x_ * x_ + y_ * y_);
 }
