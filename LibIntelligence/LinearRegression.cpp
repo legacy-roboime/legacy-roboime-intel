@@ -1,7 +1,7 @@
 #include "LinearRegression.h"
 
 LinearRegression::LinearRegression(QPointF *p, long size, unsigned char max_size_points)
-	: xPoints(new QVector<double>()), yPoints(new QVector<double>())
+	: xPoints(new QVector<float>()), yPoints(new QVector<float>())
 {
 	MAX_SIZE_POINTS = max_size_points;
 
@@ -18,13 +18,18 @@ LinearRegression::LinearRegression(QPointF *p, long size, unsigned char max_size
 			addPoint(p[i]);
 }
 
-
+LinearRegression::~LinearRegression()
+{
+	delete this->yPoints;
+	delete this->xPoints;
+}
 //modificado
 void LinearRegression::addXY(const double& x, const double& y)
 {
 	n++;
-	double xOld = xPoints->at(n % MAX_SIZE_POINTS);
-	double yOld = yPoints->at(n % MAX_SIZE_POINTS);
+	int i = n % MAX_SIZE_POINTS;
+	double xOld = xPoints->at(i);
+	double yOld = yPoints->at(i);
 	xPoints->replace(n % MAX_SIZE_POINTS,x);
 	yPoints->replace(n % MAX_SIZE_POINTS,y);
 	sumX += x - xOld;
@@ -62,4 +67,12 @@ void LinearRegression::Calculate()
 			a = b = coefD = coefC = stdError = 0.0;
 		}
 	}
+}
+
+QPointF* LinearRegression::getLastPointInserted()
+{
+	if(n > 0) 
+		return new QPointF(xPoints->at(n % MAX_SIZE_POINTS), yPoints->at(n % MAX_SIZE_POINTS));
+	else 
+		return new QPointF(0,0);
 }

@@ -49,6 +49,7 @@ void DriveToBall::step()
 		Object aux1 = Object(target2.p2().x(),target2.p2().y());
 
 		Object newLKP;
+
 		if((robot->distance(&aux1)).module() < (robot->distance(&aux2)).module())
 			newLKP = Object(aux1);
 		else

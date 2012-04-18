@@ -1,6 +1,7 @@
 #include "GetBall.h"
 #include "Goto.h"
 #include "Robot.h"
+#include "Object.h"
 #include "Stage.h"
 #include "Goal.h"
 #include "Ball.h"

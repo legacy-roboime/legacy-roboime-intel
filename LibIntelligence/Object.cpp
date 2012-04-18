@@ -13,12 +13,14 @@ Object::Object(qreal x, qreal y, qreal z, qreal sx, qreal sy, qreal sz, qreal or
 	speedY_(sy),
 	speedZ_(sz),
 	angSpeedZ_(asz),
-	linearRegressionVx(LinearRegression()),
-	linearRegressionVy(LinearRegression()),
-	linearRegressionVang(LinearRegression()),
+
+	linearRegressionVx(new LinearRegression()),
+	linearRegressionVy(new LinearRegression()),
+	linearRegressionVang(new LinearRegression()),
 	xOld(x),
 	yOld(y),
-	orientationOld(orien)
+	orientationOld(orien),
+	timeOld(0)
 {}
 
 Object::Object(const Object& object)
@@ -30,6 +32,14 @@ Object::Object(const Object& object)
 	this->speedY_ = object.speedY();
 	this->speedZ_ = object.speedZ();
 }
+
+Object::~Object()
+{
+	delete this->linearRegressionVx;
+	delete this->linearRegressionVy;
+	delete this->linearRegressionVang;
+}
+
 
 void Object::setX(qreal x)
 {
@@ -165,50 +175,45 @@ void Object::setOrientation(qreal o)
 	orientation_ = o;
 }
 
+
 void Object::updateSpeed(double time) {
-	static double lastTime = 0;
 	double velocity;
-	double deltaTime = (time - lastTime);
-	lastTime = time;
-	QPointF oldPoint;
+	double deltaTime = (time - this->timeOld);
+	if(deltaTime != 0){
+		this->timeOld = time;
+		QPointF oldPoint;
 
-	//regressão speedX
-	double deltaX = this->x() - xOld;
-	xOld = this->x();
-	velocity = deltaX/deltaTime;
-	QPointF vX(time,velocity);
-	linearRegressionVx.addPoint(vX);
-	speedX_ = linearRegressionVx.estimateY(time);
-	//cout << "Velocidade X: " << speedX_ << endl;
+		//regressão speedX
+		double deltaX = this->x() - xOld;
+		xOld = this->x();
+		velocity = deltaX/deltaTime;
+		QPointF vX(time,velocity);
+		linearRegressionVx->addPoint(vX);
+		speedX_ = linearRegressionVx->estimateY(time);
+		//cout << "Velocidade X: " << speedX_ << endl;
 
-	//regressão speedY
-	double deltaY = this->y() - yOld;
-	yOld = this->y();
-	velocity = deltaY/deltaTime;
-	QPointF vY(time,velocity);
-	linearRegressionVy.addPoint(vY);
-	speedY_ = linearRegressionVy.estimateY(time);
-	//cout << "Velocidade Y: " << speedY_ << endl;
+		//regressão speedY
+		double deltaY = this->y() - yOld;
+		yOld = this->y();
+		velocity = deltaY/deltaTime;
+		QPointF vY(time,velocity);
+		linearRegressionVy->addPoint(vY);
+		speedY_ = linearRegressionVy->estimateY(time);
+		//cout << "Velocidade Y: " << speedY_ << endl;
 
 
-	//regressão speed
-	double deltaOrientation = this->orientation() - orientationOld;
-	orientationOld = this->orientation();
-	velocity = deltaOrientation/deltaTime;
-	QPointF vAng(time,velocity);
-	linearRegressionVang.addPoint(vAng);
-	angSpeedZ_ = linearRegressionVang.estimateY(time);
-	//cout << "Velocidade Ang: " << angSpeedZ_ << endl;
-}
-
-double pesq(double *x,double *y,int n)
-{
-	int i;
-	double r=0;
-	
-	for (i=0; i<n; i++)		r=r+(x[i]*y[i]);
-	
-	return r;
+		//regressão speed
+		double deltaOrientation = this->orientation() - orientationOld;
+		orientationOld = this->orientation();
+		if(abs(deltaOrientation) <  1){		//GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0
+			velocity = deltaOrientation/deltaTime;
+			QPointF vAng(time,velocity);
+			linearRegressionVang->addPoint(vAng);
+			angSpeedZ_ = linearRegressionVang->estimateY(time);
+			//cout << "Delta Orientation " << deltaOrientation << endl;
+			cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
+		}
+	} 
 }
 
 Object Object::distance(const Object* object2) const

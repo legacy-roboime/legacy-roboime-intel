@@ -16,7 +16,8 @@ class LinearRegression
 public:
 	// Constructor using an array of QPoint objects
 	// This is also the default constructor
-	LinearRegression(QPointF *p = 0, long size = 0, unsigned char max_size_points = 20);
+	LinearRegression(QPointF *p = 0, long size = 0, unsigned char max_size_points = 50); 
+	~LinearRegression();
 
 	virtual void addXY(const double& x, const double& y);
 	//void clear() { sumX = sumY = sumXsquared = sumYsquared = sumXY = n = 0; }
@@ -34,14 +35,14 @@ public:
 	double getCoefCorrel() const { return coefC; }
 	double getStdErrorEst() const { return stdError; }
 	virtual double estimateY(double x) const { return (a + b * x); }
-	QPointF getLastPointInserted(){ return QPointF(xPoints->at(n % MAX_SIZE_POINTS), yPoints->at(n % MAX_SIZE_POINTS));}
+	QPointF* getLastPointInserted();
 
 
 protected:
 	long n;       // number of data points input so far
 	double sumX, sumY; // sums of x and y
-	QVector<double>* xPoints;
-	QVector<double>* yPoints;
+	QVector<float>* xPoints;
+	QVector<float>* yPoints;
 	double sumXsquared, // sum of x squares
 		sumYsquared; // sum y squares
 	double sumXY;    // sum of x*y
