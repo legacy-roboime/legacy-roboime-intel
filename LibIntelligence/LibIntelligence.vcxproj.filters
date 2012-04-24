@@ -95,6 +95,12 @@
     <Filter Include="Header Files\Tools">
       <UniqueIdentifier>{f58ecad6-2e84-4cc0-b058-cf038768dc91}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Core\Plays\Minmax2">
+      <UniqueIdentifier>{0d552258-5ce6-4b4d-972a-f0edb9b87538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Core\Plays\Minmax2">
+      <UniqueIdentifier>{ab70eeed-a8b1-40c6-973b-93eae9f82577}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Controller.cpp">
@@ -895,6 +901,21 @@
     <ClCompile Include="LinearRegression.cpp">
       <Filter>Source Files\Base</Filter>
     </ClCompile>
+    <ClCompile Include="Minmax2.cpp">
+      <Filter>Source Files\Core\Plays\Minmax2</Filter>
+    </ClCompile>
+    <ClCompile Include="soccer_aux.c">
+      <Filter>Source Files\Core\Plays\Minmax2</Filter>
+    </ClCompile>
+    <ClCompile Include="soccer_action.c">
+      <Filter>Source Files\Core\Plays\Minmax2</Filter>
+    </ClCompile>
+    <ClCompile Include="soccer.c">
+      <Filter>Source Files\Core\Plays\Minmax2</Filter>
+    </ClCompile>
+    <ClCompile Include="vector.c">
+      <Filter>Source Files\Core\Plays\Minmax2</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LibIntelligence.h">
@@ -956,6 +977,18 @@
     </ClInclude>
     <ClInclude Include="LinearRegression.h">
       <Filter>Header Files\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Minmax2.h">
+      <Filter>Header Files\Core\Plays\Minmax2</Filter>
+    </ClInclude>
+    <ClInclude Include="soccer.h">
+      <Filter>Header Files\Core\Plays\Minmax2</Filter>
+    </ClInclude>
+    <ClInclude Include="defs.h">
+      <Filter>Header Files\Core\Plays\Minmax2</Filter>
+    </ClInclude>
+    <ClInclude Include="vector.h">
+      <Filter>Header Files\Core\Plays\Minmax2</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

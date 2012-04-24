@@ -7,5 +7,6 @@
 #include "CBR2011.h"
 #include "FreeKickThem.h"
 #include "Minmax.h"
+#include "Minmax2.h"
 #include "BGT.h"
 #include "LinearCombPlay.h"
