@@ -211,7 +211,7 @@ void Object::updateSpeed(double time) {
 			linearRegressionVang->addPoint(vAng);
 			angSpeedZ_ = linearRegressionVang->estimateY(time);
 			//cout << "Delta Orientation " << deltaOrientation << endl;
-			cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
+			//cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
 		}
 	} 
 }

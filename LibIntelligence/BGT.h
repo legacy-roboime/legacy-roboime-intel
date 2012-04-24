@@ -22,7 +22,8 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		private:
-			QFile log; 
+			QFile planningLog;
+			QFile executeLog;
 			QTimer* timer;
 
 			QQueue<Goto*> execSkills;
@@ -31,6 +32,7 @@ namespace LibIntelligence
 			unsigned int maxIter;
 			unsigned int planSteps;
 			unsigned int execSteps;
+			unsigned long debugTime;
 			qreal mi_;
 			bool planningInterruped_;
 

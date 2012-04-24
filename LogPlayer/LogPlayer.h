@@ -23,6 +23,8 @@ printf("__PPCGEKKO__");
 #include <QFile>
 #include <QDataStream>
 #include <QQueue>
+#include <QVector>
+#include <QPointF>
 
 //class UDPMulticastSenderSSLVision;
 //class UDPServerSimInt;
@@ -42,11 +44,10 @@ private:
 	QTimer* timerSim;
 	static Simulation* simulation;
 	Ui::LogPlayerClass ui;
-	QFile log;  
-	//static 
-	//UDPMulticastSenderSSLVision* visionServer;
-	//static 
-	//UDPServerSimInt* intServer;
+	QFile planningLog;  
+	QFile executeLog;
+	static QVector<QVector<QPointF>> planningPoints;
+	static QVector<QVector<QPointF>> executePoints;
 
 	static bool bLeftMouseButtonPressed;
 	//static NxReal gMouseDepth;
@@ -95,7 +96,6 @@ private:
 	static void SaveScene(const char *pFilename);
 	static bool FileExistTestSimple(const char *fname);
 	static void CSL_Scene();
-	static void DrawForce(NxActor* actor, NxVec3& forceVec, const NxVec3& color);
 
 	friend class NxRobot;
 	friend class Simulation;

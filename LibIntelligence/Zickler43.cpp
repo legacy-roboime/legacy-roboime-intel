@@ -36,9 +36,9 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 
 	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledDribble_, 1.));
 	this->pushTransition(sampledDribble_, new DribbleToDriveT(this, sampledDribble_, driveToBall_, 1.));
+	this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
 	this->pushTransition(sampledDribble_, new DribbleToGoalKickT(this, sampledDribble_, sampledGoalKick_, .1));
 	this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
-	this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
 	this->pushTransition(sampledMiniKick_, new DefaultTrueT(this, sampledMiniKick_, driveToBall_));
 	this->pushTransition(sampledGoalKick_, new DefaultTrueT(this, sampledGoalKick_, wait_));
 	this->pushTransition(wait_, new DefaultTrueT(this, wait_, driveToBall_)); //loop maquina

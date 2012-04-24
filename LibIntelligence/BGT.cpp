@@ -17,16 +17,19 @@ using namespace LibIntelligence::Plays;
 
 BGT::BGT(QObject *parent, Team* myTeam, Stage* stage):
 Play(parent,myTeam,stage),
-	log("C:\\Users\\Bill\\Desktop\\log.dat"),
+	planningLog("C:\\Users\\Bill\\Desktop\\planningLog.dat"),
+	executeLog("C:\\Users\\Bill\\Desktop\\executeLog.dat"),
 	maxIter(1000),//50000), //dado retirado do zickler pagina 72
 	mi_(100.), //valor de mi igual ao usado pelo zickler no experimento da pagina 73
 	timer(new QTimer(this)),
 	planningInterruped_(false),
 	execSteps(3), //baseado em zickler pagina 92
 	planSteps(1), //baseado em zickler pagina 92
-	xInit(NULL)
+	xInit(NULL),
+	debugTime(0)
 {
-	log.open(QIODevice::WriteOnly);
+	planningLog.open(QIODevice::WriteOnly);
+	executeLog.open(QIODevice::WriteOnly);
 
 	connect(timer, SIGNAL(timeout()), this, SLOT(planningInterruped()));
 	for(int i=0; i<myTeam->size(); i++)
@@ -69,7 +72,8 @@ void BGT::populateTactics(const StageY* source, StageY* target)
 
 BGT::~BGT()
 {
-	log.close();
+	planningLog.close();
+	executeLog.close();
 
 	delete timer;
 	for(int i=0; i<execSkills.size(); i++)
@@ -99,7 +103,7 @@ void BGT::step()
 			tree_->clear();
 		}
 
-		//timer->singleShot(1000./60., this, SLOT(planningInterruped()));
+		timer->singleShot(100., this, SLOT(planningInterruped()));
 		planning(&solution);
 		planningInterruped_ = false;
 		solution.pop_back();//remove xInit
@@ -128,7 +132,7 @@ void BGT::step()
 		xInit = NULL;
 		tree_->clear();
 
-		//timer->singleShot(1000./60., this, SLOT(planningInterruped()));
+		timer->singleShot(100., this, SLOT(planningInterruped()));
 		planning(&solution);
 		planningInterruped_ = false;
 		solution.pop_back();//remove xInit
@@ -214,7 +218,7 @@ void BGT::planning(QQueue<StageY*>* solution)
 //	itr = tree_->begin();
 //	end = tree_->end();
 //
-//	QDataStream out(&log);   // write the data
+//	QDataStream out(&planningLog);   // write the data
 //	while(itr!=end){
 //		Ball* ball = (*itr)->ball();
 //		Team* yellowTeam = (*itr)->yellowTeam();
@@ -232,7 +236,7 @@ void BGT::planning(QQueue<StageY*>* solution)
 //		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
 //		out << str;
 //		out << "$" + (*itr)->getBlueTactics()->at(0)->getCurrentState()->objectName() + "\n";
-//		log.flush();
+//		planningLog.flush();
 //		++itr;
 //	}
 //#endif
@@ -240,6 +244,54 @@ void BGT::planning(QQueue<StageY*>* solution)
 
 void BGT::goToStage(StageY* stage)
 {
+	//DEBUG
+#ifdef LOGGING
+	//PLANNING
+	QDataStream out(&planningLog);   // write the data
+	Ball* ball = stage->ball();
+	Team* yellowTeam = stage->yellowTeam();
+	Team* blueTeam = stage->blueTeam();
+	QString str("3 0 ");
+	for(int i=0; i<5; i++){
+		Robot* robot = yellowTeam->at(i);
+		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+	}
+	//cout << str.toStdString() << endl;
+	for(int i=0; i<5; i++){
+		Robot* robot = blueTeam->at(i);
+		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+	}
+	str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
+	out << str;
+	out << "%" + QString::number(debugTime) + "\n";
+	out << "$" + stage->getBlueTactics()->at(0)->getCurrentState()->objectName() + "\n";
+	planningLog.flush();
+
+	//EXECUTE
+	QDataStream outt(&executeLog);   // write the data
+	Ball* balll = stage_->ball();
+	Team* yellowTeamm = stage_->yellowTeam();
+	Team* blueTeamm = stage_->blueTeam();
+	QString strr("3 0 ");
+	for(int i=0; i<5; i++){
+		Robot* robot = yellowTeamm->at(i);
+		strr += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+	}
+	//cout << strr.toStdString() << endl;
+	for(int i=0; i<5; i++){
+		Robot* robot = blueTeamm->at(i);
+		strr += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+	}
+	strr += QString::number(balll->x()) + " " + QString::number(balll->y()) + " " + QString::number(balll->speedX()) + " " + QString::number(balll->speedY()) + " " + QString::number(0) + "\n";
+	outt << strr;
+	out << "%" + QString::number(debugTime+1) + "\n";
+	planningLog.flush();
+
+	debugTime++;
+	debugTime%=2*LONG_MAX-2;
+#endif
+
+	//goToStage
 	const Team* myTeamS = this->team();
 	Team* myTeamD = stage->getTeamFromColor(myTeamS->color());
 	for(int i=0; i<myTeamS->size(); i++){
@@ -425,27 +477,6 @@ StageY* BGT::tacticsDrivenPropagate(const StageY& stage)
 	xL->simulate(1./60.);
 	//cout << "d1 " << xL->blueTeam()->at(4)->x() << "\n";
 	xL->releaseScene();
-
-#ifdef LOGGING
-	QDataStream out(&log);   // write the data
-	
-	Team* yellowTeam = xL->yellowTeam();
-	Team* blueTeam = xL->blueTeam();
-	Ball* ball = xL->ball();
-	QString str("3 0 ");
-	for(int i=0; i<5; i++){
-		Robot* robot = yellowTeam->at(i);
-		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
-	}
-	//cout << str.toStdString() << endl;
-	for(int i=0; i<5; i++){
-		Robot* robot = blueTeam->at(i);
-		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
-	}
-	str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
-	out << str;
-	log.flush();
-#endif
 
 	return xL;
 }

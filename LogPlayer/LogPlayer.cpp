@@ -42,55 +42,66 @@ Simulation* LogPlayer::simulation = new Simulation();
 
 LogPlayer::LogPlayer(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
-	log("C:\\Users\\Bill\\Desktop\\log.dat")
+	planningLog("C:\\Users\\Bill\\Desktop\\planningLog.dat"),
+	executeLog("C:\\Users\\Bill\\Desktop\\executeLog.dat")
 {
-	
+	planningLog.open(QIODevice::ReadOnly);
+	executeLog.open(QIODevice::ReadOnly);
 
 	indexRenderScene = QMapIterator<int, NxScene1*>(simulation->gScenes);
 	indexRenderScene.next();
 	ui.setupUi(this);
-	//intServer->setSimulation(this->simulation);
 	this->simulation = new Simulation(parent);
-	//intServer = new UDPServerSimInt(parent, this->simulation);
-	//visionServer = new UDPMulticastSenderSSLVision(parent, this->simulation);
 
 	timerSim = new QTimer(this);
 	connect(timerSim, SIGNAL(timeout()), this, SLOT(step()));
 	timerSim->start(10.);
-
-	log.open(QIODevice::ReadOnly);
 }
 
 LogPlayer::~LogPlayer()
 {
+	//planningLog.close();
+	//executeLog.close();
 
-	//delete visionServer;
-	//delete intServer;
 	delete simulation;
 }
-
-/*void startVisionClicked()
-{
-	visionServer->startSending();
-}*/
 
 void LogPlayer::step()
 {
 	//ler string do arquivo e executar o parseLegacy
 	QString str;
-	QDataStream in(&log); // read the data serialized from the file
+	QDataStream in(&planningLog); // read the data serialized from the file
 	if(!in.atEnd()){
 		in >> str;
 	}
 	else{
-		cout << "FINAL DO ARQUIVO LOG" << endl;
-		//timerSim->stop();
+		cout << "FINAL DO ARQUIVO PLANNING LOG" << endl;
 	}
 	if(str.at(0) == '$'){
 		cout << str.toStdString() << endl;
 	}
+	if(str.at(0) == '%'){
+		cout << str.toStdString() << endl;
+	}
 	else{
 		std::string command = str.toStdString();
+		simulation->parseLegacyString(command);
+		//simulation->simulate();
+	}
+
+	QString strr;
+	QDataStream inn(&executeLog); // read the data serialized from the file
+	if(!inn.atEnd()){
+		inn >> strr;
+	}
+	else{
+		cout << "FINAL DO ARQUIVO EXECUTE LOG" << endl;
+	}
+	if(strr.at(0) == '%'){
+		cout << strr.toStdString() << endl;
+	}
+	else{
+		std::string command = strr.toStdString();
 		simulation->parseLegacyString(command);
 		//simulation->simulate();
 	}
@@ -746,6 +757,13 @@ void LogPlayer::RenderCallback()
 
 	//Draw
 	glPushMatrix();
+	//for(int i=0; planningPoints.size(); i++){
+	//	for(int j=0; j<planningPoints.at(i).size(); j++){
+			//DrawLine(NxVec3(planningPoints.at(i).at(j).x(), planningPoints.at(i).at(j).y(), 
+	//	}
+	//}
+
+
 	//for (NxU32 i = 0; i < simulation->nbExistScenes; ++i)
 	//{
 	if (indexRenderScene.value()->scene)
@@ -765,6 +783,8 @@ void LogPlayer::RenderCallback()
 			for(unsigned int j = 0 ; j < nbActors ; j++ )
 			{
 				DrawActorIME(indexRenderScene.value()->scene->getActors()[j]);
+				//DrawForce( indexRenderScene.value()->scene->getActors()[j], NxVec3(.2,0,0), NxVec3(1,1,1) );
+				//DrawLine(NxVec3(0,0,0), NxVec3(2000,0,0), NxVec3(1,1,1));//, 10);
 				//DrawActor(simulation->gScenes[indexRenderScene]->scene->getActors()[j]);
 				//DrawActorShadow(simulation->gScenes[indexRenderScene]->scene->getActors()[j]);
 				//simulation->allRobots.drawRobots(gDebugVisualization);

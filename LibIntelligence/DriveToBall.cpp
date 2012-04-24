@@ -41,6 +41,7 @@ void DriveToBall::step()
 	qreal ang2 = target2.angle();
 	qreal ang3 = target3.angle();
 	qreal ang = target.angle();
+
 	if(!( (ang2 > ang && ( ang3 < ang2 && ang3 > ang ) ) || (ang2 < ang && ( ang3 < ang2 || ang3 > ang ) ) )){ //nao esta dentro do cone
 		qreal goAng = 15;
 		target.setAngle(target.angle() + goAng);
