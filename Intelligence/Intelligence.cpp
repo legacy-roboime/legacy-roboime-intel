@@ -73,18 +73,19 @@ Intelligence::Intelligence(QObject *parent)
 	//controller = new Tactics::Controller2(this, myTeam[0], 1, 1000); //controle no referencial do robo
 	//gotoold = new GotoOld(this, myTeam[3], 0.0, 0.0);
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
-	//skill1 = new Goto(this, myTeam->at(1), 2000, 0, 3.14, 2000, true);
-	skill1 = new Move(this,myTeam->at(1), 0,0,24);
-	skill2 = new DriveToBall(this, myTeam->at(1), enemyTeam->goal());
-	skill3 = new KickTo(this, myTeam->at(1), 3.14);
 
-	//tactic = new Zickler43(this, myTeam->at(1), 0);
+	skill1 = new Move(this, myTeam->at(1), 0, 0, 12.);
+	skill2 = new DriveToBall(this, myTeam->at(1), enemyTeam->at(1));
+	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->goal(), false, 0, 1, 3000./6.);//DriveToBall(this, myTeam->at(1), new Object(1000,0), 1000, true);//Move(this, myTeam->at(1), 0, 0, 10);//SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 1, 1, 1000, true);//DriveTo(this, myTeam->at(1), 3.14/6., QPointF(0,0), 1000, 0, 1000);//Move(this, myTeam->at(1), 200, 0, 0);//SampledKick(this, myTeam->at(1), enemyTeam->at(1), true, 0, 1, 1000, true);//SampledKick(this, myTeam->at(1), enemyTeam->goal(), false);
+
+	tactic = new Attacker(this, enemyTeam->at(1), 3000);
+	machine = new Zickler43(this, myTeam->at(1), 3000, false);
 
 	halt = new Plays::Halt(this, myTeam, sta);
 	stopReferee = new Plays::StopReferee(this, myTeam, sta);
 	cbr2011 = new Plays::CBR2011(this, enemyTeam, sta);
-	//play = new Plays::CBR2011(this, enemyTeam, sta);
-	play = new Plays::BGT(this, myTeam, sta);
+	play = new Plays::Minmax2(this, myTeam, sta);
+	//play = new Plays::BGT(this, myTeam, sta);
 	//play = new Plays::Minmax(this, myTeam, sta);
 	//freeKickThem = new Plays::FreeKickThem(this, &myTeam, sta);
 	
@@ -203,8 +204,13 @@ void Intelligence::update() {
 	//((Skill*)machine->configuration().toList().at(1))->step();
 	//cbr2011->step();
 	//play->step();
+	//skill3->step();
+	//if(!skill3->busy()) cout << "DESOCUPADO!!!" << endl;
+	//else cout << "OCUPADO!!!" << endl;
+	//tactic->step();
 	skill1->step();
 	//tactic->step();
+
 
 	emit(readySend());
 	//QCoreApplication::processEvents();

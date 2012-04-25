@@ -70,15 +70,15 @@ float sstate_evaluate( SoccerState *s )
  if( s->blue_ball_owner >=  0 )
    s1 -= 1000; 
 
- s2 = -100*v2_norm( v2_sub( s->ball, 
-               v2_make( -.75*s->field_w, 0 ) ) );
+ s2 = -0.1*v2_norm( v2_sub( s->ball, 
+               v2_make( -s->field_w, 0 ) ) );
 
- s3 = -sstate_min_red_dist( s, s->ball );
+ s3 = -0.001*sstate_min_red_dist( s, s->ball );
 
- if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
-    s4 = 300*MAX(sstate_min_blue_dist( s, s->ball ),3);
+ if( (s->ball.x > -2500) && (s->ball.x < 2500 ) )
+    s4 = 0.3*MAX(sstate_min_blue_dist( s, s->ball ),3000.);
  else
-    if(s->ball.x < -2.5) 
+    if(s->ball.x < -2500) 
       s4 = 900;
 
  return s1 + s2 + s3 + s4;
@@ -117,6 +117,7 @@ SoccerAction sstate_red_get_ball( SoccerState *s )
         s->ball = v2_add( s->ball, v2_scale( t, s->ball_vel ) );
         s->ball_vel = v2_make(0,0);
         action.move[closest_red] = v2_sub( s->ball, s->red[closest_red] );
+		//printf("%f %f\n",action.move[closest_red].x, action.move[closest_red].y);
         s->red[closest_red] = s->ball;
         s->red_ball_owner = closest_red;  
         action.ball_owner = closest_red;
@@ -200,7 +201,7 @@ SoccerAction sstate_red_kick_to_goal( SoccerState *s )
 
  if( (s->red_ball_owner >= 0) && (s->blue_ball_owner < 0) ){
    for( k = -.5*s->goal_size; k < .5*s->goal_size; k += s->robot_radius ){ 
-     p =  v2_make( -.75*s->field_w, k );
+     p =  v2_make( -s->field_w, k );
      is_red_kick_scored(s, p );
      if( s->goal_scored ){
        action.has_kicked = TRUE;
@@ -243,7 +244,7 @@ void sstate_blue_kick_to_goal( SoccerState *s )
 
  if( (s->blue_ball_owner >= 0) && (s->red_ball_owner < 0) ){
    for( k = -.5*s->goal_size; k < .5*s->goal_size; k += s->robot_radius ){ 
-     p =  v2_make( .75*s->field_w, k );
+     p =  v2_make( s->field_w, k );
      is_blue_kick_scored(s, p );
      if( s->goal_received )
        DEBUG( "goal received :(\n" );

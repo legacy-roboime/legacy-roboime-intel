@@ -74,7 +74,7 @@ void sstate_restart_game_pos( SoccerState *s );
 SoccerAction sstate_red_get_ball( SoccerState *s );
 void sstate_blue_get_ball( SoccerState *s );
 
-SoccerAction sstate_red_receive_ball( SoccerState *s, int recv ); //DUVIDA: COMO EH ESSE RECEIVE BALL !??!
+SoccerAction sstate_red_receive_ball( SoccerState *s, int recv ); 
 void sstate_blue_receive_ball( SoccerState *s, int recv );
 
 SoccerAction sstate_red_kick_to_goal( SoccerState *s );

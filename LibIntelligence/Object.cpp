@@ -31,6 +31,9 @@ Object::Object(const Object& object)
 	this->speedX_ = object.speedX();
 	this->speedY_ = object.speedY();
 	this->speedZ_ = object.speedZ();
+	//linearRegressionVx = new LinearRegression();
+	//linearRegressionVy = new LinearRegression();
+	//linearRegressionVang = new LinearRegression();
 }
 
 Object::~Object()
@@ -211,7 +214,7 @@ void Object::updateSpeed(double time) {
 			linearRegressionVang->addPoint(vAng);
 			angSpeedZ_ = linearRegressionVang->estimateY(time);
 			//cout << "Delta Orientation " << deltaOrientation << endl;
-			//cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
+			cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
 		}
 	} 
 }

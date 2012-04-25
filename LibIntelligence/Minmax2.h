@@ -19,10 +19,10 @@ extern "C" {
 
 #endif
 
-#define MAX_NPLAYS 2//15//50
-#define MIN_NPLAYS 2//15//50
+#define MAX_NPLAYS 23//23//15//50
+#define MIN_NPLAYS 23//23//15//50
 
-#define MINIMAX_MAX_LEVEL 2
+#define MINIMAX_MAX_LEVEL 4
 
 using namespace LibIntelligence::Skills;
 

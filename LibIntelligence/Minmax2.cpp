@@ -42,6 +42,8 @@ void Minmax2::step()
 	//cout << s->red_ball_owner << endl;
 	//cout << s->blue_ball_owner << endl;
 	minimax_getMaxValue( *s, depth_, alpha_, beta_ );
+	//for(int i=0; i<5; i++)
+	//	printf("DENTRO: %d %f %f\n", i, best_action.move[i].x, best_action.move[i].y);
 	//for(int i=0; i < team_->size(); i++)
 	//	cout << best_action.move[i].x << endl;
 	saction_act();
@@ -58,12 +60,15 @@ void Minmax2::saction_act()
 
 		_max_skills.at(i)->setPoint(robot->x() + pos->x, robot->y() + pos->y);
 
-		if( i != s->red_ball_owner ){
+		//cout << "FORA: " << team_->at(i)->id() << " " << pos->x << " " << pos->y << endl;
+
+		if( team_->at(i)->id() != s->red_ball_owner ){
 			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
 			qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
 			_max_skills.at(i)->setSpeed(s->red_speed);
 			_max_skills.at(i)->setOrientation(orientation);
+			robot->dribble();
 		}
 		else{
 			if( best_action.has_kicked ){
@@ -86,7 +91,7 @@ void Minmax2::saction_act()
 			}
 			else{
 				Goal* enemyGoal = robot->enemyGoal();
-				QLineF line = QLineF(robot->x(), robot->y(), /*ball*/enemyGoal->x(), /*ball*/enemyGoal->y()); //DUVIDA: PARA ONDE OLHAR NESSA SITUACAO (LEVAR A BOLA PRO GOL)!?!?
+				QLineF line = QLineF(robot->x(), robot->y(), /*ball*/enemyGoal->x(), /*ball*/enemyGoal->y());
 				qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
 				_max_skills.at(i)->setSpeed(s->red_dribble_speed);
@@ -95,6 +100,7 @@ void Minmax2::saction_act()
 			}
 		}
 
+		robot->dribble();
 		_max_skills.at(i)->step();
 	}
 }
@@ -124,7 +130,6 @@ void Minmax2::update_soccer_state()
 		s->red[i].y = robot->y();
 	}
 
-	//DUVIDA: QUAL ERA MESMO O CRITERIO PARA DETERINAR O CLOSESTPLAYERTOBALL?!?!?
 	//DUVIDA: EH EXCLUSIVO RED E BLUE (SE EXISTE UM RED_BALL_OWNER PODE EXISTIR UM BLUE_BALL_OWNER AO MESMO TEMPO !!?) !??!
 	s->red_ball_owner = ballOwner(true);
 	s->blue_ball_owner = ballOwner(false);
@@ -195,24 +200,24 @@ float Minmax2::minimax_getMinValue(SoccerState s, int depth, float alpha, float 
 
 SoccerAction Minmax2::minimax_expandMax( SoccerState *s, int i, int depth )
 {
-	float recv_radius = .4, move_radius = 1.;
+	float recv_radius = 400., move_radius = 1000.;
 	SoccerAction action = saction_make(-1);
 
 	if( s->red_ball_owner >= 0 ){
 		switch( i ){
 		case 0: action = sstate_red_kick_to_goal(s); break;
-		case 1: action = sstate_red_pass(s,0, recv_radius ); break;
-		case 3: action = sstate_red_pass(s,1, recv_radius ); break;
-		case 4: action = sstate_red_pass(s,2, recv_radius ); break;
-		case 5: action = sstate_red_pass(s,3, recv_radius ); break;
-		case 6: action = sstate_red_pass(s,4, recv_radius ); break; 
-		case 7: action = sstate_red_pass(s,5, recv_radius ); break; 
+		//case 1: action = sstate_red_pass(s,0, recv_radius ); break;
+		//case 3: action = sstate_red_pass(s,1, recv_radius ); break;
+		//case 4: action = sstate_red_pass(s,2, recv_radius ); break;
+		//case 5: action = sstate_red_pass(s,3, recv_radius ); break;
+		//case 6: action = sstate_red_pass(s,4, recv_radius ); break; 
+		//case 7: action = sstate_red_pass(s,5, recv_radius ); break; 
 		}
 	}
 	else{
 		switch( i ){
-		case 0: action = sstate_red_get_ball(s); break;//DUVIDA: AS VEZES ESCOLHE NAO FAZER NADA (um i sem case), SERA QUE A EVALUATE TAH RUIM !???!
-		case 1: action = sstate_red_receive_ball(s,0); break; //DUVIDA: PQ DEIXOU BURACOS NO CASE!??! do 0 foi pro 8
+		case 0: action = sstate_red_get_ball(s); break;
+		//case 8: action = sstate_red_receive_ball(s,0); break; 
 		//case 9: action = sstate_red_receive_ball(s,1); break;
 		//case 10: action = sstate_red_receive_ball(s,2); break;
 		//case 11: action = sstate_red_receive_ball(s,3); break;
@@ -222,14 +227,14 @@ SoccerAction Minmax2::minimax_expandMax( SoccerState *s, int i, int depth )
 	}
 
 	//ESSE CODIGO NAO DEVERIA ESTAR DENTRO DO ELSE ACIMA E COM ELSE IF ALTERNADOS ?!?!?!?!?
-	//if( (i > 13) && (i < 23 ) )
-	//	action = sstate_red_move(s, move_radius );
+	if( (i > 13) && (i < 23 ) )
+		action = sstate_red_move(s, move_radius );
 
-	//if( (i>= 23) && ( i < 43) )
-	//	action = sstate_red_move(s, (2./3)*move_radius );
+	if( (i>= 23) && ( i < 43) )
+		action = sstate_red_move(s, (2./3)*move_radius );
 
-	//if( (i >= 43) && ( i < 50) )
-	//	action = sstate_red_move(s, (1./3)*move_radius );
+	if( (i >= 43) && ( i < 50) )
+		action = sstate_red_move(s, (1./3)*move_radius );
 
 	return action;
 }
@@ -239,8 +244,8 @@ void Minmax2::minimax_expandMin( SoccerState *s, int i, int depth )
 {
 	float recv_radius, move_radius;
 
-	recv_radius = .4;
-	move_radius = 1.;
+	recv_radius = 400;
+	move_radius = 1000;
 
 
 	if( s->blue_ball_owner >= 0 ){
