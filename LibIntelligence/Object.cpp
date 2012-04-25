@@ -213,8 +213,9 @@ void Object::updateSpeed(double time) {
 			QPointF vAng(time,velocity);
 			linearRegressionVang->addPoint(vAng);
 			angSpeedZ_ = linearRegressionVang->estimateY(time);
+			//OBS: SE ATIVAR O COUT VAI RETARDAR O PROGRAMA DAI O ENVIO DE MSG PARA O SIMULADOR FICA PREJUDICADO
 			//cout << "Delta Orientation " << deltaOrientation << endl;
-			cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
+			//cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
 		}
 	} 
 }
