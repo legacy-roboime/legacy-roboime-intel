@@ -17,6 +17,7 @@ public:
 	// Constructor using an array of QPoint objects
 	// This is also the default constructor
 	LinearRegression(QPointF *p = 0, long size = 0, unsigned char max_size_points = 50); 
+	LinearRegression(const LinearRegression& linearRegression); 
 	~LinearRegression();
 
 	virtual void addXY(const double& x, const double& y);

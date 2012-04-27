@@ -28,19 +28,24 @@ Object::Object(const Object& object)
 	this->x_ = object.x();
 	this->y_ = object.y();
 	this->z_ = object.z();
+	this->orientation_ = object.orientation();
+	this->angSpeedZ_ = object.angSpeedZ();
 	this->speedX_ = object.speedX();
 	this->speedY_ = object.speedY();
 	this->speedZ_ = object.speedZ();
-	//linearRegressionVx = new LinearRegression();
-	//linearRegressionVy = new LinearRegression();
-	//linearRegressionVang = new LinearRegression();
+	linearRegressionVx = new LinearRegression(*(object.linearRegressionVx));
+	linearRegressionVy = new LinearRegression(*(object.linearRegressionVy));
+	linearRegressionVang = new LinearRegression(*(object.linearRegressionVang));
 }
 
 Object::~Object()
 {
-	delete this->linearRegressionVx;
-	delete this->linearRegressionVy;
-	delete this->linearRegressionVang;
+	if(linearRegressionVx)
+		delete linearRegressionVx;
+	if(linearRegressionVy)
+		delete linearRegressionVy;
+	if(linearRegressionVang)
+		delete linearRegressionVang;
 }
 
 

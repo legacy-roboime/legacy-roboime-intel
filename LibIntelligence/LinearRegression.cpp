@@ -18,10 +18,30 @@ LinearRegression::LinearRegression(QPointF *p, long size, unsigned char max_size
 			addPoint(p[i]);
 }
 
+LinearRegression::LinearRegression(const LinearRegression& linearRegression)
+{
+	n = linearRegression.n;
+	sumX = linearRegression.sumX;
+	sumY = linearRegression.sumY;
+	sumXsquared = linearRegression.sumXsquared;
+	sumYsquared = linearRegression.sumYsquared;
+	sumXY = linearRegression.sumXY;
+	a = linearRegression.a;
+	b = linearRegression.b;
+	coefC = linearRegression.coefC;
+	coefD = linearRegression.coefD;
+	stdError = linearRegression.stdError;
+	MAX_SIZE_POINTS = linearRegression.MAX_SIZE_POINTS;
+	xPoints = new QVector<float>(*linearRegression.xPoints);
+	yPoints = new QVector<float>(*linearRegression.yPoints);
+}
+
 LinearRegression::~LinearRegression()
 {
-	delete this->yPoints;
-	delete this->xPoints;
+	if(yPoints)
+		delete yPoints;
+	if(xPoints)
+		delete xPoints;
 }
 //modificado
 void LinearRegression::addXY(const double& x, const double& y)
