@@ -806,6 +806,13 @@ NxReal NxWheel::calcTorqueFromWheelSpeed(NxReal currentDesiredWheelSpeed, NxReal
 	NxReal inertiaMoment = 12.57673; //kg/mm2
 	currentWheelTorque = this->lastWheelTorque + inertiaMoment * 20. * (currentDesiredWheelSpeed - currentWheelSpeed) - inertiaMoment * 19.35 * (this->lastDesiredWheelSpeed - this->lastWheelSpeed);
 
+	//printf("%f\n", currentWheelTorque);
+
+	//TODO: levantar o máximo valor
+	//Preventing the integral term from accumulating above or below pre-determined bounds http://en.wikipedia.org/wiki/Integral_windup
+	if(currentWheelTorque > 20000.) 
+		currentWheelTorque = 20000.;
+
 	//Avançando iteração
 	this->lastDesiredWheelSpeed = currentDesiredWheelSpeed;
 	this->lastWheelTorque = currentWheelTorque;
