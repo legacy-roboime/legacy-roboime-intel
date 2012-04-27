@@ -621,7 +621,9 @@ void NxRobot::controlWheels( NxReal* wheelsSpeeds )
 		NxReal maxTorque = 7100.;//4100.;//
 		if(biggestValue > maxTorque){
 			for( int i = 0; i < nbWheels; i++ ){
+				NxWheel2* wheel = ((NxWheel2*) this->getWheel(i));
 				torqueWheels[i] = torqueWheels[i] / biggestValue * maxTorque;
+				wheel->lastWheelTorque = torqueWheels[i]; //Preventing the integral term from accumulating above or below pre-determined bounds http://en.wikipedia.org/wiki/Integral_windup
 			}
 		}
 	}

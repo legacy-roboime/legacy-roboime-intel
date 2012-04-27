@@ -808,11 +808,6 @@ NxReal NxWheel::calcTorqueFromWheelSpeed(NxReal currentDesiredWheelSpeed, NxReal
 
 	//printf("%f\n", currentWheelTorque);
 
-	//TODO: levantar o máximo valor
-	//Preventing the integral term from accumulating above or below pre-determined bounds http://en.wikipedia.org/wiki/Integral_windup
-	if(currentWheelTorque > 20000.) 
-		currentWheelTorque = 20000.;
-
 	//Avançando iteração
 	this->lastDesiredWheelSpeed = currentDesiredWheelSpeed;
 	this->lastWheelTorque = currentWheelTorque;
