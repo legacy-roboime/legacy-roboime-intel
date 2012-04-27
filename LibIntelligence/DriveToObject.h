@@ -15,7 +15,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			DriveToObject(QObject* parent, Robot* slave, const Object* object, const Object* refLookPoint, qreal speed = 3000., bool deterministic = true);
+			DriveToObject(QObject* parent, Robot* slave, const Object* object, const Object* refLookPoint, qreal speed = 3000., bool deterministic = true, qreal maxAngVar = 15.);
 			~DriveToObject(void);
 
 			void step();
@@ -31,6 +31,7 @@ namespace LibIntelligence
 			const Object* refLookPoint_;//can not modif
 			Object* lookPoint; //can modif
 			const Object* object;
+			qreal maxAngVar_;
 		};
 	}
 }

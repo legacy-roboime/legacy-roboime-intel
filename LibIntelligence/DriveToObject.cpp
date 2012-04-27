@@ -9,10 +9,11 @@
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-DriveToObject::DriveToObject(QObject* parent, Robot* slave, const Object* object, const Object* refLookPoint, qreal speed, bool deterministic)
+DriveToObject::DriveToObject(QObject* parent, Robot* slave, const Object* object, const Object* refLookPoint, qreal speed, bool deterministic, qreal maxAngVar)
 	: DriveTo(parent, slave, 0, QPointF(0,0), CART, 0, speed),
 	refLookPoint_(refLookPoint),
-	lookPoint(new Object())
+	lookPoint(new Object()),
+	maxAngVar_(maxAngVar)
 {
 	this->object = object;
 	deterministic_ = deterministic;
@@ -29,7 +30,7 @@ void DriveToObject::step()
 	QLineF target = QLineF(object->x(), object->y(), lookPoint->x(), lookPoint->y());
 
 	if(!deterministic_){
-		qreal angle = 15; //graus
+		qreal angle = maxAngVar_; //graus
 		if(Sampler::randFloat()>0.5)
 			target.setAngle(target.angle() + Sampler::randFloat()*angle);
 		else

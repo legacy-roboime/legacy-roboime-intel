@@ -11,8 +11,8 @@
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-DriveToBall::DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed, bool deterministic)
-	: DriveToObject(parent, slave, slave->stage()->ball(), refLookPoint, speed, deterministic)
+DriveToBall::DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed, bool deterministic, qreal maxAngVar)
+	: DriveToObject(parent, slave, slave->stage()->ball(), refLookPoint, speed, deterministic, maxAngVar)
 {
 	threshold = CART;
 }
