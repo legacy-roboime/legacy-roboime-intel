@@ -916,6 +916,18 @@
     <ClCompile Include="vector.c">
       <Filter>Source Files\Core\Plays\Minmax2</Filter>
     </ClCompile>
+    <ClCompile Include="AttackerMinMax2.cpp">
+      <Filter>Source Files\Core\Tactics</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AttackerMinMax2.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AttackerMinMax2.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_AttackerMinMax2.cpp">
+      <Filter>Generated Files\Template</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LibIntelligence.h">
@@ -1192,6 +1204,9 @@
     </CustomBuild>
     <CustomBuild Include="DriveToObject.h">
       <Filter>Header Files\Core\Skills</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AttackerMinMax2.h">
+      <Filter>Header Files\Core\Tactics</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

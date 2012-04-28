@@ -17,14 +17,22 @@ Play(parent,team,stage),
 	depth_(depth),
 	alpha_(alpha),
 	beta_(beta),
-	speed_(speed)
+	speed_(speed),
+	best_action(SoccerAction())
 {
 	log.open(QIODevice::WriteOnly);
 
 	s = sstate_alloc();
 
+	if(team->color() == TeamColor::BLUE)
+		s->left_red_side = Stage::isLeftSideBlueGoal();
+	else
+		s->left_red_side = !Stage::isLeftSideBlueGoal();
+
 	for(int i=0; i < team->size(); i++)
 		_max_skills.push_back( new Goto(this, team->at(i)) );
+
+	attacker = new AttackerMinMax2(this, team->at(0), s->red_speed, s->red_dribble_speed, s->red_pass_speed); //team->at(0) eh soh pra inicializar depois usamos setRobot
 }
 
 
@@ -32,6 +40,8 @@ Minmax2::~Minmax2()
 {
 	for(int i=0; i<_max_skills.size(); i++)
 		delete _max_skills.at(i);
+
+	delete attacker;
 	log.close();
 }
 
@@ -44,9 +54,9 @@ void Minmax2::step()
 	minimax_getMaxValue( *s, depth_, alpha_, beta_ );
 	//for(int i=0; i<5; i++)
 	//	printf("DENTRO: %d %f %f\n", i, best_action.move[i].x, best_action.move[i].y);
-	//for(int i=0; i < team_->size(); i++)
-	//	cout << best_action.move[i].x << endl;
 	saction_act();
+	//if(best_action.has_kicked || best_action.has_passed) 
+	//	cout << best_action.has_kicked << " " << best_action.has_passed << endl;
 }
 
 
@@ -58,50 +68,24 @@ void Minmax2::saction_act()
 		Vector2* pos = &best_action.move[i];
 		Robot* robot = team_->at(i);
 
+		attacker->setRobot(robot);
+
 		_max_skills.at(i)->setPoint(robot->x() + pos->x, robot->y() + pos->y);
 
 		//cout << "FORA: " << team_->at(i)->id() << " " << pos->x << " " << pos->y << endl;
 
-		if( team_->at(i)->id() != s->red_ball_owner ){
+		if( !attacker->getMinDist() ){
 			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
 			qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
 			_max_skills.at(i)->setSpeed(s->red_speed);
 			_max_skills.at(i)->setOrientation(orientation);
-			robot->dribble();
+			_max_skills.at(i)->step();
 		}
 		else{
-			if( best_action.has_kicked ){
-				QLineF line = QLineF(robot->x(), robot->y(), best_action.kick_point.x, best_action.kick_point.y);
-				qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
-
-				_max_skills.at(i)->setSpeed(s->red_dribble_speed);
-				_max_skills.at(i)->setOrientation(orientation);
-				robot->kick();
-				robot->dribble();
-			}
-			else if( best_action.has_passed ){
-				QLineF line = QLineF(robot->x(), robot->y(), best_action.kick_point.x, best_action.kick_point.y);
-				qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
-
-				_max_skills.at(i)->setSpeed(s->red_dribble_speed);
-				_max_skills.at(i)->setOrientation(orientation);
-				robot->kick(s->red_pass_speed);
-				robot->dribble();
-			}
-			else{
-				Goal* enemyGoal = robot->enemyGoal();
-				QLineF line = QLineF(robot->x(), robot->y(), /*ball*/enemyGoal->x(), /*ball*/enemyGoal->y());
-				qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
-
-				_max_skills.at(i)->setSpeed(s->red_dribble_speed);
-				_max_skills.at(i)->setOrientation(orientation);
-				robot->dribble();
-			}
+			attacker->updateSoccerAction(best_action.has_kicked, best_action.has_passed, best_action.kick_point.x, best_action.kick_point.y, pos->x, pos->y);
+			attacker->step();
 		}
-
-		robot->dribble();
-		_max_skills.at(i)->step();
 	}
 }
 
@@ -206,23 +190,23 @@ SoccerAction Minmax2::minimax_expandMax( SoccerState *s, int i, int depth )
 	if( s->red_ball_owner >= 0 ){
 		switch( i ){
 		case 0: action = sstate_red_kick_to_goal(s); break;
-		//case 1: action = sstate_red_pass(s,0, recv_radius ); break;
-		//case 3: action = sstate_red_pass(s,1, recv_radius ); break;
-		//case 4: action = sstate_red_pass(s,2, recv_radius ); break;
-		//case 5: action = sstate_red_pass(s,3, recv_radius ); break;
-		//case 6: action = sstate_red_pass(s,4, recv_radius ); break; 
-		//case 7: action = sstate_red_pass(s,5, recv_radius ); break; 
+		case 1: action = sstate_red_pass(s,0, recv_radius ); break;
+		case 3: action = sstate_red_pass(s,1, recv_radius ); break;
+		case 4: action = sstate_red_pass(s,2, recv_radius ); break;
+		case 5: action = sstate_red_pass(s,3, recv_radius ); break;
+		case 6: action = sstate_red_pass(s,4, recv_radius ); break; 
+		case 7: action = sstate_red_pass(s,5, recv_radius ); break; 
 		}
 	}
 	else{
 		switch( i ){
 		case 0: action = sstate_red_get_ball(s); break;
-		//case 8: action = sstate_red_receive_ball(s,0); break; 
-		//case 9: action = sstate_red_receive_ball(s,1); break;
-		//case 10: action = sstate_red_receive_ball(s,2); break;
-		//case 11: action = sstate_red_receive_ball(s,3); break;
-		//case 12: action = sstate_red_receive_ball(s,4); break;
-		//case 13: action = sstate_red_receive_ball(s,5); break;
+		case 8: action = sstate_red_receive_ball(s,0); break; 
+		case 9: action = sstate_red_receive_ball(s,1); break;
+		case 10: action = sstate_red_receive_ball(s,2); break;
+		case 11: action = sstate_red_receive_ball(s,3); break;
+		case 12: action = sstate_red_receive_ball(s,4); break;
+		case 13: action = sstate_red_receive_ball(s,5); break;
 		}
 	}
 
@@ -314,7 +298,7 @@ int Minmax2::ballOwner(bool us)
 
 		//printf("%f %f\n", errorA * 180. / PI, errorD);
 
-		if(errorD < 150. && errorA < 5 * PI/180. && errorD < lErrorD && errorA < lErrorA){
+		if(errorD < 50. && errorA < 5 * PI/180. && errorD < lErrorD && errorA < lErrorA){
 			id = robot->id();
 			lErrorA = errorA;
 			lErrorD = errorD;

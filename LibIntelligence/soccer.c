@@ -14,7 +14,6 @@
 #define DEBUG4(s,a,b,c,d)    ;
 #define DEBUG5(s,a,b,c,d,e)  ;
 
-
 static void is_red_kick_scored( SoccerState *s, Vector2 goal );
 static void is_blue_kick_scored( SoccerState *s, Vector2 goal );
 
@@ -37,7 +36,7 @@ SoccerState* sstate_alloc( void )
  s->blue_dribble_speed = 500;
  s->red_pass_speed = 800;
  s->blue_pass_speed = 800;
- s->robot_radius = 100;
+ s->robot_radius = 90;//100;
  s->goal_size = 700;
  s->field_w = 8000;//6000; 
  s->field_h = 6000;//4000; 

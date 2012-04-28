@@ -91,6 +91,7 @@
   <ItemGroup>
     <ClCompile Include="Actuator.cpp" />
     <ClCompile Include="Attacker.cpp" />
+    <ClCompile Include="AttackerMinMax2.cpp" />
     <ClCompile Include="AttackField.cpp" />
     <ClCompile Include="Battery.cpp" />
     <ClCompile Include="BGT.cpp" />
@@ -111,6 +112,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_Attacker.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AttackerMinMax2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -354,6 +359,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AttackerMinMax2.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_AttackField.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">true</ExcludedFromBuild>
@@ -591,6 +600,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Template\moc_Attacker.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Template\moc_AttackerMinMax2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -905,6 +918,20 @@
     <ClCompile Include="Zickler43.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <CustomBuild Include="AttackerMinMax2.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing AttackerMinMax2.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBINTELLIGENCE_LIB -D_MBCS "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(Configuration)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)LibSimulation" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(SolutionDir)include\tree-2.81\src" "-I$(NOINHERIT)\." "-I." "-I." "-I."</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing AttackerMinMax2.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_NETWORK_LIB -DLIBINTELLIGENCE_LIB "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(Configuration)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)LibSimulation" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(SolutionDir)include\tree-2.81\src" "-I$(NOINHERIT)\." "-I." "-I."</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">Moc%27ing AttackerMinMax2.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  "-I." "-I.\GeneratedFiles" "-I.\GeneratedFiles\$(Configuration)\." "-I$(QTDIR)\include" "-I$(QTDIR)\include\qtmain" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I." "-I$(SolutionDir)LibCommunication" "-I$(SolutionDir)LibSimulation" "-I$(SolutionDir)include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Cooking\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Foundation\include\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\Physics\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\SDKs\PhysXLoader\include" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Tools\NxuStream2" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Samples\SampleCommonCode\src\win" "-I$(SolutionDir)include\NVIDIA PhysX SDK\v2.8.4_win\Graphics\include\win32" "-I$(QTDIR)\include\QtOpenGL" "-I$(NOINHERIT)\." "-I."</Command>
+    </CustomBuild>
     <ClInclude Include="defs.h" />
     <ClInclude Include="soccer.h" />
     <ClInclude Include="vector.h" />

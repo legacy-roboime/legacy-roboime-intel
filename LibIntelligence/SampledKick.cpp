@@ -60,5 +60,5 @@ void SampledKick::step()
 
 bool SampledKick::busy()
 {
-	return false;//DriveToBall::busy();
+	return DriveToBall::busy();//false;//
 }

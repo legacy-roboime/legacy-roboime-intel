@@ -4,6 +4,7 @@
 #include <limits>
 #include "Plays.h"
 #include "Skills.h"
+#include "Tactics.h"
 #include "Stage.h"
 #include <QFile>
 #include <QDataStream>
@@ -24,6 +25,7 @@ extern "C" {
 
 #define MINIMAX_MAX_LEVEL 4
 
+using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Skills;
 
 namespace LibIntelligence
@@ -35,6 +37,7 @@ namespace LibIntelligence
 		private:
 			QFile log; 
 
+			AttackerMinMax2* attacker;
 			QVector<Goto*> _max_skills;
 			SoccerState *s;
 			SoccerAction best_action;
