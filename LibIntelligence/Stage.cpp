@@ -5,7 +5,7 @@
 #include <cmath>
 using namespace LibIntelligence;
 
-bool Stage::isLeftSideBlueGoal_ = false;
+bool Stage::isLeftSideBlueGoal_ = true;
 char Stage::cmdReferee_ = 'H';
 
 Stage::Stage()
