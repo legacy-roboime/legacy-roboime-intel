@@ -196,7 +196,7 @@ bool Command::isForcedDribble() const
 void Command::setOld()
 {
 	//old_ = true;
-	pimpl->old;
+	pimpl->old = true;
 }
 
 bool Command::isOld() const
@@ -209,13 +209,13 @@ void Command::clear()
 {
 	//TODO: do
 	//command->Clear();
-	/*for(int i=0; i<_wheel_speed.size(); i++) _wheel_speed[i] = 0.0;
-	_kick_speed = 0.0;
-	_dribble_speed = 0.0;
+	for(int i=0; i<pimpl->wheelSpeeds.size(); i++) pimpl->wheelSpeeds[i] = 0.0;
+	pimpl->kickSpeed = 0.0;
+	pimpl->dribbleSpeed = 0.0;
 	//_id = -1;//do nothing here
-	_old = false;
-	_force_kick = false;
-	_force_dribble = false;*/
+	pimpl->old = false;
+	pimpl->forcedKick = false;
+	pimpl->forcedDribble = false;
 }
 
 const CommandRobot& Command::raw() const
