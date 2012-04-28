@@ -12,6 +12,7 @@
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
+using namespace Zickler43T;
 
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
@@ -136,27 +137,3 @@ bool DefaultTrueT::condition()
 }
 
 DefaultTrueT::DefaultTrueT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
-
-//bool DriveTo::busy()
-//{
-//	Robot* robot = this->robot();
-//	
-//	qreal x = robot->x();
-//	qreal y = robot->y();
-//	qreal errorX = tPoint.x() - x;
-//	qreal errorY = tPoint.y() - y;
-//	qreal errorD = sqrt(errorX*errorX + errorY*errorY);
-//
-//	qreal orientation = robot->orientation();
-//
-//	qreal errorA = abs(tAngle - orientation); //tAngle e orientation entre 0 e 2PI
-//	if( errorA > M_PI )
-//		errorA = 2 * M_PI - errorA;
-//
-//	//printf("%f %f %f\n", errorA * 180. / M_PI, tAngle, orientation);
-//
-//	if(errorD < 30. && errorA < 5 * M_PI/180.)
-//		return false;
-//	else
-//		return true;
-//}

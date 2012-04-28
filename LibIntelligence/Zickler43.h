@@ -13,8 +13,6 @@ namespace LibIntelligence
 {
 	namespace Tactics
 	{
-		
-
 		class Zickler43 : public Tactic
 		{
 			Q_OBJECT
@@ -37,41 +35,44 @@ namespace LibIntelligence
 		};
 	}	
 
-	class DriveToDribbleT : public MachineTransition{ 
-	public:
-		DriveToDribbleT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
-		bool condition();
-	};
+	namespace Zickler43T
+	{
+		class DriveToDribbleT : public MachineTransition{ 
+		public:
+			DriveToDribbleT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
 
-	class DribbleToDriveT : public MachineTransition{ 
-	public:
-		DribbleToDriveT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
-		bool condition();
-	};
+		class DribbleToDriveT : public MachineTransition{ 
+		public:
+			DribbleToDriveT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
 
-	class DribbleToGoalKickT : public MachineTransition{ 
-	public:
-		DribbleToGoalKickT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
-		bool condition();
-	};
+		class DribbleToGoalKickT : public MachineTransition{ 
+		public:
+			DribbleToGoalKickT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
 
-	class DribbleToMiniKickT : public MachineTransition{ 
-	public:
-		DribbleToMiniKickT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
-		bool condition();
-	};
+		class DribbleToMiniKickT : public MachineTransition{ 
+		public:
+			DribbleToMiniKickT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
 
-	class DribbleToDribbleT : public MachineTransition{ 
-	public:
-		DribbleToDribbleT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
-		bool condition();
-	};
+		class DribbleToDribbleT : public MachineTransition{ 
+		public:
+			DribbleToDribbleT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
 
-	class DefaultTrueT : public MachineTransition{ 
-	public:
-		DefaultTrueT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
-		bool condition();
-	};
+		class DefaultTrueT : public MachineTransition{ 
+		public:
+			DefaultTrueT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
+	}
 }
 
 #endif // ZICKLER43_H
