@@ -67,5 +67,5 @@ void Tactic::step()
 	Skill* current = (Skill*)this->getCurrentState();
 	this->execute();
 	current->step();
-	cout << current->objectName().toStdString() << endl;
+	//cout << current->objectName().toStdString() << endl;
 }
