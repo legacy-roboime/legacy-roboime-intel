@@ -28,6 +28,7 @@ SoccerState* sstate_alloc( void )
  s->ball_vel = v2_make(0,0);
  s->goal_scored = FALSE;
  s->goal_received = FALSE;
+ s->left_red_side = TRUE;
  s->red_ball_owner = -1;
  s->blue_ball_owner = -1;
  s->red_speed = 1000;
@@ -70,8 +71,10 @@ float sstate_evaluate( SoccerState *s )
  if( s->blue_ball_owner >=  0 )
    s1 -= 1000; 
 
- s2 = -0.1*v2_norm( v2_sub( s->ball, 
-               v2_make( -s->field_w, 0 ) ) );
+ if(s->left_red_side)
+   s2 = -0.1*v2_norm( v2_sub( s->ball, v2_make( +s->field_w, 0 ) ) );
+ else
+   s2 = -0.1*v2_norm( v2_sub( s->ball, v2_make( -s->field_w, 0 ) ) );
 
  s3 = -0.001*sstate_min_red_dist( s, s->ball );
 
@@ -201,7 +204,10 @@ SoccerAction sstate_red_kick_to_goal( SoccerState *s )
 
  if( (s->red_ball_owner >= 0) && (s->blue_ball_owner < 0) ){
    for( k = -.5*s->goal_size; k < .5*s->goal_size; k += s->robot_radius ){ 
-     p =  v2_make( -s->field_w, k );
+	 if(s->left_red_side)
+       p =  v2_make( +s->field_w, k );
+	 else
+	   p =  v2_make( -s->field_w, k );
      is_red_kick_scored(s, p );
      if( s->goal_scored ){
        action.has_kicked = TRUE;
@@ -244,7 +250,10 @@ void sstate_blue_kick_to_goal( SoccerState *s )
 
  if( (s->blue_ball_owner >= 0) && (s->red_ball_owner < 0) ){
    for( k = -.5*s->goal_size; k < .5*s->goal_size; k += s->robot_radius ){ 
-     p =  v2_make( s->field_w, k );
+	 if(s->left_red_side)
+       p =  v2_make( -s->field_w, k );
+	 else
+       p =  v2_make( +s->field_w, k );
      is_blue_kick_scored(s, p );
      if( s->goal_received )
        DEBUG( "goal received :(\n" );

@@ -50,6 +50,8 @@ typedef struct SoccerState{
   float robot_radius;
   float goal_size;
   float field_w, field_h;
+
+  Boolean left_red_side;
  
 } SoccerState;
 
