@@ -19,12 +19,12 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 	hasKick_(false),
 	hasPass_(false)
 {
-	movePoint_ = new Object();
+	movePoint_ = new Object(3000, 0);
 	kickPoint_ = new Object();
 	driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
 	dribble_ = new SampledDribble(this, r, movePoint_, true, 0., 1., dribbleSpeed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 0.9, 1., dribbleSpeed, false);
-	pass_ = new SampledKick(this, r, kickPoint_, true, passSpeed, passSpeed, dribbleSpeed, false);
+	pass_ = new SampledKick(this, r, kickPoint_, true, 0.5, 0.5, dribbleSpeed, false);
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
 	speed = speed;
 
@@ -127,7 +127,13 @@ DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, 
 
 bool DribbleToDriveT::condition()
 {
-	return source_->busy(); 
+	SampledDribble* dribble = (SampledDribble*)source_;
+	DriveToBall* drive = (DriveToBall*)target_;
+	const Object* backup = drive->getRefLookPoint();
+	drive->setRefLookPoint(dribble->getRefLookPoint());
+	bool busy = drive->busy();
+	drive->setRefLookPoint(backup);
+	return busy;
 }
 
 DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
