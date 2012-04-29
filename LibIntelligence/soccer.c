@@ -345,7 +345,8 @@ SoccerAction sstate_red_move( SoccerState *s, float radius )
      new_pos = v2_add( s->red[i], p );
      action.move[i] = p; 
    }while( (sstate_min_blue_dist(s, new_pos) < d) ||
-            !sstate_is_inside_field( s, new_pos ) );
+           (!sstate_is_inside_field( s, new_pos ) &&
+            sstate_is_inside_field( s, s->red[i] ) ) );
    DEBUG5( "red move %i: (%f,%f) -> (%f,%f)", i,
             s->red[i].x, s->red[i].y , new_pos.x, new_pos.y );
    s->red[i] = new_pos;
@@ -374,7 +375,8 @@ void sstate_blue_move( SoccerState *s, float radius )
      d = v2_norm( p );
      new_pos = v2_add( s->blue[i], p ); 
    }while( (sstate_min_red_dist(s, new_pos) < d) ||
-           !sstate_is_inside_field( s, new_pos ) );
+           (!sstate_is_inside_field( s, new_pos ) &&
+            sstate_is_inside_field( s, s->blue[i] ) ) );
    DEBUG5( "blue move %i: (%f,%f) -> (%f,%f)", i,
            s->blue[i].x, s->blue[i].y , new_pos.x, new_pos.y ); 
    s->blue[i] = new_pos;
