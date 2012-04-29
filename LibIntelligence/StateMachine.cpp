@@ -30,7 +30,7 @@ StateMachine::~StateMachine(void)
 
 void StateMachine::execute()
 {
-	if(!current_->busy()){
+	//if(!current_->busy()){
 		QList<MachineTransition*> transitions = QList<MachineTransition*>();
 		for(int i=0; i<current_->sizeTransitions(); i++){
 			MachineTransition* transition = current_->getTransition(i);
@@ -57,7 +57,7 @@ void StateMachine::execute()
 				}
 			}
 		}
-	}
+	//}
 }
 
 State* StateMachine::getStateByName(const QString& name)
