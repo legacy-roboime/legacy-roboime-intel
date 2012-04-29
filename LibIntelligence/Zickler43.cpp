@@ -96,37 +96,38 @@ Zickler43::~Zickler43()
 //	//cout << current->objectName().toStdString() << endl;
 //}
 
+//lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
 bool DriveToDribbleT::condition()
 {
-	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
+	return !source_->busy(); 
 }
 
 DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToDriveT::condition()
 {
-	return source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
+	return source_->busy();
 }
 
 DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToDribbleT::condition()
 {
-	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
+	return !source_->busy();
 }
 
 DribbleToDribbleT::DribbleToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToGoalKickT::condition()
 {
-	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
+	return !source_->busy();
 }
 
 DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToMiniKickT::condition()
 {
-	return !source_->busy(); //lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
+	return !source_->busy();
 }
 
 DribbleToMiniKickT::DribbleToMiniKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
