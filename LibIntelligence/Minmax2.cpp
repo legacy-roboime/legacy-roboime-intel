@@ -17,11 +17,11 @@ Play(parent,team,stage),
 	depth_(depth),
 	alpha_(alpha),
 	beta_(beta),
-	speed_(speed),
-	best_action(SoccerAction())
+	speed_(speed)
 {
 	log.open(QIODevice::WriteOnly);
 
+	best_action = saction_make(-1);
 	s = sstate_alloc();
 
 	if(team->color() == TeamColor::BLUE)
@@ -51,12 +51,13 @@ void Minmax2::step()
 	update_soccer_state();
 	//cout << s->red_ball_owner << endl;
 	//cout << s->blue_ball_owner << endl;
+	best_action = saction_make(-1);
 	minimax_getMaxValue( *s, depth_, alpha_, beta_ );
 	//for(int i=0; i<5; i++)
 	//	printf("DENTRO: %d %f %f\n", i, best_action.move[i].x, best_action.move[i].y);
 	saction_act();
 	//if(best_action.has_kicked || best_action.has_passed) 
-	//	cout << best_action.has_kicked << " " << best_action.has_passed << endl;
+	//	cout << "AEEEEEEEEEEEEEE " << best_action.has_kicked << " " << best_action.has_passed << endl;
 }
 
 
@@ -72,8 +73,6 @@ void Minmax2::saction_act()
 
 		_max_skills.at(i)->setPoint(robot->x() + pos->x, robot->y() + pos->y);
 
-		//cout << "FORA: " << team_->at(i)->id() << " " << pos->x << " " << pos->y << endl;
-
 		if( !attacker->getMinDist() ){
 			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
 			qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
@@ -83,6 +82,11 @@ void Minmax2::saction_act()
 			_max_skills.at(i)->step();
 		}
 		else{
+			//DEBUG
+			//QLineF l = QLineF(robot->x(), robot->y(), pos->x, pos->y);
+			//qreal angle = -l.angle() + 360;
+			//cout << angle << endl;
+
 			attacker->updateSoccerAction(best_action.has_kicked, best_action.has_passed, best_action.kick_point.x, best_action.kick_point.y, pos->x, pos->y);
 			attacker->step();
 		}
@@ -210,7 +214,6 @@ SoccerAction Minmax2::minimax_expandMax( SoccerState *s, int i, int depth )
 		}
 	}
 
-	//ESSE CODIGO NAO DEVERIA ESTAR DENTRO DO ELSE ACIMA E COM ELSE IF ALTERNADOS ?!?!?!?!?
 	if( (i > 13) && (i < 23 ) )
 		action = sstate_red_move(s, move_radius );
 
@@ -298,7 +301,7 @@ int Minmax2::ballOwner(bool us)
 
 		//printf("%f %f\n", errorA * 180. / PI, errorD);
 
-		if(errorD < 50. && errorA < 5 * PI/180. && errorD < lErrorD && errorA < lErrorA){
+		if(errorD < robot->body().radius() + ball->radius() + 40 && errorA < 5 * PI/180. && errorD < lErrorD && errorA < lErrorA){
 			id = robot->id();
 			lErrorA = errorA;
 			lErrorD = errorD;
