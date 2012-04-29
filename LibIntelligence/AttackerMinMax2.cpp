@@ -110,7 +110,6 @@ bool AttackerMinMax2::getMinDist()
 	return ( r->distance(ball).module() < 500 ); 
 }
 
-//lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
 bool GotoToDriveT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
