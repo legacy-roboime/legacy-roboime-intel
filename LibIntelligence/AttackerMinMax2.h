@@ -26,7 +26,6 @@ namespace LibIntelligence
 			bool hasKick();
 			bool hasPass();
 			void updateSoccerAction(bool hasKick = false, bool hasPass = false, qreal kickPointX = 0, qreal kickPointY = 0, qreal movePointX = 0, qreal movePointY = 0);
-			void step();
 			bool getMinDist(); //se o robo atingiu uma distância mínima para desligar o move do minimax2 e usar skills para pegar a bola
 
 		protected:

@@ -95,14 +95,6 @@ void AttackerMinMax2::updateSoccerAction(bool hasKick, bool hasPass, qreal kickP
 	movePoint_->setY(movePointY);
 }
 
-void AttackerMinMax2::step()
-{
-	Skill* current = (Skill*)this->getCurrentState();
-	this->execute();
-	current->step();
-	//cout << current->objectName().toStdString() << endl;
-}
-
 bool AttackerMinMax2::getMinDist()
 {
 	Robot* r = robot();
