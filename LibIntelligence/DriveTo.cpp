@@ -5,16 +5,16 @@
 #include "Ball.h"
 #include <QLineF>
 
-#define M_PI	3.1415926535897932
-
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-DriveTo::DriveTo(QObject* parent, Robot* slave, qreal angle, QPointF point, qreal threshold, qreal tAngle, qreal speed)
+DriveTo::DriveTo(QObject* parent, Robot* slave, qreal maxErrorD, qreal maxErrorA, qreal bAngle, QPointF point, qreal threshold, qreal tAngle, qreal speed)
 	: Goto(parent, slave)
 {
+	this->maxErrorA = maxErrorA;
+	this->maxErrorD = maxErrorD;
 	this->speed = speed;
-	this->bAngle = angle;
+	this->bAngle = bAngle;
 	this->threshold = threshold;
 	this->bPoint = point;
 	this->tAngle = tAngle;
@@ -63,8 +63,9 @@ bool DriveTo::busy()
 		errorA = 2 * M_PI - errorA;
 
 	//printf("%f %f %f\n", errorA * 180. / M_PI, tAngle, orientation);
+	//cout << maxErrorD << " " << maxErrorA << endl;
 
-	if(errorD < 50. && errorA < 5 * M_PI/180.)
+	if(errorD < maxErrorD && errorA < maxErrorA)
 		return false;
 	else
 		return true;

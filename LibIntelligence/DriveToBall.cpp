@@ -5,16 +5,15 @@
 #include "Ball.h"
 #include <QLineF>
 
-#define M_PI	3.1415926535897932
-#define CART	82.6//110.//170.//82.6
+//#define CART	90.//110.//82.6//170.//82.6
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-DriveToBall::DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed, bool deterministic, qreal maxAngVar)
-	: DriveToObject(parent, slave, slave->stage()->ball(), refLookPoint, speed, deterministic, maxAngVar)
+DriveToBall::DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed, bool deterministic, qreal maxAngVar, qreal maxErrorD, qreal maxErrorA)
+	: DriveToObject(parent, slave, slave->stage()->ball(), slave->stage()->ball()->radius(), refLookPoint, maxErrorD, maxErrorA, speed, deterministic, maxAngVar)
 {
-	threshold = CART;
+	//threshold = CART;
 }
 
 DriveToBall::~DriveToBall(void)
@@ -26,7 +25,7 @@ void DriveToBall::step()
 {
 	Ball* ball = stage()->ball();
 	Robot* robot = this->robot();
-	qreal t = -4*CART;
+	qreal t = -4*threshold;
 
 	//Construindo area de cone para pegar a bola
 	const Object* lkP = getRefLookPoint();

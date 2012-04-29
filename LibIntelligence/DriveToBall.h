@@ -15,7 +15,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed = 3000., bool deterministic = true, qreal maxAngVar = 15.);
+			DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed = 3000., bool deterministic = true, qreal maxAngVar = 15., qreal maxErrorD = 100., qreal maxErrorA = 10 * M_PI/180.);
 			~DriveToBall(void);
 
 			void step();

@@ -5,19 +5,19 @@
 #include "Ball.h"
 #include "Sampler.h"
 
-#define CART	82.6
+//#define CART	90.//100.//110.//82.6
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic, qreal minPower, qreal maxPower, qreal speed, bool pass)
-	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15),
+	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15, 50., 5 * M_PI/180.),
 	minPower_(minPower),
 	maxPower_(maxPower),
 	pass_(pass)
 {
 	//this->setObjectName("SampledKick");
-	threshold = CART;
+	//threshold = CART;
 }
 
 SampledKick::~SampledKick(void)
