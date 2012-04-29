@@ -96,7 +96,6 @@ Zickler43::~Zickler43()
 //	//cout << current->objectName().toStdString() << endl;
 //}
 
-//lembrar q a condition nao eh obrigatoriamente relacionado com o busy(), isso eh soh um reuso de codigo
 bool DriveToDribbleT::condition()
 {
 	return !source_->busy(); 
