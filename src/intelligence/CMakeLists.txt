@@ -98,6 +98,7 @@ set(INT_SRC_CORE_PLAYS
     core/plays/MultiController.cpp
     core/plays/FreeKickThem.cpp
     core/plays/Minmax.cpp
+    core/plays/Minmax2.cpp
     core/plays/Halt.cpp
     core/plays/LinearCombPlay.cpp
     core/plays/StopReferee.cpp
@@ -131,6 +132,7 @@ source_group("Sources\\Core\\Skills" FILES ${INT_SRC_CORE_SKILLS})
 
 set(INT_SRC_CORE_TACTICS
     core/tactics/Attacker.cpp
+    core/tactics/AttackerMinMax2.cpp
     core/tactics/Zickler43.cpp
     core/tactics/Blocker.cpp
     core/tactics/Tactic.cpp
@@ -269,6 +271,7 @@ endforeach()
 set(INT_INC_DIRS
     ${INC_INC_DIRS}
     ${COMM_INC_DIRS}
+    ${SOC_INC_DIRS}
     ${SIM_INC_DIRS}
     PARENT_SCOPE
 )
