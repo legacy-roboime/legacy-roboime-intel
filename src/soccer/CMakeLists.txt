@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 2.8)
 
 include_directories(.)
 file(GLOB SOC_HDR "*.h")
-source_group("Headers" FIES ${SOC_HDR})
+source_group("Headers" FILES ${SOC_HDR})
 
 ##############################
 # Files which will be compiled
