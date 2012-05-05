@@ -36,7 +36,7 @@ void SampledDribble::step()
 	}
 
 	qreal backup = threshold;
-	threshold = 82.6; //para que o robô conduza numa direção é feita uma diminuição do threshold
+	threshold = 50;//82.6; //para que o robô conduza numa direção é feita uma diminuição do threshold
 	DriveToBall::step();
 	threshold = backup;
 }

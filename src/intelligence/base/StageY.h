@@ -14,7 +14,7 @@ namespace LibIntelligence
 
 	public:
 		StageY(const Stage& stage);
-		StageY(const StageY& stage);
+		//StageY(const StageY& stage);
 		~StageY(void);
 		void pushTactic(Tactics::Tactic* tactic, TeamColor color);
 		bool busy(TeamColor color);

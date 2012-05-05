@@ -89,22 +89,22 @@ void LogPlayer::step()
 		//simulation->simulate();
 	}
 
-	QString strr;
-	QDataStream inn(&executeLog); // read the data serialized from the file
-	if(!inn.atEnd()){
-		inn >> strr;
-	}
-	else{
-		cout << "FINAL DO ARQUIVO EXECUTE LOG" << endl;
-	}
-	if(strr.at(0) == '%'){
-		cout << strr.toStdString() << endl;
-	}
-	else{
-		std::string command = strr.toStdString();
-		simulation->parseLegacyString(command);
-		//simulation->simulate();
-	}
+	//QString strr;
+	//QDataStream inn(&executeLog); // read the data serialized from the file
+	//if(!inn.atEnd()){
+	//	inn >> strr;
+	//}
+	//else{
+	//	cout << "FINAL DO ARQUIVO EXECUTE LOG" << endl;
+	//}
+	//if(strr.at(0) == '%'){
+	//	cout << strr.toStdString() << endl;
+	//}
+	//else{
+	//	std::string command = strr.toStdString();
+	//	simulation->parseLegacyString(command);
+	//	//simulation->simulate();
+	//}
 }
 
 void DrawForce(NxActor* actor, NxVec3& forceVec, const NxVec3& color)
@@ -214,6 +214,12 @@ void DrawActorIME(NxActor* actor)
 				while (nShapes--)
 				{
 					DrawShapeIME(shapes[nShapes], NxVec3(5,0.5,0.3)); //Laranja //1,0.5,0
+					static QVector<NxVec3> b = QVector<NxVec3>();
+					b << shapes[nShapes]->getGlobalPosition();
+					for(int i=1; i<b.size(); i++){
+						//DrawForce( actor, b[i] - b[i-1], NxVec3(1,1,0.3) );
+						DrawLine(b[i-1], b[i], NxVec3(1,0,0), 1);
+					}
 				}
 			}
 			else if(strcmp(actor->getName(), "Robo0-1") == 0 || strcmp(actor->getName(), "Robo1-1") == 0 || strcmp(actor->getName(), "Robo2-1") == 0 || strcmp(actor->getName(), "Robo3-1") == 0 || strcmp(actor->getName(), "Robo4-1") == 0 || strcmp(actor->getName(), "Robo5-1") == 0 || strcmp(actor->getName(), "Robo6-1") == 0 || strcmp(actor->getName(), "Robo7-1") == 0  || strcmp(actor->getName(), "Robo8-1") == 0 || strcmp(actor->getName(), "Robo9-1") == 0 || strcmp(actor->getName(), "Robo10-1") == 0)
@@ -238,6 +244,14 @@ void DrawActorIME(NxActor* actor)
 						}
 						else{
 							DrawShapeIME(shapes[nShapes], NxVec3(0.3,0.3,1.)); //Azul
+							if(strcmp(actor->getName(), "Robo0-1") == 0){
+								static QVector<NxVec3> r01 = QVector<NxVec3>();
+								r01 << shapes[nShapes]->getGlobalPosition();
+								for(int i=1; i<r01.size(); i++){
+									//DrawForce( actor, r01[i] - r01[i-1], NxVec3(1,1,0.3) );
+									DrawLine(r01[i-1], r01[i], NxVec3(1,1,0.3), 1);
+								}
+							}
 						}
 					}
 					else{
@@ -783,8 +797,6 @@ void LogPlayer::RenderCallback()
 			for(unsigned int j = 0 ; j < nbActors ; j++ )
 			{
 				DrawActorIME(indexRenderScene.value()->scene->getActors()[j]);
-				//DrawForce( indexRenderScene.value()->scene->getActors()[j], NxVec3(.2,0,0), NxVec3(1,1,1) );
-				//DrawLine(NxVec3(0,0,0), NxVec3(2000,0,0), NxVec3(1,1,1));//, 10);
 				//DrawActor(simulation->gScenes[indexRenderScene]->scene->getActors()[j]);
 				//DrawActorShadow(simulation->gScenes[indexRenderScene]->scene->getActors()[j]);
 				//simulation->allRobots.drawRobots(gDebugVisualization);

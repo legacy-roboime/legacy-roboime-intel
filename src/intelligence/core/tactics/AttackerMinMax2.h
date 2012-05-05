@@ -25,11 +25,13 @@ namespace LibIntelligence
 			Object* movePoint();
 			bool hasKick();
 			bool hasPass();
-			void updateSoccerAction(bool hasKick = false, bool hasPass = false, qreal kickPointX = 0, qreal kickPointY = 0, qreal movePointX = 0, qreal movePointY = 0);
+			void updateSoccerAction(bool hasKick = false, bool hasPass = false, bool getBall = false, qreal kickPointX = 0, qreal kickPointY = 0, qreal movePointX = 0, qreal movePointY = 0);
 			bool getMinDist(); //se o robo atingiu uma distância mínima para desligar o move do minimax2 e usar skills para pegar a bola
+			Skills::SampledDribble* dribble();
+			qreal minDist();
 
 		protected:
-			Skills::DriveToBall* driveToBall_;
+			//Skills::DriveToBall* driveToBall_;
 			Skills::SampledDribble* dribble_;
 			Skills::SampledKick* goalKick_;
 			Skills::SampledKick* pass_;
@@ -38,10 +40,12 @@ namespace LibIntelligence
 			qreal speed;
 
 		private:
+			qreal minDist_;
 			Object* kickPoint_;
 			bool hasKick_;
 			bool hasPass_;
 			Object* movePoint_;
+			Object* dribblePoint_;
 		};
 	}	
 

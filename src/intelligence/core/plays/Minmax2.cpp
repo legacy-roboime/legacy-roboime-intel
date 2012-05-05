@@ -22,17 +22,21 @@ Play(parent,team,stage),
 	log.open(QIODevice::WriteOnly);
 
 	best_action = saction_make(-1);
+	prev_best_action = saction_make(-1);
 	s = sstate_alloc();
+	soccer_env_init();
 
 	if(team->color() == TeamColor::BLUE)
-		s->left_red_side = Stage::isLeftSideBlueGoal();
+		soccer_env()->left_red_side = Stage::isLeftSideBlueGoal();
 	else
-		s->left_red_side = !Stage::isLeftSideBlueGoal();
+		soccer_env()->left_red_side = !Stage::isLeftSideBlueGoal();
 
 	for(int i=0; i < team->size(); i++)
 		_max_skills.push_back( new Goto(this, team->at(i)) );
 
-	attacker = new AttackerMinMax2(this, team->at(0), s->red_speed, s->red_dribble_speed, s->red_pass_speed); //team->at(0) eh soh pra inicializar depois usamos setRobot
+	attacker = new AttackerMinMax2(this, team->at(0), soccer_env()->red_speed, 
+								   soccer_env()->red_dribble_speed, 
+								   soccer_env()->red_pass_speed); //team->at(0) eh soh pra inicializar depois usamos setRobot
 }
 
 
@@ -49,50 +53,89 @@ Minmax2::~Minmax2()
 void Minmax2::step()
 {
 	update_soccer_state();
-	//cout << s->red_ball_owner << endl;
-	//cout << s->blue_ball_owner << endl;
 	best_action = saction_make(-1);
 	minimax_getMaxValue( *s, depth_, alpha_, beta_ );
-	//for(int i=0; i<5; i++)
-	//	printf("DENTRO: %d %f %f\n", i, best_action.move[i].x, best_action.move[i].y);
-	saction_act();
-	//if(best_action.has_kicked || best_action.has_passed) 
-	//	cout << "AEEEEEEEEEEEEEE " << best_action.has_kicked << " " << best_action.has_passed << endl;
+	act();
+	//cout << s->red_ball_owner << " " << s->blue_ball_owner << endl;
+	//cout << teste << endl;
+	//if(best_action.has_kicked){
+	//	cout << best_action.kick_point.x << " " << best_action.kick_point.y << endl;
+	//}
+	prev_best_action = best_action;
 }
 
 
-void Minmax2::saction_act()
+void Minmax2::act()
 {
 	Ball* ball = stage_->ball();
+	int idClosest = stage_->getClosestPlayerToBall(team_)->id();
 
 	for(int i=0; i < team_->size(); i++){
 		Vector2* pos = &best_action.move[i];
 		Robot* robot = team_->at(i);
 
-		attacker->setRobot(robot);
-
-		_max_skills.at(i)->setPoint(robot->x() + pos->x, robot->y() + pos->y);
-
-		if( !attacker->getMinDist() ){
+		if( idClosest != robot->id() ){
 			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
-			qreal orientation = - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
+			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
-			_max_skills.at(i)->setSpeed(s->red_speed);
+			_max_skills.at(i)->setPoint(robot->x() + pos->x, robot->y() + pos->y);
+			_max_skills.at(i)->setSpeed(soccer_env()->red_speed);
 			_max_skills.at(i)->setOrientation(orientation);
 			_max_skills.at(i)->step();
 		}
 		else{
 			//DEBUG
-			//QLineF l = QLineF(robot->x(), robot->y(), pos->x, pos->y);
-			//qreal angle = -l.angle() + 360;
-			//cout << angle << endl;
+			//QLineF l = QLineF(0, 0, pos->x, pos->y);
+			//qreal angle = -l.angle() + 360; //convenção sentido horario para classe QLineF
+			//if(teste > 12) 
+			//	cout << "MOVE " << angle << endl;
+			//else if(teste == 0 && best_action.has_kicked)
+			//	cout << "GOALKICK " << angle << endl;
+			//else if(teste == 0)
+			//	cout << "GETBALL " << angle << endl;
+			//else if(teste > 7)
+			//	cout << "RECV_BALL " << angle << endl;
+			//else
+			//	cout << "PASS_BALL " << angle << endl;
 
-			attacker->updateSoccerAction(best_action.has_kicked, best_action.has_passed, best_action.kick_point.x, best_action.kick_point.y, pos->x, pos->y);
+			attacker->setRobot(robot);
+			attacker->updateSoccerAction(best_action.has_kicked, best_action.has_passed, best_action.get_ball,
+										 best_action.kick_point.x, best_action.kick_point.y, 
+										 robot->x() + pos->x, robot->y() + pos->y);
 			attacker->step();
 		}
 	}
 }
 
+void Minmax2::saction_act( SoccerState *s, SoccerAction *sa )
+{
+	int i, owner;
+
+	if( sa->has_kicked ){
+		printf( "# Goal Scored!!\n" );
+		sstate_restart_game_pos(s);
+		return; 
+	}
+
+	for( i = 0; i < NPLAYERS; i++ ) {
+		s->red[i] = v2_add( s->red[i], sa->move[i] );
+		//  if( v2_sqrnorm( sa->move[i] ) > EPS )
+		//    printf( "# Robot %i moved\n", i );
+	} 
+
+	if( sa->has_passed )
+		printf("# Pass %i -> %i\n", s->red_ball_owner,
+		sa->ball_owner );
+
+	if( (owner = sa->ball_owner) >= 0 ){
+		if(s->red_ball_owner == -1) 
+			printf( "# red %i get ball\n", sa->ball_owner );
+		s->ball = s->red[owner]; 
+		s->red_ball_owner = owner;
+	} 
+
+
+}
 
 void Minmax2::update_soccer_state()
 {
@@ -118,9 +161,7 @@ void Minmax2::update_soccer_state()
 		s->red[i].y = robot->y();
 	}
 
-	//DUVIDA: EH EXCLUSIVO RED E BLUE (SE EXISTE UM RED_BALL_OWNER PODE EXISTIR UM BLUE_BALL_OWNER AO MESMO TEMPO !!?) !??!
-	s->red_ball_owner = ballOwner(true);
-	s->blue_ball_owner = ballOwner(false);
+	ballOwner();
 
 	//TODO: atualizar os campos (parâmetros constantes) da struct Soccer State de s, 
 	//para que nao haja mais de uma fonte de parâmetros constantes, essa implementacao 
@@ -139,7 +180,7 @@ float Minmax2::minimax_getMaxValue(SoccerState s, int depth, float alpha, float 
 
 	if( depth == 0 ){
 		saux = s;
-		//  sstate_red_kick_to_goal(&saux); 
+		sstate_red_kick_to_goal(&saux); 
 		return sstate_evaluate(&saux);
 	}
 	for( i = 0; i < MAX_NPLAYS; i++ ){
@@ -149,6 +190,7 @@ float Minmax2::minimax_getMaxValue(SoccerState s, int depth, float alpha, float 
 			alpha = aux;
 			if( depth == MINIMAX_MAX_LEVEL ){
 				best_action = action;
+				teste = i;
 			}
 			if( action.has_kicked )
 				break;
@@ -194,23 +236,23 @@ SoccerAction Minmax2::minimax_expandMax( SoccerState *s, int i, int depth )
 	if( s->red_ball_owner >= 0 ){
 		switch( i ){
 		case 0: action = sstate_red_kick_to_goal(s); break;
-		case 1: action = sstate_red_pass(s,0, recv_radius ); break;
-		case 3: action = sstate_red_pass(s,1, recv_radius ); break;
-		case 4: action = sstate_red_pass(s,2, recv_radius ); break;
-		case 5: action = sstate_red_pass(s,3, recv_radius ); break;
-		case 6: action = sstate_red_pass(s,4, recv_radius ); break; 
-		case 7: action = sstate_red_pass(s,5, recv_radius ); break; 
+		//case 2: action = sstate_red_pass(s,0, recv_radius ); break;
+		//case 3: action = sstate_red_pass(s,1, recv_radius ); break;
+		//case 4: action = sstate_red_pass(s,2, recv_radius ); break;
+		//case 5: action = sstate_red_pass(s,3, recv_radius ); break;
+		//case 6: action = sstate_red_pass(s,4, recv_radius ); break;
+		//case 7: action = sstate_red_pass(s,5, recv_radius ); break; 
 		}
 	}
 	else{
 		switch( i ){
 		case 0: action = sstate_red_get_ball(s); break;
-		case 8: action = sstate_red_receive_ball(s,0); break; 
-		case 9: action = sstate_red_receive_ball(s,1); break;
-		case 10: action = sstate_red_receive_ball(s,2); break;
-		case 11: action = sstate_red_receive_ball(s,3); break;
-		case 12: action = sstate_red_receive_ball(s,4); break;
-		case 13: action = sstate_red_receive_ball(s,5); break;
+		//case 8: action = sstate_red_receive_ball(s,0); break; 
+		//case 9: action = sstate_red_receive_ball(s,1); break;
+		//case 10: action = sstate_red_receive_ball(s,2); break;
+		//case 11: action = sstate_red_receive_ball(s,3); break;
+		//case 12: action = sstate_red_receive_ball(s,4); break;
+		//case 13: action = sstate_red_receive_ball(s,5); break;
 		}
 	}
 
@@ -222,6 +264,11 @@ SoccerAction Minmax2::minimax_expandMax( SoccerState *s, int i, int depth )
 
 	if( (i >= 43) && ( i < 50) )
 		action = sstate_red_move(s, (1./3)*move_radius );
+
+	if( i == 50 ){
+		saction_act( s, &prev_best_action );
+		action = prev_best_action;
+	}
 
 	return action;
 }
@@ -243,7 +290,6 @@ void Minmax2::minimax_expandMin( SoccerState *s, int i, int depth )
 		case 4: sstate_blue_pass(s,2, recv_radius ); break;
 		case 5: sstate_blue_pass(s,3, recv_radius ); break;
 		case 6: sstate_blue_pass(s,4, recv_radius ); break; 
-		case 7: sstate_blue_pass(s,5, recv_radius ); break; 
 		}
 	}
 	else{
@@ -254,7 +300,6 @@ void Minmax2::minimax_expandMin( SoccerState *s, int i, int depth )
 		case 10: sstate_blue_receive_ball(s,2); break;
 		case 11: sstate_blue_receive_ball(s,3); break;
 		case 12: sstate_blue_receive_ball(s,4); break;
-		case 13: sstate_blue_receive_ball(s,5); break;
 		}
 	}
 
@@ -268,47 +313,26 @@ void Minmax2::minimax_expandMin( SoccerState *s, int i, int depth )
 		sstate_blue_move(s, (1./3)*move_radius );
 }
 
-int Minmax2::ballOwner(bool us)
+void Minmax2::ballOwner()
 {
-	Team* team;
-	qreal lErrorA = MAX_DOUBLE;
-	qreal lErrorD = MAX_DOUBLE;
-	int id = -1;
-	if(us)
-		team = team_;
-	else
-		team_->enemyTeam();
-
-	for(int i=0; i<team->size(); i++){
-		Robot* robot = team->at(i);
-		Ball* ball = stage_->ball();
-
-		qreal x = robot->x();
-		qreal y = robot->y();
-		qreal xL = ball->x();
-		qreal yL = ball->y();
-		qreal errorX = xL - x;
-		qreal errorY = yL - y;
-		qreal errorD = sqrt(errorX*errorX + errorY*errorY);
-
-		qreal angle1 = robot->orientation();
-		QLineF line = QLineF(x, y, xL, yL); 
-		qreal angle2 = PITIMES2 - line.angle() * PI / 180;
-
-		qreal errorA = abs(angle2 - angle1); //angle1 e angle2 entre 0 e 2PI
-		if( errorA > PI )
-			errorA = PITIMES2 - errorA;
-
-		//printf("%f %f\n", errorA * 180. / PI, errorD);
-
-		if(errorD < robot->body().radius() + ball->radius() + 40 && errorA < 5 * PI/180. && errorD < lErrorD && errorA < lErrorA){
-			id = robot->id();
-			lErrorA = errorA;
-			lErrorD = errorD;
+	//TODO: criar a faixa de transição do estado owner para a area entre dois circulos
+	Ball* ball = stage_->ball();
+	s->red_ball_owner = -1;
+	s->blue_ball_owner = -1;
+	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
+	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
+	qreal mDist = (mRobot->distance(ball)).module();
+	qreal tDist = (tRobot->distance(ball)).module();
+	if(mDist <= tDist){
+		if(mDist < attacker->minDist()){
+			s->red_ball_owner = mRobot->id();
+			s->blue_ball_owner = -1;
 		}
-		else
-			continue;
 	}
-
-	return id;
+	else{
+		if(tDist < attacker->minDist()){
+			s->blue_ball_owner = tRobot->id();
+			s->red_ball_owner = -1;
+		}
+	}
 }

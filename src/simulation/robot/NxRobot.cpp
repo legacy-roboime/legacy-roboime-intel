@@ -616,7 +616,7 @@ void NxRobot::controlWheels( NxReal* wheelsSpeeds )
 	//printf("TORQUES: %f %f %f %f\n",torqueWheels[0], torqueWheels[1], torqueWheels[2], torqueWheels[3] );
 	//LIMITANTE DE TORQUE
 	NxReal biggestValue = NxMath1::getBiggestAbsoluteValue(torqueWheels, nbWheels);
-	if(biggestValue > 1.){
+	if(biggestValue > 0.1){
 		//TODO: Levantar esse parametro http://www.robotshop.com/lynxmotion-ghm-04-gear-head-motor.html Torque: 99.04oz.in (7.1 Kg-cm) Reduction: 50:1
 		NxReal maxTorque = 7100.;//4100.;//
 		if(biggestValue > maxTorque){

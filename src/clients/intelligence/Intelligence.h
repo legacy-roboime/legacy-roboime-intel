@@ -11,6 +11,7 @@
 #include "Skill.h"
 #include "Tactic.h"
 #include "Play.h"
+#include "Plays.h"
 #include "KalmanFilters.h"
 #include "Tactics.h"
 
@@ -48,9 +49,15 @@ private:
 	Ball* ball;
 	KalmanFilters* filter;
 
+	Goalkeeper* player0;
+	Defender* player1;
+	Defender* player2;
+	Defender* player3;
+	Attacker* player4;
+
 	Play* halt;
 	Play* stopReferee;
-	Play* cbr2011;
+	Plays::CBR2011* cbr2011;
 	//Play* freeKickThem;
 	Play* play;
 	Tactic* controller;
@@ -60,6 +67,7 @@ private:
 	Skill* skill3;
 	Tactic* machine;
 	Tactics::Attacker* tactic;
+	Tactics::AttackerMinMax2* attacker;
 };
 
 #endif // INTELLIGENCE_H

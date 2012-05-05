@@ -75,19 +75,26 @@ Intelligence::Intelligence(QObject *parent)
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
 
 	skill1 = new Move(this, myTeam->at(1), 0, 0, 12.);
-	skill2 = new DriveToBall(this, myTeam->at(1), enemyTeam->at(1));
-	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->goal(), false, 0, 1, 3000./6.);//DriveToBall(this, myTeam->at(1), new Object(1000,0), 1000, true);//Move(this, myTeam->at(1), 0, 0, 10);//SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 1, 1, 1000, true);//DriveTo(this, myTeam->at(1), 3.14/6., QPointF(0,0), 1000, 0, 1000);//Move(this, myTeam->at(1), 200, 0, 0);//SampledKick(this, myTeam->at(1), enemyTeam->at(1), true, 0, 1, 1000, true);//SampledKick(this, myTeam->at(1), enemyTeam->goal(), false);
+	skill2 = new SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 0, 1, 500, false);
+	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->at(1), true, 1, 1, 1000);
 
 	tactic = new Attacker(this, enemyTeam->at(1), 3000);
-	machine = new Zickler43(this, myTeam->at(1), 3000, false);
+	machine = new Zickler43(this, enemyTeam->at(1), 3000, false);
 
 	halt = new Plays::Halt(this, myTeam, sta);
 	stopReferee = new Plays::StopReferee(this, myTeam, sta);
 	cbr2011 = new Plays::CBR2011(this, enemyTeam, sta);
-	play = new Plays::Minmax2(this, myTeam, sta);
+	//play = new Plays::Minmax2(this, myTeam, sta);
+	attacker =  new AttackerMinMax2(this, myTeam->at(1), 3000);
 	//play = new Plays::BGT(this, myTeam, sta);
-	//play = new Plays::Minmax(this, myTeam, sta);
+	play = new Plays::Minmax2(this, myTeam, sta);
 	//freeKickThem = new Plays::FreeKickThem(this, &myTeam, sta);
+
+	player0 = new Goalkeeper(this, enemyTeam->at(0),1000);
+	player1 = new Defender(this, enemyTeam->at(1), 0, 1000);
+	player2 = new Defender(this, enemyTeam->at(2), 0, 1000);
+	player3 = new Defender(this, enemyTeam->at(3), 0, 1000);
+	player4 = new Attacker(this, enemyTeam->at(4), 1000);
 	
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -199,16 +206,21 @@ void Intelligence::update() {
 
 	//controller->step();
 	//gotoold->step();
-	//cbr2011->step();
+	cbr2011->step();
 	//machine->step();
 	//((Skill*)machine->configuration().toList().at(1))->step();
-	//cbr2011->step();
-	//play->step();
+	//player0->step();
+	//player1->step();
+	//player2->step();
+	//player3->step();
+	//player4->step();
+	play->step();
+	//attacker->step();
 	//skill3->step();
 	//if(!skill3->busy()) cout << "DESOCUPADO!!!" << endl;
 	//else cout << "OCUPADO!!!" << endl;
 	//tactic->step();
-	skill1->step();
+	//skill1->step();
 	//tactic->step();
 
 

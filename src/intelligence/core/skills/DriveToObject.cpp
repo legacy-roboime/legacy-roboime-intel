@@ -3,13 +3,13 @@
 #include "Robot.h"
 #include "Sampler.h"
 
-//#define CART	90.//110.//82.6 //TODO: colocar atributo raio do objeto para se calcular o valor CART
+#define CART	70 //DISTANCIA DO CORTE DA CARRENAGEM
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 DriveToObject::DriveToObject(QObject* parent, Robot* slave, const Object* object, qreal radiusObj, const Object* refLookPoint, qreal maxErrorD, qreal maxErrorA, qreal speed, bool deterministic, qreal maxAngVar)
-	: DriveTo(parent, slave, maxErrorD, maxErrorA, 0, QPointF(0,0), slave->body().radius() + radiusObj, 0, speed),
+	: DriveTo(parent, slave, maxErrorD, maxErrorA, 0, QPointF(0,0), CART/*slave->body().radius()*/ + radiusObj, 0, speed),
 	refLookPoint_(refLookPoint),
 	lookPoint(new Object()),
 	maxAngVar_(maxAngVar)

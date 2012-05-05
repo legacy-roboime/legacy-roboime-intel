@@ -6,6 +6,7 @@
 #include "Stage.h"
 #include "StageY.h"
 #include "UpdaterSIMi.h"
+#include <QVector>
 
 class Simulation;
 
@@ -17,7 +18,7 @@ namespace LibIntelligence
 
 	public:
 		StageX(const Stage& stage);
-		StageX(const StageY& stage);
+		//StageX(const StageY& stage);
 		~StageX();
 		
 		void simulate(const qreal timeStep = 1./60.);
@@ -36,6 +37,10 @@ namespace LibIntelligence
 		uint sceneNumber;
 		bool built;
 		UpdaterSIMi* updater;
+	public:
+		QVector<QVector<float>>* lastWheelSpeed;
+		QVector<QVector<float>>* lastDesiredWheelSpeed;
+		QVector<QVector<float>>* lastWheelTorque;
 	};
 }
 

@@ -1,22 +1,31 @@
-#ifndef VORONOI_STATE
-#define VORONOI_STATE
+#ifndef SOCCER_H
+#define SOCCER_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #include "vector.h"
-
-#ifdef __cplusplus
-}
-
-#endif
-
+#include "soccer_env.h"
 #include <time.h>
 
 #define NPLAYERS 5
 
 #define DRAND()   ((float)rand()/(float)RAND_MAX)
+
+/*
+#define DEBUG(s)            printf(s) 
+#define DEBUG2(s,a,b)       printf(s,a,b)
+#define DEBUG3(s,a,b,c)     printf(s,a,b,c)
+#define DEBUG4(s,a,b,c,d)   printf(s,a,b,c,d)
+#define DEBUG5(s,a,b,c,d,e) printf(s,a,b,c,d,e)
+*/
+
+#define DEBUG(s)             ;
+#define DEBUG2(s,a,b)        ;
+#define DEBUG3(s,a,b,c)      ;
+#define DEBUG4(s,a,b,c,d)    ;
+#define DEBUG5(s,a,b,c,d,e)  ;
 
 typedef struct SoccerAction{
  Vector2 move[NPLAYERS];  
@@ -24,6 +33,7 @@ typedef struct SoccerAction{
  Boolean has_passed;
  Vector2 kick_point;
  int ball_owner;
+ Boolean get_ball;
 } SoccerAction;
 
 
@@ -40,19 +50,6 @@ typedef struct SoccerState{
   int red_ball_owner;
   int blue_ball_owner;
 
-  float red_speed;
-  float blue_speed;
-  float red_dribble_speed;
-  float blue_dribble_speed;
-  float red_pass_speed;
-  float blue_pass_speed;
-
-  float robot_radius;
-  float goal_size;
-  float field_w, field_h;
-
-  Boolean left_red_side;
- 
 } SoccerState;
 
 
@@ -101,5 +98,9 @@ int sstate_closest_blue( SoccerState *s, Vector2 p );
 
 float sstate_time_to_red_get_ball( SoccerState *s, int *closest );
 float sstate_time_to_blue_get_ball( SoccerState *s, int *closest );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

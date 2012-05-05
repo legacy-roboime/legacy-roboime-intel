@@ -10,6 +10,8 @@ SoccerAction saction_make( int ball_owner )
  action.has_kicked = FALSE; 
  action.has_passed = FALSE;
  action.ball_owner = ball_owner;
+ action.kick_point = v2_make(0,0);
+ action.get_ball = FALSE;
  return action;
 }
 

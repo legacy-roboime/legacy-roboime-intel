@@ -16,10 +16,6 @@ StageX::StageX(const Stage& stage)
 	StageY(stage)
 {
 	updater = new UpdaterSIMi(this);
-	if(!init){
-		sim->initSimulation(MAX_NUMBER_SCENES);
-		init = true;
-	}
 
 	Ball* ball = this->ball();
 	updater->add(ball);
@@ -45,43 +41,76 @@ StageX::StageX(const Stage& stage)
 		printf("TODAS CENAS DO SIMULADOR ESTÃO OCUPADAS\n");
 		delete this;
 	}
-}
 
-StageX::StageX(const StageY& stage)
-	: built(false), 
-	StageY(stage)
-{
-	updater = new UpdaterSIMi(this);
 	if(!init){
 		sim->initSimulation(MAX_NUMBER_SCENES);
 		init = true;
-	}
 
-	Ball* ball = this->ball();
-	updater->add(ball);
-	updater->add(this);
-	Team* blueTeam = this->blueTeam();
-	Team* yellowTeam =this->yellowTeam();
-	for(int i=0; i<blueTeam->size(); i++){
-		updater->add(blueTeam->at(i));
-	}
-	for(int i=0; i<yellowTeam->size(); i++){
-		updater->add(yellowTeam->at(i));
-	}
-
-	sceneNumber = -1;
-	for(int i=0; i<MAX_NUMBER_SCENES; i++){
-		if(busyScenes[i] == false){
-			busyScenes[i] = true;
-			sceneNumber = i; 
-			break;
+		NxAllRobots* robots = sim->gScenes[sceneNumber]->allRobots;
+		int nbRobots = robots->getRobots().size();
+		QVector<float> wheels = QVector<float>(robots->getRobotByIdByTeam(0, 0)->getNbWheels()); //supondo robos com quantidade de rodas identicas
+		lastWheelSpeed = new QVector<QVector<float>>();
+		lastDesiredWheelSpeed = new QVector<QVector<float>>();
+		lastWheelTorque = new QVector<QVector<float>>();
+		for(int i=0; i<nbRobots; i++){
+			lastWheelSpeed->push_back(wheels);
+			lastDesiredWheelSpeed->push_back(wheels);
+			lastWheelTorque->push_back(wheels);
 		}
 	}
-	if(sceneNumber==-1){
-		printf("TODAS CENAS DO SIMULADOR ESTÃO OCUPADAS\n");
-		delete this;
+	else{
+		const StageX& s = (const StageX&) stage;
+		lastWheelSpeed = new QVector<QVector<float>>(*(s.lastWheelSpeed));
+		lastDesiredWheelSpeed = new QVector<QVector<float>>(*(s.lastDesiredWheelSpeed));
+		lastWheelTorque =  new QVector<QVector<float>>(*(s.lastWheelTorque));
 	}
 }
+
+//StageX::StageX(const StageY& stage)
+//	: built(false), 
+//	StageY(stage)
+//{
+//	updater = new UpdaterSIMi(this);
+//
+//	if(!init){
+//		sim->initSimulation(MAX_NUMBER_SCENES);
+//		init = true;
+//	}
+//
+//	Ball* ball = this->ball();
+//	updater->add(ball);
+//	updater->add(this);
+//	Team* blueTeam = this->blueTeam();
+//	Team* yellowTeam =this->yellowTeam();
+//	for(int i=0; i<blueTeam->size(); i++){
+//		updater->add(blueTeam->at(i));
+//	}
+//	for(int i=0; i<yellowTeam->size(); i++){
+//		updater->add(yellowTeam->at(i));
+//	}
+//
+//	sceneNumber = -1;
+//	for(int i=0; i<MAX_NUMBER_SCENES; i++){
+//		if(busyScenes[i] == false){
+//			busyScenes[i] = true;
+//			sceneNumber = i; 
+//			break;
+//		}
+//	}
+//	if(sceneNumber==-1){
+//		printf("TODAS CENAS DO SIMULADOR ESTÃO OCUPADAS\n");
+//		delete this;
+//	}
+//
+//	NxAllRobots* robots = sim->gScenes[sceneNumber]->allRobots;
+//	int nbRobots = robots->getRobots().size();
+//	QVector<float> wheels = QVector<float>(robots->getRobotByIdByTeam(0, 0)->getNbWheels()); //supondo robos com quantidade de rodas identicas
+//	for(int i=0; i<nbRobots; i++){
+//		lastWheelSpeed.push_back(wheels);
+//		lastDesiredWheelSpeed.push_back(wheels);
+//		lastWheelTorque.push_back(wheels);
+//	}
+//}
 
 StageX::~StageX()
 {
@@ -89,6 +118,9 @@ StageX::~StageX()
 		busyScenes[sceneNumber] = false; 
 	//if(updater)
 	//	delete updater;
+	delete lastWheelSpeed;
+	delete lastDesiredWheelSpeed;
+	delete lastWheelTorque;
 }
 
 void StageX::releaseScene()
@@ -123,9 +155,17 @@ void StageX::build()
 		//robot->putToSleep();
 		NxActor* actor = robot->getActor();
 		actor->setLinearVelocity(NxVec3(r->speedX(), r->speedY(), r->speedZ()));
+		//cout << r->speedX() << " " << r->speedY() << " " << r->speedZ() << endl;
 		actor->setAngularVelocity(NxVec3(0, 0, r->angSpeedZ()));
 		robot->dribbler->speedToExecute = r->dribbler().speed();
 		robot->kicker->controlKicker(r->kicker().speed(), robot);
+		for(int j=0; j<robot->getNbWheels(); j++){
+			NxWheel* wheel = robot->getWheel(j);
+			wheel->lastDesiredWheelSpeed = lastDesiredWheelSpeed->at(i).at(j);
+			wheel->lastWheelSpeed = lastWheelSpeed->at(i).at(j);
+			wheel->lastWheelTorque = lastWheelTorque->at(i).at(j);
+			//cout << "ATUALIZANDO " << wheel->lastDesiredWheelSpeed << " " << wheel->lastWheelSpeed << " " << wheel->lastWheelTorque << endl;
+		}
 	}
 
 	//ball
@@ -167,27 +207,50 @@ void StageX::simulate(const qreal t)
 		r->newCommand();
 	}
 
+	//cout << "ANTES " << robotsA[4]->getActor()->getLinearVelocity().x << " " << robotsA[4]->getActor()->getLinearVelocity().y << " " << robotsA[4]->getActor()->getAngularVelocity().z << endl;
+
 	// simular
 	sim->simulate(sceneNumber, t);
 
+	//cout << "DEPOIS " <<  robotsA[4]->getActor()->getLinearVelocity().x << " " << robotsA[4]->getActor()->getLinearVelocity().y << " " << robotsA[4]->getActor()->getAngularVelocity().z << endl;
+
 	// atualizar StageX pelos dados da cena (pelo SSL_WrapperPacket)
-	SSL_WrapperPacket packet = sim->getSSLWrapper(sceneNumber);
+	SSL_WrapperPacket packet = sim->getSSLWrapper(sceneNumber, t);
 	updater->addPacket(&packet);
 	updater->step();
-	updater->apply();
-	// atualizar StageX com dados 3D
+	updater->apply(); //TODO: NAO EXECUTAR O UPDATESPEED DAS CLASSES UPDATEROBOT E UPDATEBALL
 	for(int n = 0; n < robotsA.size(); n++) {
 		NxRobot* robot = robotsA[n];
 		int idTeam = robot->getIdTeam();
 		Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
 		NxActor* actor = robot->getActor();
+		NxVec3 rSpeed = actor->getLinearVelocity();
+		// atualizar velocidades que poderiam ser calculadas pelos dados da visao
+		r->setSpeedX(rSpeed.x);
+		r->setSpeedY(rSpeed.y);
+		r->setAngSpeedZ(actor->getAngularVelocity().z);
+		// atualizar StageX com dados 3D
 		r->setZ(actor->getGlobalPosition().z);
-		r->setSpeedZ(actor->getLinearVelocity().z);
+		r->setSpeedZ(rSpeed.z);
+		// atualizar controle
+		for(int j=0; j<robot->getNbWheels(); j++){
+			NxWheel* wheel = robot->getWheel(j);
+			(*lastDesiredWheelSpeed)[n][j] = wheel->lastDesiredWheelSpeed;
+			(*lastWheelSpeed)[n][j] = wheel->lastWheelSpeed;
+			(*lastWheelTorque)[n][j] = wheel->lastWheelTorque;
+			//cout << "COPIANDO " << (*lastDesiredWheelSpeed)[n][j] << " " << (*lastWheelSpeed)[n][j] << " " << (*lastWheelTorque)[n][j] << endl;
+		}
 	}
 	Ball* ball = this->ball();
 	NxActor* b = scene->ball->ball;
+	NxVec3 ballSpeed = b->getLinearVelocity();
+	// atualizar velocidades que poderiam ser calculadas pelos dados da visao
+	ball->setSpeedX(ballSpeed.x);
+	ball->setSpeedY(ballSpeed.y);
+	ball->setAngSpeedZ(b->getAngularVelocity().z);
+	// atualizar StageX com dados 3D
 	ball->setZ(b->getGlobalPosition().z);
-	ball->setSpeedZ(b->getLinearVelocity().z);
+	ball->setSpeedZ(ballSpeed.z);
 }
 
 uint StageX::getSceneNumber()

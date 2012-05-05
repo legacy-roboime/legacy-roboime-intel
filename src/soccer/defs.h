@@ -6,6 +6,10 @@
 #ifndef DEFS_H
 #define DEFS_H 1
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -125,6 +129,10 @@ typedef unsigned int Boolean;			/* boolean data type */
 typedef Boolean Flag;			/* flag data type */
 
 typedef double Real;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

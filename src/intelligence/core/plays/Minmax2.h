@@ -9,16 +9,7 @@
 #include <QFile>
 #include <QDataStream>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "soccer.h"
-
-#ifdef __cplusplus
-}
-
-#endif
 
 #define MAX_NPLAYS 23//23//15//50
 #define MIN_NPLAYS 23//23//15//50
@@ -36,11 +27,13 @@ namespace LibIntelligence
 
 		private:
 			QFile log; 
+			int teste;
 
 			AttackerMinMax2* attacker;
 			QVector<Goto*> _max_skills;
 			SoccerState *s;
 			SoccerAction best_action;
+			SoccerAction prev_best_action;
 			int depth_;
 			float alpha_;
 			float beta_;
@@ -51,9 +44,10 @@ namespace LibIntelligence
 			float minimax_getMinValue( SoccerState s, int depth, float alpha, float beta );
 			SoccerAction minimax_expandMax( SoccerState *s, int i, int depth );
 			void minimax_expandMin( SoccerState *s, int i, int depth );
-			void saction_act();
+			void act();
+			void saction_act( SoccerState *s, SoccerAction *sa );
 			void update_soccer_state();
-			int ballOwner(bool us);
+			void ballOwner();
 
 		public:
 			Minmax2(QObject *parent, Team* team ,Stage* stage, int depth = MINIMAX_MAX_LEVEL, float alpha = -MAX_FLOAT, float beta = MAX_FLOAT, qreal speed = 3000.);

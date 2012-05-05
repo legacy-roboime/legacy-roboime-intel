@@ -132,7 +132,7 @@ public:
 
 	string parseLegacyString(string);
 	void append(const QString& data);
-	SSL_WrapperPacket getSSLWrapper(int sceneNumber);
+	SSL_WrapperPacket getSSLWrapper(int sceneNumber, float deltaTime = -1);
 
 	//interface para inteligencia (direta)
 	bool initSimulation( int nbScenes ); 

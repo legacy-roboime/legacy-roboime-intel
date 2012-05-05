@@ -52,7 +52,9 @@ void SampledKick::step()
 			power = maxPower_;
 	}
 
-	robot->kick(power);
+	if(!busy())
+		robot->kick(power);
+
 	robot->dribble(0.5); //pegar bola
 
 	DriveToBall::step();

@@ -98,7 +98,10 @@ Zickler43::~Zickler43()
 
 bool DriveToDribbleT::condition()
 {
-	return !source_->busy(); 
+	Zickler43* z = (Zickler43*) this->parent();
+	Robot* r = z->robot();
+	Ball*b = z->stage()->ball();
+	return !source_->busy(); //r->distance(b).module() < 400;//
 }
 
 DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

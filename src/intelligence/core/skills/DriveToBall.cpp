@@ -11,7 +11,8 @@ using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 DriveToBall::DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed, bool deterministic, qreal maxAngVar, qreal maxErrorD, qreal maxErrorA)
-	: DriveToObject(parent, slave, slave->stage()->ball(), slave->stage()->ball()->radius(), refLookPoint, maxErrorD, maxErrorA, speed, deterministic, maxAngVar)
+	: DriveToObject(parent, slave, slave->stage()->ball(), slave->stage()->ball()->radius(), refLookPoint, maxErrorD, maxErrorA, speed, deterministic, maxAngVar),
+	inCone(false)
 {
 	//threshold = CART;
 }
@@ -25,26 +26,53 @@ void DriveToBall::step()
 {
 	Ball* ball = stage()->ball();
 	Robot* robot = this->robot();
+
 	qreal t = -4*threshold;
 
-	//Construindo area de cone para pegar a bola
+	//Cone maior
 	const Object* lkP = getRefLookPoint();
 	QLineF target = QLineF(ball->x(), ball->y(), lkP->x(), lkP->y());
-	qreal angle = 80;
+	qreal angle = 75;
 	target.setLength(t);
 	target.setAngle(target.angle() + angle);
 	QLineF target2 = target;
 	target.setAngle(target.angle() - 2*angle);
 	QLineF target3 = QLineF(ball->x(), ball->y(), robot->x(), robot->y());
 
-	qreal ang2 = target2.angle();
-	qreal ang3 = target3.angle();
-	qreal ang = target.angle();
+	qreal ang2 = target2.angle(); //angulo do cone maior obtido girando no sentido horario
+	qreal ang3 = target3.angle(); //angulo da linha que liga bola pro robo
+	qreal ang = target.angle(); //angulo do cone maior obtido girando no sentido anti-horario
 
-	if(!( (ang2 > ang && ( ang3 < ang2 && ang3 > ang ) ) || (ang2 < ang && ( ang3 < ang2 || ang3 > ang ) ) )){ //nao esta dentro do cone
-		qreal goAng = 15;
-		target.setAngle(target.angle() + goAng);
-		target2.setAngle(target2.angle() - goAng);
+	//Cone Menor
+	qreal goAng = 15;
+	target.setAngle(target.angle() + goAng);
+	target2.setAngle(target2.angle() - goAng);
+	qreal ang4 = target.angle(); //angulo do cone menor obtido girando no sentido anti-horario
+	qreal ang5 = target2.angle(); //angulo do cone menor obtido girando no sentido horario
+
+	//Verificando mudança de estado
+	if(inCone){
+		if(!( (ang2 > ang && ( ang3 < ang2 && ang3 > ang ) ) || 
+			  (ang2 < ang && ( ang3 < ang2 || ang3 > ang ) ) )){ //n esta dentro do cone maior
+
+			inCone = false;
+		}
+	}
+	else{
+		if( (ang5 > ang4 && ( ang3 < ang5 && ang3 > ang4 ) ) || 
+			(ang5 < ang4 && ( ang3 < ang5 || ang3 > ang4 ) ) ){ //esta dentro do cone menor
+
+			inCone = true;
+		}
+	}
+
+	if(inCone){ //esta dentro do cone
+
+		DriveToObject::step();
+		//cout << "DENTRO" << endl;
+	}
+	else{ //nao esta dentro do cone
+
 		Object aux2 = Object(target.p2().x(),target.p2().y());
 		Object aux1 = Object(target2.p2().x(),target2.p2().y());
 
@@ -66,11 +94,8 @@ void DriveToBall::step()
 
 		setRefLookPoint(lkP);
 		//cout << "FORA" << endl;
-	}
-	else{ //esta dentro do cone
-		DriveToObject::step();
-		
-		//cout << "DENTRO" << endl;
+
+		//robot->dribble(0);
 	}
 }
 

@@ -1537,7 +1537,7 @@ string Simulation::parseLegacyString(string s) {
 	return sendString;
 }
 
-SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber){
+SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber, float deltaTime){
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -1548,7 +1548,12 @@ SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber){
 	//timeval tv;
 	//TimePosix::gettimeofday(&tv,NULL);
 	//double time = (double)tv.tv_sec + tv.tv_usec*(1.0E-6);
-	double time = QDateTime::currentMSecsSinceEpoch() * 1.0E-3;
+	static unsigned double time = 0;
+	
+	if(deltaTime <= 0)
+		time = QDateTime::currentMSecsSinceEpoch() * 1.0E-3;
+	else
+		time += deltaTime * 1000.;
 
 	if(true)//withDetection)
 	{

@@ -15,8 +15,10 @@ source_group("Headers" FILES ${SOC_HDR})
 set(SOC_SRC
     vector.c
     soccer.c
-    soccer_aux.c
     soccer_action.c
+    soccer_blue.c
+    soccer_red.c
+    soccer_env.c
 )
 source_group("Sources" FILES ${SOC_SRC})
 

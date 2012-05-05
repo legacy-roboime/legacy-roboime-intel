@@ -22,6 +22,7 @@ namespace LibIntelligence
 			bool busy(); 
 
 		private:
+			bool inCone;
 		};
 	}
 }
