@@ -5,6 +5,8 @@ project(RoboIME)
 
 
 add_subdirectory(communication)
+add_subdirectory(utils/samplescommoncode)
+add_subdirectory(utils/nxustream2)
 add_subdirectory(simulation)
 add_subdirectory(soccer)
 add_subdirectory(intelligence)

@@ -79,11 +79,9 @@ set(SIM_SRC
 #
 
 # SamplesCommonCode
-add_subdirectory(samplescommoncode)
 include_directories(${SCC_INC_DIRS})
 
 # NxuStream2
-add_subdirectory(nxustream2)
 include_directories(${NXU_INC_DIRS})
 
 # Communication

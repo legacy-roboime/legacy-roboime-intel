@@ -24,19 +24,19 @@ source_group("Headers\\Core" FILES ${INT_HDR})
 file(GLOB INT_HDR "core/filters/*.h")
 source_group("Headers\\Core\\Filters" FILES ${INT_HDR})
 
-file(GLOB INT_HDR "core/plays*.h")
+file(GLOB INT_HDR "core/plays/*.h")
 source_group("Headers\\Core\\Plays" FILES ${INT_HDR})
 
-file(GLOB INT_HDR "core/skills*.h")
+file(GLOB INT_HDR "core/skills/*.h")
 source_group("Headers\\Core\\Skills" FILES ${INT_HDR})
 
-file(GLOB INT_HDR "core/tactics*.h")
+file(GLOB INT_HDR "core/tactics/*.h")
 source_group("Headers\\Core\\Tactics" FILES ${INT_HDR})
 
 file(GLOB INT_HDR "interface/*.h")
 source_group("Headers\\Interface" FILES ${INT_HDR})
 
-file(GLOB INT_HDR "interface/base*.h")
+file(GLOB INT_HDR "interface/base/*.h")
 source_group("Headers\\Interface\\Base" FILES ${INT_HDR})
 
 file(GLOB INT_HDR "interface/commanders/*.h")
