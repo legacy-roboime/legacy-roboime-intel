@@ -7,20 +7,19 @@ SoccerAction sstate_red_get_ball( SoccerState *s )
 {
  float t;
  int closest_red, closest_blue;
- SoccerAction action = saction_make(s->red_ball_owner);
+ SoccerAction action = saction_red_make(s);
 
  if( (s->red_ball_owner < 0) && (s->blue_ball_owner < 0) ){
-   if( (t =  sstate_time_to_red_get_ball( s, &closest_red )) <
-       sstate_time_to_blue_get_ball( s, &closest_blue ) && ( t > 0 ) ){
+   if( ((t =  sstate_time_to_red_get_ball( s, &closest_red )) <
+       sstate_time_to_blue_get_ball( s, &closest_blue )) && ( t > 0 ) ){
           DEBUG("red get ball\n");  
         s->ball = v2_add( s->ball, v2_scale( t, s->ball_vel ) );
         s->ball_vel = v2_make(0,0);
-        action.move[closest_red] = v2_sub( s->ball, s->red[closest_red] );
-		//printf("%f %f\n",action.move[closest_red].x, action.move[closest_red].y);
+        action.move[closest_red] = s->ball;
         s->red[closest_red] = s->ball;
         s->red_ball_owner = closest_red;  
         action.ball_owner = closest_red;
-		action.get_ball = TRUE;
+        action.prune = FALSE;
    }
  }
  return action;
@@ -31,23 +30,25 @@ SoccerAction sstate_red_receive_ball( SoccerState *s, int recv )
 {
  float t, time_to_blue_block, time_to_receive;
  int closest_blue;
- SoccerAction action = saction_make(s->red_ball_owner);
+ SoccerAction action = saction_red_make(s);
 
- if( (s->red_ball_owner >= 0) || (s->blue_ball_owner >= 0) )
+ if( (s->red_ball_owner >= 0) || (s->blue_ball_owner >= 0) ) 
     return action;
  
  time_to_blue_block = sstate_time_to_blue_get_ball( s, &closest_blue ); 
  time_to_receive = time_to_intersect( s->ball, s->ball_vel, s->red[recv], 
-	                                  v2_norm( s->ball_vel ), soccer_env()->red_speed );
+                                      v2_norm( s->ball_vel ), 
+                                      soccer_env()->red_speed );
 
  if( (time_to_receive > 0 ) && (time_to_blue_block > time_to_receive) ){
    t = DRAND()*( time_to_blue_block - time_to_receive ) + time_to_receive;
    s->ball = v2_add( s->ball, v2_scale( t, s->ball_vel ) );  
    s->ball_vel = v2_make(0,0);
-   action.move[recv] = v2_sub( s->ball, s->red[recv] );
+   action.move[recv] = s->ball;
    s->red[recv] = s->ball;
    s->red_ball_owner = recv;  
    action.ball_owner = recv;
+   action.prune = FALSE;
  }
  return action;
 }
@@ -57,26 +58,29 @@ SoccerAction sstate_red_kick_to_goal( SoccerState *s )
 {
  float k;
  Vector2 p;
- SoccerAction action = saction_make(s->red_ball_owner);
+ SoccerAction action = saction_red_make(s);
 
- if( (s->red_ball_owner >= 0) && (s->blue_ball_owner < 0) ){
-   for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size; k += soccer_env()->robot_radius ){ 
-	 if(soccer_env()->left_red_side)
-       p =  v2_make( + soccer_env()->field_w * .5, k );
-	 else
-	   p =  v2_make( - soccer_env()->field_w * .5, k );
-     is_red_kick_scored(s, p );
-     if( s->goal_scored ){
-       action.has_kicked = TRUE;
-       action.ball_owner = -1;
-	   action.kick_point = p;
-       DEBUG( "goal scored!!!\n" );
-       return action;
-     }
+ if( (s->red_ball_owner >= 0) && (s->blue_ball_owner < 0) &&
+      (v2_norm( v2_sub( s->ball, v2_make( -soccer_env()->hfield_w, 0 ))) <
+       soccer_env()->max_red_kick_dist) ){
+   s->blue_goal_covering = 1;
+   for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
+        k += soccer_env()->robot_radius ){ 
+          p =  v2_make( -soccer_env()->hfield_w, k );
+          is_red_kick_scored(s, p );
+          if( s->goal_scored ){
+              s->blue_goal_covering -= (soccer_env()->robot_radius/
+                                        soccer_env()->goal_size);
+              action.has_kicked = TRUE;
+              action.enemy_goal_covering = s->blue_goal_covering;
+              action.ball_owner = -1;
+              DEBUG( "goal scored!!!\n" );
+              action.prune = FALSE;
+          }
    }
  }
  return action;
-}   
+}  
 
 
 static void is_red_kick_scored( SoccerState *s, Vector2 goal )
@@ -86,7 +90,6 @@ static void is_red_kick_scored( SoccerState *s, Vector2 goal )
  Vector2 goal_direction, enemy_relpos, proj;
 
  s->goal_scored = TRUE;
-
  for( i = 0; i < NPLAYERS; i++ ){
        goal_direction = v2_unit( v2_sub( goal, s->red[s->red_ball_owner] ) );
        enemy_relpos = v2_sub( s->blue[i], s->red[s->red_ball_owner] );
@@ -103,7 +106,7 @@ SoccerAction sstate_red_pass( SoccerState *s, int recv, float recv_radius )
 {
  double t;
  Vector2 p, new_recv_pos;
- SoccerAction action = saction_make(s->red_ball_owner);
+ SoccerAction action = saction_red_make(s);
 
  if( (s->red_ball_owner >= 0) && (s->red_ball_owner != recv ) &&
      (s->blue_ball_owner < 0) ){
@@ -112,49 +115,55 @@ SoccerAction sstate_red_pass( SoccerState *s, int recv, float recv_radius )
         new_recv_pos = v2_add( s->red[recv], p );
         if( (t = sstate_possible_red_pass( s, recv, new_recv_pos )) > 0 ){
            DEBUG2( "red pass: %i -> %i\n", s->red_ball_owner , recv );
+           s->red_passer = s->red_ball_owner;
            s->red_ball_owner = recv;
            s->red[recv] = new_recv_pos;
            s->ball = new_recv_pos;
+
           
            action.has_passed = TRUE; 
+           action.kick_point = new_recv_pos;
            action.ball_owner = recv;
-           action.move[recv] = p;
-		   action.kick_point = new_recv_pos;
+           action.move[recv] = new_recv_pos;
+           action.prune = FALSE;
         }
  } 
  return action;
 }
 
 
-SoccerAction sstate_red_move( SoccerState *s, float radius )
+SoccerAction sstate_red_move( SoccerState *s, SoccerAction *sa, int robot, float radius )
 {
- int i;
  float d;
  Vector2  p, new_pos;
- SoccerAction action = saction_make(s->red_ball_owner);
-
+ SoccerAction action = *sa;
  
- for( i = 0; i < NPLAYERS; i++ ){
-   do{
+ do{
      p = v2_make(radius*DRAND()*cos(2*PI*DRAND()),
                  radius*DRAND()*sin(2*PI*DRAND()) );
-     if( i == s->red_ball_owner )
-        v2_scale( (soccer_env()->red_dribble_speed/soccer_env()->red_speed)*radius, p );
+     if( robot == s->red_ball_owner )
+        v2_scale( (soccer_env()->red_dribble_speed/
+                   soccer_env()->red_speed)*radius, p );
      d = v2_norm( p );
-     new_pos = v2_add( s->red[i], p );
-     action.move[i] = p; 
-   }while( (sstate_min_blue_dist(s, new_pos) < d) ||
+     new_pos = v2_add( s->red[robot], p );
+     action.move[robot] = new_pos; 
+     action.prune = FALSE;
+   }while( (sstate_min_blue_dist(s, new_pos) < 
+              MAX(d,2*soccer_env()->robot_radius) ) ||
            (!sstate_is_inside_field( s, new_pos ) &&
-            sstate_is_inside_field( s, s->red[i] ) ) );
-   DEBUG5( "red move %i: (%f,%f) -> (%f,%f)", i,
-            s->red[i].x, s->red[i].y , new_pos.x, new_pos.y );
-   s->red[i] = new_pos;
-   if( i == s->red_ball_owner ){
+             sstate_is_inside_field( s, s->red[robot] )) );
+   DEBUG5( "red move %i: (%f,%f) -> (%f,%f)", robot,
+            s->red[robot].x, s->red[robot].y , new_pos.x, new_pos.y );
+   s->red[robot] = new_pos;
+   if( robot == s->red_ball_owner ){
      s->ball = new_pos;
      DEBUG( "*");
    }
    DEBUG("\n");
- }
+ 
+ 
+  // action.move[robot] = new_pos;
+
  return action;
 }
 

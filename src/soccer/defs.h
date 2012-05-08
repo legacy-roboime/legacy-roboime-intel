@@ -8,7 +8,8 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif
+#endif 
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -132,7 +133,7 @@ typedef double Real;
 
 #ifdef __cplusplus
 }
-#endif
+#endif    
 
 #endif
 

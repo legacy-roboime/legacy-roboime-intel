@@ -59,7 +59,7 @@ Vector2 v2_unit( Vector2 v )
 {
   Real  length = v2_norm(v);
   if(fabs(length) < EPS)
-    printf("(v2_unit) zero norm\n");
+    error("(v2_unit) zero norm\n");
   else
     return v2_scale(1.0/length, v);
 }

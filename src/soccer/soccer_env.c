@@ -4,17 +4,22 @@ static SoccerEnvironment senv;
 
 void soccer_env_init( void )
 {
- senv.red_speed = 3000;
- senv.blue_speed = 3000;
- senv.red_dribble_speed = 1000;
- senv.blue_dribble_speed = 1000;
- senv.red_pass_speed = 800;
- senv.blue_pass_speed = 800;
- senv.robot_radius = 90;
- senv.goal_size = 700;
- senv.field_w = 6050; 
- senv.field_h = 4050; 
- senv.left_red_side = TRUE;
+ senv.red_speed = 1.;
+ senv.blue_speed = 1;
+ senv.red_dribble_speed = .5;
+ senv.blue_dribble_speed = .5;
+ senv.red_pass_speed = 1.5;
+ senv.blue_pass_speed = 1.5;
+ senv.red_move_radius = 2;
+ senv.blue_move_radius = .4;
+ senv.red_recv_radius = .2;
+ senv.blue_recv_radius = .2;
+ senv.robot_radius = .1;
+ senv.goal_size = .7;
+ senv.max_red_kick_dist = 3.;
+ senv.max_blue_kick_dist = 3.;
+ senv.hfield_w = 3.0; 
+ senv.hfield_h = 2.0; 
 }
 
 SoccerEnvironment* soccer_env(void)
