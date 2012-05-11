@@ -4,10 +4,12 @@
 SoccerAction saction_red_make( SoccerState *s )
 {
  int i;
- SoccerAction action, *aux;
- 
- aux = minimax_get_best_red_action();
- action = *aux;
+ SoccerAction action;
+
+ for( i = 0; i < NPLAYERS; i++ ){ 
+    action.move[i] = s->red[i];
+    action.pos[i] = s->red[i];
+ }
  action.prune = TRUE;
  action.has_kicked = FALSE; 
  action.has_passed = FALSE;
@@ -20,10 +22,12 @@ SoccerAction saction_red_make( SoccerState *s )
 SoccerAction saction_blue_make( SoccerState *s )
 {
  int i;
- SoccerAction action, *aux;
+ SoccerAction action; 
 
- aux = minimax_get_best_blue_action();
- action = *aux;
+ for( i = 0; i < NPLAYERS; i++ ){ 
+    action.move[i] = s->blue[i];
+    action.pos[i] = s->blue[i];
+ }
  action.prune = TRUE;
  action.has_kicked = FALSE; 
  action.has_passed = FALSE;
@@ -33,13 +37,58 @@ SoccerAction saction_blue_make( SoccerState *s )
 }
 
 
+float saction_red_elapsed_time( SoccerAction *sa )
+{
+ int i;
+ float dist, move_delay = 0;
+ float pass_delay = 0;
+
+ for( i = 0; i < NPLAYERS; i++ ){
+   dist = v2_norm(v2_sub( sa->pos[i], sa->move[i] ));
+   if( sa->ball_owner == i )
+      move_delay = MAX( move_delay, 
+                        dist/soccer_env()->red_dribble_speed );
+   else
+      move_delay = MAX( move_delay,
+                        dist/soccer_env()->red_speed );
+ }
+ if( sa->has_passed )
+   pass_delay = v2_norm( v2_sub(sa->passer_pos, sa->kick_point))/
+                        soccer_env()->red_pass_speed;
+
+ return MAX( pass_delay, move_delay );
+}
+
+
+float saction_blue_elapsed_time( SoccerAction *sa )
+{
+ int i;
+ float dist, move_delay = 0;
+ float pass_delay = 0;
+
+ for( i = 0; i < NPLAYERS; i++ ){
+   dist = v2_norm(v2_sub( sa->pos[i], sa->move[i] ));
+   if( sa->ball_owner == i )
+      move_delay = MAX( move_delay, 
+                        dist/soccer_env()->blue_dribble_speed );
+   else
+      move_delay = MAX( move_delay,
+                        dist/soccer_env()->blue_speed );
+ }
+ if( sa->has_passed )
+   pass_delay = v2_norm(v2_sub(sa->passer_pos, sa->kick_point))/
+                        soccer_env()->blue_pass_speed;
+
+ return MAX( pass_delay, move_delay );
+}
+
+
 void saction_red_act( SoccerState *s, SoccerAction *sa )
 {
  int i, owner;
 
- if( sa->has_kicked ){
-// sstate_restart_game_pos(s);
-   return; 
+ if( sa->has_passed ){
+   printf( "red passed %i \n", sa->ball_owner  );
  }
 
  for( i = 0; i < NPLAYERS; i++ )
@@ -58,11 +107,6 @@ void saction_blue_act( SoccerState *s, SoccerAction *sa )
 {
  int i, owner;
 
- if( sa->has_kicked ){
-// sstate_restart_game_pos(s);
-  return; 
- }
-
  for( i = 0; i < NPLAYERS; i++ )
    s->blue[i] = sa->move[i];
 
@@ -78,12 +122,16 @@ void saction_blue_act( SoccerState *s, SoccerAction *sa )
 void saction_simulate(  SoccerState *s, SoccerAction *red_act,
                          SoccerAction *blue_act, float dt )
 {
+ /*printf( "Red duration:%f  Blue duration:%f\n", saction_red_elapsed_time( red_act ),
+                                                saction_blue_elapsed_time( blue_act ) );*/
 
  saction_simulate_red(s,red_act,dt);
  saction_simulate_blue(s,blue_act,dt);
 
- printf( "%i %i %i %i %i\n",  s->red_ball_owner, s->blue_ball_owner, red_act->ball_owner,
-                             blue_act->ball_owner, s->blue_passer      );
+ if( !sstate_is_inside_field( s, s->ball ) ){
+   printf( "Out !!\n" );
+   sstate_restart_game_pos(s);
+ }
  
  if( s->red_ball_owner >= 0 )
    s->ball = s->red[s->red_ball_owner];
@@ -102,34 +150,24 @@ void saction_simulate_red( SoccerState *s, SoccerAction *red_act,
 {
  int i; 
 
-// static int last_passer = -1;
-/*
- if( (last_passer != -1)  && 
-     v2_norm( v2_sub( s->red[last_passer], s->ball ) ) > 1. )
-       last_passer = -1;
-*/
-
  if( (s->red_ball_owner < 0 ) && (s->blue_ball_owner < 0 ) &&
      (sstate_min_red_dist(s,s->ball) < sstate_min_blue_dist(s,s->ball)) &&
-     (sstate_min_red_dist(s,s->ball) < .1 )// &&// &&
-    // !red_act->has_passed 
-     /*(sstate_closest_red(s, s->ball) != last_passer )*/ ){
+     (sstate_min_red_dist(s,s->ball) < .1 ) &&
+     !red_act->has_passed ){
          s->ball_vel = v2_make(0,0);
          s->ball = s->red[ sstate_closest_red(s, s->ball) ];
          s->red_ball_owner = sstate_closest_red(s, s->ball);
-  //       last_passer = -1;
  }
 
  if( red_act->has_kicked ){
      printf( "Red Goal Scored!! goal covering = %f \n", 
               red_act->enemy_goal_covering );
- //    sstate_restart_game_pos(s);
- //    last_passer = -1;
+     if( red_act->enemy_goal_covering < .3 )
+       sstate_restart_game_pos(s);
      return;
  }
 
  if( red_act->has_passed ){
- //  last_passer = s->red_ball_owner;
    s->red_ball_owner = -1;
    s->ball_vel = v2_scale ( soccer_env()->red_pass_speed,
                  v2_unit( v2_sub( red_act->kick_point, s->ball )) );
@@ -144,7 +182,7 @@ void saction_simulate_red( SoccerState *s, SoccerAction *red_act,
      else 
         robot_speed = soccer_env()->red_speed;
  
-     if( v2_norm( v2_sub( red_act->move[i], s->red[i] )) > .02 )            /* controller tol */
+     if( v2_norm( v2_sub( red_act->move[i], s->red[i] )) > .02 ) /* controller tol */
        s->red[i] = v2_add( s->red[i], v2_scale( dt*robot_speed,
                    v2_unit( v2_sub( red_act->move[i], s->red[i] ))) );
 
@@ -158,35 +196,24 @@ void saction_simulate_blue( SoccerState *s, SoccerAction *blue_act,
                             float dt )
 {
  int i;
-/* static int  last_passer = -1;
-
- if( (last_passer != -1)  && 
-     v2_norm( v2_sub( s->blue[last_passer], s->ball ) ) > 1. )
-       last_passer = -1; */
 
  if( (s->red_ball_owner < 0 ) && (s->blue_ball_owner < 0 ) &&
      (sstate_min_blue_dist(s,s->ball) < sstate_min_red_dist(s,s->ball)) &&
-     (sstate_min_blue_dist(s,s->ball) < .1) //&&
-    //  !blue_act->has_passed 
-      //&&
-     /*(sstate_closest_blue(s, s->ball) != last_passer )*/ ){
+     (sstate_min_blue_dist(s,s->ball) < .15 ) ){
          s->ball_vel = v2_make(0,0);
          s->ball = s->blue[ sstate_closest_blue(s, s->ball) ];
          s->blue_ball_owner = sstate_closest_blue(s, s->ball);
-      //   printf( "a %i \n", s->blue_ball_owner );
-     //    last_passer = -1;
  }
 
  if( blue_act->has_kicked  ){
    printf( "Blue Goal Scored!! goal covering = %f \n", 
             blue_act->enemy_goal_covering );
- //  sstate_restart_game_pos(s);
- //  last_passer = -1;
+   if( blue_act->enemy_goal_covering < .3 )
+     sstate_restart_game_pos(s);
    return; 
  }
 
  if( blue_act->has_passed ){
- //  last_passer = s->blue_ball_owner;
    s->blue_ball_owner = -1;
    s->ball_vel = v2_scale ( soccer_env()->blue_pass_speed,
                  v2_unit( v2_sub( blue_act->kick_point, s->ball )) );

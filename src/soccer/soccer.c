@@ -1,6 +1,10 @@
 #include "soccer.h"
 
 
+static float goal_covering( SoccerState *s );
+static float goal_distance( SoccerState *s );
+
+
 SoccerState* sstate_alloc( void )
 {
  int i;
@@ -25,7 +29,10 @@ void sstate_restart_game_pos( SoccerState *s )
  s->ball = v2_make((2*DRAND()-1.)*soccer_env()->hfield_w,
                    (2*DRAND() -1.)*soccer_env()->hfield_h ); 
 
- for( i = 0; i < NPLAYERS; i++ ){
+ s->red[0] = v2_make( soccer_env()->hfield_w, 0 );
+ s->blue[0] = v2_make( -soccer_env()->hfield_w, 0 );
+
+ for( i = 1; i < NPLAYERS; i++ ){
    s->red[i] = v2_make( DRAND()*soccer_env()->hfield_w,
                         (2*DRAND() -1.)*soccer_env()->hfield_h ); 
    s->blue[i] = v2_make((DRAND() -1)*soccer_env()->hfield_w,
@@ -36,50 +43,129 @@ void sstate_restart_game_pos( SoccerState *s )
 
 float sstate_evaluate( SoccerState *s )
 {
- float s1 = 0, s2 = 0, s3 = 0, s4 = 0;
+ int i, closest_red, closest_blue;
+ float t, s0 = 0, s1 = 0, s2 = 0, s3 = 0, s4 = 0, s5 = 0, s6 = 0;
+ float min_red_dist_to_ball, min_red_dist_to_blue_goal,
+       min_red_dist_to_red_goal;
+ float min_blue_dist_to_ball,  min_blue_dist_to_blue_goal, 
+       min_blue_dist_to_red_goal;
+ float ball_dist_to_red_goal, ball_dist_to_blue_goal;
+ Vector2 blue_goal, red_goal;
 
- if( s->goal_scored )
-   return MAX_FLOAT - 10000*s->blue_goal_covering;
- if( s->goal_received )
-   return -MAX_FLOAT + 10000*s->red_goal_covering;
+ blue_goal = v2_make( -soccer_env()->hfield_w, 0 );
+ red_goal = v2_make( soccer_env()->hfield_w, 0 );
+  
+ min_red_dist_to_ball = sstate_min_red_dist( s, s->ball );
+ min_red_dist_to_blue_goal = sstate_min_red_dist( s, blue_goal );
+ min_red_dist_to_red_goal = sstate_min_red_dist( s, red_goal );
 
- if( s->red_ball_owner >=  0 )
-   s1 += 1000; 
- if( s->blue_ball_owner >=  0 )
-   s1 -= 1000; 
+ min_blue_dist_to_ball = sstate_min_blue_dist( s, s->ball );
+ min_blue_dist_to_blue_goal = sstate_min_blue_dist( s, blue_goal ); 
+ min_blue_dist_to_red_goal = sstate_min_blue_dist( s, red_goal );
 
- s2 -= 100*v2_norm( v2_sub( s->ball, 
-               v2_make( -soccer_env()->hfield_w, 0 ) ) );
- s2 += 100*v2_norm( v2_sub( s->ball, 
-               v2_make( soccer_env()->hfield_w, 0 ) ) );
+ ball_dist_to_red_goal = v2_norm( v2_sub( s->ball, red_goal ) );
+ ball_dist_to_blue_goal = v2_norm( v2_sub( s->ball, blue_goal ) );
 
-// if(  sstate_closest_red(s,s->ball) != s->red_passer )
-      s3 -= sstate_min_red_dist( s, s->ball );
- //else
-  //    s3 = -100; 
+ if( s->goal_received ){
+   if( s->red_goal_covering > .7 )
+     s0 = -80000 + 80000*s->red_goal_covering; 
+   else
+     return -MAX_FLOAT;
+ }
+ if( s->goal_scored ){
+   if( s->blue_goal_covering > .7 )
+     s0 = 80000 - 80000*s->blue_goal_covering;
+   else
+     return MAX_FLOAT;
+ }
 
- //if(  sstate_closest_blue(s,s->ball) != s->blue_passer )
-      s3 += sstate_min_blue_dist( s, s->ball );
-// else
- //     s3 = 100;
+ s1 += 300*ball_dist_to_red_goal;
+ s1 -= 300*ball_dist_to_blue_goal;
+
+ s2 -= 50*min_red_dist_to_ball;
+ s2 += 50*min_blue_dist_to_ball;
+
+ s3 -= 50*min_red_dist_to_red_goal;
+ s3 += 50*min_blue_dist_to_blue_goal;
+
+ if(  s->red_ball_owner >=  0 || 
+      (( t = sstate_time_to_red_get_ball( s, &closest_red ) <
+       sstate_time_to_blue_get_ball( s, &closest_blue )) && ( t > 0 )) )
+         s4 += 1000; 
+ if(  s->blue_ball_owner >=  0 || 
+      (( t= sstate_time_to_blue_get_ball( s, &closest_blue ) <
+       sstate_time_to_blue_get_ball( s, &closest_red )) && ( t > 0 )) )
+         s4 -= 1000; 
+
 
  if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
-    s4 = 300*MAX(sstate_min_blue_dist( s, s->ball ),3);
+    s5 = 300*MAX(min_blue_dist_to_ball,3);
  else
-  //  if(s->ball.x < -2.5) 
-      s4 = 900;
-
+    s5 = 900;
 
  if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
-    s4 = -300*MAX(sstate_min_red_dist( s, s->ball ),3);
+    s5 = -300*MAX(min_red_dist_to_ball,3);
  else
-//    if(s->ball.x > 2.5) 
-      s4 = -900;
+    s5 = -900;
 
+ for( i = 0; i < NPLAYERS; i++){
+   if( (s->red_ball_owner >= 0 ) && 
+       sstate_possible_red_pass(s, i, v2_add(s->red[i],v2_make(-.1,0) )) > 0){ 
+           s6 += (500 - 30*v2_norm( v2_sub( s->red[i], blue_goal ))
+                      +20*v2_norm( v2_sub( s->red[i], s->ball ))
+                      + 5*sstate_min_blue_dist( s, s->red[i] )
+                 );
+   }
+   if( ( s->blue_ball_owner >= 0 ) &&
+       sstate_possible_blue_pass(s, i, v2_add(s->blue[i],v2_make(.1,0) )) > 0){
+           s6 += (-500 + 30*v2_norm( v2_sub( s->blue[i], red_goal ))
+                       -20*v2_norm( v2_sub( s->blue[i], s->ball ))
+                       -5*sstate_min_red_dist( s, s->blue[i] )
+                 ); 
+   }
+ } 
 
-
- return s1 + s2 + s3 + s4;
+ return s0 + s1 + s2 + s3 + s4 + s5 + s6;
 } 
+
+
+Boolean sstate_is_valid_red_pos( SoccerState *s, int robot, Vector2 p )
+{
+ int i;
+ float diameter = 2*soccer_env()->robot_radius;
+
+ if( sstate_is_inside_field( s, p ) ){
+   for( i = 0; i < NPLAYERS; i++ ){
+      if( (i != robot) && (v2_norm( v2_sub( p, s->red[i] )) < diameter) ){
+         return FALSE;
+      }
+      if( v2_norm( v2_sub( p, s->blue[i] )) < diameter )
+        return FALSE;  
+    }
+    return TRUE; 
+ }
+ else
+    return FALSE; 
+}
+
+
+Boolean sstate_is_valid_blue_pos( SoccerState *s, int robot, Vector2 p )
+{
+ int i;
+ float diameter = 2*soccer_env()->robot_radius;
+
+ if( sstate_is_inside_field( s, p ) ){
+   for( i = 0; i < NPLAYERS; i++ ){
+      if( v2_norm( v2_sub( p, s->red[i] )) < diameter )
+        return FALSE;
+      if(  (i != robot) && (v2_norm( v2_sub( p, s->blue[i] )) < diameter) )
+        return FALSE;  
+    }
+    return TRUE; 
+ }
+ else
+    return FALSE; 
+}
 
 
 Boolean sstate_is_inside_field( SoccerState *s, Vector2 p )

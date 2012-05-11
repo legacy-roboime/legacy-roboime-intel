@@ -11,8 +11,7 @@ SoccerAction sstate_blue_get_ball( SoccerState *s )
 
  if( (s->red_ball_owner < 0) && (s->blue_ball_owner < 0) ){
    if( ((t =  sstate_time_to_blue_get_ball( s, &closest_blue )) <
-       sstate_time_to_red_get_ball( s, &closest_red )) && ( t > 0 ) //&& 
-       /* (closest_blue != s->blue_passer ) */){
+       sstate_time_to_red_get_ball( s, &closest_red )) && ( t > 0 ) ){
           DEBUG("blue get ball\n");  
         s->ball = v2_add( s->ball, v2_scale( t, s->ball_vel ) );
         s->ball_vel = v2_make(0,0);
@@ -29,13 +28,12 @@ SoccerAction sstate_blue_get_ball( SoccerState *s )
 
 SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
 {
+ int closest_red, attempt;
  float t, time_to_red_block, time_to_receive;
- int closest_red;
  SoccerAction action = saction_blue_make(s);
 
- if( (s->red_ball_owner >= 0) || (s->blue_ball_owner >= 0)// || 
-    /* (recv == s->blue_passer ) */)
-    return action;
+ if( (s->red_ball_owner >= 0) || (s->blue_ball_owner >= 0))
+     return action;
 
  time_to_red_block = sstate_time_to_blue_get_ball( s, &closest_red ); 
  time_to_receive = time_to_intersect( s->ball, s->ball_vel, s->blue[recv], 
@@ -43,7 +41,16 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
                                       soccer_env()->blue_speed );
 
  if( (time_to_receive > 0 ) && (time_to_red_block > time_to_receive) ){
-       t = DRAND()*( time_to_red_block - time_to_receive ) + time_to_receive;
+       attempt = 0;
+       do{
+         attempt++; 
+         t = DRAND()*( time_to_red_block - time_to_receive ) + time_to_receive;
+       }
+       while( (attempt < 10) && !sstate_is_valid_blue_pos( s, recv, 
+                 v2_add( s->ball, v2_scale( t, s->ball_vel ) ) ) ); 
+       if( attempt == 10 )
+         return action;
+
        s->ball = v2_add( s->ball, v2_scale( t, s->ball_vel ) );  
        s->ball_vel = v2_make(0,0);
        action.move[recv] = s->ball;
@@ -116,7 +123,8 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
          p = v2_make(recv_radius*DRAND()*cos(2*PI*DRAND()),
                      recv_radius*DRAND()*sin(2*PI*DRAND()) );
          new_recv_pos = v2_add( s->blue[recv], p );
-         if( (t = sstate_possible_blue_pass( s, recv, new_recv_pos )) > 0 ){
+         if( sstate_is_valid_blue_pos( s, recv, new_recv_pos) &&
+             ((t = sstate_possible_blue_pass( s, recv, new_recv_pos )) > 0) ){
              DEBUG2( "blue pass: %i -> %i\n", s->blue_ball_owner , recv );
              s->blue_passer = s->blue_ball_owner;
              s->blue_ball_owner = recv;
@@ -124,6 +132,8 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
              s->ball = new_recv_pos;
 
              action.has_passed = TRUE; 
+             action.passer = s->blue_passer;
+             action.passer_pos = s->blue[ action.passer ];
              action.kick_point = new_recv_pos;
              action.ball_owner = recv;
              action.move[recv] = new_recv_pos;
@@ -136,9 +146,16 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
 
 SoccerAction sstate_blue_move( SoccerState *s, SoccerAction *sa, int robot, float radius )
 {
+ int i;
  float d;
  Vector2 p, new_pos;
  SoccerAction action = saction_blue_make(s);
+
+ for( i=0; i < NPLAYERS; i++ )
+   if( i != robot ){
+     s->blue[i] = sa->move[i];
+     action.move[i] = sa->move[i];
+   } 
 
  do{
      p = v2_make(radius*DRAND()*cos(2*PI*DRAND()),
@@ -150,9 +167,8 @@ SoccerAction sstate_blue_move( SoccerState *s, SoccerAction *sa, int robot, floa
      new_pos = v2_add( s->blue[robot], p ); 
      action.move[robot] = new_pos; 
      action.prune = FALSE;
- }while( (sstate_min_red_dist(s, new_pos) < 
-               MAX(d,2*soccer_env()->robot_radius) )  ||
-           (!sstate_is_inside_field( s, new_pos ) &&
+ }while( (sstate_min_red_dist(s, new_pos) < d )  ||
+           (!sstate_is_valid_blue_pos( s, robot, new_pos ) &&
              sstate_is_inside_field( s, s->blue[robot] )) );
  DEBUG5( "blue move %i: (%f,%f) -> (%f,%f)", i,
           s->blue[robot].x, s->blue[robot].y , new_pos.x, new_pos.y ); 

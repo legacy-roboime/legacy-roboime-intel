@@ -33,6 +33,8 @@ typedef struct SoccerAction{
  Boolean prune;
  Vector2 kick_point;
  Vector2 move[NPLAYERS];  
+ Vector2 pos[NPLAYERS];
+ Vector2 passer_pos;
  Boolean has_kicked;
  Boolean has_passed;
  int ball_owner;
@@ -67,6 +69,10 @@ typedef struct SoccerState{
 
 SoccerAction saction_red_make( SoccerState *s );
 SoccerAction saction_blue_make( SoccerState *s );
+
+float saction_red_elapsed_time( SoccerAction *sa );
+float saction_blue_elapsed_time( SoccerAction *sa );
+
 void saction_red_act( SoccerState *s , SoccerAction *sa );
 void saction_blue_act( SoccerState *s , SoccerAction *sa );
 
@@ -99,6 +105,8 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius );
 SoccerAction sstate_red_move( SoccerState *s, SoccerAction *sa, int robot, float radius );
 SoccerAction sstate_blue_move( SoccerState *s, SoccerAction *sa, int robot, float radius );
 
+Boolean sstate_is_valid_red_pos( SoccerState *s, int robot, Vector2 p );
+Boolean sstate_is_valid_blue_pos( SoccerState *s, int robot, Vector2 p );
 Boolean sstate_is_inside_field( SoccerState *s, Vector2 p );
 
 
