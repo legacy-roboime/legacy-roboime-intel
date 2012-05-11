@@ -19,6 +19,8 @@ set(SOC_SRC
     soccer_blue.c
     soccer_red.c
     soccer_env.c
+	soccer_draw.c
+	minimax.c
 )
 source_group("Sources" FILES ${SOC_SRC})
 
