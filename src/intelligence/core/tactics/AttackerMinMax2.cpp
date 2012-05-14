@@ -20,13 +20,13 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 	hasPass_(false),
 	minDist_(500)
 {
-	movePoint_ = new Object(0,0);
+	movePoint_ = new Object();
 	kickPoint_ = new Object();
 	dribblePoint_ = new Object();
 	//driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., dribbleSpeed);
-	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., dribbleSpeed/2., false);
-	pass_ = new SampledKick(this, r, kickPoint_, true, 0.2, 0.2, dribbleSpeed/2., false);
+	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., dribbleSpeed, false);
+	pass_ = new SampledKick(this, r, kickPoint_, true, 0.2, 0.2, dribbleSpeed, false);
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
 	speed = speed;
 
@@ -119,8 +119,8 @@ void AttackerMinMax2::updateSoccerAction(bool hasKick, bool hasPass, bool getBal
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
 
-	dribblePoint_->setX(movePointX - robot->x() + ball->x());
-	dribblePoint_->setY(movePointY - robot->y() + ball->y());
+	dribblePoint_->setX(movePointX);
+	dribblePoint_->setY(movePointY);
 }
 
 qreal AttackerMinMax2::minDist()
