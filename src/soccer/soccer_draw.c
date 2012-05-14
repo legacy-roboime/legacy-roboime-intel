@@ -4,12 +4,12 @@
 #define NSIDES 50
 
 
-static GLubyte red_color[NPLAYERS][3] = { 
+static GLubyte red_color[][3] = { 
       {128,0,128},{0,0,255},{0,255,0},
       {0,255,255},{0,128,128},{70,70,128}
 };
 
-static GLubyte blue_color[NPLAYERS][3] = {
+static GLubyte blue_color[][3] = {
       {255,0,255},{255,255,0},{128,128,128},
       {128,0,0},{255,0,0},{128,70,70}
 };
@@ -82,8 +82,8 @@ void draw_cone(float radius)
  glBegin(GL_TRIANGLE_FAN);
  glVertex3f(0.f, 0.f, 1.f);
  for(i = 0; i <= NSIDES; i++) {
-    s = sinf((2.f*M_PI*i)/NSIDES)*radius;
-    c = cosf((2.f*M_PI*i)/NSIDES)*radius;
+    s = sinf((2.f*PI*i)/NSIDES)*radius;
+    c = cosf((2.f*PI*i)/NSIDES)*radius;
     glVertex3f(s, c, 0.f);
  }
  glEnd();
@@ -98,8 +98,8 @@ void draw_circle(float radius)
  glBegin(GL_TRIANGLE_FAN);
  glVertex3f(0.f, 0.f, 1.f);
  for(i = 0; i <= NSIDES; i++) {
-    s = sinf((2.f*M_PI*i)/NSIDES)*radius;
-    c = cosf((2.f*M_PI*i)/NSIDES)*radius;
+    s = sinf((2.f*PI*i)/NSIDES)*radius;
+    c = cosf((2.f*PI*i)/NSIDES)*radius;
     glVertex3f(s, c, 1.f);
  }
  glEnd();
@@ -108,8 +108,16 @@ void draw_circle(float radius)
 
 void draw_red_kick_sector(SoccerState *s)
 {
-if( v2_norm( v2_sub( s->ball, v2_make( 
-         -soccer_env()->hfield_w, 0 ))) < 
+ Vector2 blue_goal, p;
+
+ if(soccer_env()->left_red_side)
+   blue_goal = v2_make( +soccer_env()->hfield_w, 0 );
+ else
+   blue_goal = v2_make( -soccer_env()->hfield_w, 0 );
+
+ p = blue_goal;
+
+ if( v2_norm( v2_sub( s->ball, blue_goal)) < 
       soccer_env()->max_red_kick_dist )                  
         glColor3ub(255,100,100);
  else
@@ -117,11 +125,11 @@ if( v2_norm( v2_sub( s->ball, v2_make(
  glBegin(GL_LINE);
  if( s->red_ball_owner >= 0 ){
    glVertex3f(s->ball.x, s->ball.y, 1. );
-   glVertex3f( -soccer_env()->hfield_w, 
-               .5*soccer_env()->goal_size, 1. );
+   p.y += .5*soccer_env()->goal_size;
+   glVertex3f( p.x, p.y, 1. );
    glVertex3f(s->ball.x, s->ball.y, 1. );
-   glVertex3f( -soccer_env()->hfield_w, 
-               -.5*soccer_env()->goal_size, 1. );
+   p.y -= 2.*.5*soccer_env()->goal_size;
+   glVertex3f( p.x, p.y, 1. );
  }  
  glEnd();
 }
@@ -130,8 +138,16 @@ if( v2_norm( v2_sub( s->ball, v2_make(
 
 void draw_blue_kick_sector(SoccerState *s)
 {
- if( v2_norm( v2_sub( s->ball, v2_make( 
-         soccer_env()->hfield_w, 0 ))) < 
+ Vector2 red_goal, p;
+
+ if(soccer_env()->left_red_side)
+   red_goal = v2_make( -soccer_env()->hfield_w, 0 );
+ else
+   red_goal = v2_make( +soccer_env()->hfield_w, 0 );
+
+ p = red_goal;
+
+ if( v2_norm( v2_sub( s->ball, red_goal)) < 
       soccer_env()->max_blue_kick_dist )                  
         glColor3ub(255,100,100);
  else
@@ -139,11 +155,11 @@ void draw_blue_kick_sector(SoccerState *s)
  glBegin(GL_LINE);
  if( s->blue_ball_owner >= 0 ){
    glVertex3f(s->ball.x, s->ball.y, 1. );
-   glVertex3f( soccer_env()->hfield_w, 
-               .5*soccer_env()->goal_size, 1. );
+   p.y += .5*soccer_env()->goal_size;
+   glVertex3f( p.x, p.y, 1. );
    glVertex3f(s->ball.x, s->ball.y, 1. );
-   glVertex3f( soccer_env()->hfield_w, 
-               -.5*soccer_env()->goal_size, 1. );
+   p.y -= 2.*.5*soccer_env()->goal_size;
+   glVertex3f( p.x, p.y, 1. );
  }  
  glEnd();
 }

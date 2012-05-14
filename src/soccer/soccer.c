@@ -52,8 +52,14 @@ float sstate_evaluate( SoccerState *s )
  float ball_dist_to_red_goal, ball_dist_to_blue_goal;
  Vector2 blue_goal, red_goal;
 
- blue_goal = v2_make( -soccer_env()->hfield_w, 0 );
- red_goal = v2_make( soccer_env()->hfield_w, 0 );
+ if(soccer_env()->left_red_side){
+   blue_goal = v2_make( +soccer_env()->hfield_w, 0 );
+   red_goal = v2_make( -soccer_env()->hfield_w, 0 );
+ }
+ else{
+	blue_goal = v2_make( -soccer_env()->hfield_w, 0 );
+	red_goal = v2_make( +soccer_env()->hfield_w, 0 );
+ }
   
  min_red_dist_to_ball = sstate_min_red_dist( s, s->ball );
  min_red_dist_to_blue_goal = sstate_min_red_dist( s, blue_goal );

@@ -68,14 +68,21 @@ SoccerAction sstate_red_kick_to_goal( SoccerState *s )
  float k;
  Vector2 p;
  SoccerAction action = saction_red_make(s);
+ Vector2 blue_goal;
+
+ if(soccer_env()->left_red_side)
+   blue_goal = v2_make( +soccer_env()->hfield_w, 0 );
+ else
+   blue_goal = v2_make( -soccer_env()->hfield_w, 0 );
 
  if( (s->red_ball_owner >= 0) && (s->blue_ball_owner < 0) &&
-      (v2_norm( v2_sub( s->ball, v2_make( -soccer_env()->hfield_w, 0 ))) <
+      (v2_norm( v2_sub( s->ball, blue_goal)) <
        soccer_env()->max_red_kick_dist) ){
    s->blue_goal_covering = 1;
    for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
         k += soccer_env()->robot_radius ){ 
-          p =  v2_make( -soccer_env()->hfield_w, k );
+          p = blue_goal;
+		  p.y += k;
           is_red_kick_scored(s, p );
           if( s->goal_scored ){
               s->blue_goal_covering -= (soccer_env()->robot_radius/

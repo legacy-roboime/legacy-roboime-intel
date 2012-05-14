@@ -38,4 +38,3 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth );
 #endif    
 
 #endif
-

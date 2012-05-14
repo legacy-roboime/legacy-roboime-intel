@@ -1,6 +1,8 @@
 #ifndef SOCCER_ENV_H
 #define SOCCER_ENV_H
 
+#include "defs.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif 
@@ -22,6 +24,7 @@ typedef struct SoccerEnvironment{
   float max_blue_kick_dist;
   float hfield_w;      /* half field width */
   float hfield_h;      /* half field height */
+  Boolean left_red_side;
 } SoccerEnvironment;
 
 void soccer_env_init( void );
