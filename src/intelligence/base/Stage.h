@@ -91,6 +91,7 @@ namespace LibIntelligence
 		Goal* getGoalFromOtherColor(const TeamColor& color);
 		Goal* getGoalFromColor(const TeamColor& color);
 		bool isGoal(const TeamColor& color);
+		bool inField(const Object& obj);
 
 		Stage& operator=(const Stage& stage);
 		bool operator==(const Stage& stage);

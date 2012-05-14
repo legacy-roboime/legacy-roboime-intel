@@ -308,7 +308,19 @@ bool Stage::isGoal(const TeamColor& color)
 	qreal yMax = goal->y() + (goal->width() / 2.);
 	qreal yMin = goal->y() - (goal->width() / 2.);
 	//TODO: colocar goal 3D
-	if(goal->x() < xMax && goal->x() > xMin && goal->y() > yMin && goal->y() < yMax)
+	if(ball_->x() < xMax && ball_->x() > xMin && ball_->y() > yMin && ball_->y() < yMax)
+		return true;
+	else 
+		return false;
+}
+
+bool Stage::inField(const Object& obj)
+{
+	if(obj.x() <  fieldLength_/2. && 
+	   obj.x() > -fieldLength_/2. && 
+	   obj.y() <  fieldWidth_/2.  && 
+	   obj.y() > -fieldWidth_/2. )
+
 		return true;
 	else 
 		return false;
