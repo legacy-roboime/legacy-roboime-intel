@@ -206,7 +206,7 @@ void Intelligence::update() {
 
 	//controller->step();
 	//gotoold->step();
-	cbr2011->step();
+	//cbr2011->step();
 	//machine->step();
 	//((Skill*)machine->configuration().toList().at(1))->step();
 	//player0->step();
