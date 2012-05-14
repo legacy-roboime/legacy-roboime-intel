@@ -13,4 +13,5 @@ add_subdirectory(intelligence)
 add_subdirectory(clients/simulation)
 add_subdirectory(clients/logplayer)
 add_subdirectory(clients/intelligence)
+add_subdirectory(clients/soccer)
 # add new projects here
