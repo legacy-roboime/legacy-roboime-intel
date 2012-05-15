@@ -29,13 +29,13 @@ void minimax_init( SoccerState *s )
 
 void minimax_use_next_red_robot(void)
 {
- red_robot = (red_robot+1)%6;
+ red_robot = (red_robot+1)%NPLAYERS;
 }
 
 
 void minimax_use_next_blue_robot(void)
 {
- blue_robot = (blue_robot+1)%6;
+ blue_robot = (blue_robot+1)%NPLAYERS;
 }
 
 SoccerAction* minimax_get_best_red_action( void )
@@ -169,7 +169,7 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
      case 4: action = sstate_red_pass(s,2, recv_radius ); break;
      case 5: action = sstate_red_pass(s,3, recv_radius ); break;
      case 6: action = sstate_red_pass(s,4, recv_radius ); break; 
-     case 7: action = sstate_red_pass(s,5, recv_radius ); break;   
+     //case 7: action = sstate_red_pass(s,5, recv_radius ); break;   
    }
  }
  else{
@@ -180,7 +180,7 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
     case 10: action = sstate_red_receive_ball(s,2); break;
     case 11: action = sstate_red_receive_ball(s,3); break;
     case 12: action = sstate_red_receive_ball(s,4); break;
-    case 13: action = sstate_red_receive_ball(s,5); break;   
+    //case 13: action = sstate_red_receive_ball(s,5); break;   
    }
  }
 
@@ -223,7 +223,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
      case 4: action = sstate_blue_pass(s,2, recv_radius ); break;
      case 5: action = sstate_blue_pass(s,3, recv_radius ); break;
      case 6: action = sstate_blue_pass(s,4, recv_radius ); break; 
-     case 7: action = sstate_blue_pass(s,5, recv_radius ); break;  
+     //case 7: action = sstate_blue_pass(s,5, recv_radius ); break;  
    }
  }
  else{
@@ -234,7 +234,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
     case 10: action = sstate_blue_receive_ball(s,2); break;
     case 11: action = sstate_blue_receive_ball(s,3); break;
     case 12: action = sstate_blue_receive_ball(s,4); break;
-    case 13: action = sstate_blue_receive_ball(s,5); break; 
+    //case 13: action = sstate_blue_receive_ball(s,5); break; 
    }
  }
 
