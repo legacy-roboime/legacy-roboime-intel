@@ -10,6 +10,10 @@ static SoccerAction prev_best_blue_action;
 static int red_robot = 0;
 static int blue_robot = 0;
 
+
+static void adjust_move_tables( void );
+
+
 void minimax_init( SoccerState *s )
 {
  int i;
@@ -40,29 +44,45 @@ void minimax_use_next_blue_robot(void)
 
 SoccerAction* minimax_get_best_red_action( void )
 {
- prev_best_red_action = best_red_action;
- prev_best_red_action.prune = FALSE;
  return &best_red_action;       
 }
 
 
 SoccerAction* minimax_get_best_blue_action( void )
 {
- prev_best_blue_action = best_blue_action;
- prev_best_blue_action.prune = FALSE;
  return &best_blue_action;       
 }
 
 
 void  minimax_play( SoccerState *s, int depth )
 {
- prev_best_red_action = saction_red_make(s);
- prev_best_blue_action = saction_blue_make(s);
+ s->red_time_stamp = 0;
+ s->blue_time_stamp = 0; 
+ minimax_use_next_red_robot();
+ blue_robot = (int)(DRAND()*NPLAYERS);
+
  if(  sstate_min_red_dist(s, s->ball ) < 
       sstate_min_blue_dist(s, s->ball ))
    minimax_playMax( s, depth );
  else
    minimax_playMin( s, depth );
+
+ adjust_move_tables();
+}
+
+
+void adjust_move_tables( void )
+{
+ int i;
+
+ for( i=0; i < NPLAYERS; i++ ){
+   if( v2_norm( v2_sub( best_red_action.move[i], 
+                 best_red_action.pos[i] ) ) > EPS )
+        red_move_table[i] = best_red_action.move[i];
+   if( v2_norm( v2_sub( best_blue_action.move[i], 
+                 best_blue_action.pos[i] ) ) > EPS )
+        blue_move_table[i] = best_blue_action.move[i]; 
+ }
 }
 
 
@@ -90,8 +110,8 @@ float minimax_getMaxValue(SoccerState s, int depth,
 
  if( depth == 0 ){
       saux = s;
-      sstate_red_kick_to_goal(&saux); 
-      return sstate_evaluate(&saux);
+      sstate_red_kick_to_goal(&saux);
+      return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
  }
  for( i = 0; i < MAX_NPLAYS; i++ ){
      saux = s;
@@ -128,7 +148,7 @@ float minimax_getMinValue(SoccerState s, int depth,
  if( depth == 0 ){
      saux = s;
      sstate_blue_kick_to_goal(&saux); 
-     return sstate_evaluate(&saux);
+     return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
  }
  for( i = 0; i < MIN_NPLAYS; i++ ){
       saux = s;
@@ -154,6 +174,17 @@ float minimax_getMinValue(SoccerState s, int depth,
 }
 
 
+float minimax_red_time_weight_func( SoccerState *s )
+{
+ return 1;//exp(-.0004*SQR(s->blue_time_stamp)) ;
+}
+
+float minimax_blue_time_weight_func( SoccerState *s )
+{
+ return  1;//exp(-.0004*SQR(s->red_time_stamp));
+}
+
+
 SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
 {
  float move_radius , recv_radius;
@@ -169,7 +200,7 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
      case 4: action = sstate_red_pass(s,2, recv_radius ); break;
      case 5: action = sstate_red_pass(s,3, recv_radius ); break;
      case 6: action = sstate_red_pass(s,4, recv_radius ); break; 
-     //case 7: action = sstate_red_pass(s,5, recv_radius ); break;   
+  // case 7: action = sstate_red_pass(s,5, recv_radius ); break;   
    }
  }
  else{
@@ -180,30 +211,32 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
     case 10: action = sstate_red_receive_ball(s,2); break;
     case 11: action = sstate_red_receive_ball(s,3); break;
     case 12: action = sstate_red_receive_ball(s,4); break;
-    //case 13: action = sstate_red_receive_ball(s,5); break;   
+ // case 13: action = sstate_red_receive_ball(s,5); break;   
    }
  }
 
  
  if( (i > 13) && (i < 50 ) )
-     action = sstate_red_move(s,  &prev_best_red_action, red_robot, move_radius );
+     action = sstate_red_move(s, red_robot, move_radius );
  if( (i>= 50) && ( i < 60) )
-     action = sstate_red_move(s,  &prev_best_red_action, red_robot,(1./2)*move_radius );
+     action = sstate_red_move(s, red_robot,(1./2)*move_radius );
  if( (i >= 60) && ( i < 70) )
-     action = sstate_red_move(s,  &prev_best_red_action, red_robot,(1./4)*move_radius );
-if( (i >= 70) && ( i < 80) )
-     action = sstate_red_move(s,  &prev_best_red_action, red_robot, (1./8)*move_radius);
-if( (i >= 80) && ( i < 90) )
-     action = sstate_red_move(s,  &prev_best_red_action, red_robot, (1./16)*move_radius );
-if( (i >= 90) && ( i < 98) )
-     action = sstate_red_move(s,  &prev_best_red_action, red_robot, (1./32)*move_radius  );
+     action = sstate_red_move(s, red_robot,(1./4)*move_radius );
+ if( (i >= 70) && ( i < 80) )
+     action = sstate_red_move(s, red_robot, (1./8)*move_radius);
+ if( (i >= 80) && ( i < 90) )
+     action = sstate_red_move(s, red_robot, (1./16)*move_radius );
+ if( (i >= 90) && ( i < 98) )
+     action = sstate_red_move(s, red_robot, (1./32)*move_radius  ); 
  if( i == 99 ){
-     saction_red_act( s, &prev_best_red_action );
-     action = prev_best_red_action;
- } 
+     s->red[red_robot] = red_move_table[red_robot];
+     action.move[red_robot] = red_move_table[red_robot];
+     action.prune = FALSE;
+ }   
  if( i == 100 )
    action.prune = FALSE; 
- 
+
+ s->red_time_stamp += saction_red_elapsed_time(&action); 
  return action;
 }
 
@@ -223,7 +256,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
      case 4: action = sstate_blue_pass(s,2, recv_radius ); break;
      case 5: action = sstate_blue_pass(s,3, recv_radius ); break;
      case 6: action = sstate_blue_pass(s,4, recv_radius ); break; 
-     //case 7: action = sstate_blue_pass(s,5, recv_radius ); break;  
+ //  case 7: action = sstate_blue_pass(s,5, recv_radius ); break;  
    }
  }
  else{
@@ -234,29 +267,31 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
     case 10: action = sstate_blue_receive_ball(s,2); break;
     case 11: action = sstate_blue_receive_ball(s,3); break;
     case 12: action = sstate_blue_receive_ball(s,4); break;
-    //case 13: action = sstate_blue_receive_ball(s,5); break; 
+//  case 13: action = sstate_blue_receive_ball(s,5); break; 
    }
  }
 
  if( (i > 13) && (i < 50 ) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, move_radius ); 
+     action = sstate_blue_move(s, blue_robot, move_radius ); 
  if( (i>= 50) && ( i < 60) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot,(1./2)*move_radius );
+     action = sstate_blue_move(s, blue_robot,(1./2)*move_radius );
  if( (i >= 60) && ( i < 70) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot,(1./4)*move_radius );
-if( (i >= 70) && ( i < 80) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, (1./8)*move_radius);
-if( (i >= 80) && ( i < 90) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, (1./16)*move_radius );
-if( (i >= 90) && ( i < 98) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, (1./32)*move_radius  ); 
+     action = sstate_blue_move(s, blue_robot,(1./4)*move_radius );
+ if( (i >= 70) && ( i < 80) )
+     action = sstate_blue_move(s, blue_robot, (1./8)*move_radius);
+ if( (i >= 80) && ( i < 90) )
+     action = sstate_blue_move(s, blue_robot, (1./16)*move_radius );
+ if( (i >= 90) && ( i < 98) )
+     action = sstate_blue_move(s, blue_robot, (1./32)*move_radius  ); 
  if( i == 99 ){
-     saction_blue_act( s, &prev_best_blue_action );
-     action = prev_best_blue_action;
- } 
+     s->blue[blue_robot] = blue_move_table[blue_robot];
+     action.move[blue_robot] = blue_move_table[blue_robot];
+     action.prune = FALSE;
+ }   
  if( i == 100 )
    action.prune = FALSE; 
  
+ s->blue_time_stamp += saction_blue_elapsed_time(&action); 
  return action;
 }
 

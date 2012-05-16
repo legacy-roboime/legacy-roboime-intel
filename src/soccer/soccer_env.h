@@ -8,6 +8,7 @@ extern "C" {
 #endif 
 
 typedef struct SoccerEnvironment{
+  float sample_period;            /* dt between two invoking minimax_play func */
   float red_speed;
   float blue_speed;
   float red_dribble_speed;

@@ -43,6 +43,9 @@ float saction_red_elapsed_time( SoccerAction *sa )
  float dist, move_delay = 0;
  float pass_delay = 0;
 
+ if(sa->has_kicked)
+   return 0;
+
  for( i = 0; i < NPLAYERS; i++ ){
    dist = v2_norm(v2_sub( sa->pos[i], sa->move[i] ));
    if( sa->ball_owner == i )
@@ -152,8 +155,7 @@ void saction_simulate_red( SoccerState *s, SoccerAction *red_act,
 
  if( (s->red_ball_owner < 0 ) && (s->blue_ball_owner < 0 ) &&
      (sstate_min_red_dist(s,s->ball) < sstate_min_blue_dist(s,s->ball)) &&
-     (sstate_min_red_dist(s,s->ball) < .1 ) &&
-     !red_act->has_passed ){
+     (sstate_min_red_dist(s,s->ball) < .1 ) ){
          s->ball_vel = v2_make(0,0);
          s->ball = s->red[ sstate_closest_red(s, s->ball) ];
          s->red_ball_owner = sstate_closest_red(s, s->ball);
@@ -199,7 +201,7 @@ void saction_simulate_blue( SoccerState *s, SoccerAction *blue_act,
 
  if( (s->red_ball_owner < 0 ) && (s->blue_ball_owner < 0 ) &&
      (sstate_min_blue_dist(s,s->ball) < sstate_min_red_dist(s,s->ball)) &&
-     (sstate_min_blue_dist(s,s->ball) < .15 ) ){
+     (sstate_min_blue_dist(s,s->ball) < .1 ) ){
          s->ball_vel = v2_make(0,0);
          s->ball = s->blue[ sstate_closest_blue(s, s->ball) ];
          s->blue_ball_owner = sstate_closest_blue(s, s->ball);

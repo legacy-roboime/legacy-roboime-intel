@@ -27,6 +27,8 @@ extern "C" {
 #define DEBUG4(s,a,b,c,d)    ;
 #define DEBUG5(s,a,b,c,d,e)  ;
 
+Vector2 red_move_table[NPLAYERS];
+Vector2 blue_move_table[NPLAYERS];
 
 
 typedef struct SoccerAction{
@@ -44,6 +46,9 @@ typedef struct SoccerAction{
 
 
 typedef struct SoccerState{
+
+  float red_time_stamp;
+  float blue_time_stamp;
 
   Vector2 ball;
   Vector2 ball_vel;
@@ -102,8 +107,8 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s );
 SoccerAction sstate_red_pass( SoccerState *s, int recv, float recv_radius );
 SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius );
 
-SoccerAction sstate_red_move( SoccerState *s, SoccerAction *sa, int robot, float radius );
-SoccerAction sstate_blue_move( SoccerState *s, SoccerAction *sa, int robot, float radius );
+SoccerAction sstate_red_move( SoccerState *s, int robot, float radius );
+SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius );
 
 Boolean sstate_is_valid_red_pos( SoccerState *s, int robot, Vector2 p );
 Boolean sstate_is_valid_blue_pos( SoccerState *s, int robot, Vector2 p );

@@ -30,6 +30,9 @@ float minimax_getMaxValue( SoccerState s, int depth,
 float minimax_getMinValue(SoccerState s, int depth, 
                            float parent_duration, float alpha, float beta );
 
+float minimax_red_time_weight_func( SoccerState *s );
+float minimax_blue_time_weight_func( SoccerState *s );
+
 SoccerAction minimax_expandMax( SoccerState *s, int i, int depth );
 SoccerAction minimax_expandMin( SoccerState *s, int i, int depth );
  

@@ -1,6 +1,7 @@
 #include "soccer.h"
 
 static void is_blue_kick_scored( SoccerState *s, Vector2 goal );
+static SoccerAction use_blue_move_table( SoccerState *s, int robot );
 
 
 SoccerAction sstate_blue_get_ball( SoccerState *s )
@@ -151,19 +152,14 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
 }
 
 
-SoccerAction sstate_blue_move( SoccerState *s, SoccerAction *sa, int robot, float radius )
+SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
 {
  int i;
  float d;
  Vector2 p, new_pos;
- SoccerAction action = saction_blue_make(s);
+ SoccerAction action; 
 
- for( i=0; i < NPLAYERS; i++ )
-   if( i != robot ){
-     s->blue[i] = sa->move[i];
-     action.move[i] = sa->move[i];
-   } 
-
+ action = use_blue_move_table(s, robot);  
  do{
      p = v2_make(radius*DRAND()*cos(2*PI*DRAND()),
                  radius*DRAND()*sin(2*PI*DRAND()) );
@@ -186,6 +182,30 @@ SoccerAction sstate_blue_move( SoccerState *s, SoccerAction *sa, int robot, floa
  }
  DEBUG("\n");
  
+ return action;
+}
+
+
+
+static SoccerAction use_blue_move_table( SoccerState *s, int robot )
+{
+ int i;
+ Vector2 disp, p;
+ SoccerAction action = saction_blue_make(s);
+
+ for( i=0; i < NPLAYERS; i++ )
+   if( i != robot ){
+     disp = v2_sub( blue_move_table[i], s->blue[i] );
+     if( v2_norm( disp ) > .5*soccer_env()->robot_radius ){
+        p = v2_add( s->blue[i], 
+                    v2_scale( (1./(NPLAYERS-1))*soccer_env()->sample_period*
+                              soccer_env()->blue_speed, v2_unit(disp) ));
+        if( sstate_is_valid_blue_pos( s, i, p ) )
+          s->blue[i] = p;
+     }
+     action.move[i] = s->blue[i];
+   } 
+
  return action;
 }
 
