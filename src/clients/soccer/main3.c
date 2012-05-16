@@ -20,7 +20,7 @@ void redraw( void ){
    saction_red_act( &saux, &red_action );
    glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
    soccer_redraw( &saux ); 
-   blue_action = saction_blue_make(s); 
+   //blue_action = saction_blue_make(s); 
    saction_simulate( s, &red_action, &blue_action, .1 );
    glViewport(0, 0, winWidth/2., winHeight );   
    soccer_redraw( s );

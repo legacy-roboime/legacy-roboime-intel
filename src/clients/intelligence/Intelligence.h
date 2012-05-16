@@ -10,10 +10,10 @@
 #include "Updater.h"
 #include "Skill.h"
 #include "Tactic.h"
-#include "Play.h"
 #include "Plays.h"
 #include "KalmanFilters.h"
 #include "Tactics.h"
+#include "Minmax2.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
@@ -29,8 +29,15 @@ public:
 	Intelligence(QObject *parent=0);
 	~Intelligence();
 
+#ifndef SOCCER_DEBUG
 private slots:
 	void update();
+#else
+	void update();
+#endif
+
+public:
+	Minmax2* play;
 
 signals:
 	void readySend();
@@ -59,7 +66,7 @@ private:
 	Play* stopReferee;
 	Plays::CBR2011* cbr2011;
 	//Play* freeKickThem;
-	Play* play;
+	
 	Tactic* controller;
 	Skill* gotoold;
 	Skill* skill1;

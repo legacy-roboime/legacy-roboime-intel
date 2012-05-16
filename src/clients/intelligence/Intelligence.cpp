@@ -11,7 +11,6 @@
 #include "UpdaterVision.h"
 #include "UpdaterReferee.h"
 #include "Ball.h"
-#include "Plays.h"
 #include "KalmanFilters.h"
 #include "UpdateStageGeometry.h"
 #include "UpdaterReferee.h"
@@ -96,9 +95,12 @@ Intelligence::Intelligence(QObject *parent)
 	player3 = new Defender(this, enemyTeam->at(3), 0, 1000);
 	player4 = new Attacker(this, enemyTeam->at(4), 1000);
 	
+#ifndef SOCCER_DEBUG
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 	timer->start(30.);//1000.0/60.0); //frequencia sensor camera 	//
+#endif
+	
 	//connect(upd, SIGNAL(receiveUpdate()), filter, SLOT(step()));
 }
 

@@ -2,20 +2,26 @@
 #include <deque>
 #include <QVector>
 #include <limits>
-#include "Plays.h"
+#include "Play.h"
 #include "Skills.h"
 #include "Tactics.h"
 #include "Stage.h"
 #include <QFile>
 #include <QDataStream>
+#include "defs.h"
 
-#include "minimax.h"
+#define SOCCER_DEBUG
+#define MINIMAX_MAX_LEVEL 2
 
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Skills;
 
 namespace LibIntelligence
 {
+	class SoccerState;
+	class SoccerAction;
+	class SoccerEnvironment;
+
 	namespace Plays
 	{
 		class Minmax2: public Play {
@@ -44,6 +50,7 @@ namespace LibIntelligence
 			void changeSActionMeasure(SoccerAction *a, double scale);
 
 		public:
+			SoccerState* soccerState();
 			Minmax2(QObject *parent, Team* team ,Stage* stage, int depth = MINIMAX_MAX_LEVEL, float alpha = -MAX_FLOAT, float beta = MAX_FLOAT, qreal speed = 3000.);
 			~Minmax2(); 
 			void step();

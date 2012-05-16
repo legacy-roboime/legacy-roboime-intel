@@ -3,6 +3,8 @@
 #include "Ball.h"
 #include "Robot.h"
 #include <QLineF>
+#include "minimax.h"
+#include <GL/glut.h>
 
 #define LOGGING
 
@@ -160,6 +162,14 @@ void Minmax2::step()
 
 	changeSStateMeasure(&saux, 0.001);
 
+#ifdef SOCCER_DEBUG
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	int winWidth = 1200;
+	int winHeight = 400;
+	glViewport(0, 0, winWidth/2., winHeight );   
+	soccer_redraw( &saux );
+#endif
+
 	if(!init){
 		minimax_init(&saux);
 		init = true;
@@ -169,6 +179,15 @@ void Minmax2::step()
 
 	red_action = *minimax_get_best_red_action();
 	blue_action = *minimax_get_best_blue_action();
+
+#ifdef SOCCER_DEBUG
+	saction_blue_act( &saux, &blue_action );
+	saction_red_act( &saux, &red_action );
+	glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
+	soccer_redraw( &saux ); 
+	glutSwapBuffers();
+	//usleep(800000);
+#endif
 
 	changeSActionMeasure(&red_action, 1000.);
 	changeSActionMeasure(&blue_action, 1000.);
@@ -211,10 +230,15 @@ void Minmax2::act()
 			//	cout << "PASS_BALL " << angle << endl;
 
 			attacker->setRobot(robot);
-			attacker->updateSoccerAction(red_action.has_kicked, red_action.has_passed, false,//red_action.get_ball,
-				red_action.kick_point.x, red_action.kick_point.y, 
-				pos->x, pos->y);
-			attacker->step();
+			//attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
+			//	red_action.kick_point.x, red_action.kick_point.y, 
+			//	pos->x, pos->y);
+			//attacker->step();
 		}
 	}
+}
+
+SoccerState* Minmax2::soccerState()
+{
+	return s;
 }

@@ -1,7 +1,7 @@
 #ifndef CBR2011_H
 #define CBR2011_H
 
-#include "Plays.h"
+#include "Play.h"
 #include "Tactics.h"
 #include <QFile>
 

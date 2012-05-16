@@ -89,21 +89,20 @@ void adjust_move_tables( void )
 void  minimax_playMax( SoccerState *s, int depth )
 {
  max_is_root = TRUE; 
- minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
+ minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
 void  minimax_playMin( SoccerState *s, int depth )
 {
  max_is_root = FALSE; 
- minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
+ minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
-float minimax_getMaxValue(SoccerState s, int depth,
-                          float parent_duration, float alpha, float beta )
+float minimax_getMaxValue(SoccerState s, int depth, float alpha, float beta )
 {
- int i, attempt;
+ int i;
  float aux; 
  SoccerState saux;
  SoccerAction action;
@@ -115,12 +114,7 @@ float minimax_getMaxValue(SoccerState s, int depth,
  }
  for( i = 0; i < MAX_NPLAYS; i++ ){
      saux = s;
-     attempt = 0;
-     do{
-       attempt++;
-       action = minimax_expandMax( &saux, i, depth );
-     }
-     while( (saction_red_elapsed_time( &action ) > parent_duration) && (attempt < 10) );
+     action = minimax_expandMax( &saux, i, depth );
      if( !action.prune ){
        if( alpha < (aux = minimax_getMinValue( saux, depth-1, 
                     saction_red_elapsed_time( &action ), alpha, beta )) ){
@@ -137,10 +131,9 @@ float minimax_getMaxValue(SoccerState s, int depth,
 }
 
 
-float minimax_getMinValue(SoccerState s, int depth, 
-                          float parent_duration, float alpha, float beta )
+float minimax_getMinValue(SoccerState s, int depth, float alpha, float beta )
 {
- int i, attempt;
+ int i;
  float aux;
  SoccerState saux;
  SoccerAction action;
@@ -152,12 +145,7 @@ float minimax_getMinValue(SoccerState s, int depth,
  }
  for( i = 0; i < MIN_NPLAYS; i++ ){
       saux = s;
-      attempt = 0;
-      do{
-         attempt++;
-         action = minimax_expandMin( &saux, i, depth );
-      }
-      while( (saction_blue_elapsed_time( &action ) > parent_duration) && (attempt < 10) );
+      action = minimax_expandMin( &saux, i, depth );
       if( !action.prune ){
           if( beta > (aux = minimax_getMaxValue( saux, depth-1, 
                       saction_blue_elapsed_time( &action ), alpha, beta )) ){
@@ -176,14 +164,14 @@ float minimax_getMinValue(SoccerState s, int depth,
 
 float minimax_red_time_weight_func( SoccerState *s )
 {
- return 1;//exp(-.0004*SQR(s->blue_time_stamp)) ;
+ return 1 + .0001*( -s->red_time_stamp + s->blue_time_stamp);
 }
 
 float minimax_blue_time_weight_func( SoccerState *s )
 {
- return  1;//exp(-.0004*SQR(s->red_time_stamp));
+ return 1 + .0001*( -s->red_time_stamp + s->blue_time_stamp);
 }
-
+ 
 
 SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
 {
