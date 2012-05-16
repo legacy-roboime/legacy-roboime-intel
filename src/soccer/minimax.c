@@ -185,9 +185,9 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
  }
 
  
- if( (i > 13) && (i < 98 ) )
+ if( (i > 13) && (i < 50 ) )
      action = sstate_red_move(s,  &prev_best_red_action, red_robot, move_radius );
-/* if( (i>= 50) && ( i < 60) )
+ if( (i>= 50) && ( i < 60) )
      action = sstate_red_move(s,  &prev_best_red_action, red_robot,(1./2)*move_radius );
  if( (i >= 60) && ( i < 70) )
      action = sstate_red_move(s,  &prev_best_red_action, red_robot,(1./4)*move_radius );
@@ -196,7 +196,7 @@ if( (i >= 70) && ( i < 80) )
 if( (i >= 80) && ( i < 90) )
      action = sstate_red_move(s,  &prev_best_red_action, red_robot, (1./16)*move_radius );
 if( (i >= 90) && ( i < 98) )
-     action = sstate_red_move(s,  &prev_best_red_action, red_robot, (1./32)*move_radius  ); */
+     action = sstate_red_move(s,  &prev_best_red_action, red_robot, (1./32)*move_radius  );
  if( i == 99 ){
      saction_red_act( s, &prev_best_red_action );
      action = prev_best_red_action;
@@ -238,8 +238,8 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
    }
  }
 
- if( (i > 13) && (i < 98 ) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, move_radius ); /*
+ if( (i > 13) && (i < 50 ) )
+     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, move_radius ); 
  if( (i>= 50) && ( i < 60) )
      action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot,(1./2)*move_radius );
  if( (i >= 60) && ( i < 70) )
@@ -249,7 +249,7 @@ if( (i >= 70) && ( i < 80) )
 if( (i >= 80) && ( i < 90) )
      action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, (1./16)*move_radius );
 if( (i >= 90) && ( i < 98) )
-     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, (1./32)*move_radius  ); */
+     action = sstate_blue_move(s,  &prev_best_blue_action, blue_robot, (1./32)*move_radius  ); 
  if( i == 99 ){
      saction_blue_act( s, &prev_best_blue_action );
      action = prev_best_blue_action;
