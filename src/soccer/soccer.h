@@ -27,9 +27,9 @@ extern "C" {
 #define DEBUG4(s,a,b,c,d)    ;
 #define DEBUG5(s,a,b,c,d,e)  ;
 
-Vector2 red_move_table[NPLAYERS];
-Vector2 blue_move_table[NPLAYERS];
+enum actions {get_ball, receive_ball, kick_to_goal, pass, move, null_action};
 
+typedef enum actions type_actions;
 
 typedef struct SoccerAction{
  Boolean prune;
@@ -37,11 +37,10 @@ typedef struct SoccerAction{
  Vector2 move[NPLAYERS];  
  Vector2 pos[NPLAYERS];
  Vector2 passer_pos;
- Boolean has_kicked;
- Boolean has_passed;
  int ball_owner;
  int passer;
  float enemy_goal_covering;
+ type_actions type;
 } SoccerAction;
 
 
@@ -69,6 +68,8 @@ typedef struct SoccerState{
 
 } SoccerState;
 
+Vector2* get_red_move_table(void);
+Vector2* get_blue_move_table(void);
 
 /* SoccerAction functions */
 

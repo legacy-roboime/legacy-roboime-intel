@@ -89,7 +89,7 @@ SoccerAction sstate_red_kick_to_goal( SoccerState *s )
           if( s->goal_scored ){
               s->blue_goal_covering -= (soccer_env()->robot_radius/
                                         soccer_env()->goal_size);
-              action.has_kicked = TRUE;
+              action.type = kick_to_goal;
               action.enemy_goal_covering = s->blue_goal_covering;
               action.ball_owner = -1;
               DEBUG( "goal scored!!!\n" );
@@ -139,7 +139,7 @@ SoccerAction sstate_red_pass( SoccerState *s, int recv, float recv_radius )
            s->red[recv] = new_recv_pos;
            s->ball = new_recv_pos;
 
-           action.has_passed = TRUE; 
+           action.type = pass; 
            action.passer = s->red_passer;
            action.passer_pos = s->red[ action.passer ];
            action.kick_point = new_recv_pos;
@@ -191,6 +191,7 @@ static SoccerAction use_red_move_table( SoccerState *s, int robot )
  int i;
  Vector2 disp, p;
  SoccerAction action = saction_red_make(s);
+ Vector2* red_move_table = get_red_move_table();
 
  for( i=0; i < NPLAYERS; i++ )
    if( i != robot ){

@@ -74,6 +74,8 @@ void  minimax_play( SoccerState *s, int depth )
 void adjust_move_tables( void )
 {
  int i;
+ Vector2* red_move_table = get_red_move_table();
+ Vector2* blue_move_table = get_blue_move_table();
 
  for( i=0; i < NPLAYERS; i++ ){
    if( v2_norm( v2_sub( best_red_action.move[i], 
@@ -89,18 +91,19 @@ void adjust_move_tables( void )
 void  minimax_playMax( SoccerState *s, int depth )
 {
  max_is_root = TRUE; 
- minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, -MAX_FLOAT, MAX_FLOAT );
+ minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
 void  minimax_playMin( SoccerState *s, int depth )
 {
  max_is_root = FALSE; 
- minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, -MAX_FLOAT, MAX_FLOAT );
+ minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
-float minimax_getMaxValue(SoccerState s, int depth, float alpha, float beta )
+float minimax_getMaxValue(SoccerState s, int depth,
+                          float parent_duration, float alpha, float beta )
 {
  int i;
  float aux; 
@@ -131,7 +134,8 @@ float minimax_getMaxValue(SoccerState s, int depth, float alpha, float beta )
 }
 
 
-float minimax_getMinValue(SoccerState s, int depth, float alpha, float beta )
+float minimax_getMinValue(SoccerState s, int depth, 
+                          float parent_duration, float alpha, float beta )
 {
  int i;
  float aux;
@@ -176,6 +180,7 @@ float minimax_blue_time_weight_func( SoccerState *s )
 SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
 {
  float move_radius , recv_radius;
+ Vector2* red_move_table = get_red_move_table();
  SoccerAction action = saction_red_make(s);
  move_radius = soccer_env()->red_move_radius;
  recv_radius = soccer_env()->red_recv_radius; 
@@ -232,6 +237,7 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
 SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
 {
  float move_radius , recv_radius;
+ Vector2* blue_move_table = get_blue_move_table();
  SoccerAction action = saction_blue_make(s);
  move_radius = soccer_env()->blue_move_radius;
  recv_radius = soccer_env()->blue_recv_radius; 
