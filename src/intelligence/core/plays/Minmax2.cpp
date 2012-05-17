@@ -3,8 +3,6 @@
 #include "Ball.h"
 #include "Robot.h"
 #include <QLineF>
-#include "minimax.h"
-#include <GL/glut.h>
 
 #define LOGGING
 
@@ -230,15 +228,10 @@ void Minmax2::act()
 			//	cout << "PASS_BALL " << angle << endl;
 
 			attacker->setRobot(robot);
-			//attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
-			//	red_action.kick_point.x, red_action.kick_point.y, 
-			//	pos->x, pos->y);
-			//attacker->step();
+			attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
+				red_action.kick_point.x, red_action.kick_point.y, 
+				pos->x, pos->y);
+			attacker->step();
 		}
 	}
-}
-
-SoccerState* Minmax2::soccerState()
-{
-	return s;
 }

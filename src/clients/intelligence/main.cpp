@@ -1,8 +1,6 @@
 #include <QtCore/QCoreApplication>
 #include <iostream>
 #include "Intelligence.h"
-#include <GL/glut.h>
-#include "minimax.h"
 
 using namespace std;
 
