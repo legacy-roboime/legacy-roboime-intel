@@ -9,8 +9,6 @@ static void redraw( void );
 static void reshape(int wid, int ht);
 static void img_ppm_write( char *img, char *fname );
 
-static Boolean left_red_side = TRUE;
-
 #define WIDTH 900
 #define HEIGHT 300
 
@@ -18,7 +16,7 @@ int main( int argc, char **argv )
 {
  image = ( char* )malloc( 3*WIDTH*HEIGHT );
  soccer_env_init();
- soccer_env()->left_red_side = left_red_side;
+ soccer_env()->left_red_side = FALSE;
  s = sstate_alloc();
  minimax_init(s);
  glutInit(&argc, argv);
