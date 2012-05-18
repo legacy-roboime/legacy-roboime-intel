@@ -21,6 +21,7 @@ set(SOC_SRC
     soccer_env.c
 	soccer_draw.c
 	minimax.c
+	move_table.c
 )
 source_group("Sources" FILES ${SOC_SRC})
 

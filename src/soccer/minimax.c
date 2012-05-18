@@ -25,7 +25,10 @@ void minimax_init( SoccerState *s )
    best_blue_action.move[i] = s->blue[i];
    prev_best_red_action.move[i] = s->red[i];
    prev_best_blue_action.move[i] = s->blue[i];
+   set_red_move_table( i, s->red[i] );
+   set_blue_move_table( i, s->blue[i] );
  }
+
  best_red_action.ball_owner = s->red_ball_owner;
  best_blue_action.ball_owner = s->blue_ball_owner;
 }
@@ -74,16 +77,14 @@ void  minimax_play( SoccerState *s, int depth )
 void adjust_move_tables( void )
 {
  int i;
- Vector2* red_move_table = get_red_move_table();
- Vector2* blue_move_table = get_blue_move_table();
 
  for( i=0; i < NPLAYERS; i++ ){
    if( v2_norm( v2_sub( best_red_action.move[i], 
                  best_red_action.pos[i] ) ) > EPS )
-        red_move_table[i] = best_red_action.move[i];
+        set_red_move_table( i, best_red_action.move[i] );
    if( v2_norm( v2_sub( best_blue_action.move[i], 
                  best_blue_action.pos[i] ) ) > EPS )
-        blue_move_table[i] = best_blue_action.move[i]; 
+        set_blue_move_table( i, best_blue_action.move[i] ); 
  }
 }
 
@@ -180,7 +181,6 @@ float minimax_blue_time_weight_func( SoccerState *s )
 SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
 {
  float move_radius , recv_radius;
- Vector2* red_move_table = get_red_move_table();
  SoccerAction action = saction_red_make(s);
  move_radius = soccer_env()->red_move_radius;
  recv_radius = soccer_env()->red_recv_radius; 
@@ -222,8 +222,8 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
  if( (i >= 90) && ( i < 98) )
      action = sstate_red_move(s, red_robot, (1./32)*move_radius  ); 
  if( i == 99 ){
-     s->red[red_robot] = red_move_table[red_robot];
-     action.move[red_robot] = red_move_table[red_robot];
+     s->red[red_robot] = get_red_move_table(red_robot);
+     action.move[red_robot] = get_red_move_table(red_robot);
      action.prune = FALSE;
  }   
  if( i == 100 )
@@ -237,7 +237,6 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
 SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
 {
  float move_radius , recv_radius;
- Vector2* blue_move_table = get_blue_move_table();
  SoccerAction action = saction_blue_make(s);
  move_radius = soccer_env()->blue_move_radius;
  recv_radius = soccer_env()->blue_recv_radius; 
@@ -278,8 +277,8 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  if( (i >= 90) && ( i < 98) )
      action = sstate_blue_move(s, blue_robot, (1./32)*move_radius  ); 
  if( i == 99 ){
-     s->blue[blue_robot] = blue_move_table[blue_robot];
-     action.move[blue_robot] = blue_move_table[blue_robot];
+     s->blue[blue_robot] = get_blue_move_table(blue_robot);
+     action.move[blue_robot] = get_blue_move_table(blue_robot);
      action.prune = FALSE;
  }   
  if( i == 100 )

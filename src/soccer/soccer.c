@@ -1,20 +1,9 @@
 #include "soccer.h"
 
-static Vector2 red_move_table[NPLAYERS];
-static Vector2 blue_move_table[NPLAYERS];
 
 static float goal_covering( SoccerState *s );
 static float goal_distance( SoccerState *s );
 
-Vector2* get_red_move_table(void)
-{
- return red_move_table;
-}
-
-Vector2* get_blue_move_table(void)
-{
- return blue_move_table;
-}
 
 SoccerState* sstate_alloc( void )
 {
