@@ -228,7 +228,7 @@ void Minmax2::act()
 			//	cout << "PASS_BALL " << angle << endl;
 
 			attacker->setRobot(robot);
-			attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
+			attacker->updateSoccerAction(red_action.has_kicked, red_action.has_passed, false,//red_action.type == get_ball,
 				red_action.kick_point.x, red_action.kick_point.y, 
 				pos->x, pos->y);
 			attacker->step();
