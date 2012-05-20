@@ -22,6 +22,7 @@ SoccerAction sstate_red_get_ball( SoccerState *s )
         s->red_ball_owner = closest_red;  
         action.ball_owner = closest_red;
         action.prune = FALSE;
+		action.type = get_ball;
     }
  }
  return action;
@@ -60,6 +61,7 @@ SoccerAction sstate_red_receive_ball( SoccerState *s, int recv )
    s->red_ball_owner = recv;  
    action.ball_owner = recv;
    action.prune = FALSE;
+   action.type = receive_ball;
  }
  return action;
 }
@@ -181,6 +183,7 @@ SoccerAction sstate_red_move( SoccerState *s, int robot, float radius )
      DEBUG( "*");
    }
    DEBUG("\n");
+   action.type = move;
  
  return action;
 }
