@@ -8,6 +8,8 @@ static Intelligence* intel;
 static int winWidth, winHeight;
 static QCoreApplication* app;
 
+#ifdef SOCCER_DEBUG
+
 void reshape(int wid, int ht)
 {
 	winWidth = wid;
@@ -24,6 +26,8 @@ void idleFunc(void)
 	QCoreApplication::processEvents();
 	intel->update();
 }
+
+#endif
 
 int main(int argc, char *argv[])
 {
