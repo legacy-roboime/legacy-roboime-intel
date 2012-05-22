@@ -213,25 +213,34 @@ void Minmax2::act()
 		}
 		else{
 			//DEBUG
-			QLineF l = QLineF(0, 0, pos->x, pos->y);
-			qreal angle = -l.angle() + 360; //convenção sentido horario para classe QLineF
-			cout << angle << endl;
-			//if(teste > 12) 
-			//	cout << "MOVE " << angle << endl;
-			//else if(teste == 0 && best_action.has_kicked)
-			//	cout << "GOALKICK " << angle << endl;
-			//else if(teste == 0)
-			//	cout << "GETBALL " << angle << endl;
-			//else if(teste > 7)
-			//	cout << "RECV_BALL " << angle << endl;
+			//QLineF l = QLineF(0, 0, pos->x, pos->y);
+			//qreal angle = 360 - l.angle(); //convenção sentido horario para classe QLineF
+			////qreal orientation = robot->orientation() * 180 / M_PI;
+			//static qreal lastOr = angle;//orientation;
+			//cout << abs(angle - lastOr) << endl;
+
+			//if(red_action.type == kick_to_goal)
+			//	cout << "Kick To Goal" << endl;
+			//else if(red_action.type == pass)
+			//	cout << "Pass" << endl;
+			//else if(red_action.type == actions::get_ball)
+			//	cout << "Get Ball" << endl;
+			//else if(red_action.type == actions::move)
+			//	cout << "Move" << endl;
+			//else if(red_action.type == actions::receive_ball)
+			//	cout << "Receive Ball" << endl;
+			//else if(red_action.type == actions::null_action)
+			//	cout << "Null action" << endl;
 			//else
-			//	cout << "PASS_BALL " << angle << endl;
+			//	cout << "nenhum nem outro" << endl;
 
 			attacker->setRobot(robot);
-			attacker->updateSoccerAction(red_action.has_kicked, red_action.has_passed, false,//red_action.type == get_ball,
+			attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
 				red_action.kick_point.x, red_action.kick_point.y, 
 				pos->x, pos->y);
 			attacker->step();
+
+			//lastOr = angle;
 		}
 	}
 }
