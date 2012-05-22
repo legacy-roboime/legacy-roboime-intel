@@ -92,6 +92,7 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
               s->red_goal_covering -= ( soccer_env()->robot_radius/
                                         soccer_env()->goal_size );
 			  action.type = kick_to_goal;
+			  action.kick_point = p;
               action.enemy_goal_covering = s->red_goal_covering;
               action.ball_owner = -1;  
               DEBUG( "goal received :(\n" );
