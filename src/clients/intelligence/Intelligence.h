@@ -39,9 +39,6 @@ public:
 public:
 	Minmax2* play;
 
-signals:
-	void readySend();
-
 private:
 	Skill* test[10];
 	QTimer* timer;

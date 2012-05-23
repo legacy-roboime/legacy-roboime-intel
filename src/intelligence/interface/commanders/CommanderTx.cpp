@@ -14,7 +14,6 @@ CommanderTx::CommanderTx(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
-	connect(parent, SIGNAL(readySend()), this, SLOT(send()));
 }
 
 CommanderTx::~CommanderTx()

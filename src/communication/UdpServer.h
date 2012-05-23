@@ -17,8 +17,6 @@ public:
 	~UdpServer();
 
 	void append(const QByteArray& data);
-
-public slots:
 	void send();
 
 private:

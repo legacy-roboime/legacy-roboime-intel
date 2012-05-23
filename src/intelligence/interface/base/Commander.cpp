@@ -18,10 +18,10 @@ void Commander::del(Robot* r)
 
 void Commander::prepare() {}
 
-void Commander::send() {}
+//void Commander::send() {}
 
 void Commander::step()
 {
 	prepare();
-	send();
+	//send();
 }

@@ -17,7 +17,6 @@ CommanderSim::CommanderSim(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
-	connect(parent, SIGNAL(readySend()), this, SLOT(send()));
 	//for(size_t n=0; n<5; n++) _robot.push_back(0);
 }
 
@@ -67,7 +66,7 @@ void CommanderSim::step()
 		}
 	}
 	out << endl;
-	//std::cout << out.str() << endl;//DEBUG
+	std::cout << "SIM: " << out.str() << endl;//DEBUG
 	append(QByteArray(out.str().c_str(), out.str().size()));
 }
 
