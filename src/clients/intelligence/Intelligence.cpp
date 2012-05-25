@@ -57,7 +57,7 @@ Intelligence::Intelligence(QObject *parent)
 	//myTeam->at(1)->setPatternId(1);
 	//myTeam->at(2)->setPatternId(1);
 	//myTeam->at(3)->setPatternId(1);
-	myTeam->at(3)->setPatternId(1);
+	//myTeam->at(3)->setPatternId(1);
 	//enemyTeam[0]->setPatternId(4);
 
 	//set the kicker if it is not working
@@ -67,12 +67,12 @@ Intelligence::Intelligence(QObject *parent)
 	//myTeam[3]->kicker().setNotWorking();
 	//myTeam[4]->kicker().setNotWorking();
 
-	//controller = new Controller(this, myTeam->at(3), 1, 1000); //controle no referencial do campo
+	//controller = new Controller(this, myTeam->at(3), 1, 500); //controle no referencial do campo
 	controller = new Tactics::Controller2(this, myTeam->at(3), 1, 1000); //controle no referencial do robo
 	//gotoold = new GotoOld(this, myTeam[3], 0.0, 0.0);
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill1 = new Move(this, myTeam->at(2), 0, 0, 10.);
+	skill1 = new Goto(this, myTeam->at(3), 1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//Move(this, myTeam->at(2), 0, 0, 10.);
 	skill2 = new SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 0, 1, 500, false);
 	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->at(1), true, 1, 1, 1000);
 
@@ -115,7 +115,7 @@ void Intelligence::update() {
 	upd->step();
 	upd->apply();
 	//filter->updates()->apply(upd);
-	updReferee->step();
+	/*updReferee->step();
 	updReferee->apply();
 
 	//Commands Referee
@@ -203,8 +203,9 @@ void Intelligence::update() {
 		stopReferee->step();
 
 	else
-		cbr2011->step();
+		cbr2011->step();*/
 
+	//cout << "X: " << myTeam->at(3)->x() << endl;
 	controller->step();
 	//gotoold->step();
 	//cbr2011->step();
