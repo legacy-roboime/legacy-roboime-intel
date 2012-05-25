@@ -66,7 +66,7 @@ void CommanderSim::step()
 		}
 	}
 	out << endl;
-	std::cout << "SIM: " << out.str() << endl;//DEBUG
+	//std::cout << "SIM: " << out.str() << endl;//DEBUG
 	append(QByteArray(out.str().c_str(), out.str().size()));
 }
 

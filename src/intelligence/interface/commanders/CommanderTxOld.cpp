@@ -68,6 +68,6 @@ void CommanderTxOld::step()
 		}
 	}
 	out << endl;
-	cout << "REAL: " << out.str();
+	//cout << "REAL: " << out.str();
 	append(QByteArray(out.str().c_str(), out.str().size()));
 }
