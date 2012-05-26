@@ -14,7 +14,6 @@ CommanderTxOld::CommanderTxOld(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
-	connect(parent, SIGNAL(readySend()), this, SLOT(send()));
 	for(size_t n=0; n<5; n++) robots.push_back(0);
 }
 
@@ -50,7 +49,7 @@ void CommanderTxOld::step()
 					<< 0.0               << " "
 					<< 0.0               << " "
 					<< d << " " << k << " ";
-				//r->newCommand();
+				r->newCommand();
 			} else if(c.wheelsSize() == 4) {
 				qreal k = c.kickSpeed();
 				qreal d = c.dribbleSpeed();
@@ -59,17 +58,16 @@ void CommanderTxOld::step()
 					<< c.wheelSpeedAt(2) << " "
 					<< c.wheelSpeedAt(3) << " "
 					<< d << " " << k << " ";
-				//r->newCommand();
+				r->newCommand();
 			} else {
 				qCritical("prepare: Wrong number of wheels!");
 				break;
 			}
 		} else {
-			//out << "0 0 0 0 0 0 ";
+			out << "0 0 0 0 0 0 ";
 		}
 	}
 	out << endl;
-	//cout << out.str();
+	//cout << "REAL: " << out.str();
 	append(QByteArray(out.str().c_str(), out.str().size()));
 }
-

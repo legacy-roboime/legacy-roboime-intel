@@ -13,7 +13,6 @@
 #include "Plays.h"
 #include "KalmanFilters.h"
 #include "Tactics.h"
-#include "Minmax2.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
@@ -33,14 +32,12 @@ public:
 private slots:
 	void update();
 #else
+public:
 	void update();
 #endif
 
 public:
 	Minmax2* play;
-
-signals:
-	void readySend();
 
 private:
 	Skill* test[10];

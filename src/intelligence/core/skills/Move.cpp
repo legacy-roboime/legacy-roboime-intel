@@ -5,7 +5,7 @@
 #include "PID.h"
 #define MAX_RPS_BIWHEEL 4.0
 #define WHEEL_INTERDISTANCE 
-//#define REALROBOT
+#define REALROBOT
 
 using namespace LibIntelligence;
 using namespace Skills;
@@ -70,10 +70,10 @@ void Move::step()
 	qreal acelLin;
 	qreal acelAng;
 	if(false && robot()->id()==1){
-		acelLin=300*intervalo/1000;
+		acelLin=3000*intervalo/1000;
 		acelAng=acelLin/robot()->body().radius();
 	} else {
-		acelLin=200*intervalo/1000;
+		acelLin=2500*intervalo/1000;
 		acelAng=acelLin/robot()->body().radius();
 	}
 

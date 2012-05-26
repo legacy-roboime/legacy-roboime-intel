@@ -53,12 +53,11 @@ Intelligence::Intelligence(QObject *parent)
 		//}
 	}
 
-	//
-		//myTeam[0]->setPatternId(4);
-		//myTeam[1]->setPatternId(0);
-		//myTeam[2]->setPatternId(2);
-		//myTeam[3]->setPatternId(2);
-		//myTeam[4]->setPatternId(2);
+	//myTeam->at(0)->setPatternId(1);
+	//myTeam->at(1)->setPatternId(1);
+	//myTeam->at(2)->setPatternId(1);
+	//myTeam->at(3)->setPatternId(1);
+	//myTeam->at(3)->setPatternId(1);
 	//enemyTeam[0]->setPatternId(4);
 
 	//set the kicker if it is not working
@@ -68,12 +67,12 @@ Intelligence::Intelligence(QObject *parent)
 	//myTeam[3]->kicker().setNotWorking();
 	//myTeam[4]->kicker().setNotWorking();
 
-	controller = new Controller(this, myTeam->at(1), 1, 1000); //controle no referencial do campo
-	//controller = new Tactics::Controller2(this, myTeam[0], 1, 1000); //controle no referencial do robo
+	//controller = new Controller(this, myTeam->at(3), 1, 500); //controle no referencial do campo
+	controller = new Tactics::Controller2(this, myTeam->at(3), 1, 1000); //controle no referencial do robo
 	//gotoold = new GotoOld(this, myTeam[3], 0.0, 0.0);
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill1 = new Move(this, myTeam->at(1), 0, 0, 12.);
+	skill1 = new Goto(this, myTeam->at(3), 1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//Move(this, myTeam->at(2), 0, 0, 10.);
 	skill2 = new SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 0, 1, 500, false);
 	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->at(1), true, 1, 1, 1000);
 
@@ -110,13 +109,13 @@ Intelligence::~Intelligence()
 }
 
 void Intelligence::update() {
-	QTime Tempo;
-	Tempo.start();
+	//QTime Tempo;
+	//Tempo.start();
 
 	upd->step();
 	upd->apply();
 	//filter->updates()->apply(upd);
-	updReferee->step();
+	/*updReferee->step();
 	updReferee->apply();
 
 	//Commands Referee
@@ -204,11 +203,12 @@ void Intelligence::update() {
 		stopReferee->step();
 
 	else
-		cbr2011->step();
+		cbr2011->step();*/
 
-	//controller->step();
+	//cout << "X: " << myTeam->at(3)->x() << endl;
+	controller->step();
 	//gotoold->step();
-	cbr2011->step();
+	//cbr2011->step();
 	//machine->step();
 	//((Skill*)machine->configuration().toList().at(1))->step();
 	//player0->step();
@@ -216,22 +216,21 @@ void Intelligence::update() {
 	//player2->step();
 	//player3->step();
 	//player4->step();
-	play->step();
+	//play->step();
 	//attacker->step();
-	//skill3->step();
+	//skill1->step();
 	//if(!skill3->busy()) cout << "DESOCUPADO!!!" << endl;
 	//else cout << "OCUPADO!!!" << endl;
 	//tactic->step();
 	//skill1->step();
 	//tactic->step();
 
-
-	emit(readySend());
-	//QCoreApplication::processEvents();
-
-	comB->step();
+	//comB->step();
 	comB2->step();
-	comY->step();
+	//comY->step();
+	//((CommanderSim*)comB)->send();
+	((CommanderTxOld*)comB2)->send();
+	//((CommanderSim*)comY)->send();
 
 	//int duracao=Tempo.elapsed();
 	//printf("TEMPO: %i ms\n",duracao);

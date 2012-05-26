@@ -21,6 +21,7 @@ SoccerAction sstate_blue_get_ball( SoccerState *s )
         s->blue_ball_owner = closest_blue;  
         action.ball_owner = closest_blue;
         action.prune = FALSE;
+		action.type = get_ball;
    }
  }
  return action;
@@ -59,6 +60,7 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
        s->blue_ball_owner = recv; 
        action.ball_owner = recv; 
        action.prune = FALSE; 
+	   action.type = receive_ball;
   }
  return action;
 }
@@ -89,7 +91,8 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
           if( s->goal_received ){
               s->red_goal_covering -= ( soccer_env()->robot_radius/
                                         soccer_env()->goal_size );
-              action.has_kicked = TRUE;
+			  action.type = kick_to_goal;
+			  action.kick_point = p;
               action.enemy_goal_covering = s->red_goal_covering;
               action.ball_owner = -1;  
               DEBUG( "goal received :(\n" );
@@ -139,7 +142,7 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
              s->blue[recv] = new_recv_pos;
              s->ball = new_recv_pos;
 
-             action.has_passed = TRUE; 
+			 action.type = pass;
              action.passer = s->blue_passer;
              action.passer_pos = s->blue[ action.passer ];
              action.kick_point = new_recv_pos;
@@ -181,6 +184,7 @@ SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
      DEBUG( "*");
  }
  DEBUG("\n");
+ action.type = move;
  
  return action;
 }

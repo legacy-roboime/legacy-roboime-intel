@@ -10,7 +10,7 @@
 #include <QDataStream>
 #include "minimax.h"
 
-#define SOCCER_DEBUG
+//#define SOCCER_DEBUG
 
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Skills;

@@ -36,7 +36,7 @@ void NxKicker::controlKicker( float kickerSpeed, NxRobot* robot )
 		NxVec3 normal;
 
 		NxUtilLib* gUtilLib = NxGetUtilLib();
-		if(gUtilLib->NxSweepBoxSphere(box, sphere, -dir, 10+24.3, min_dist, normal)){ // Nao sei pq tem q ser o vetor -dir pra da certo pela logica eh NxVec3(cos(angle), sin(angle), 0)
+		if(gUtilLib->NxSweepBoxSphere(box, sphere, -dir, 30+24.3, min_dist, normal)){ // Nao sei pq tem q ser o vetor -dir pra da certo pela logica eh NxVec3(cos(angle), sin(angle), 0)
 			ball->ball->addForce(/*NxVec3(kickerSpeed*cos(angle)*150., kickerSpeed*sin(angle)*150., 0)*/(-normal)*kickerSpeed*300., NX_IMPULSE); //TODO: VERIFICAR A FORÇA OU IMPULSO
 		}
 	}
