@@ -5,7 +5,7 @@
 #include "PID.h"
 #define MAX_RPS_BIWHEEL 4.0
 #define WHEEL_INTERDISTANCE 
-#define REALROBOT
+//#define REALROBOT
 
 using namespace LibIntelligence;
 using namespace Skills;
@@ -122,6 +122,9 @@ void Move::step()
 		}
 	}
 
+	//oldSpeedAngular = oldSpeedAngular < 6 ? oldSpeedAngular : 6;
+	//oldSpeedX = oldSpeedX < 3000 ? oldSpeedX : 3000;
+	//oldSpeedY = oldSpeedY < 3000 ? oldSpeedY : 3000;
 
 	qreal speedAngularacel=speedAngular;
 	speedAngular=oldSpeedAngular;
