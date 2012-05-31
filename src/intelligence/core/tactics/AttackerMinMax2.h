@@ -9,6 +9,8 @@
 #include "SampledKick.h"
 #include "MachineTransition.h"
 
+#define MIN_DIST 500
+
 namespace LibIntelligence
 {
 	namespace Tactics
@@ -26,9 +28,7 @@ namespace LibIntelligence
 			bool hasKick();
 			bool hasPass();
 			void updateSoccerAction(bool hasKick = false, bool hasPass = false, bool getBall = false, qreal kickPointX = 0, qreal kickPointY = 0, qreal movePointX = 0, qreal movePointY = 0);
-			bool getMinDist(); //se o robo atingiu uma distância mínima para desligar o move do minimax2 e usar skills para pegar a bola
 			Skills::SampledDribble* dribble();
-			qreal minDist();
 
 		protected:
 			//Skills::DriveToBall* driveToBall_;
