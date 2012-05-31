@@ -64,8 +64,8 @@ Stage* Tactic::stage()
 
 void Tactic::step()
 {
-	Skill* current = (Skill*)this->getCurrentState();
 	this->execute();
+	Skill* current = (Skill*)this->getCurrentState();
 	current->step();
-	//cout << current->objectName().toStdString() << endl;
+	//cout << "SKILL: " << current->objectName().toStdString() << endl;
 }
