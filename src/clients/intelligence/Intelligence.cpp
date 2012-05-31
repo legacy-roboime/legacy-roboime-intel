@@ -36,7 +36,7 @@ Intelligence::Intelligence(QObject *parent)
 	upd->add(sta);
 	updReferee->add(sta);
 
-	for(int i=0; i<5; i++) {
+	for(quint8 i=0; i<5; i++) {
 		//if(i==0) {
 		myTeam->push_back(new Robot(Robots::RobotIME2011(myTeam, i, i, BLUE)));
 		comB->add(myTeam->last());
@@ -67,17 +67,17 @@ Intelligence::Intelligence(QObject *parent)
 	//myTeam[3]->kicker().setNotWorking();
 	//myTeam[4]->kicker().setNotWorking();
 
-	//controller = new Controller(this, myTeam->at(3), 1, 500); //controle no referencial do campo
-	controller = new Tactics::Controller2(this, myTeam->at(3), 1, 1000); //controle no referencial do robo
+	controller = new Controller(this, myTeam->at(3), 1, 500); //controle no referencial do campo
+	//controller = new Tactics::Controller2(this, myTeam->at(3), 1, 1000); //controle no referencial do robo
 	//gotoold = new GotoOld(this, myTeam[3], 0.0, 0.0);
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill1 = new Goto(this, myTeam->at(3), 1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//Move(this, myTeam->at(2), 0, 0, 10.);
+	skill1 = new Move(this, myTeam->at(4), 500, 0, 0.);//Goto(this, myTeam->at(3), 1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//
 	skill2 = new SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 0, 1, 500, false);
 	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->at(1), true, 1, 1, 1000);
 
-	tactic = new Attacker(this, enemyTeam->at(1), 3000);
-	machine = new Zickler43(this, enemyTeam->at(1), 3000, false);
+	tactic = new Attacker(this, myTeam->at(1), 1000);
+	machine = new Zickler43(this, myTeam->at(3), 1000, true);
 
 	halt = new Plays::Halt(this, myTeam, sta);
 	stopReferee = new Plays::StopReferee(this, myTeam, sta);
@@ -97,7 +97,7 @@ Intelligence::Intelligence(QObject *parent)
 #ifndef SOCCER_DEBUG
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	timer->start(30.);//1000.0/60.0); //frequencia sensor camera 	//
+	timer->start(50.);//valor que tá no transmission da trunk para realTransmission //30.);//
 #endif
 	
 	//connect(upd, SIGNAL(receiveUpdate()), filter, SLOT(step()));
@@ -206,7 +206,7 @@ void Intelligence::update() {
 		cbr2011->step();*/
 
 	//cout << "X: " << myTeam->at(3)->x() << endl;
-	controller->step();
+	//controller->step();
 	//gotoold->step();
 	//cbr2011->step();
 	//machine->step();
@@ -216,7 +216,7 @@ void Intelligence::update() {
 	//player2->step();
 	//player3->step();
 	//player4->step();
-	//play->step();
+	play->step();
 	//attacker->step();
 	//skill1->step();
 	//if(!skill3->busy()) cout << "DESOCUPADO!!!" << endl;
@@ -225,11 +225,11 @@ void Intelligence::update() {
 	//skill1->step();
 	//tactic->step();
 
-	//comB->step();
-	comB2->step();
+	comB->step();
+	//comB2->step();
 	//comY->step();
-	//((CommanderSim*)comB)->send();
-	((CommanderTxOld*)comB2)->send();
+	((CommanderSim*)comB)->send();
+	//((CommanderTxOld*)comB2)->send();
 	//((CommanderSim*)comY)->send();
 
 	//int duracao=Tempo.elapsed();
