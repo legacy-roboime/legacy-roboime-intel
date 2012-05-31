@@ -17,9 +17,9 @@ using namespace Zickler43T;
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
 	driveToBall_(new DriveToBall(this, r, r->enemyGoal(), speed, true)),
-	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., speed/.6)),
-	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., speed/.6, false)),
-	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, speed/.6, false)),
+	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., speed/.12)),
+	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., speed/.12, false)),
+	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, speed/.12, false)),
 	wait_(new Wait(p, r)),
 	speed(speed)
 {
@@ -101,7 +101,7 @@ bool DriveToDribbleT::condition()
 	Zickler43* z = (Zickler43*) this->parent();
 	Robot* r = z->robot();
 	Ball*b = z->stage()->ball();
-	return !source_->busy(); //r->distance(b).module() < 400;//
+	return r->distance(b).module() < 400;//!source_->busy(); //
 }
 
 DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
