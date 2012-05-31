@@ -22,7 +22,7 @@ UDPMulticastSenderSSLVision::~UDPMulticastSenderSSLVision(void)
 }
 
 void UDPMulticastSenderSSLVision::startSending(){
-	timer->start(1000./60.); //camera 60 fps
+	timer->start(1000./15.); //camera lab 15 fps//1000./60.); //camera oficial 60 fps//
 }
 
 void UDPMulticastSenderSSLVision::stopSending(){
