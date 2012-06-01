@@ -210,6 +210,26 @@ void Intelligence::update() {
 	//gotoold->step();
 	//cbr2011->step();
 	//machine->step();
+	//attacker->setRobot(myTeam->at(0));
+	//attacker->step();
+	//attacker->setRobot(myTeam->at(1));
+	//attacker->step();
+	//attacker->setRobot(myTeam->at(2));
+	//attacker->step();
+	//attacker->setRobot(myTeam->at(3));
+	//attacker->step();
+	//attacker->setRobot(myTeam->at(4));
+	//attacker->step();
+	//machine->setRobot(myTeam->at(0));
+	//machine->step();
+	//machine->setRobot(myTeam->at(1));
+	//machine->step();
+	//machine->setRobot(myTeam->at(2));
+	//machine->step();
+	//machine->setRobot(myTeam->at(3));
+	//machine->step();
+	//machine->setRobot(myTeam->at(4));
+	//machine->step();
 	//((Skill*)machine->configuration().toList().at(1))->step();
 	//player0->step();
 	//player1->step();
@@ -227,10 +247,10 @@ void Intelligence::update() {
 
 	comB->step();
 	//comB2->step();
-	//comY->step();
+	comY->step();
 	((CommanderSim*)comB)->send();
 	//((CommanderTxOld*)comB2)->send();
-	//((CommanderSim*)comY)->send();
+	((CommanderSim*)comY)->send();
 
 	//int duracao=Tempo.elapsed();
 	//printf("TEMPO: %i ms\n",duracao);
