@@ -34,9 +34,9 @@ namespace LibIntelligence
 		QVector<State*> states_;
 		State* initial_;
 		State* current_;
+		State* final_;
 
 	private:
-		State* final_;
 		bool deterministic_;
 		//QVector<MachineTransition*> transitions;
 	};
