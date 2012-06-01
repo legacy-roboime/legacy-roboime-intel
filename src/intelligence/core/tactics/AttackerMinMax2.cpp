@@ -17,8 +17,7 @@ using namespace AttackerMinMax2T;
 AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbleSpeed, qreal passSpeed)
 	: Tactic(p, r, true),
 	hasKick_(false),
-	hasPass_(false),
-	minDist_(500)
+	hasPass_(false)
 {
 	movePoint_ = new Object();
 	kickPoint_ = new Object();
@@ -111,7 +110,7 @@ void AttackerMinMax2::updateSoccerAction(bool hasKick, bool hasPass, bool getBal
 		kickPoint_->setY(kickPointY);
 	}
 
-	if(getBall && getMinDist()){
+	if(getBall && robot->distance(ball).module() < MIN_DIST){
 		movePoint_->setX(enemyGoal->x());
 		movePoint_->setY(enemyGoal->y());
 	}
@@ -129,22 +128,12 @@ void AttackerMinMax2::updateSoccerAction(bool hasKick, bool hasPass, bool getBal
 	dribblePoint_->setY(movePointY - robot->x() + ball->x());
 }
 
-qreal AttackerMinMax2::minDist()
-{
-	return minDist_;
-}
-
-bool AttackerMinMax2::getMinDist()
-{
-	Robot* r = robot();
-	Ball* ball = r->stage()->ball();
-	return ( r->distance(ball).module() < minDist_ ); 
-}
-
 bool GotoToDriveT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return a->getMinDist();
+	Robot* r = a->robot();
+	Ball* b = a->stage()->ball();
+	return r->distance(b).module() < MIN_DIST;
 }
 
 GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -152,7 +141,9 @@ GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal 
 bool DriveToGotoT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return !a->getMinDist();
+	Robot* r = a->robot();
+	Ball* b = a->stage()->ball();
+	return !(r->distance(b).module() < MIN_DIST);
 }
 
 DriveToGotoT::DriveToGotoT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

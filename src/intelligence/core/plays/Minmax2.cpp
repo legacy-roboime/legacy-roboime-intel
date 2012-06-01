@@ -3,6 +3,7 @@
 #include "Ball.h"
 #include "Robot.h"
 #include <QLineF>
+#include "GotoTactic.h"
 
 #define LOGGING
 
@@ -20,7 +21,7 @@ Play(parent,team,stage),
 	speed_(speed),
 	init(false)
 {
-	log.open(QIODevice::WriteOnly);
+	//log.open(QIODevice::WriteOnly);
 
 	soccer_env_init();
 	s = sstate_alloc();
@@ -36,10 +37,14 @@ Play(parent,team,stage),
 	for(int i=0; i < team->size(); i++)
 		_max_skills.push_back( new Goto(this, team->at(i)) );
 
-	//team->at(0) eh soh pra inicializar depois usamos setRobot
-	attacker = new AttackerMinMax2(this, team->at(0), envReal.red_speed, 
-								   envReal.red_dribble_speed, 
-								   envReal.red_pass_speed); 
+	//goto_ = new Goto(this, team->at(2));
+
+	for(int i=0; i<5; i++)
+		player_[i] = new GotoTactic(this, team->at(i)); 
+
+	//attacker = new AttackerMinMax2(this, team->at(0), envReal.red_speed, 
+								   //envReal.red_dribble_speed, 
+								   //envReal.red_pass_speed); 
 }
 
 Minmax2::~Minmax2()
@@ -48,7 +53,7 @@ Minmax2::~Minmax2()
 		delete _max_skills.at(i);
 
 	delete attacker;
-	log.close();
+	//log.close();
 }
 
 void Minmax2::changeSStateMeasure(SoccerState *s, double scale)
@@ -102,13 +107,13 @@ void Minmax2::ballOwner()
 	qreal mDist = (mRobot->distance(ball)).module();
 	qreal tDist = (tRobot->distance(ball)).module();
 	if(mDist <= tDist){
-		if(mDist < attacker->minDist()){
+		if(mDist < MIN_DIST){
 			s->red_ball_owner = mRobot->id();
 			s->blue_ball_owner = -1;
 		}
 	}
 	else{
-		if(tDist < attacker->minDist()){
+		if(tDist < MIN_DIST){
 			s->blue_ball_owner = tRobot->id();
 			s->red_ball_owner = -1;
 		}
@@ -140,12 +145,6 @@ void Minmax2::update_soccer_state()
 	}
 
 	ballOwner();
-
-	//TODO: atualizar os campos (parâmetros constantes) da struct Soccer State de s, 
-	//para que nao haja mais de uma fonte de parâmetros constantes, essa implementacao 
-	//nao precisa ser executada em cada update soccer state (mas nao pode colocar no construtor 
-	//pq a informacao nao chegou ainda para alguns parametros)
-	//goal scored e gol receive nao precisa atualizar, pois eh variavel auxiliar (interna) dessa inteligencia
 }
 
 void Minmax2::step()
@@ -198,6 +197,21 @@ void Minmax2::act()
 	Ball* ball = stage_->ball();
 	int idClosest = stage_->getClosestPlayerToBall(team_)->id();
 
+	//if(red_action.type == kick_to_goal)
+	//	cout << "Kick To Goal" << endl;
+	//else if(red_action.type == pass)
+	//	cout << "Pass" << endl;
+	//else if(red_action.type == actions::get_ball)
+	//	cout << "Get Ball" << endl;
+	//else if(red_action.type == actions::move)
+	//	cout << "Move" << endl;
+	//else if(red_action.type == actions::receive_ball)
+	//	cout << "Receive Ball" << endl;
+	//else if(red_action.type == actions::null_action)
+	//	cout << "Null action" << endl;
+	//else
+	//	cout << "nenhum nem outro" << endl;
+
 	for(int i=0; i < team_->size(); i++){
 		Vector2* pos = &red_action.move[i];
 		Robot* robot = team_->at(i);
@@ -207,9 +221,13 @@ void Minmax2::act()
 			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
 			_max_skills.at(i)->setPoint(pos->x, pos->y);
+			//cout << pos->x << " " << pos->y << endl;
 			_max_skills.at(i)->setSpeed(envReal.red_speed);
 			_max_skills.at(i)->setOrientation(orientation);
 			_max_skills.at(i)->step();
+
+			//((GotoTactic*)player_[i])->goto_->setPoint(1000, 1000);
+			//player_[i]->step();
 		}
 		else{
 			//DEBUG
@@ -219,27 +237,13 @@ void Minmax2::act()
 			//static qreal lastOr = angle;//orientation;
 			//cout << abs(angle - lastOr) << endl;
 
-			//if(red_action.type == kick_to_goal)
-			//	cout << "Kick To Goal" << endl;
-			//else if(red_action.type == pass)
-			//	cout << "Pass" << endl;
-			//else if(red_action.type == actions::get_ball)
-			//	cout << "Get Ball" << endl;
-			//else if(red_action.type == actions::move)
-			//	cout << "Move" << endl;
-			//else if(red_action.type == actions::receive_ball)
-			//	cout << "Receive Ball" << endl;
-			//else if(red_action.type == actions::null_action)
-			//	cout << "Null action" << endl;
-			//else
-			//	cout << "nenhum nem outro" << endl;
-
-			attacker->setRobot(robot);
+			attacker = new AttackerMinMax2(this, robot, envReal.red_speed, envReal.red_dribble_speed, envReal.red_pass_speed);
 			attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
 				red_action.kick_point.x, red_action.kick_point.y, 
 				pos->x, pos->y);
 			attacker->step();
 
+			delete attacker;
 			//lastOr = angle;
 		}
 	}

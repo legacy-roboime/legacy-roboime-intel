@@ -131,6 +131,7 @@ set(INT_SRC_CORE_SKILLS
 source_group("Sources\\Core\\Skills" FILES ${INT_SRC_CORE_SKILLS})
 
 set(INT_SRC_CORE_TACTICS
+	core/tactics/GotoTactic.cpp
     core/tactics/Attacker.cpp
     core/tactics/AttackerMinMax2.cpp
     core/tactics/Zickler43.cpp
