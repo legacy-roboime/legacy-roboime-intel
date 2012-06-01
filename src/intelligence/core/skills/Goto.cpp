@@ -138,14 +138,12 @@ void Goto::step()
 		//ForceFieldMotion::setSpeed(speed * distance / 1000 < speed ? speed * distance / 1000 : speed);
 		ForceFieldMotion::setSpeed(s);
 	}
-	else{
-		ForceFieldMotion::setSpeed(temp);
-		cout << "IGNORE BREAK" << endl;
-	}
 
 	//ForceFieldMotion::setSpeed(sqrt(temp * temp + a * distance));
 
 	ForceFieldMotion::step();
+
+	ForceFieldMotion::setSpeed(temp);
 
 	//if(d > 2 * robot()->body().radius()) ForceFieldMotion::step();
 	//else {

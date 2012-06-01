@@ -34,17 +34,17 @@ Play(parent,team,stage),
 	envReal = *soccer_env();
 	changeSEnvMeasure(&envReal, 1000.);
 
-	for(int i=0; i < team->size(); i++)
-		_max_skills.push_back( new Goto(this, team->at(i)) );
+	//for(int i=0; i < team->size(); i++)
+	//	_max_skills.push_back( new Goto(this, team->at(i)) );
 
 	//goto_ = new Goto(this, team->at(2));
 
 	for(int i=0; i<5; i++)
 		player_[i] = new GotoTactic(this, team->at(i)); 
 
-	//attacker = new AttackerMinMax2(this, team->at(0), envReal.red_speed, 
-								   //envReal.red_dribble_speed, 
-								   //envReal.red_pass_speed); 
+	attacker = new AttackerMinMax2(this, team->at(0), envReal.red_speed, 
+								   envReal.red_dribble_speed, 
+								   envReal.red_pass_speed); 
 }
 
 Minmax2::~Minmax2()
@@ -197,54 +197,59 @@ void Minmax2::act()
 	Ball* ball = stage_->ball();
 	int idClosest = stage_->getClosestPlayerToBall(team_)->id();
 
-	//if(red_action.type == kick_to_goal)
-	//	cout << "Kick To Goal" << endl;
-	//else if(red_action.type == pass)
-	//	cout << "Pass" << endl;
-	//else if(red_action.type == actions::get_ball)
-	//	cout << "Get Ball" << endl;
-	//else if(red_action.type == actions::move)
-	//	cout << "Move" << endl;
-	//else if(red_action.type == actions::receive_ball)
-	//	cout << "Receive Ball" << endl;
-	//else if(red_action.type == actions::null_action)
-	//	cout << "Null action" << endl;
-	//else
-	//	cout << "nenhum nem outro" << endl;
+	if(red_action.type == kick_to_goal)
+		cout << "Kick To Goal" << endl;
+	else if(red_action.type == pass)
+		cout << "Pass" << endl;
+	else if(red_action.type == actions::get_ball)
+		cout << "Get Ball" << endl;
+	else if(red_action.type == actions::move)
+		cout << "Move" << endl;
+	else if(red_action.type == actions::receive_ball)
+		cout << "Receive Ball" << endl;
+	else if(red_action.type == actions::null_action)
+		cout << "Null action" << endl;
+	else
+		cout << "nenhum nem outro" << endl;
 
 	for(int i=0; i < team_->size(); i++){
 		Vector2* pos = &red_action.move[i];
 		Robot* robot = team_->at(i);
 
-		if( idClosest != robot->id() ){
-			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
-			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
-
-			_max_skills.at(i)->setPoint(pos->x, pos->y);
-			//cout << pos->x << " " << pos->y << endl;
-			_max_skills.at(i)->setSpeed(envReal.red_speed);
-			_max_skills.at(i)->setOrientation(orientation);
-			_max_skills.at(i)->step();
-
-			//((GotoTactic*)player_[i])->goto_->setPoint(1000, 1000);
-			//player_[i]->step();
-		}
-		else{
+		if( idClosest == robot->id() ){
 			//DEBUG
 			//QLineF l = QLineF(0, 0, pos->x, pos->y);
 			//qreal angle = 360 - l.angle(); //convenção sentido horario para classe QLineF
-			////qreal orientation = robot->orientation() * 180 / M_PI;
+			//qreal orientation = robot->orientation() * 180 / M_PI;
 			//static qreal lastOr = angle;//orientation;
 			//cout << abs(angle - lastOr) << endl;
+			//cout << pos->x << " " << pos->y << endl;
 
-			attacker = new AttackerMinMax2(this, robot, envReal.red_speed, envReal.red_dribble_speed, envReal.red_pass_speed);
+			attacker->setRobot(robot);// = new AttackerMinMax2(this, robot, envReal.red_speed, envReal.red_dribble_speed, envReal.red_pass_speed);
 			attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
 				red_action.kick_point.x, red_action.kick_point.y, 
 				pos->x, pos->y);
 			attacker->step();
 
-			delete attacker;
+			//delete attacker;
+			
 			//lastOr = angle;
+		}
+		else{
+			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
+			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
+
+			//_max_skills.at(i)->setPoint(pos->x, pos->y);
+			//cout << pos->x << " " << pos->y << endl;
+			//_max_skills.at(i)->setSpeed(envReal.red_speed);
+			//_max_skills.at(i)->setOrientation(orientation);
+			//_max_skills.at(i)->step();
+
+			Goto* g = ((GotoTactic*)player_[i])->goto_;
+			g->setPoint(pos->x, pos->y);
+			g->setSpeed(envReal.red_speed);
+			g->setOrientation(orientation);
+			player_[i]->step();
 		}
 	}
 }

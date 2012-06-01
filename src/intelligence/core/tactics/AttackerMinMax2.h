@@ -40,7 +40,6 @@ namespace LibIntelligence
 			qreal speed;
 
 		private:
-			qreal minDist_;
 			Object* kickPoint_;
 			bool hasKick_;
 			bool hasPass_;

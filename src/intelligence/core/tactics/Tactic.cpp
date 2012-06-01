@@ -67,5 +67,7 @@ void Tactic::step()
 	this->execute();
 	Skill* current = (Skill*)this->getCurrentState();
 	current->step();
+	//const Robot* r = this->robot();
+	//cout << r->id() << endl;
 	//cout << "SKILL: " << current->objectName().toStdString() << endl;
 }
