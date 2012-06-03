@@ -15,7 +15,6 @@ foreach(OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES})
 endforeach()
 set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_MINSIZEREL_POSTFIX min)
-set(CMAKE_RELWITHDEBINFO_POSTFIX rd)
 
 add_subdirectory(communication)
 add_subdirectory(utils/samplescommoncode)
