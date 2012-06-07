@@ -26,7 +26,8 @@ if errorlevel 1 (
 	echo.
 	pause
 ) else (
+	mkdir build
 	cd build
-	start cmake-gui ../src
+	start cmake-gui ..\src
 	cd ..
 )
