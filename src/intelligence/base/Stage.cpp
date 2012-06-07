@@ -3,6 +3,7 @@
 #include "Team.h"
 #include "Goal.h"
 #include <cmath>
+#include <limits.h>
 using namespace LibIntelligence;
 
 bool Stage::isLeftSideBlueGoal_ = false;
@@ -331,9 +332,9 @@ bool Stage::inField(const Object& obj)
 /// retorno: jogador mais próximo
 Robot* Stage::getClosestPlayerToBall(const Team* team) const
 {
-	Robot* bestFit;
+	Robot* bestFit = NULL;
 
-	qreal MinDistance = 999999;
+	qreal MinDistance = DBL_MAX;
 	for(int i = 0; i < team->count(); i++) {
 
 		qreal dy = team->at(i)->y() - this->ball()->y();
