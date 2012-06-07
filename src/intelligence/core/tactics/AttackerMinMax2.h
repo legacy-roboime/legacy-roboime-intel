@@ -8,6 +8,7 @@
 #include "SampledDribble.h"
 #include "SampledKick.h"
 #include "MachineTransition.h"
+#include "minimax.h"
 
 #define MIN_DIST 500
 
@@ -25,10 +26,9 @@ namespace LibIntelligence
 			~AttackerMinMax2();
 			Object* kickPoint();
 			Object* movePoint();
-			bool hasKick();
-			bool hasPass();
-			void updateSoccerAction(bool hasKick = false, bool hasPass = false, bool getBall = false, qreal kickPointX = 0, qreal kickPointY = 0, qreal movePointX = 0, qreal movePointY = 0);
+			void updateSoccerAction(type_actions action, Vector2 kickPoint, Vector2 movePoint);
 			Skills::SampledDribble* dribble();
+			type_actions action();
 
 		protected:
 			//Skills::DriveToBall* driveToBall_;
@@ -40,9 +40,8 @@ namespace LibIntelligence
 			qreal speed;
 
 		private:
+			type_actions action_;
 			Object* kickPoint_;
-			bool hasKick_;
-			bool hasPass_;
 			Object* movePoint_;
 			Object* dribblePoint_;
 		};

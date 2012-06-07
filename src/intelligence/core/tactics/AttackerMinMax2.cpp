@@ -15,17 +15,16 @@ using namespace Skills;
 using namespace AttackerMinMax2T;
 
 AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbleSpeed, qreal passSpeed)
-	: Tactic(p, r, true),
-	hasKick_(false),
-	hasPass_(false)
+	: Tactic(p, r, true)
 {
+	action_ = type_actions::null_action;
 	movePoint_ = new Object();
 	kickPoint_ = new Object();
 	dribblePoint_ = new Object();
 	//driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., dribbleSpeed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., dribbleSpeed, false);
-	pass_ = new SampledKick(this, r, kickPoint_, true, 0.2, 0.2, dribbleSpeed, false);
+	pass_ = new SampledKick(this, r, kickPoint_, true, 0.4, 0.4, dribbleSpeed, false);
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
 	this->speed = speed;
 
@@ -81,42 +80,37 @@ Object* AttackerMinMax2::movePoint()
 	return movePoint_;
 }
 
-bool AttackerMinMax2::hasKick()
+type_actions AttackerMinMax2::action()
 {
-	return hasKick_;
+	return action_;
 }
 
-bool AttackerMinMax2::hasPass()
+void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint, Vector2 movePoint)
 {
-	return hasPass_;
-}
+	action_ = action;
 
-void AttackerMinMax2::updateSoccerAction(bool hasKick, bool hasPass, bool getBall, qreal kickPointX, qreal kickPointY, qreal movePointX, qreal movePointY)
-{
 	Robot* robot = this->robot();
 	Ball* ball = this->stage()->ball();
 	Goal* enemyGoal = robot->enemyGoal();
 
-	//if(movePointX == ball->x() && movePointY == ball->y()){
-		//movePointX = enemyGoal->x();
-		//movePointY = enemyGoal->y();
-		//cout << "BUGADDOO" << endl;
-	//}
-
-	hasKick_ = hasKick;
-	hasPass_ = hasPass;
-	if(hasKick || hasPass){
-		kickPoint_->setX(kickPointX);
-		kickPoint_->setY(kickPointY);
+	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
+		movePoint.x = enemyGoal->x();
+		movePoint.y = enemyGoal->y();
+		cout << "ERROR: movePoint == ballPoint" << endl;
 	}
 
-	if(getBall && robot->distance(ball).module() < MIN_DIST){
+	if(action_ == pass || action_ == kick_to_goal){
+		kickPoint_->setX(kickPoint.x);
+		kickPoint_->setY(kickPoint.y);
+	}
+
+	if(action == get_ball && robot->distance(ball).module() < MIN_DIST){
 		movePoint_->setX(enemyGoal->x());
 		movePoint_->setY(enemyGoal->y());
 	}
 	else{
-		movePoint_->setX(movePointX);
-		movePoint_->setY(movePointY);
+		movePoint_->setX(movePoint.x);
+		movePoint_->setY(movePoint.y);
 	}
 
 	QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
@@ -124,8 +118,8 @@ void AttackerMinMax2::updateSoccerAction(bool hasKick, bool hasPass, bool getBal
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
 
-	dribblePoint_->setX(movePointX - robot->x() + ball->x());
-	dribblePoint_->setY(movePointY - robot->y() + ball->y());
+	dribblePoint_->setX(movePoint.x);
+	dribblePoint_->setY(movePoint.y);
 }
 
 bool GotoToDriveT::condition()
@@ -171,7 +165,7 @@ DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, 
 bool DribbleToGoalKickT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return !source_->busy() && a->hasKick(); 
+	return /*!source_->busy() &&*/ a->action() == kick_to_goal; 
 }
 
 DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -179,10 +173,7 @@ DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* ta
 bool GoalKickToDribbleT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	//QLineF line = QLineF(a->robot()->x(), a->robot()->y(), a->stage()->ball()->x(), a->stage()->ball()->y()); 
-	//qreal angle2 = 360 - line.angle();
-	//cout << "VOLTA " <<  angle2 << endl;
-	return !source_->busy() && !a->hasKick(); 
+	return /*!source_->busy() &&*/ !(a->action() == kick_to_goal); 
 }
 
 GoalKickToDribbleT::GoalKickToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -190,7 +181,7 @@ GoalKickToDribbleT::GoalKickToDribbleT(QObject* parent, State* source, State* ta
 bool DribbleToPassT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return !source_->busy() && a->hasPass();
+	return /*!source_->busy() &&*/ a->action() == pass;
 }
 
 DribbleToPassT::DribbleToPassT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -198,7 +189,7 @@ DribbleToPassT::DribbleToPassT(QObject* parent, State* source, State* target, qr
 bool PassToDribbleT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return !source_->busy() && !a->hasPass();
+	return /*!source_->busy() &&*/ !(a->action() == pass);
 }
 
 PassToDribbleT::PassToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
