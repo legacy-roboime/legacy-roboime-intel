@@ -8,9 +8,8 @@
 #include "Stage.h"
 #include <QFile>
 #include <QDataStream>
-#include "minimax.h"
 
-//#define SOCCER_DEBUG
+#define SOCCER_DEBUG
 
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Skills;
@@ -28,6 +27,7 @@ namespace LibIntelligence
 			QVector<Goto*> _max_skills;
 			//Goto* goto_;
 			qreal speed_;
+			bool usRed;
 
 			SoccerState *s;
 			int depth_;
@@ -37,7 +37,7 @@ namespace LibIntelligence
 			bool init;
 			SoccerEnvironment envReal;
 
-			void act();
+			void act(SoccerAction& action);
 			void saction_act( SoccerState *s, SoccerAction *sa );
 			void update_soccer_state();
 			void ballOwner();

@@ -31,6 +31,12 @@ Play(parent,team,stage),
 	else
 		soccer_env()->left_red_side = !Stage::isLeftSideBlueGoal();
 
+	//if((team->color() == TeamColor::BLUE && !Stage::isLeftSideBlueGoal()) ||
+	//		(team->color() != TeamColor::BLUE && Stage::isLeftSideBlueGoal()))
+	//	usRed = true;
+	//else
+	//	usRed = false;
+
 	envReal = *soccer_env();
 	changeSEnvMeasure(&envReal, 1000.);
 
@@ -122,22 +128,31 @@ void Minmax2::ballOwner()
 
 void Minmax2::update_soccer_state()
 {
+	Team* redTeam; 
+	Team* blueTeam;
+	//if(usRed){
+		redTeam = team_;
+		blueTeam = team_->enemyTeam();
+	//}
+	//else{
+	//	blueTeam = team_;
+	//	redTeam = team_->enemyTeam();
+	//}
+
 	Ball* ball = stage_->ball();
 	s->ball.x = ball->x();
 	s->ball.y = ball->y();
-	s->ball_vel.x = 0;//ball->speedX();
-	s->ball_vel.y = 0;//ball->speedY();
+	s->ball_vel.x = ball->speedX();
+	s->ball_vel.y = ball->speedY();
 
-	//as cores nessa play (red e blue) identificam se eh o nosso time (nosso time eh o red red)
+	//as cores nessa play (red e blue) identificam se eh o nosso time (nosso time eh o red se usRed for true)
 	//ou nao, nao esta relacionado com a cor de time da inteligencia (yellow e blue)
-	Team* blueTeam = team_->enemyTeam();
 	for(int i=0; i< blueTeam->size(); i++){
 		Robot* robot = blueTeam->at(i);
 		s->blue[i].x = robot->x();
 		s->blue[i].y = robot->y();
 	}
-
-	Team* redTeam = team_; 
+	
 	for(int i=0; i< redTeam->size(); i++){
 		Robot* robot = redTeam->at(i);
 		s->red[i].x = robot->x();
@@ -189,34 +204,54 @@ void Minmax2::step()
 	changeSActionMeasure(&red_action, 1000.);
 	changeSActionMeasure(&blue_action, 1000.);
 
-	act();
+	//if(usRed)
+		act(red_action);
+	//else
+	//	act(blue_action);
 }
 
-void Minmax2::act()
+void Minmax2::act(SoccerAction& action)
 {
 	Ball* ball = stage_->ball();
 	int idClosest = stage_->getClosestPlayerToBall(team_)->id();
 
-	if(red_action.type == kick_to_goal)
+	if(action.type == kick_to_goal)
 		cout << "Kick To Goal" << endl;
-	else if(red_action.type == pass)
+	else if(action.type == pass)
 		cout << "Pass" << endl;
-	else if(red_action.type == actions::get_ball)
+	else if(action.type == actions::get_ball)
 		cout << "Get Ball" << endl;
-	else if(red_action.type == actions::move)
+	else if(action.type == actions::move)
 		cout << "Move" << endl;
-	else if(red_action.type == actions::receive_ball)
+	else if(action.type == actions::receive_ball)
 		cout << "Receive Ball" << endl;
-	else if(red_action.type == actions::null_action)
+	else if(action.type == actions::null_action)
 		cout << "Null action" << endl;
 	else
 		cout << "nenhum nem outro" << endl;
 
 	for(int i=0; i < team_->size(); i++){
-		Vector2* pos = &red_action.move[i];
+		Vector2* pos = &action.move[i];
 		Robot* robot = team_->at(i);
 
 		if( idClosest == robot->id() ){
+			//if(action.type == kick_to_goal)
+			//	cout << "Kick To Goal" << endl;
+			//else if(action.type == pass)
+			//	cout << "Pass" << endl;
+			//else if(action.type == actions::get_ball)
+			//	cout << "Get Ball" << endl;
+			//else if(action.type == actions::move)
+			//	cout << "Move" << endl;
+			//else if(action.type == actions::receive_ball)
+			//	cout << "Receive Ball" << endl;
+			//else if(action.type == actions::null_action)
+			//	cout << "Null action" << endl;
+			//else
+			//	cout << "nenhum nem outro" << endl;
+
+			//cout << "SKILL: " << attacker->getCurrentState()->objectName().toStdString() << endl;
+
 			//DEBUG
 			//QLineF l = QLineF(0, 0, pos->x, pos->y);
 			//qreal angle = 360 - l.angle(); //convenção sentido horario para classe QLineF
@@ -226,9 +261,7 @@ void Minmax2::act()
 			//cout << pos->x << " " << pos->y << endl;
 
 			attacker->setRobot(robot);// = new AttackerMinMax2(this, robot, envReal.red_speed, envReal.red_dribble_speed, envReal.red_pass_speed);
-			attacker->updateSoccerAction(red_action.type == kick_to_goal, red_action.type == pass, red_action.type == get_ball,
-				red_action.kick_point.x, red_action.kick_point.y, 
-				pos->x, pos->y);
+			attacker->updateSoccerAction(action.type, action.kick_point, *pos);
 			attacker->step();
 
 			//delete attacker;
@@ -240,12 +273,14 @@ void Minmax2::act()
 			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
 			//_max_skills.at(i)->setPoint(pos->x, pos->y);
-			//cout << pos->x << " " << pos->y << endl;
 			//_max_skills.at(i)->setSpeed(envReal.red_speed);
 			//_max_skills.at(i)->setOrientation(orientation);
 			//_max_skills.at(i)->step();
 
+			//cout << pos->x << " " << pos->y << endl;
+
 			Goto* g = ((GotoTactic*)player_[i])->goto_;
+			g->setAllowDefenseArea();
 			g->setPoint(pos->x, pos->y);
 			g->setSpeed(envReal.red_speed);
 			g->setOrientation(orientation);
