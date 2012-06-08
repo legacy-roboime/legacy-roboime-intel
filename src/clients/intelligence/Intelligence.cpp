@@ -303,8 +303,8 @@ void Intelligence::update() {
 	comYSim->step();
 	comYSim->send();
 #else
-	comBSim->step();
-	comBSim->send();
+	comBTx->step();
+	comBTx->send();
 #endif
 
 	//int duracao=Tempo.elapsed();
