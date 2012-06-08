@@ -58,8 +58,8 @@ set(PhysX_DIR_SEARCH
   ${PhysX_DIR_SEARCH}
   ${DELTA3D_EXT_DIR}/inc
   /usr/include/PhysX
-  "C:/Program Files (x86)/NVIDIA Corporation/NVIDIA PhysX SDK"
-  "C:/Program Files/NVIDIA Corporation/NVIDIA PhysX SDK"
+  "C:\\Program Files (x86)\\NVIDIA Corporation\\NVIDIA PhysX SDK"
+  "C:\\Program Files\\NVIDIA Corporation\\NVIDIA PhysX SDK"
 )
 
 #
@@ -78,7 +78,7 @@ find_path(PHYSX_COOKING_INCLUDE_DIR NAMES NxCooking.h PATH_SUFFIXES Cooking/incl
   PATHS
 
   # Look in other places.
-  ${PhysX_DIR}/SDKs
+  ${PHYSX_DIR}/SDKs
 
   # Help the user find it if we cannot.
   DOC "The SDKs directory should contain PhysX Cooking library includes"
@@ -88,7 +88,7 @@ find_path(PHYSX_FOUNDATION_INCLUDE_DIR NAMES Nx.h PATH_SUFFIXES Foundation/inclu
   PATHS
 
   # Look in other places.
-  ${PhysX_DIR}/SDKs
+  ${PHYSX_DIR}/SDKs
 
   # Help the user find it if we cannot.
   DOC "The SDKs directory should contain PhysX Foundation library includes"
@@ -98,7 +98,7 @@ find_path(PHYSX_CHARACTER_INCLUDE_DIR NAMES NxCharacter.h PATH_SUFFIXES NxCharac
   PATHS
 
   # Look in other places.
-  ${PhysX_DIR}/SDKs
+  ${PHYSX_DIR}/SDKs
 
   # Help the user find it if we cannot.
   DOC "The SDKs directory should contain PhysX NxCharacter library includes"
@@ -108,7 +108,7 @@ find_path(PHYSX_PHYSICS_INCLUDE_DIR NAMES NxActor.h PATH_SUFFIXES Physics/includ
   PATHS
 
   # Look in other places.
-  ${PhysX_DIR}/SDKs
+  ${PHYSX_DIR}/SDKs
 
   # Help the user find it if we cannot.
   DOC "The SDKs directory should contain PhysX Physics library includes"
@@ -118,7 +118,7 @@ find_path(PHYSX_LOADER_INCLUDE_DIR NAMES PhysXLoader.h PATH_SUFFIXES PhysXLoader
   PATHS
 
   # Look in other places.
-  ${PhysX_DIR}/SDKs
+  ${PHYSX_DIR}/SDKs
 
   # Help the user find it if we cannot.
   DOC "The SDKs directory should contain PhysX PhysXLoader library includes"
@@ -134,7 +134,7 @@ set(PHYSX_LIB_DIR_SEARCH
    ${PHYSX_LIB_DIR_SEARCH}
    ${DELTA_DIR}/ext/lib
    /usr/lib/PhysX
-   ${PhysX_DIR}/SDKS/lib/Win32
+   ${PHYSX_DIR}/SDKS/lib/Win32
 )
 
 if(NOT WIN32)
@@ -176,7 +176,7 @@ set(PHYSX_LIBCORE_LIST PhysXCore)
 set(PHYSX_LIBLOADER_LIST PhysXLoader)
 
 find_physx_library(PHYSX_CHARACTER_LIBRARY "${PHYSX_LIBCHARACTER_LIST}")
-#find_physx_library(PHYSX_EXTENSIONS_LIBRARY "${PHYSX_LIBEXTENSIONS_LIST}")
+#find_physx_library(PHYSX_EXTENSIONS_LIBRARY "${PHYSX_LIBEXTENSIONS_LIST}")cha
 find_physx_library(PHYSX_COOKING_LIBRARY "${PHYSX_LIBCOOKING_LIST}")
 find_physx_library(PHYSX_LOADER_LIBRARY "${PHYSX_LIBLOADER_LIST}")
 find_physx_library(PHYSX_CORE_LIBRARY "${PHYSX_LIBCORE_LIST}")
