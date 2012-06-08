@@ -7,6 +7,8 @@
 #include "Goal.h"
 #include <QPoint>
 #include <QLine>
+#include "mathutils.h"
+
 using namespace LibIntelligence;
 using namespace Skills;
 
@@ -139,6 +141,11 @@ void Goto::step()
 		//ForceFieldMotion::setSpeed(speed * distance / 1000 < speed ? speed * distance / 1000 : speed);
 		ForceFieldMotion::setSpeed(s);
 	}
+
+	CONTROLLER_S controlller(/*4.0*/1.8, 0.0, 0.0, 12.0, 2.0);//valores carteados
+	controlller.entrada = __q(orientation - robot()->orientation());
+	controlller.realimentacao = 0.0;
+	pidService(controlller);
 
 	//ForceFieldMotion::setSpeed(sqrt(temp * temp + a * distance));
 

@@ -4,6 +4,7 @@
 
 #include "LibIntelligence.h"
 #include "Move.h"
+#include "PID.h"
 
 namespace LibIntelligence
 {
@@ -26,6 +27,9 @@ namespace LibIntelligence
 
 		protected:
 			qreal orientation, rate;
+
+		private:
+			CONTROLLER_S controlller;
 		};
 	}
 }
