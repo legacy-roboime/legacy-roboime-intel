@@ -4,6 +4,8 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QMutex>
+#include <QThread>
 #include "Team.h"
 #include "Stage.h"
 #include "CommanderSim.h"
@@ -25,19 +27,18 @@ class Intelligence : public QObject
 {
 	Q_OBJECT
 
-public:
-	Intelligence(QObject *parent=0);
-	~Intelligence();
-
 public slots:
 	void update();
 
 public:
-	Minmax2* play;
+	Intelligence(QObject *parent=0);
+	~Intelligence();
 
-private:
+	Minmax2* play;
 	Skill* test[10];
 	QTimer* timer;
+	QMutex mutex;
+	QThread* cli;
 	Stage* sta;
 	CommanderSim*   comBSim;
 	CommanderTxOld* comBTx;

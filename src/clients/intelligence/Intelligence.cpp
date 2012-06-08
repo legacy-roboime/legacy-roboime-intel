@@ -21,6 +21,41 @@ using namespace LibIntelligence;
 
 #define SIMU
 
+struct IntelligenceCli : public QThread
+{
+	Intelligence *intel;
+	IntelligenceCli(Intelligence *intel) : QThread(intel), intel(intel) {}
+
+	void run() {
+		qreal x, y, s;
+		string command;
+		while(true) {
+			cout << "> ";
+			cin >> command;
+			switch(command[0]) {
+			case 'p':
+				cin >> x >> y;
+				cout << "skill1->SetPoint(" << x << "," << y << ")" << endl;
+				intel->mutex.lock();
+				((Goto *)intel->skill1)->setPoint(x, y);
+				intel->mutex.unlock();
+				break;
+			case 's':
+				cin >> s;
+				cout << "skill1->SetSpeed(" << s << ")" << endl;
+				intel->mutex.lock();
+				((Goto *)intel->skill1)->setSpeed(s);
+				intel->mutex.unlock();
+				break;
+			default:
+				cout << "Comando nao reconhecido." << endl;
+			}
+			cin.clear();
+			cout.clear();
+		}
+	}
+};
+
 Intelligence::Intelligence(QObject *parent)
 	: QObject(parent),
 	comBSim(new CommanderSim(this)),
@@ -31,7 +66,8 @@ Intelligence::Intelligence(QObject *parent)
 	updSim(new UpdaterVision(this, "224.5.23.2", 11002)),
 	filter(new KalmanFilters(parent, upd->updates())),
 	updReferee(new UpdaterReferee(this)),
-	sta(new Stage())
+	sta(new Stage()),
+	cli(new IntelligenceCli(this))
 {
 	myTeam = sta->blueTeam();
 	enemyTeam = sta->yellowTeam();
@@ -81,7 +117,7 @@ Intelligence::Intelligence(QObject *parent)
 	//gotoold = new GotoOld(this, myTeam[3], 0.0, 0.0);
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill1 = new Goto(this, myTeam->at(3), 1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//
+	skill1 = new Goto(this, myTeam->at(3), -1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//
 	skill2 = new SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 0, 1, 500, false);
 	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->at(1), true, 1, 1, 1000);
 
@@ -109,6 +145,7 @@ Intelligence::Intelligence(QObject *parent)
 	timer->start(50.);//valor que tá no transmission da trunk para realTransmission //30.);//
 #endif
 	
+	cli->start();
 	//connect(upd, SIGNAL(receiveUpdate()), filter, SLOT(step()));
 }
 
@@ -118,6 +155,7 @@ Intelligence::~Intelligence()
 }
 
 void Intelligence::update() {
+	mutex.lock();
 	//QTime Tempo;
 	//Tempo.start();
 
@@ -271,5 +309,5 @@ void Intelligence::update() {
 
 	//int duracao=Tempo.elapsed();
 	//printf("TEMPO: %i ms\n",duracao);
-
+	mutex.unlock();
 }
