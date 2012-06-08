@@ -18,6 +18,7 @@ namespace LibIntelligence
 			SampledKick::~SampledKick(void); 
 			void step();
 			virtual bool busy();
+			qreal calculatePassPower(qreal s);
 
 		protected:
 

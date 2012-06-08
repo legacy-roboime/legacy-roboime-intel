@@ -24,36 +24,51 @@ SampledKick::~SampledKick(void)
 {
 }
 
+qreal SampledKick::calculatePassPower(qreal s)
+{
+	qreal mi = .4;
+	qreal g = 9810;
+	qreal vFin = 0;
+	qreal vInit = 0;
+	qreal a = mi*g;
+	qreal power;
+	vInit = sqrt(vFin*vFin + 2*a*s); 
+	power = vInit/8000.;
+	return power*power;
+}
+
 void SampledKick::step()
 {
 	Robot* robot = this->robot();
+	Ball* ball = this->stage()->ball();
 
-	qreal power;
-	if(!deterministic_){
-		if(pass_){
-			const Object* lkPoint = getLookPoint();
-			Object* distVec = &(robot->distance(lkPoint));
-			qreal distReal = distVec->module();
-			distReal /= 3000.;
-			power = Sampler::sampledPowerKick(minPower_, distReal);
+	//cout << sqrt(ball->speedX()*ball->speedX() + ball->speedY()*ball->speedY()) << endl;
+	
+	if(!busy()){
+		qreal power;
+		if(!deterministic_){
+			if(pass_){
+				const Object* lkPoint = getLookPoint();
+				Object* distVec = &(ball->distance(lkPoint));
+				qreal distReal = distVec->module();
+				power = Sampler::sampledPowerKick(minPower_, calculatePassPower(distReal));
+			}
+			else
+				power = Sampler::sampledPowerKick(minPower_, maxPower_);
 		}
-		else
-			power = Sampler::sampledPowerKick(minPower_, maxPower_);
-	}
-	else{
-		if(pass_){
-			const Object* lkPoint = getLookPoint();
-			Object* distVec = &(robot->distance(lkPoint));
-			qreal distReal = distVec->module();
-			distReal /= 3000.;
-			power = distReal;
+		else{
+			if(pass_){
+				const Object* lkPoint = getLookPoint();
+				Object* distVec = &(ball->distance(lkPoint));
+				qreal distReal = distVec->module();
+				power = calculatePassPower(distReal);
+			}
+			else
+				power = maxPower_;
 		}
-		else
-			power = maxPower_;
-	}
 
-	if(!busy())
 		robot->kick(power);
+	}
 
 	robot->dribble(0.5); //pegar bola
 
