@@ -29,11 +29,11 @@ void Steer::setRate(qreal r)
 
 void Steer::step()
 {
-	static qreal omega;
+	qreal omega;
 	//P Control
 	//qreal aThreshold = M_PI;
 	//qreal errorP = -2.*pow(omega/aThreshold,3)+3*pow(omega/aThreshold,2);
-	static CONTROLLER_S controlller(/*4.0*/1.8, 0.0, 0.0, 12.0, 2.0);//valores carteados
+	CONTROLLER_S controlller(/*4.0*/1.8, 0.0, 0.0, 12.0, 2.0);//valores carteados
 	controlller.entrada = __q(orientation - robot()->orientation());
 	controlller.realimentacao = 0.0;
 	pidService(controlller);
