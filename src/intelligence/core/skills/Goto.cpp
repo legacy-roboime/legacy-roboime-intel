@@ -100,10 +100,12 @@ void Goto::step()
 {
 	//TODO: valores objetivos devem ser alterados para valor nao deterministico (soma um float a speedx speedy e speedang)
 
-	static qreal dx, dy, d;
+	qreal dx, dy, d, targetTempX, targetTempY;
+
+	targetTempX = targetX;
+	targetTempY = targetY;
 
 	//limitar dentro do campo
-
 	qreal limit = robot()->body().radius() + stage()->ball()->radius();
 	qreal maxX = stage()->fieldLength() / 2 + limit;
 	qreal minX = -maxX;
@@ -124,7 +126,6 @@ void Goto::step()
 		}
 	}
 
-
 	dx = targetX - robot()->x();
 	dy = targetY - robot()->y();
 	d = sqrt(dx * dx + dy * dy);
@@ -143,7 +144,12 @@ void Goto::step()
 
 	ForceFieldMotion::step();
 
-	ForceFieldMotion::setSpeed(temp);
+	//Restaura valor setSpeed passado pelo construtor
+	ForceFieldMotion::setSpeed(temp); 
+
+	//Restaura targetX, targetY
+	targetX = targetTempX;
+	targetY = targetTempY;
 
 	//if(d > 2 * robot()->body().radius()) ForceFieldMotion::step();
 	//else {
