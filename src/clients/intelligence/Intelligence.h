@@ -6,7 +6,8 @@
 #include <QTimer>
 #include "Team.h"
 #include "Stage.h"
-#include "Commander.h"
+#include "CommanderSim.h"
+#include "CommanderTxOld.h"
 #include "Updater.h"
 #include "Skill.h"
 #include "Tactic.h"
@@ -38,10 +39,12 @@ private:
 	Skill* test[10];
 	QTimer* timer;
 	Stage* sta;
-	Commander* comB;
-	Commander* comB2;
-	Commander* comY;
-	Updater* upd; //Vision
+	CommanderSim*   comBSim;
+	CommanderTxOld* comBTx;
+	CommanderSim*   comYSim;
+	CommanderTxOld* comYTx;
+	Updater*        upd;
+	Updater*        updSim;
 	Team* myTeam;
 	Team* enemyTeam;
 	Updater* updReferee;
