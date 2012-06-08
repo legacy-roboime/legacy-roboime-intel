@@ -9,7 +9,7 @@
 #include <QFile>
 #include <QDataStream>
 
-#define SOCCER_DEBUG
+//#define SOCCER_DEBUG
 
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Skills;
