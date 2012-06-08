@@ -28,13 +28,8 @@ public:
 	Intelligence(QObject *parent=0);
 	~Intelligence();
 
-#ifndef SOCCER_DEBUG
-private slots:
+public slots:
 	void update();
-#else
-public:
-	void update();
-#endif
 
 public:
 	Minmax2* play;
