@@ -49,7 +49,11 @@ SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	//intServer->setSimulation(this->simulation);
 	//this->simulation = new Simulation(parent);
 	intServer = new UDPServerSimInt(parent, this->simulation);
+#ifdef REALPORT
 	visionServer = new UDPMulticastSenderSSLVision(parent, this->simulation);
+#else
+	visionServer = new UDPMulticastSenderSSLVision(parent, this->simulation, "224.5.23.2", 11002);
+#endif
 
 	/*time = new QTimer(this);
 	connect(time, SIGNAL(timeout()), this, SLOT(ttt()));

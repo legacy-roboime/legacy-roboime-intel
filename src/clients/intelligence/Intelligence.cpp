@@ -19,38 +19,83 @@
 
 using namespace LibIntelligence;
 
+#define SIMU
+
+struct IntelligenceCli : public QThread
+{
+	Intelligence *intel;
+	IntelligenceCli(Intelligence *intel) : QThread(intel), intel(intel) {}
+
+	void run() {
+		qreal x, y, s;
+		string command;
+		while(true) {
+			cout << "> ";
+			cin >> command;
+			switch(command[0]) {
+			case 'p':
+				cin >> x >> y;
+				cout << "skill1->SetPoint(" << x << "," << y << ")" << endl;
+				intel->mutex.lock();
+				((Goto *)intel->skill1)->setPoint(x, y);
+				intel->mutex.unlock();
+				break;
+			case 's':
+				cin >> s;
+				cout << "skill1->SetSpeed(" << s << ")" << endl;
+				intel->mutex.lock();
+				((Goto *)intel->skill1)->setSpeed(s);
+				intel->mutex.unlock();
+				break;
+			default:
+				cout << "Comando nao reconhecido." << endl;
+			}
+			cin.clear();
+			cout.clear();
+		}
+	}
+};
+
 Intelligence::Intelligence(QObject *parent)
 	: QObject(parent),
-	comB(new CommanderSim(this)),
-	comB2(new CommanderTxOld(this)),
-	comY(new CommanderSim(this)),
+	comBSim(new CommanderSim(this)),
+	comBTx(new CommanderTxOld(this)),
+	comYSim(new CommanderSim(this)),
+	comYTx(new CommanderTxOld(this)),
 	upd(new UpdaterVision(this)),
+	updSim(new UpdaterVision(this, "224.5.23.2", 11002)),
 	filter(new KalmanFilters(parent, upd->updates())),
-	updReferee(new UpdaterReferee(this))
+	updReferee(new UpdaterReferee(this)),
+	sta(new Stage()),
+	cli(new IntelligenceCli(this))
 {
-	sta = new Stage();
 	myTeam = sta->blueTeam();
 	enemyTeam = sta->yellowTeam();
+	updReferee->add(sta);
 	ball = sta->ball();
+	//real
 	upd->add(ball);
 	upd->add(sta);
-	updReferee->add(sta);
+	//simu
+	updSim->add(ball);
+	updSim->add(sta);
 
 	for(quint8 i=0; i<5; i++) {
-		//if(i==0) {
 		myTeam->push_back(new Robot(Robots::RobotIME2011(myTeam, i, i, BLUE)));
-		comB->add(myTeam->last());
+		//real
+		comBTx->add(myTeam->last());
 		upd->add(myTeam->last());
+		//simu
+		comBSim->add(myTeam->last());
+		updSim->add(myTeam->last());
 
 		enemyTeam->push_back(new Robot(Robots::RobotIME2011(enemyTeam, i, i, YELLOW)));
-		comY->add(enemyTeam->last());
+		//real
+		comYTx->add(enemyTeam->last());
 		upd->add(enemyTeam->last());
-
-		//if(i == 0) {
-		//	comB2->add(enemyTeam.last());
-		//} else {
-			comB2->add(myTeam->last());
-		//}
+		//simu
+		comYSim->add(enemyTeam->last());
+		updSim->add(enemyTeam->last());
 	}
 
 	//myTeam->at(0)->setPatternId(1);
@@ -62,7 +107,7 @@ Intelligence::Intelligence(QObject *parent)
 
 	//set the kicker if it is not working
 	//myTeam[0]->kicker().setNotWorking();
-		//myTeam[1]->kicker().setNotWorking();
+	//myTeam[1]->kicker().setNotWorking();
 	//myTeam[2]->kicker().setNotWorking();
 	//myTeam[3]->kicker().setNotWorking();
 	//myTeam[4]->kicker().setNotWorking();
@@ -72,7 +117,7 @@ Intelligence::Intelligence(QObject *parent)
 	//gotoold = new GotoOld(this, myTeam[3], 0.0, 0.0);
 	//skill1 = new DriveTo(this, myTeam->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill1 = new Move(this, myTeam->at(4), 500, 0, 0.);//Goto(this, myTeam->at(3), 1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//
+	skill1 = new Goto(this, myTeam->at(3), -1000, 0, 0, 500, true);//SteerToBall(this, myTeam->at(3), 0, 0);//
 	skill2 = new SampledKick(this, myTeam->at(1), enemyTeam->goal(), true, 0, 1, 500, false);
 	skill3 = new SampledDribble(this, myTeam->at(1), enemyTeam->at(1), true, 1, 1, 1000);
 
@@ -100,20 +145,27 @@ Intelligence::Intelligence(QObject *parent)
 	timer->start(50.);//valor que tá no transmission da trunk para realTransmission //30.);//
 #endif
 	
+	cli->start();
 	//connect(upd, SIGNAL(receiveUpdate()), filter, SLOT(step()));
 }
 
 Intelligence::~Intelligence()
 {
-	
+	//TODO: delete stuff
 }
 
 void Intelligence::update() {
+	mutex.lock();
 	//QTime Tempo;
 	//Tempo.start();
 
+#ifdef SIMU
+	updSim->step();
+	updSim->apply();
+#else
 	upd->step();
 	upd->apply();
+#endif
 	//filter->updates()->apply(upd);
 	/*updReferee->step();
 	updReferee->apply();
@@ -236,23 +288,26 @@ void Intelligence::update() {
 	//player2->step();
 	//player3->step();
 	//player4->step();
-	play->step();
+	//play->step();
 	//attacker->step();
 	//skill1->step();
 	//if(!skill3->busy()) cout << "DESOCUPADO!!!" << endl;
 	//else cout << "OCUPADO!!!" << endl;
 	//tactic->step();
-	//skill1->step();
+	skill1->step();
 	//tactic->step();
 
-	comB->step();
-	//comB2->step();
-	comY->step();
-	((CommanderSim*)comB)->send();
-	//((CommanderTxOld*)comB2)->send();
-	((CommanderSim*)comY)->send();
+#ifdef SIMU
+	comBSim->step();
+	comBSim->send();
+	comYSim->step();
+	comYSim->send();
+#else
+	comBSim->step();
+	comBSim->send();
+#endif
 
 	//int duracao=Tempo.elapsed();
 	//printf("TEMPO: %i ms\n",duracao);
-
+	mutex.unlock();
 }

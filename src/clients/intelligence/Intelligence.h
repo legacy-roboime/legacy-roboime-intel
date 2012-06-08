@@ -4,9 +4,12 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QMutex>
+#include <QThread>
 #include "Team.h"
 #include "Stage.h"
-#include "Commander.h"
+#include "CommanderSim.h"
+#include "CommanderTxOld.h"
 #include "Updater.h"
 #include "Skill.h"
 #include "Tactic.h"
@@ -24,29 +27,25 @@ class Intelligence : public QObject
 {
 	Q_OBJECT
 
+public slots:
+	void update();
+
 public:
 	Intelligence(QObject *parent=0);
 	~Intelligence();
 
-#ifndef SOCCER_DEBUG
-private slots:
-	void update();
-#else
-public:
-	void update();
-#endif
-
-public:
 	Minmax2* play;
-
-private:
 	Skill* test[10];
 	QTimer* timer;
+	QMutex mutex;
+	QThread* cli;
 	Stage* sta;
-	Commander* comB;
-	Commander* comB2;
-	Commander* comY;
-	Updater* upd; //Vision
+	CommanderSim*   comBSim;
+	CommanderTxOld* comBTx;
+	CommanderSim*   comYSim;
+	CommanderTxOld* comYTx;
+	Updater*        upd;
+	Updater*        updSim;
 	Team* myTeam;
 	Team* enemyTeam;
 	Updater* updReferee;
