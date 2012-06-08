@@ -23,7 +23,6 @@ if errorlevel 1 (
 	echo It's also recommended to check Grouped and Advanced if you're having trouble
 	echo configuring the dependencies.
 	echo.
-	echo.
 	pause
 ) else (
 	mkdir build
