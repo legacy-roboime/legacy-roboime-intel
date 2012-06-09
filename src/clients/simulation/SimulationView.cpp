@@ -16,7 +16,8 @@ bool SimulationView::keyDown[256];//={false};
 //bool SimulationView::gravar = false;
 int SimulationView::count = 0;
 DebugRenderer SimulationView::gDebugRenderer = DebugRenderer();
-//PerfRenderer    gPerfRenderer = PerfRenderer();
+PerfRenderer SimulationView::gPerfRenderer;
+bool SimulationView::gTextEnabled(true);
 GLdouble SimulationView::zNear = 0.9f;
 GLdouble SimulationView::zFar = 10000.0f;//
 QMapIterator<int, NxScene1*> SimulationView::indexRenderScene = QMapIterator<int, NxScene1*>(QMap<int, NxScene1*>());
@@ -481,7 +482,6 @@ void SimulationView::appKey(unsigned char key, bool down)
 
 	case '0':
 		{
-			//gPerfRenderer.toggleEnable();
 			/*NxActor* actor = getActorRobot(0, 2);
 			if(actor != NULL) 
 			{
@@ -496,7 +496,9 @@ void SimulationView::appKey(unsigned char key, bool down)
 
 	case ' ':
 		{
-			simulation->CreateCube(NxVec3(0.0f, 20.0f, 0.0f), 1+(rand() &3), (const NxVec3 *)0, indexRenderScene.key());
+			//simulation->CreateCube(NxVec3(0.0f, 20.0f, 0.0f), 1+(rand() &3), (const NxVec3 *)0, indexRenderScene.key());
+			gPerfRenderer.toggleEnable();
+			gTextEnabled = !gTextEnabled;
 		}
 		break;
 
@@ -770,49 +772,41 @@ void SimulationView::RenderCallback()
 		NxVec3 fposition = indexRenderScene.value()->field->actorCampo->getGlobalPosition();
 		NxReal FIELD_LENGTH = indexRenderScene.value()->field->linesLength;
 		NxReal FIELD_WIDTH = indexRenderScene.value()->field->linesWidth;
-		glColor4f(1.0f,1.0f,1.0f, 1.0f);//white
+		glColor4f(1.f,1.f, 1.f, 1.f);//white
 		glLineWidth(6);
 		glBegin(GL_LINES);
-		glVertex3f(fposition.x, fposition.y - FIELD_WIDTH/2, 0);//fposition.z
-		glVertex3f(fposition.x, fposition.y + FIELD_WIDTH/2, 0);//fposition.z
+		glVertex3f(fposition.x, fposition.y - FIELD_WIDTH/2, 8);//fposition.z
+		glVertex3f(fposition.x, fposition.y + FIELD_WIDTH/2, 8);//fposition.z
 		glEnd();
 		glBegin(GL_LINE_LOOP);
-		glVertex3f(fposition.x - FIELD_LENGTH/2., fposition.y - FIELD_WIDTH/2., 0);//fposition.z
-		glVertex3f(fposition.x + FIELD_LENGTH/2., fposition.y - FIELD_WIDTH/2., 0);//fposition.z
-		glVertex3f(fposition.x + FIELD_LENGTH/2., fposition.y + FIELD_WIDTH/2., 0);//fposition.z
-		glVertex3f(fposition.x - FIELD_LENGTH/2., fposition.y + FIELD_WIDTH/2., 0);//fposition.z
+		glVertex3f(fposition.x - FIELD_LENGTH/2., fposition.y - FIELD_WIDTH/2., 8);//fposition.z
+		glVertex3f(fposition.x + FIELD_LENGTH/2., fposition.y - FIELD_WIDTH/2., 8);//fposition.z
+		glVertex3f(fposition.x + FIELD_LENGTH/2., fposition.y + FIELD_WIDTH/2., 8);//fposition.z
+		glVertex3f(fposition.x - FIELD_LENGTH/2., fposition.y + FIELD_WIDTH/2., 8);//fposition.z
 		glEnd();
 		glLineWidth(1);
 
-		//Show Render Performance
-		/*#ifdef __PPCGEKKO__	
-		char buf[256];
-		sprintf(buf,
-		"Use the arrow keys to move the camera.\n"
-		"Press the keys b, +, -, 1 and 2 to create various things.\n");
-
-		GLFontRenderer::setScreenResolution(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-		GLFontRenderer::setColor(0.9f, 1.0f, 0.0f, 1.0f);
-		GLFontRenderer::print(0.01, 0.9, 0.036, buf, false, 11, true);   
-		#else
 		//Print profile results (if enabled)
-		gPerfRenderer.render(gScenes[i]->readProfileData(true), glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-		#endif*/
-
-		char buf[256];
-		//NxRobot* robot = simulation->allRobots.getRobotByIdScene(4, 0);
-		//NxVec3 angMomentum = robot->getActor()->getAngularMomentum();
-		//NxVec3 angVelocity = robot->getActor()->getAngularVelocity();
-		//NxVec3 linMomentum = robot->getActor()->getLinearMomentum();
-		//NxVec3 linVelocity = robot->getActor()->getLinearVelocity();
-		sprintf(buf,"CENA: %d\n", indexRenderScene.key());
-		//printf("MOMENTO ANGULAR: %f %f %f\n", angMomentum.x, angMomentum.y, angMomentum.z);
-		//printf("VELOCIDADE ANGULAR: %f %f %f\n", angVelocity.x, angVelocity.y, angVelocity.z);
-		//printf("MOMENTO LINEAR: %f %f %f\n", linMomentum.x, linMomentum.y, linMomentum.z);
-		//printf("VELOCIDADE LINEAR: %f %f %f\n", linVelocity.x, linVelocity.y, linVelocity.z);
-		GLFontRenderer::setScreenResolution(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
-		GLFontRenderer::setColor(0.9f, 1.0f, 0.0f, 1.0f);
-		GLFontRenderer::print(0.01, 0.9, 0.030, buf, false, 11, true); 
+		gPerfRenderer.render(indexRenderScene.value()->scene->readProfileData(true), glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+		if(gTextEnabled) {
+			//NxRobot* robot = simulation->allRobots.getRobotByIdScene(4, 0);
+			//NxVec3 angMomentum = robot->getActor()->getAngularMomentum();
+			//NxVec3 angVelocity = robot->getActor()->getAngularVelocity();
+			//NxVec3 linMomentum = robot->getActor()->getLinearMomentum();
+			//NxVec3 linVelocity = robot->getActor()->getLinearVelocity();
+			ostringstream out;
+			out.precision(4);
+			out << "FPS: " << gPerfRenderer.computeFPS() << endl;
+			out << "CENA: " << indexRenderScene.key() << endl;
+			out << cout;
+			//printf("MOMENTO ANGULAR: %f %f %f\n", angMomentum.x, angMomentum.y, angMomentum.z);
+			//printf("VELOCIDADE ANGULAR: %f %f %f\n", angVelocity.x, angVelocity.y, angVelocity.z);
+			//printf("MOMENTO LINEAR: %f %f %f\n", linMomentum.x, linMomentum.y, linMomentum.z);
+			//printf("VELOCIDADE LINEAR: %f %f %f\n", linVelocity.x, linVelocity.y, linVelocity.z);
+			GLFontRenderer::setScreenResolution(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
+			GLFontRenderer::setColor(0.9f, 1.0f, 0.0f, 1.0f);
+			GLFontRenderer::print(0.01, 0.9, 0.030, out.str().c_str(), false, 11, true);
+		}
 	}
 
 	///* Draw code where bmBits is filled. 

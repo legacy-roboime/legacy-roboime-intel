@@ -18,7 +18,7 @@ printf("__PPCGEKKO__");
 #include "GLFontRenderer.h"
 #include "DebugRenderer.h"
 #include "ActorPicking.h"
-//#include "PerfRenderer.h"
+#include "PerfRenderer.h"
 //#include "AVIGenerator.h"
 
 class UDPMulticastSenderSSLVision;
@@ -69,14 +69,14 @@ private:
 	static int my;
 	static DebugRenderer gDebugRenderer;
 	static bool gDebugVisualization;
-	//static PerfRenderer    gPrefRenderer;
+	static PerfRenderer gPerfRenderer;
+	static bool gTextEnabled;
 	//AVI GENERATOR OPENGL
 	//CAVIGenerator AviGen;	// generator
 	//BYTE* bmBits;	// image buffer
 	//HRESULT hr;
 	//LPBITMAPINFOHEADER lpbih; // getting bitmap info
 
-private:
 	static void appKey(unsigned char key, bool down);
 	static void callback_keyUp(unsigned char c, int x, int y);
 	static void callback_key(unsigned char c, int x, int y);
