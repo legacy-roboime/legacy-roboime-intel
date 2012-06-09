@@ -188,8 +188,8 @@ void Intelligence::update() {
 	commander["yellowSim"]->step();
 	((CommanderSim*)commander["yellowSim"])->send();
 #else
-	commander["blue"]->step();
-	((CommanderTxOld*)commander["blue"])->send();
+	commander["blueTx"]->step();
+	((CommanderTxOld*)commander["blueTx"])->send();
 #endif
 
 #ifdef DEBUG_TIME
