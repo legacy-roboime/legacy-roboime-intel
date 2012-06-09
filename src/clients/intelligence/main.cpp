@@ -9,6 +9,7 @@ static int winWidth, winHeight;
 static QCoreApplication* app;
 
 #ifdef SOCCER_DEBUG
+#include "minimax.h"
 
 void reshape(int wid, int ht)
 {

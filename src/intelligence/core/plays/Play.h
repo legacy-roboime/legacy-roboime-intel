@@ -20,10 +20,12 @@ namespace LibIntelligence
 			~Play(void);
 
 			void setStage(Stage*);
-			/*const*/ Stage* stage() const;
+			const Stage* stage() const;
+			Stage* stage();
 			
 			void setTeam(Team*);
 			const Team* team() const;
+			Team* team();
 
 			virtual void step() = 0;
 
