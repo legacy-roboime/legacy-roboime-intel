@@ -102,6 +102,7 @@ set(INT_SRC_CORE_PLAYS
     core/plays/Halt.cpp
     core/plays/LinearCombPlay.cpp
     core/plays/StopReferee.cpp
+    core/plays/ObeyReferee.cpp
     # add new sources here
 )
 source_group("Sources\\Core\\Plays" FILES ${INT_SRC_CORE_PLAYS})

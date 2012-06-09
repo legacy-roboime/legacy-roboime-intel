@@ -17,9 +17,9 @@ using namespace Zickler43T;
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
 	driveToBall_(new DriveToBall(this, r, r->enemyGoal(), speed, true)),
-	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., speed/.12)),
-	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., speed/.12, false)),
-	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, speed/.12, false)),
+	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., 250)),//speed/.2)),
+	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., 250, false)),//speed/.2, false)),
+	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, 250, false)),//speed/.2, false)),
 	wait_(new Wait(p, r)),
 	speed(speed)
 {
@@ -41,8 +41,8 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
 	this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
 	this->pushTransition(sampledMiniKick_, new DefaultTrueT(this, sampledMiniKick_, driveToBall_));
-	this->pushTransition(sampledGoalKick_, new DefaultTrueT(this, sampledGoalKick_, wait_));
-	this->pushTransition(wait_, new DefaultTrueT(this, wait_, driveToBall_)); //loop maquina
+	this->pushTransition(sampledGoalKick_, new DefaultTrueT(this, sampledGoalKick_, driveToBall_));
+	//this->pushTransition(wait_, new DefaultTrueT(this, wait_, driveToBall_)); //loop maquina
 
 	this->setInitialState(driveToBall_);
 
@@ -101,20 +101,24 @@ bool DriveToDribbleT::condition()
 	Zickler43* z = (Zickler43*) this->parent();
 	Robot* r = z->robot();
 	Ball*b = z->stage()->ball();
-	return r->distance(b).module() < 400;//!source_->busy(); //
+	return r->distance(b).module() < 500;//!source_->busy(); //
 }
 
 DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToDriveT::condition()
 {
-	SampledDribble* dribble = (SampledDribble*)source_;
-	DriveToBall* drive = (DriveToBall*)target_;
-	const Object* backup = drive->getRefLookPoint();
-	drive->setRefLookPoint(dribble->getRefLookPoint());
-	bool busy = drive->busy();
-	drive->setRefLookPoint(backup);
-	return busy;
+	//SampledDribble* dribble = (SampledDribble*)source_;
+	//DriveToBall* drive = (DriveToBall*)target_;
+	//const Object* backup = drive->getRefLookPoint();
+	//drive->setRefLookPoint(dribble->getRefLookPoint());
+	//bool busy = drive->busy();
+	//drive->setRefLookPoint(backup);
+	//return busy;
+	Zickler43* z = (Zickler43*) this->parent();
+	Robot* r = z->robot();
+	Ball*b = z->stage()->ball();
+	return !(r->distance(b).module() < 500);//!source_->busy(); //
 }
 
 DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
