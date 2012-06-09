@@ -18,9 +18,6 @@ DriveTo::DriveTo(QObject* parent, Robot* slave, qreal maxErrorD, qreal maxErrorA
 	this->threshold = threshold;
 	this->bPoint = point;
 	this->tAngle = tAngle;
-	ignoreBall = false;
-	ignoreEnemy = false;
-	ignoreFriend = false;
 	ignoreBrake = false;
 	Skill::deterministic_ = true;
 }

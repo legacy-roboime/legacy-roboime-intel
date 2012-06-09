@@ -1,7 +1,6 @@
 #include "Goto.h"
 #include "ForceFieldMotion.h"
 #include "Robot.h"
-#include "PID.h"
 #include "Stage.h"
 #include "Ball.h"
 #include "Goal.h"
@@ -14,6 +13,7 @@ using namespace Skills;
 
 #define REP 10.00
 #define ATT 0.001
+#define LIMERR 2
 
 bool isInDefenseArea(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
 {
@@ -22,11 +22,11 @@ bool isInDefenseArea(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
 		if(x > x_goal - r)
 			if(y<s/2 + sqrt(r*r-x0*x0) && y>-s/2-sqrt(r*r-x0*x0))	
 				return true;
-	else
-		if(x < x_goal + r)
-			if(y<s/2 + sqrt(r*r-x0*x0) && y>-s/2-sqrt(r*r-x0*x0))	
-				return true;
-		return false;
+			else
+				if(x < x_goal + r)
+					if(y<s/2 + sqrt(r*r-x0*x0) && y>-s/2-sqrt(r*r-x0*x0))	
+						return true;
+	return false;
 }
 
 QPointF awayFromDefensePoint(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
@@ -36,10 +36,10 @@ QPointF awayFromDefensePoint(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
 	{
 		QLineF area_line = QLineF(x_goal - r , s/2, x_goal -r, -s/2);
 		QLineF join_to_goal = QLineF(x, y, x_goal, 0);
-	    
+
 		join_to_goal.intersect(area_line, &result);
 		if(result.y() > -s/2 && result.y()< s/2) return result;
-		
+
 		else
 		{
 			qreal dist_goal = sqrt((x-x_goal)*(x-x_goal) + y*y);
@@ -53,10 +53,10 @@ QPointF awayFromDefensePoint(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
 	{
 		QLineF area_line = QLineF(x_goal - r , s/2, x_goal -r, -s/2);
 		QLineF join_to_goal = QLineF(x, y, x_goal, 0);
-	    
+
 		join_to_goal.intersect(area_line, &result);
 		if(result.y() > -s / 2 && result.y() < s / 2) return result;
-		
+
 		else
 		{
 			qreal dist_goal = sqrt((x - x_goal) * (x - x_goal) + y * y);
@@ -71,11 +71,25 @@ QPointF awayFromDefensePoint(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
 
 
 Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
-	: ForceFieldMotion(p, r, x, y, o, s, REP, ATT), ignoreBrake(false), allowDefenseArea(a) {}
+	: Steer(p, r, 0, 0, o),
+	ignoreBrake(false), 
+	allowDefenseArea(a), 
+	targetX(x),
+	targetY(y),
+	speed(s),
+	controllerSpeedX(2, 0, 0.0, M_INF, LIMERR),//valores carteados
+	controllerSpeedY(2, 0, 0.0, M_INF, LIMERR)//valores carteados
+{}
 
 void Goto::setAll(qreal x, qreal y, qreal s)
 {
-	ForceFieldMotion::setAll(x, y, s, REP, ATT);
+
+}
+
+void Goto::setPoint(qreal _x, qreal _y)
+{
+	targetX = _x;
+	targetY = _y;
 }
 
 void Goto::setIgnoreBrake()
@@ -98,12 +112,27 @@ void Goto::setNotAllowDefenseArea()
 	allowDefenseArea = false;
 }
 
+void Goto::setSpeed(qreal s)
+{
+	this->speed = s;
+	//controllerSpeedX.saidaMax = controllerSpeedY.saidaMax = s;
+}
+void Goto::setPIDk(double kp, double ki, double kd)
+{
+	controllerSpeedX.Kp = controllerSpeedY.Kp = kp;
+	controllerSpeedX.Ki = controllerSpeedY.Ki = ki;
+	controllerSpeedX.Kd = controllerSpeedY.Kd = kd;
+}
+
+void Goto::printPIDk()
+{
+	cout << controllerSpeedX.Kp << " " << controllerSpeedX.Ki << " " << controllerSpeedX.Kd << endl;
+}
 void Goto::step()
 {
 	//TODO: valores objetivos devem ser alterados para valor nao deterministico (soma um float a speedx speedy e speedang)
 
-	qreal dx, dy, d, targetTempX, targetTempY;
-
+	qreal targetTempX, targetTempY, speedX, speedY, speedTemp, k;
 	targetTempX = targetX;
 	targetTempY = targetY;
 
@@ -128,56 +157,38 @@ void Goto::step()
 		}
 	}
 
-	dx = targetX - robot()->x();
-	dy = targetY - robot()->y();
-	d = sqrt(dx * dx + dy * dy);
-
-	qreal temp = speed;
-
 	if(!ignoreBrake) {
-		qreal distance = sqrt((robot()->x() - targetX) * (robot()->x() - targetX) + (robot()->y() - targetY) * (robot()->y() - targetY));
-		qreal s = sqrt(2 * 1000 * distance);
-		s = s < speed ? s : speed;
-		//ForceFieldMotion::setSpeed(speed * distance / 1000 < speed ? speed * distance / 1000 : speed);
-		ForceFieldMotion::setSpeed(s);
+
+		//controle speedX
+
+		controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
+		qreal x = robot()->x();
+		controllerSpeedX.realimentacao = robot()->x();
+		pidService(controllerSpeedX);
+		speedX = controllerSpeedX.saida;
+
+		//controle speedY
+
+		controllerSpeedY.entrada = targetY; //deseja-se que a distância entre o alvo e o robô seja igual a zero
+		qreal y = robot()->y();
+		controllerSpeedY.realimentacao = robot()->y();
+		pidService(controllerSpeedY);
+		speedY = controllerSpeedY.saida;
+
+		//calculo speed linear
+		speedTemp = sqrt(speedX*speedX + speedY*speedY);
+		if(speedTemp > speed)
+		{
+			k = speed/speedTemp;
+			speedX *= k;
+			speedY *= k;
+		}
 	}
 
-	CONTROLLER_S controlller(/*4.0*/1.8, 0.0, 0.0, 12.0, 2.0);//valores carteados
-	controlller.entrada = __q(orientation - robot()->orientation());
-	controlller.realimentacao = 0.0;
-	pidService(controlller);
+	Steer::setSpeeds(speedX, speedY);
+	Steer::step();
 
-	//ForceFieldMotion::setSpeed(sqrt(temp * temp + a * distance));
-
-	ForceFieldMotion::step();
-
-	//Restaura valor setSpeed passado pelo construtor
-	ForceFieldMotion::setSpeed(temp); 
-
-	//Restaura targetX, targetY
+	//restaura targetX, targetY
 	targetX = targetTempX;
 	targetY = targetTempY;
-
-	//if(d > 2 * robot()->body().radius()) ForceFieldMotion::step();
-	//else {
-	//	/*CONTROLLER_S conx(1.5, 0.0, 0.0, ROBOT_MAX_LINEAR_SPEED, 5.0);
-	//	conx.entrada = targetX;
-	//	conx.realimentacao = robot()->x();
-	//	pidService(conx);
-	//	dx = conx.saida;
-	//	CONTROLLER_S cony(1.5, 0.0, 0.0, ROBOT_MAX_LINEAR_SPEED, 5.0);
-	//	conx.entrada = targetY;
-	//	conx.realimentacao = robot()->y();
-	//	pidService(cony);
-	//	dy = cony.saida;*/
-	//	dx /= robot()->body().radius() * robot()->body().radius();
-	//	dy /= robot()->body().radius() * robot()->body().radius();
-	//	Steer::setSpeeds(speed * dx, speed * dy);
-	//	Steer::step();
-	//}
-
-	//TODO: ReachedSpeedX, ReachedSpeedY, ReachedSpeedAng
-	//TODO: mudar flag busy
-	//TODO: descobrir onde dou o emit, eh na skill de mais alto nivel ou na de mais baixo nivel???
-	//TODO: 
 }

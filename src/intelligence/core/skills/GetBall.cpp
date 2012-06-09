@@ -19,7 +19,7 @@ GetBall::GetBall(QObject* p, Robot* r, qreal s, qreal orientation)
 	: Goto(p, r, r->stage()->ball()->x(), r->stage()->ball()->y(), orientation, s)
 {
 	speed = s;
-	ignoreBall = true;
+
 }
 
 qreal GetBall::getSpeed()
@@ -121,7 +121,6 @@ void GetBall::step()
 
 		qreal reducedSpeed = dist<500?(speed/4): speed;
 		Goto::setIgnoreBrake();
-		Goto::setIgnoreBall();
 
 		if(hasBall()) {
 			robot->dribble();
@@ -152,7 +151,6 @@ void GetBall::step()
 			qreal destY = ballY + distance * sin(radAngle);
 
 			Goto::setNotIgnoreBrake();
-			Goto::setIgnoreBall();
 			Goto::setAll(destX , destY, speed);
 		
 			Goto::setOrientation(ballX - destX, ballY - destY );

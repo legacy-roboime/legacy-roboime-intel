@@ -144,8 +144,6 @@ void Defender::step()
 		GoliePos.setY(myGoal->y() - myGoal->width()/2);
 */
 
-	goto_->setIgnoreBall();
-	goto_->setIgnoreEnemy();
 	goto_->setOrientation(IniX - robot->x(), IniY - robot->y());
 	//goto_->setPoint(GoliePos.x(), GoliePos.y());
 	goto_->setPoint(GoliePos.x(), GoliePos.y());
