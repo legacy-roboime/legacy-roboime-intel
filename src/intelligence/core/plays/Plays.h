@@ -10,3 +10,4 @@
 #include "Minmax2.h"
 #include "BGT.h"
 #include "LinearCombPlay.h"
+#include "ObeyReferee.h"
