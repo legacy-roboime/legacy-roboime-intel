@@ -26,8 +26,6 @@ public:
 	PerfRenderer();
 	bool toggleEnable();
 	void render(const NxProfileData* prof, int width, int height);
-
-private:
 	float computeFPS();
 
 };
