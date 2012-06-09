@@ -155,7 +155,7 @@ Intelligence::Intelligence(QObject *parent)
 #ifndef SOCCER_DEBUG
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	timer->start(30.);//valor que tá no transmission da trunk para realTransmission //30.);//
+	timer->start(10.);//valor que tá no transmission da trunk para realTransmission //30.);//
 #endif
 	
 	cli->start();
@@ -192,8 +192,8 @@ void Intelligence::update() {
 	updater["referee"]->apply();
 
 	///BEGIN STEPS
-	play["minimax2"]->step();
 	play["cbr2011"]->step();
+	play["minimax2"]->step();
 
 	///END STEPS
 
@@ -203,8 +203,8 @@ void Intelligence::update() {
 	commander["yellowSim"]->step();
 	((CommanderSim*)commander["yellowSim"])->send();
 #else
-	commander["blue"]->step();
-	commander["blue"]->send();
+	commander["blueTx"]->step();
+	((CommanderTxOld*)commander["blueTx"])->send();
 #endif
 
 #ifdef DEBUG_TIME

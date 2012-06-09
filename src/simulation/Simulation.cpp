@@ -349,7 +349,8 @@ void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 	//parseLegacyString("15 0 1 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0\n");
 	// Start simulation
 	// Physics code
-	//cout << "a " << this->gScenes[indexScene]->allRobots->getRobotByIdByTeam(4,1)->getGlobalPose().t.x << endl;
+	//if(this->gScenes[indexScene]->ball->ball->getGlobalPosition().x > 3025)
+	//	cout << "BOLA SPEED " << this->gScenes[indexScene]->ball->ball->getLinearVelocity().magnitude() << endl;
 	//if (gScenes[indexScene]->scene && !gPause)
 	//{
 		 gScenes[indexScene]->scene->setTiming(dt, maxStepIter, NX_TIMESTEP_FIXED);
