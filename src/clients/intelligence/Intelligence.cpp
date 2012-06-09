@@ -25,7 +25,7 @@ using namespace LibIntelligence::Skills;
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Plays;
 
-#define SIMU
+//#define SIMU
 
 struct IntelligenceCli : public QThread
 {
@@ -33,7 +33,7 @@ struct IntelligenceCli : public QThread
 	IntelligenceCli(Intelligence *intel) : QThread(intel), intel(intel) {}
 
 	void run() {
-		qreal x, y, s;
+		qreal x, y, s, kp, ki, kd;
 		string command;
 		while(true) {
 			cout << "> ";
@@ -46,19 +46,33 @@ struct IntelligenceCli : public QThread
 				//break;
 			} else if(command[0] == 'p') {
 				cin >> x >> y;
-				cout << "skill1->SetPoint(" << x << "," << y << ")" << endl;
+				cout << "skill1->setPoint(" << x << "," << y << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setPoint(x, y);
 				intel->mutex.unlock();
 
 			} else if(command[0] == 's') {
 				cin >> s;
-				cout << "skill1->SetSpeed(" << s << ")" << endl;
+				cout << "skill1->setSpeed(" << s << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setSpeed(s);
 				intel->mutex.unlock();
 
-			} else {
+			} else if(command[0] == 'o') {
+				cin >> s;
+				cout << "skill1->setOrientarion(" << s << ")" << endl;
+				intel->mutex.lock();
+				((Goto *)intel->skill["goto"])->setOrientation(s);
+				intel->mutex.unlock();
+
+			}else if(command[0] == 'k') {
+				cin >> kp >> ki >> kd;
+				cout << "skill1->setPIDk(" << kp << "," << ki << "," << kd << ")" << endl;
+				intel->mutex.lock();
+				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
+				intel->mutex.unlock();
+
+			} else{
 				cout << "Comando nao reconhecido." << endl;
 
 			}
@@ -115,7 +129,7 @@ Intelligence::Intelligence(QObject *parent)
 
 #ifndef SIMU
 	//team["us"]->at(0)->setPatternId(1);
-	//team["us"]->at(1)->setPatternId(1);
+	team["us"]->at(1)->setPatternId(3);
 	//team["us"]->at(2)->setPatternId(1);
 	//team["us"]->at(3)->setPatternId(1);
 	//team["us"]->at(3)->setPatternId(1);
@@ -133,7 +147,7 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["controller2"] = new Tactics::Controller2(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
 	//skill["driveto"] = new DriveTo(this, team["us"]->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill["goto"] = new Goto(this, team["us"]->at(3), -1000, 0, 0, 500, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
+	skill["goto"] = new Goto(this, team["us"]->at(1), 1000, 0, 0, 500, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
 	skill["sampledKick"] = new SampledKick(this, team["us"]->at(1), team["they"]->goal(), true, 0, 1, 500, false);
 	skill["sampledDribble"] = new SampledDribble(this, team["us"]->at(1), team["they"]->at(1), true, 1, 1, 1000);
 
@@ -192,8 +206,10 @@ void Intelligence::update() {
 	updater["referee"]->apply();
 
 	///BEGIN STEPS
-	play["cbr2011"]->step();
-	play["minimax2"]->step();
+	//play["cbr2011"]->step();
+	//play["minimax2"]->step();
+
+	skill["goto"]->step();
 
 	///END STEPS
 

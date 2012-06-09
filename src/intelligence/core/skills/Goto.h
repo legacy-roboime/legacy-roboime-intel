@@ -26,7 +26,7 @@ namespace LibIntelligence
 			void setAllowDefenseArea();
 			void setNotAllowDefenseArea();
 			void setSpeed(qreal);
-			void setPIDk(double, double, double);
+			void setPIDkGoto(double, double, double);
 			void printPIDk();
 			void setPoint(qreal targetX, qreal targetY);
 

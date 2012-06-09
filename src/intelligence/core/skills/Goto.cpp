@@ -117,7 +117,8 @@ void Goto::setSpeed(qreal s)
 	this->speed = s;
 	//controllerSpeedX.saidaMax = controllerSpeedY.saidaMax = s;
 }
-void Goto::setPIDk(double kp, double ki, double kd)
+
+void Goto::setPIDkGoto(double kp, double ki, double kd)
 {
 	controllerSpeedX.Kp = controllerSpeedY.Kp = kp;
 	controllerSpeedX.Ki = controllerSpeedY.Ki = ki;
@@ -133,6 +134,7 @@ void Goto::step()
 	//TODO: valores objetivos devem ser alterados para valor nao deterministico (soma um float a speedx speedy e speedang)
 
 	qreal targetTempX, targetTempY, speedX, speedY, speedTemp, k;
+	speedX = speedY = 0;
 	targetTempX = targetX;
 	targetTempY = targetY;
 

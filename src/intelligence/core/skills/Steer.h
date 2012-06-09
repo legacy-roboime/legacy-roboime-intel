@@ -24,12 +24,13 @@ namespace LibIntelligence
 			void setOrientation(qreal orientation);
 			void setOrientation(qreal dX, qreal dY);
 			void setRate(qreal);
+			void setPIDk(double,double,double);
 
 		protected:
 			qreal orientation, rate;
 
 		private:
-			CONTROLLER_S controlller;
+			CONTROLLER_S controller;
 		};
 	}
 }
