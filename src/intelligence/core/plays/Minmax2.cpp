@@ -215,6 +215,7 @@ void Minmax2::act(SoccerAction& action)
 	Ball* ball = stage_->ball();
 	int idClosest = stage_->getClosestPlayerToBall(team_)->id();
 
+#ifdef SOCCER_DEBUG
 	if(action.type == kick_to_goal)
 		cout << "Kick To Goal" << endl;
 	else if(action.type == pass)
@@ -229,6 +230,7 @@ void Minmax2::act(SoccerAction& action)
 		cout << "Null action" << endl;
 	else
 		cout << "nenhum nem outro" << endl;
+#endif
 
 	for(int i=0; i < team_->size(); i++){
 		Vector2* pos = &action.move[i];
