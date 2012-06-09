@@ -40,6 +40,7 @@ private:
 	map<string, Plays::Play*> play;
 	map<string, Tactics::Tactic*> tactic;
 	map<string, Skills::Skill*> skill;
+	enum {NONE, SKILL, TACTIC, PLAY} which;
 
 	// Interface utils
 	map<string, Commander*> commander;

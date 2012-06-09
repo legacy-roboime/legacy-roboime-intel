@@ -25,7 +25,7 @@ using namespace LibIntelligence::Skills;
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Plays;
 
-//#define SIMU
+#define SIMU
 
 struct IntelligenceCli : public QThread
 {
@@ -34,7 +34,7 @@ struct IntelligenceCli : public QThread
 
 	void run() {
 		qreal x, y, s, kp, ki, kd;
-		string command;
+		string command, sub;
 		while(true) {
 			cout << "> ";
 			cin >> command;
@@ -43,7 +43,27 @@ struct IntelligenceCli : public QThread
 				cout << "Bye!" << endl;
 				intel->timer->stop();
 				system("pause");
-				//break;
+
+			} else if(command[0] == 'z') {
+				cin >> sub;
+				intel->mutex.lock();
+				if(sub[0] == 's') {
+					intel->which = Intelligence::SKILL;
+					cout << "Switching to skill." << endl;
+				} else if(sub[0] == 't') {
+					intel->which = Intelligence::TACTIC;
+					cout << "Switching to tactic." << endl;
+				} else if(sub[0] == 'p') {
+					intel->which = Intelligence::PLAY;
+					cout << "Switching to play." << endl;
+				} else if(sub[0] == 'n') {
+					intel->which = Intelligence::NONE;
+					cout << "Switching to none." << endl;
+				} else {
+					cout << "Tipo nao reconhecido." << endl;
+				}
+				intel->mutex.unlock();
+
 			} else if(command[0] == 'p') {
 				cin >> x >> y;
 				cout << "skill1->setPoint(" << x << "," << y << ")" << endl;
@@ -65,14 +85,14 @@ struct IntelligenceCli : public QThread
 				((Goto *)intel->skill["goto"])->setOrientation(s);
 				intel->mutex.unlock();
 
-			}else if(command[0] == 'k') {
+			} else if(command[0] == 'k') {
 				cin >> kp >> ki >> kd;
 				cout << "skill1->setPIDk(" << kp << "," << ki << "," << kd << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
 				intel->mutex.unlock();
 
-			} else{
+			} else {
 				cout << "Comando nao reconhecido." << endl;
 
 			}
@@ -84,7 +104,8 @@ struct IntelligenceCli : public QThread
 
 Intelligence::Intelligence(QObject *parent)
 	: QObject(parent),
-	cli(new IntelligenceCli(this))
+	cli(new IntelligenceCli(this)),
+	which(NONE)
 {
 	commander["blueSim"] = new CommanderSim(this);
 	commander["blueTx"] = new CommanderTxOld(this);
@@ -129,7 +150,7 @@ Intelligence::Intelligence(QObject *parent)
 
 #ifndef SIMU
 	//team["us"]->at(0)->setPatternId(1);
-	team["us"]->at(1)->setPatternId(3);
+	team["us"]->at(0)->setPatternId(3);
 	//team["us"]->at(2)->setPatternId(1);
 	//team["us"]->at(3)->setPatternId(1);
 	//team["us"]->at(3)->setPatternId(1);
@@ -147,12 +168,12 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["controller2"] = new Tactics::Controller2(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
 	//skill["driveto"] = new DriveTo(this, team["us"]->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill["goto"] = new Goto(this, team["us"]->at(1), 1000, 0, 0, 500, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
+	skill["goto"] = new Goto(this, team["us"]->at(0), 1000, 0, 0, 500, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
 	skill["sampledKick"] = new SampledKick(this, team["us"]->at(1), team["they"]->goal(), true, 0, 1, 500, false);
 	skill["sampledDribble"] = new SampledDribble(this, team["us"]->at(1), team["they"]->at(1), true, 1, 1, 1000);
 
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 1000);
-	tactic["zickler43"] = new Zickler43(this, team["us"]->at(3), 1000, true);
+	tactic["zickler43"] = new Zickler43(this, team["us"]->at(0), 3000, true);
 
 	play["cbr2011"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
@@ -206,11 +227,24 @@ void Intelligence::update() {
 	updater["referee"]->apply();
 
 	///BEGIN STEPS
-	//play["cbr2011"]->step();
-	//play["minimax2"]->step();
+	switch(which) {
 
-	skill["goto"]->step();
+	case PLAY:
+		play["cbr2011"]->step();
+		play["minimax2"]->step();
+		break;
 
+	case TACTIC:
+		tactic["zickler43"]->step();
+		break;
+
+	case SKILL:
+		skill["goto"]->step();
+		break;
+
+	default:
+		break;
+	}
 	///END STEPS
 
 #ifdef SIMU
