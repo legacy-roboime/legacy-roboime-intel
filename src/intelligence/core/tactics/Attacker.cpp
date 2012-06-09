@@ -106,7 +106,6 @@ void Attacker::step()
 
 		qreal reducedSpeed = dist<500?(speed/4): speed;
 		goto_->setIgnoreBrake();
-		goto_->setIgnoreBall();
 
 		goto_->setAll(GoalPos.x() , GoalPos.y(), reducedSpeed);
 		robot->kick(1);
@@ -149,7 +148,6 @@ void Attacker::step()
 			qreal destY = ballY + distance * sin(radAngle);
 
 			goto_->setNotIgnoreBrake();
-			goto_->setIgnoreBall();
 			goto_->setAll(destX , destY, speed);
 		
 			goto_->setOrientation(ballX - destX, ballY - destY );
