@@ -39,7 +39,12 @@ struct IntelligenceCli : public QThread
 			cout << "> ";
 			cin >> command;
 
-			if(command[0] == 'p') {
+			if(command == "quit" || command == "exit") {
+				cout << "Bye!" << endl;
+				intel->timer->stop();
+				system("pause");
+				//break;
+			} else if(command[0] == 'p') {
 				cin >> x >> y;
 				cout << "skill1->SetPoint(" << x << "," << y << ")" << endl;
 				intel->mutex.lock();
@@ -90,7 +95,7 @@ Intelligence::Intelligence(QObject *parent)
 	updater["visionSim"]->add(stage["main"]->ball());
 	updater["visionSim"]->add(stage["main"]);
 
-	for(quint8 i=0; i<5; i++) {
+	for(quint8 i = 0; i < 5; i++) {
 		team["us"]->push_back(new Robot(Robots::RobotIME2011(team["us"], i, i, BLUE)));
 		//real
 		commander["blueTx"]->add(team["us"]->last());
@@ -108,6 +113,7 @@ Intelligence::Intelligence(QObject *parent)
 		updater["visionSim"]->add(team["they"]->last());
 	}
 
+#ifndef SIMU
 	//team["us"]->at(0)->setPatternId(1);
 	//team["us"]->at(1)->setPatternId(1);
 	//team["us"]->at(2)->setPatternId(1);
@@ -121,6 +127,7 @@ Intelligence::Intelligence(QObject *parent)
 	//team["us"][2]->kicker().setNotWorking();
 	//team["us"][3]->kicker().setNotWorking();
 	//team["us"][4]->kicker().setNotWorking();
+#endif
 
 	tactic["controller"] = new Controller(this, team["us"]->at(3), 1, 500); //controle no referencial do campo
 	tactic["controller2"] = new Tactics::Controller2(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
@@ -148,7 +155,7 @@ Intelligence::Intelligence(QObject *parent)
 #ifndef SOCCER_DEBUG
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	timer->start(50.);//valor que tá no transmission da trunk para realTransmission //30.);//
+	timer->start(30.);//valor que tá no transmission da trunk para realTransmission //30.);//
 #endif
 	
 	cli->start();
@@ -156,7 +163,15 @@ Intelligence::Intelligence(QObject *parent)
 
 Intelligence::~Intelligence()
 {
+	team.clear();
+	robot.clear();
+	stage.clear();
+	play.clear();
+	tactic.clear();
+	skill.clear();
 	updater.clear();
+	commander.clear();
+	delete timer, cli;
 }
 
 void Intelligence::update() {
@@ -177,7 +192,8 @@ void Intelligence::update() {
 	updater["referee"]->apply();
 
 	///BEGIN STEPS
-	skill["goto"]->step();
+	play["minimax2"]->step();
+	play["cbr2011"]->step();
 
 	///END STEPS
 
