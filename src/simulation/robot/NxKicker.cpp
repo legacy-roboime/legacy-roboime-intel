@@ -24,10 +24,11 @@ void NxKicker::controlKicker( float kickerSpeed, NxRobot* robot )
 		NxReal angle = robot->getAngle2DFromVehicle();
 		NxVec3 dir = NxVec3(cos(angle), sin(angle), 0); 
 		
-		kickerShapeDesc->localPose.t.x *= dir.x;
-		kickerShapeDesc->localPose.t.y *= dir.y;
+		NxVec3 posRel = kickerShapeDesc->localPose.t;
+		posRel.x *= dir.x;
+		posRel.y *= dir.y;
 
-		NxBox box = NxBox(kickerShapeDesc->localPose.t + robot->getActor()->getGlobalPosition(), kickerShapeDesc->dimensions,  robot->getActor()->getGlobalOrientation());
+		NxBox box = NxBox(posRel + robot->getActor()->getGlobalPosition(), kickerShapeDesc->dimensions,  robot->getActor()->getGlobalOrientation());
 		
 		NxSphere sphere = NxSphere(ball->ball->getGlobalPosition(), ballShapes[0]->isSphere()->getRadius());
 
@@ -36,7 +37,7 @@ void NxKicker::controlKicker( float kickerSpeed, NxRobot* robot )
 		NxVec3 normal;
 
 		NxUtilLib* gUtilLib = NxGetUtilLib();
-		if(gUtilLib->NxSweepBoxSphere(box, sphere, -dir, 30+24.3, min_dist, normal)){ // Nao sei pq tem q ser o vetor -dir pra da certo pela logica eh NxVec3(cos(angle), sin(angle), 0)
+		if(gUtilLib->NxSweepBoxSphere(box, sphere, -dir, 10+24.3, min_dist, normal)){ // Nao sei pq tem q ser o vetor -dir pra da certo pela logica eh NxVec3(cos(angle), sin(angle), 0)
 			ball->ball->addForce(/*NxVec3(kickerSpeed*cos(angle)*150., kickerSpeed*sin(angle)*150., 0)*/(-normal)*kickerSpeed*300., NX_IMPULSE); //TODO: VERIFICAR A FORÇA OU IMPULSO
 		}
 	}
