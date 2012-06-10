@@ -3,11 +3,13 @@
 #include <QtNetwork>
 #include <QTime>
 
-UDPServerSimInt::UDPServerSimInt(QObject* parent, Simulation* simulation, quint16 port) : QObject(parent)
+UDPServerSimInt::UDPServerSimInt(QObject* parent, Simulation* simulation, char* address, quint16 port) : QObject(parent)
 {
+	QHostAddress groupAddress = QHostAddress(address);
 	this->simulation = simulation;
 	udpSocket = new QUdpSocket(this);
-	udpSocket->bind(port);
+	udpSocket->bind(port, QUdpSocket::ShareAddress);
+	udpSocket->joinMulticastGroup(groupAddress);
 	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(parsing()));
 }
 
