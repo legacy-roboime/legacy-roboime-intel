@@ -1,5 +1,5 @@
   <NXUSTREAM2>
-    <NxuPhysicsCollection id="C:\Users\Bill\Desktop\bgt\bin\d\test.xml" userProperties="" sdkVersion="283" nxuVersion="103">
+    <NxuPhysicsCollection id="C:\Users\Bill\Desktop\roboime\bin\test.xml" userProperties="" sdkVersion="283" nxuVersion="103">
       <NxPhysicsSDKDesc id="SDK">
         <hwPageSize>65536</hwPageSize>
         <hwPageMax>256</hwPageMax>
@@ -17,9 +17,9 @@
       <NxParameterDesc param="NX_VISUALIZATION_SCALE" value="1"/>
       <NxParameterDesc param="NX_VISUALIZE_WORLD_AXES" value="0"/>
       <NxParameterDesc param="NX_VISUALIZE_BODY_AXES" value="1"/>
-      <NxParameterDesc param="NX_VISUALIZE_BODY_MASS_AXES" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_BODY_LIN_VELOCITY" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_BODY_ANG_VELOCITY" value="0"/>
+      <NxParameterDesc param="NX_VISUALIZE_BODY_MASS_AXES" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_BODY_LIN_VELOCITY" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_BODY_ANG_VELOCITY" value="1"/>
       <NxParameterDesc param="NX_DUMMY15" value="0"/>
       <NxParameterDesc param="NX_DUMMY16" value="0"/>
       <NxParameterDesc param="NX_DUMMY17" value="0"/>
@@ -32,19 +32,19 @@
       <NxParameterDesc param="NX_DUMMY24" value="0"/>
       <NxParameterDesc param="NX_DUMMY25" value="0"/>
       <NxParameterDesc param="NX_DUMMY26" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_JOINT_LOCAL_AXES" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_JOINT_WORLD_AXES" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_JOINT_LIMITS" value="0"/>
+      <NxParameterDesc param="NX_VISUALIZE_JOINT_LOCAL_AXES" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_JOINT_WORLD_AXES" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_JOINT_LIMITS" value="1"/>
       <NxParameterDesc param="NX_DUMMY30" value="0"/>
       <NxParameterDesc param="NX_DUMMY31" value="0"/>
       <NxParameterDesc param="NX_DUMMY32" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_CONTACT_POINT" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_CONTACT_NORMAL" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_CONTACT_ERROR" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_CONTACT_FORCE" value="0"/>
+      <NxParameterDesc param="NX_VISUALIZE_CONTACT_POINT" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_CONTACT_NORMAL" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_CONTACT_ERROR" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_CONTACT_FORCE" value="1"/>
       <NxParameterDesc param="NX_VISUALIZE_ACTOR_AXES" value="1"/>
       <NxParameterDesc param="NX_VISUALIZE_COLLISION_AABBS" value="0"/>
-      <NxParameterDesc param="NX_VISUALIZE_COLLISION_SHAPES" value="1"/>
+      <NxParameterDesc param="NX_VISUALIZE_COLLISION_SHAPES" value="0"/>
       <NxParameterDesc param="NX_VISUALIZE_COLLISION_AXES" value="0"/>
       <NxParameterDesc param="NX_VISUALIZE_COLLISION_COMPOUNDS" value="0"/>
       <NxParameterDesc param="NX_VISUALIZE_COLLISION_VNORMALS" value="0"/>
@@ -489,6 +489,60 @@
           <NX_CF_INFLATE_CONVEX>false</NX_CF_INFLATE_CONVEX>
           <NX_CF_USE_UNCOMPRESSED_NORMALS>false</NX_CF_USE_UNCOMPRESSED_NORMALS>
         </NxConvexFlags>
+        <cookedDataSize>892</cookedDataSize>
+        <cookedData>4E5853014356584D030000000000000049434501434C484C00000000494345014356484C05000000080000000C0000000C000000060000001800000018000000
+          000000000000000000000000D8507A42D9507AC200000000D8507A42D9507AC200001143000000000000000000001143D0FF8B42579A58C200001143D0FF8B42
+          579A58C20000000098598442950D6BC20000000098598442950D6BC2000011430700000000010200020300030400040500050600060104030204020706050406
+          04070702010701060000ABE5360616068BE501262126B5BD95BDB1C90D4221ADF9C101009142040000000000000000000000F40435BFF30435BF000000000000
+          00805E4F33C100000000040000000400000008000000AFA31C3F1D7C4A3F0000000085FE38B65A4F33C185FE3836040000000800000010000000000000000000
+          0000000080BF00000080000011C300000000040000000C0000001800000000000000000000000000803F000011C3000000000000114304000000100000002000
+          0000F210453F776723BF0000000008E6B0C20000000007E6B042040000001400000028000000594D3A3FE1932FBF000000001EECB0C2000000001EECB0420001
+          020300030405000506010403020706050407070201060B0000000003050101070802020A0400070506090A08090B0603040B0000000000000000000100030005
+          0102010602030207030404050407050606073CC50BE0E4AD120075BD1CC555BDC4AD032095B5B5B513E000000000000000000000000000000000020000000202
+          020202020202020202021600000000020406080A0C0E101214160002000101020005020500030305010301040304020404054943450156414C45020000000800
+          000024000000060000000604050306030504010203040506000206070001030407000204000203050607000406000104050701020406620000004F5043010100
+          00000300000001000000FE7F0280FE7F018000800180000000C000000000E8008C3ACE527A3A2201113BE8008C3ACE527A3A2201113B48424D01000000000200
+          00006500000005650C0000000B00000001020607090A00030804050B000011383E1D05423567EAC1FFFF9042B1F7A94200000000D9507AC200000000D0FF8B42
+          000000000000114350B98C4751C2154E1D03054D06605CCD1D03054D963F1E4E4808424D06605CCD4808424DD473864DCBF23042F5CB1BC200009142
+        </cookedData>
+      </NxConvexMeshDesc>
+      <NxConvexMeshDesc id="ConvexMesh_7" userProperties="">
+        <points></points>
+        <triangles></triangles>
+        <NxConvexFlags id="flags">
+          <NX_CF_FLIPNORMALS>false</NX_CF_FLIPNORMALS>
+          <NX_CF_16_BIT_INDICES>false</NX_CF_16_BIT_INDICES>
+          <NX_CF_COMPUTE_CONVEX>false</NX_CF_COMPUTE_CONVEX>
+          <NX_CF_INFLATE_CONVEX>false</NX_CF_INFLATE_CONVEX>
+          <NX_CF_USE_UNCOMPRESSED_NORMALS>false</NX_CF_USE_UNCOMPRESSED_NORMALS>
+        </NxConvexFlags>
+        <cookedDataSize>892</cookedDataSize>
+        <cookedData>4E5853014356584D030000000000000049434501434C484C00000000494345014356484C05000000080000000C0000000C000000060000001800000018000000
+          D3FF8B42509A584200000000D3FF8B42509A5842000011430000000000000000000011430000000000000000000000009C5984428C0D6B4200001143E1507A42
+          D0507A4200001143E1507A42D0507A42000000009C5984428C0D6B42000000000700000000010200020302010402040502050602060307000307030607060507
+          05040401000400070000312611269BE5BBE585BD06062606A5BDB5C90D4219ADF94100009142040000000000000000000000A9A31C3F217C4ABF000000000000
+          00804F4F33C10000000004000000040000000800000000000000000000000000803F000011C30000000000001143040000000800000010000000ED0435BFF904
+          353F0000000000000080504F33C100000000040000000C000000180000000000000000000000000080BF00000080000011C30000000004000000100000002000
+          00005F4D3A3FDB932F3F000000001EECB0C2000000001EECB042040000001400000028000000F310453F7567233F0000000007E6B0C20000000007E6B0420001
+          020302010405020506030700030607060504040100070B0000000003050103040806060A07050201070B0B0A0809040002090000000000000000000100030007
+          0102010402030205030604050407050606071320F4ADA5B5D4AD85B51BE00CC52CC545BD03E0020065BD00000000000000000000000000000000020000000202
+          020202020202020202021600000000020406080A0C0E101214160005000303050001010500020102020301040405020403044943450156414C45020000000800
+          000024000000060000000503060405040405010203040700020400010304050600020607000102050702040607020305070003040506620000004F5043010100
+          00000300000001000000FE7FFF7FFE7F0180FF7F0180000000C000000000EB008C3AC5527A3A2201113BEB008C3AC5527A3A2201113B48424D01000000000200
+          00006500000005650C0000000B00000000020304090A06070801050B000011384A1D05422067EA4100009142B3F7A942000000000000000000000000D3FF8B42
+          D0507A420000114345B98C4744C2154E120305CDFB5F5CCD120305CD8C3F1E4E320842CDFB5F5CCD320842CDCA73864DD0F23042F0CB1B4200009142
+        </cookedData>
+      </NxConvexMeshDesc>
+      <NxConvexMeshDesc id="ConvexMesh_8" userProperties="">
+        <points></points>
+        <triangles></triangles>
+        <NxConvexFlags id="flags">
+          <NX_CF_FLIPNORMALS>false</NX_CF_FLIPNORMALS>
+          <NX_CF_16_BIT_INDICES>false</NX_CF_16_BIT_INDICES>
+          <NX_CF_COMPUTE_CONVEX>false</NX_CF_COMPUTE_CONVEX>
+          <NX_CF_INFLATE_CONVEX>false</NX_CF_INFLATE_CONVEX>
+          <NX_CF_USE_UNCOMPRESSED_NORMALS>false</NX_CF_USE_UNCOMPRESSED_NORMALS>
+        </NxConvexFlags>
         <cookedDataSize>2960</cookedDataSize>
         <cookedData>4E5853014356584D030000000000000049434501434C484C00000000494345014356484C05000000200000003C00000036000000180000006C0000006C000000
           CC5D99C00072D9C1F8FF9F40925D99400272D9C1F7FF9F40B5CC5C41E137BFC1F6FF9F407424A9416DED8DC1F5FF9F40E77BCF41440917C1F5FF9F40C5CCDC41
@@ -539,7 +593,7 @@
           8D37834ADEA22B3CE7A394BCA8A31F40
         </cookedData>
       </NxConvexMeshDesc>
-      <NxConvexMeshDesc id="ConvexMesh_7" userProperties="">
+      <NxConvexMeshDesc id="ConvexMesh_9" userProperties="">
         <points></points>
         <triangles></triangles>
         <NxConvexFlags id="flags">
@@ -598,7 +652,7 @@
           D941FEFF9F40B28D35466CD2084A75CAFAC59A6BDCC375CAFAC53463094A99E23E449A6BDCC399E23E44AA37834AB61AF73CFCFE55BDAEA31F40
         </cookedData>
       </NxConvexMeshDesc>
-      <NxConvexMeshDesc id="ConvexMesh_8" userProperties="">
+      <NxConvexMeshDesc id="ConvexMesh_10" userProperties="">
         <points></points>
         <triangles></triangles>
         <NxConvexFlags id="flags">
@@ -657,7 +711,7 @@
           D9410D00A040C48D35462599094A9A25BA45989602C49A25BA454BBB084A45F84FC4989602C445F84FC4B937834AD661123D0B27693DACB82040
         </cookedData>
       </NxConvexMeshDesc>
-      <NxConvexMeshDesc id="ConvexMesh_9" userProperties="">
+      <NxConvexMeshDesc id="ConvexMesh_11" userProperties="">
         <points></points>
         <triangles></triangles>
         <NxConvexFlags id="flags">
@@ -1126,7 +1180,7 @@
           <forceFieldMaterial>0</forceFieldMaterial>
         </NxActorDesc>
         <NxActorDesc id="Actor_5" userProperties="" hasBody="true" name="Bola">
-          <globalPose>0.000384468 0.999985456 -0.005414141  -1.000000119 0.00038445 -0.00000226  -0.000000177 0.005414142 0.999985337  125.51599884 0 21.5</globalPose>
+          <globalPose>0.000384509 0.999985456 -0.005398882  -1.000000119 0.000384491 -0.000002257  -0.000000181 0.005398882 0.999985456  125.51599884 0 21.5</globalPose>
           <NxBodyDesc id="body">
             <massLocalPose>1 0 0  0 1 0  0 0 1  -0.000001987 0.000003769 0.000000301</massLocalPose>
             <massSpaceInertia>0.000001894 0.000001894 0.000001894</massSpaceInertia>
@@ -1172,7 +1226,7 @@
           <compartment></compartment>
           <NxSphereShapeDesc radius="21.500038147">
             <NxShapeDesc userProperties="" name="Bola">
-              <localPose>1 -0.000000135 0.000000143  0.000000135 1 -0  -0.000000143 0 1  0 0 0</localPose>
+              <localPose>1 -0.000000135 0.00000008  0.000000135 1 -0  -0.00000008 0 1  0 0 0</localPose>
               <NxShapeFlag id="shapeFlags">
                 <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
                 <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
@@ -1199,7 +1253,7 @@
               <materialIndex>1</materialIndex>
               <CCDSkeleton></CCDSkeleton>
               <shapeDensity>0.0000005</shapeDensity>
-              <shapeMass>0.020482875</shapeMass>
+              <shapeMass>0.020482868</shapeMass>
               <skinWidth>0.100000001</skinWidth>
               <NxGroupsMask id="groupsMask" bits0="0" bits1="0" bits2="0" bits3="0"/>
               <NxShapeCompartmentType id="nonInteractingCompartmentTypes">
@@ -1591,11 +1645,11 @@
           <forceFieldMaterial>0</forceFieldMaterial>
         </NxActorDesc>
         <NxActorDesc id="Actor_12" userProperties="" hasBody="true" name="Robo4">
-          <globalPose>1 -0.000021776 0  0.000021776 1 0  0 0 1  -0.000251055 -0.000039101 5</globalPose>
+          <globalPose>1 -0.000037034 0  0.000037034 1 0  0 0 1  -0.000251055 -0.000039101 5</globalPose>
           <NxBodyDesc id="body">
-            <massLocalPose>0.85867095 -0.005177458 0.512501121  0.007712769 0.999966264 -0.00282038  -0.512469232 0.006374581 0.858681917  20.110898972 2.668271065 88.049697876</massLocalPose>
-            <massSpaceInertia>1.759169698 2.730050087 3.153637171</massSpaceInertia>
-            <mass>0.001295134</mass>
+            <massLocalPose>0.893556774 0.005260769 -0.448919415  -0.01020324 0.99991101 -0.00859146  0.4488343 0.012257391 0.893530905  20.289651871 2.614128113 100.301734924</massLocalPose>
+            <massSpaceInertia>4.670041561 4.329320908 3.31823349</massSpaceInertia>
+            <mass>0.001726845</mass>
             <linearVelocity>0 0 0</linearVelocity>
             <angularVelocity>0 0 0</angularVelocity>
             <wakeUpCounter>0</wakeUpCounter>
@@ -1825,7 +1879,7 @@
           </NxBoxShapeDesc>
           <NxBoxShapeDesc dimensions="15.5 5 10">
             <NxShapeDesc userProperties="" name="Suporte-4-1">
-              <localPose>1 -0.000001113 0  0.000001113 1 0  0 0 1  63.9 -36.499889374 7.75</localPose>
+              <localPose>1 0.00002559 0  -0.00002559 1 0  0 0 1  63.9 -36.499889374 7.75</localPose>
               <NxShapeFlag id="shapeFlags">
                 <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
                 <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
@@ -1911,12 +1965,108 @@
               </NxShapeCompartmentType>
             </NxShapeDesc>
           </NxBoxShapeDesc>
+          <NxConvexShapeDesc meshData="ConvexMesh_6">
+            <NxMeshShapeFlag id="meshFlags">
+              <NX_MESH_SMOOTH_SPHERE_COLLISIONS>false</NX_MESH_SMOOTH_SPHERE_COLLISIONS>
+              <NX_MESH_DOUBLE_SIDED>false</NX_MESH_DOUBLE_SIDED>
+            </NxMeshShapeFlag>
+            <NxShapeDesc userProperties="" name="Compl-4-1">
+              <localPose>1 0.00002559 0  -0.00002559 1 0  0 0 1  0.000251056 0.000039094 0</localPose>
+              <NxShapeFlag id="shapeFlags">
+                <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
+                <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
+                <NX_TRIGGER_ON_STAY>false</NX_TRIGGER_ON_STAY>
+                <NX_SF_VISUALIZATION>true</NX_SF_VISUALIZATION>
+                <NX_SF_DISABLE_COLLISION>false</NX_SF_DISABLE_COLLISION>
+                <NX_SF_FEATURE_INDICES>false</NX_SF_FEATURE_INDICES>
+                <NX_SF_DISABLE_RAYCASTING>false</NX_SF_DISABLE_RAYCASTING>
+                <NX_SF_POINT_CONTACT_FORCE>true</NX_SF_POINT_CONTACT_FORCE>
+                <NX_SF_FLUID_DRAIN>false</NX_SF_FLUID_DRAIN>
+                <NX_SF_FLUID_DISABLE_COLLISION>false</NX_SF_FLUID_DISABLE_COLLISION>
+                <NX_SF_FLUID_TWOWAY>false</NX_SF_FLUID_TWOWAY>
+                <NX_SF_DISABLE_RESPONSE>false</NX_SF_DISABLE_RESPONSE>
+                <NX_SF_DYNAMIC_DYNAMIC_CCD>false</NX_SF_DYNAMIC_DYNAMIC_CCD>
+                <NX_SF_DISABLE_SCENE_QUERIES>false</NX_SF_DISABLE_SCENE_QUERIES>
+                <NX_SF_CLOTH_DRAIN>false</NX_SF_CLOTH_DRAIN>
+                <NX_SF_CLOTH_DISABLE_COLLISION>false</NX_SF_CLOTH_DISABLE_COLLISION>
+                <NX_SF_CLOTH_TWOWAY>true</NX_SF_CLOTH_TWOWAY>
+                <NX_SF_SOFTBODY_DRAIN>false</NX_SF_SOFTBODY_DRAIN>
+                <NX_SF_SOFTBODY_DISABLE_COLLISION>false</NX_SF_SOFTBODY_DISABLE_COLLISION>
+                <NX_SF_SOFTBODY_TWOWAY>true</NX_SF_SOFTBODY_TWOWAY>
+              </NxShapeFlag>
+              <group>0</group>
+              <materialIndex>2</materialIndex>
+              <CCDSkeleton></CCDSkeleton>
+              <shapeDensity>0.000009</shapeDensity>
+              <shapeMass>23.98396492</shapeMass>
+              <skinWidth>0.100000001</skinWidth>
+              <NxGroupsMask id="groupsMask" bits0="0" bits1="0" bits2="0" bits3="0"/>
+              <NxShapeCompartmentType id="nonInteractingCompartmentTypes">
+                <NX_COMPARTMENT_SW_RIGIDBODY>false</NX_COMPARTMENT_SW_RIGIDBODY>
+                <NX_COMPARTMENT_HW_RIGIDBODY>false</NX_COMPARTMENT_HW_RIGIDBODY>
+                <NX_COMPARTMENT_SW_FLUID>false</NX_COMPARTMENT_SW_FLUID>
+                <NX_COMPARTMENT_HW_FLUID>false</NX_COMPARTMENT_HW_FLUID>
+                <NX_COMPARTMENT_SW_CLOTH>false</NX_COMPARTMENT_SW_CLOTH>
+                <NX_COMPARTMENT_HW_CLOTH>false</NX_COMPARTMENT_HW_CLOTH>
+                <NX_COMPARTMENT_SW_SOFTBODY>false</NX_COMPARTMENT_SW_SOFTBODY>
+                <NX_COMPARTMENT_HW_SOFTBODY>false</NX_COMPARTMENT_HW_SOFTBODY>
+              </NxShapeCompartmentType>
+            </NxShapeDesc>
+          </NxConvexShapeDesc>
+          <NxConvexShapeDesc meshData="ConvexMesh_7">
+            <NxMeshShapeFlag id="meshFlags">
+              <NX_MESH_SMOOTH_SPHERE_COLLISIONS>false</NX_MESH_SMOOTH_SPHERE_COLLISIONS>
+              <NX_MESH_DOUBLE_SIDED>false</NX_MESH_DOUBLE_SIDED>
+            </NxMeshShapeFlag>
+            <NxShapeDesc userProperties="" name="Compl-4-2">
+              <localPose>1 0.00002559 0  -0.00002559 1 0  0 0 1  0.000251056 0.000039094 0</localPose>
+              <NxShapeFlag id="shapeFlags">
+                <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
+                <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
+                <NX_TRIGGER_ON_STAY>false</NX_TRIGGER_ON_STAY>
+                <NX_SF_VISUALIZATION>true</NX_SF_VISUALIZATION>
+                <NX_SF_DISABLE_COLLISION>false</NX_SF_DISABLE_COLLISION>
+                <NX_SF_FEATURE_INDICES>false</NX_SF_FEATURE_INDICES>
+                <NX_SF_DISABLE_RAYCASTING>false</NX_SF_DISABLE_RAYCASTING>
+                <NX_SF_POINT_CONTACT_FORCE>true</NX_SF_POINT_CONTACT_FORCE>
+                <NX_SF_FLUID_DRAIN>false</NX_SF_FLUID_DRAIN>
+                <NX_SF_FLUID_DISABLE_COLLISION>false</NX_SF_FLUID_DISABLE_COLLISION>
+                <NX_SF_FLUID_TWOWAY>false</NX_SF_FLUID_TWOWAY>
+                <NX_SF_DISABLE_RESPONSE>false</NX_SF_DISABLE_RESPONSE>
+                <NX_SF_DYNAMIC_DYNAMIC_CCD>false</NX_SF_DYNAMIC_DYNAMIC_CCD>
+                <NX_SF_DISABLE_SCENE_QUERIES>false</NX_SF_DISABLE_SCENE_QUERIES>
+                <NX_SF_CLOTH_DRAIN>false</NX_SF_CLOTH_DRAIN>
+                <NX_SF_CLOTH_DISABLE_COLLISION>false</NX_SF_CLOTH_DISABLE_COLLISION>
+                <NX_SF_CLOTH_TWOWAY>true</NX_SF_CLOTH_TWOWAY>
+                <NX_SF_SOFTBODY_DRAIN>false</NX_SF_SOFTBODY_DRAIN>
+                <NX_SF_SOFTBODY_DISABLE_COLLISION>false</NX_SF_SOFTBODY_DISABLE_COLLISION>
+                <NX_SF_SOFTBODY_TWOWAY>true</NX_SF_SOFTBODY_TWOWAY>
+              </NxShapeFlag>
+              <group>0</group>
+              <materialIndex>2</materialIndex>
+              <CCDSkeleton></CCDSkeleton>
+              <shapeDensity>0.000009</shapeDensity>
+              <shapeMass>23.98396492</shapeMass>
+              <skinWidth>0.100000001</skinWidth>
+              <NxGroupsMask id="groupsMask" bits0="0" bits1="0" bits2="0" bits3="0"/>
+              <NxShapeCompartmentType id="nonInteractingCompartmentTypes">
+                <NX_COMPARTMENT_SW_RIGIDBODY>false</NX_COMPARTMENT_SW_RIGIDBODY>
+                <NX_COMPARTMENT_HW_RIGIDBODY>false</NX_COMPARTMENT_HW_RIGIDBODY>
+                <NX_COMPARTMENT_SW_FLUID>false</NX_COMPARTMENT_SW_FLUID>
+                <NX_COMPARTMENT_HW_FLUID>false</NX_COMPARTMENT_HW_FLUID>
+                <NX_COMPARTMENT_SW_CLOTH>false</NX_COMPARTMENT_SW_CLOTH>
+                <NX_COMPARTMENT_HW_CLOTH>false</NX_COMPARTMENT_HW_CLOTH>
+                <NX_COMPARTMENT_SW_SOFTBODY>false</NX_COMPARTMENT_SW_SOFTBODY>
+                <NX_COMPARTMENT_HW_SOFTBODY>false</NX_COMPARTMENT_HW_SOFTBODY>
+              </NxShapeCompartmentType>
+            </NxShapeDesc>
+          </NxConvexShapeDesc>
           <dominanceGroup>0</dominanceGroup>
           <contactReportFlags>0</contactReportFlags>
           <forceFieldMaterial>0</forceFieldMaterial>
         </NxActorDesc>
         <NxActorDesc id="Actor_13" userProperties="" hasBody="true" name="Roda-4-1">
-          <globalPose>-0.544639409 -0.000001462 -0.838670492  -0.838670492 0.000000773 0.544639289  -0.000000089 1.000000119 -0.000001758  44.338676453 63.685401917 27.600004196</globalPose>
+          <globalPose>-0.544639409 -0.000001388 -0.838670492  -0.838670492 0.000000814 0.544639289  -0.00000003 1.000000119 -0.000001699  44.338676453 63.685398102 27.600004196</globalPose>
           <NxBodyDesc id="body">
             <massLocalPose>0.991562366 0.129628837 -0.000703912  -0.12962839 0.991562426 0.00064779  0.000781945 -0.000551078 0.999999523  0.010475842 -0.018144561 2.494363785</massLocalPose>
             <massSpaceInertia>0.000000552 0.000000545 0.000001085</massSpaceInertia>
@@ -1960,13 +2110,13 @@
           </NxActorFlag>
           <group>0</group>
           <compartment></compartment>
-          <NxConvexShapeDesc meshData="ConvexMesh_6">
+          <NxConvexShapeDesc meshData="ConvexMesh_8">
             <NxMeshShapeFlag id="meshFlags">
               <NX_MESH_SMOOTH_SPHERE_COLLISIONS>false</NX_MESH_SMOOTH_SPHERE_COLLISIONS>
               <NX_MESH_DOUBLE_SIDED>false</NX_MESH_DOUBLE_SIDED>
             </NxMeshShapeFlag>
             <NxShapeDesc userProperties="" name="Roda-4-1">
-              <localPose>1 -0 0  0 1 0  -0 0 1  0 0 0</localPose>
+              <localPose>1 0 0  -0 1 0  -0 -0 1  0 0 0</localPose>
               <NxShapeFlag id="shapeFlags">
                 <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
                 <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
@@ -2013,9 +2163,9 @@
           <forceFieldMaterial>0</forceFieldMaterial>
         </NxActorDesc>
         <NxActorDesc id="Actor_14" userProperties="" hasBody="true" name="Roda-4-0">
-          <globalPose>-0.544641316 0.000001465 0.838669062  0.838669062 0.000000965 0.544641316  0.00000003 1 -0.000001723  40.145328522 -66.408599854 27.600004196</globalPose>
+          <globalPose>-0.544641197 0.000001542 0.838669121  0.838669121 0.000001004 0.544641197  0 0.99999994 -0.000001782  40.145328522 -66.408599854 27.600004196</globalPose>
           <NxBodyDesc id="body">
-            <massLocalPose>0.866014242 -0.500019252 0.000204816  0.500019312 0.866014183 -0.0003547  -0.000000017 0.000409587 0.99999994  0.030164178 -0.052245125 2.494365215</massLocalPose>
+            <massLocalPose>0.866014242 -0.500019252 0.000204786  0.500019312 0.866014183 -0.000354699  0.000000009 0.000409572 0.99999994  0.030164104 -0.052245125 2.494365215</massLocalPose>
             <massSpaceInertia>0.000000546 0.000000551 0.000001085</massSpaceInertia>
             <mass>0.000000003</mass>
             <linearVelocity>0 0 0</linearVelocity>
@@ -2057,13 +2207,13 @@
           </NxActorFlag>
           <group>0</group>
           <compartment></compartment>
-          <NxConvexShapeDesc meshData="ConvexMesh_7">
+          <NxConvexShapeDesc meshData="ConvexMesh_9">
             <NxMeshShapeFlag id="meshFlags">
               <NX_MESH_SMOOTH_SPHERE_COLLISIONS>false</NX_MESH_SMOOTH_SPHERE_COLLISIONS>
               <NX_MESH_DOUBLE_SIDED>false</NX_MESH_DOUBLE_SIDED>
             </NxMeshShapeFlag>
             <NxShapeDesc userProperties="" name="Roda-4-0">
-              <localPose>1 0 0.00000003  -0 1 0  -0.00000003 -0 1  0 0 0</localPose>
+              <localPose>1 -0 -0  0 1 -0  0 0 1  0 0 0</localPose>
               <NxShapeFlag id="shapeFlags">
                 <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
                 <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
@@ -2110,7 +2260,7 @@
           <forceFieldMaterial>0</forceFieldMaterial>
         </NxActorDesc>
         <NxActorDesc id="Actor_15" userProperties="" hasBody="true" name="Roda-4-2">
-          <globalPose>0.707105815 -0.000002329 -0.707107723  -0.707107723 -0.000002258 -0.707105756  0 0.99999994 -0.000003231  -53.07522583 56.61076355 27.600008011</globalPose>
+          <globalPose>0.707105815 -0.000002362 -0.707107782  -0.707107782 -0.000002414 -0.707105815  -0.00000003 1 -0.00000338  -53.07522583 56.61076355 27.600008011</globalPose>
           <NxBodyDesc id="body">
             <massLocalPose>0.939224601 -0.343303233 0.000246763  0.343303114 0.939224601 0.000389426  -0.000365457 -0.000281044 0.999999881  0.035737835 0.056922 2.511271477</massLocalPose>
             <massSpaceInertia>0.000000551 0.000000546 0.000001085</massSpaceInertia>
@@ -2154,13 +2304,13 @@
           </NxActorFlag>
           <group>0</group>
           <compartment></compartment>
-          <NxConvexShapeDesc meshData="ConvexMesh_8">
+          <NxConvexShapeDesc meshData="ConvexMesh_10">
             <NxMeshShapeFlag id="meshFlags">
               <NX_MESH_SMOOTH_SPHERE_COLLISIONS>false</NX_MESH_SMOOTH_SPHERE_COLLISIONS>
               <NX_MESH_DOUBLE_SIDED>false</NX_MESH_DOUBLE_SIDED>
             </NxMeshShapeFlag>
             <NxShapeDesc userProperties="" name="Roda-4-2">
-              <localPose>1 0 0  -0 1 -0  -0 0 1  0 0 0</localPose>
+              <localPose>1 0 -0  -0 1 0  0 0 1  0 0 0</localPose>
               <NxShapeFlag id="shapeFlags">
                 <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
                 <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
@@ -2251,13 +2401,13 @@
           </NxActorFlag>
           <group>0</group>
           <compartment></compartment>
-          <NxConvexShapeDesc meshData="ConvexMesh_9">
+          <NxConvexShapeDesc meshData="ConvexMesh_11">
             <NxMeshShapeFlag id="meshFlags">
               <NX_MESH_SMOOTH_SPHERE_COLLISIONS>false</NX_MESH_SMOOTH_SPHERE_COLLISIONS>
               <NX_MESH_DOUBLE_SIDED>false</NX_MESH_DOUBLE_SIDED>
             </NxMeshShapeFlag>
             <NxShapeDesc userProperties="" name="Roda-4-3">
-              <localPose>1 0 -0  0 1 0  0 -0 1  0 0 0</localPose>
+              <localPose>1 0 0  0 1 0  -0 0 1  0 0 0</localPose>
               <NxShapeFlag id="shapeFlags">
                 <NX_TRIGGER_ON_ENTER>false</NX_TRIGGER_ON_ENTER>
                 <NX_TRIGGER_ON_LEAVE>false</NX_TRIGGER_ON_LEAVE>
