@@ -3,6 +3,7 @@
 #include "UDPServerSimInt.h"
 #include <QTimer>
 #include "DrawObjects.h"
+#include "config.h"
 
 NxVec3 SimulationView::gEye = NxVec3(0, -4000, 3700.0f);
 NxVec3 SimulationView::Dir = NxVec3(0, 1, -0.9); 
@@ -798,7 +799,8 @@ void SimulationView::RenderCallback()
 			out.precision(4);
 			out << "FPS: " << gPerfRenderer.computeFPS() << endl;
 			out << "CENA: " << indexRenderScene.key() << endl;
-			out << cout;
+			out << Simulation::cout.str();
+			Simulation::cout = ostringstream();
 			//printf("MOMENTO ANGULAR: %f %f %f\n", angMomentum.x, angMomentum.y, angMomentum.z);
 			//printf("VELOCIDADE ANGULAR: %f %f %f\n", angVelocity.x, angVelocity.y, angVelocity.z);
 			//printf("MOMENTO LINEAR: %f %f %f\n", linMomentum.x, linMomentum.y, linMomentum.z);
@@ -846,8 +848,8 @@ void SimulationView::setupCamera()
 void SimulationView::changeCamera(){
 	static int camera = -1;
 	camera++;
-	camera %= 7;
-	if(camera == 0){
+	camera %= 8;
+	if(camera == 7){
 		gEye.x = 2827.0056;
 		gEye.y = -2172.7402;
 		gEye.z = 981.85626;
@@ -923,6 +925,17 @@ void SimulationView::changeCamera(){
 		Up.x = 0.37753335;
 		Up.y = 0.0020033286;
 		Up.z = 0.82780254;
+	}
+	else if(camera == 0){
+		gEye.x = 0.0;
+		gEye.y = 0.0;
+		gEye.z = 5E3;
+		Dir.x = 0.0;
+		Dir.y = 0.0;
+		Dir.z = -1.0;
+		Up.x = 0.0;
+		Up.y = 1.0;
+		Up.z = 0.0;
 	}
 }
 

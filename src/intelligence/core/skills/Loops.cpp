@@ -6,19 +6,22 @@ using namespace LibIntelligence::Skills;
 using namespace LibIntelligence::Skills::Loops;
 
 Orbit::Orbit(QObject* p, Robot* r, qreal x, qreal y, qreal d, qreal s, qreal a)
-	: Goto(p, r, 0,0,0,speedLinear),
+	: Goto(p, r, 0, 0, 0, s),
 	centerX(x),
 	centerY(y),
 	radius(d),
 	speedLinear(s),
-	speedAngular(a) {}
+	speedAngular(a)
+{
+	ignoreBrake = true;
+}
 
 void Orbit::setAll(qreal x, qreal y, qreal d, qreal s, qreal a) {
 	centerX = x; centerY = y; radius = d; speedLinear = s; speedAngular = a;
 }
 
 void Orbit::step() {
-	static qreal d, dx, dy, n, costheta, sintheta;
+	qreal d, dx, dy, n, costheta, sintheta;
 	dx = centerX - robot()->x();
 	dy = centerY - robot()->y();
 	n = dx*dx + dy*dy;

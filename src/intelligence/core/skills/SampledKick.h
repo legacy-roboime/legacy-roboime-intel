@@ -15,10 +15,11 @@ namespace LibIntelligence
 
 		public:
 			SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic = true, qreal minPower = 0., qreal maxPower = 1., qreal speed = 3000., bool pass = false);
-			SampledKick::~SampledKick(void); 
+
 			void step();
 			virtual bool busy();
 			qreal calculatePassPower(qreal s);
+			void setPowerK(qreal);
 
 		protected:
 
@@ -26,6 +27,7 @@ namespace LibIntelligence
 		private:
 			qreal minPower_;
 			qreal maxPower_;
+			qreal powerK;
 			bool pass_;
 		};
 	}
