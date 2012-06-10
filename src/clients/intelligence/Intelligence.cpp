@@ -274,8 +274,6 @@ void Intelligence::update() {
 
 	///BEGIN STEPS
 	switch(mode) {
-	tactic["zickler43"]->step();
-	//skill["goto"]->step();
 
 	case PLAY:
 		play["cbr"]->step();
