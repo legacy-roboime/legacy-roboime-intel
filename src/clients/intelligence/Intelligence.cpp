@@ -25,7 +25,7 @@ using namespace LibIntelligence::Skills;
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Plays;
 
-#define SIMU
+#include "config.h"
 
 struct IntelligenceCli : public QThread
 {
@@ -47,47 +47,90 @@ struct IntelligenceCli : public QThread
 			} else if(command[0] == 'z') {
 				cin >> sub;
 				intel->mutex.lock();
-				if(sub[0] == 's') {
-					intel->which = Intelligence::SKILL;
+				if(sub[0] == 'n') {
+					intel->mode = Intelligence::NONE;
+					cout << "Switching to none." << endl;
+				} else if(sub[0] == 's') {
+					intel->mode = Intelligence::SKILL;
 					cout << "Switching to skill." << endl;
 				} else if(sub[0] == 't') {
-					intel->which = Intelligence::TACTIC;
+					intel->mode = Intelligence::TACTIC;
 					cout << "Switching to tactic." << endl;
 				} else if(sub[0] == 'p') {
-					intel->which = Intelligence::PLAY;
+					intel->mode = Intelligence::PLAY;
 					cout << "Switching to play." << endl;
-				} else if(sub[0] == 'n') {
-					intel->which = Intelligence::NONE;
-					cout << "Switching to none." << endl;
+				} else if(sub[0] == 'c') {
+					intel->mode = Intelligence::CONTROLLER;
+					cout << "Switching to controller." << endl;
 				} else {
 					cout << "Tipo nao reconhecido." << endl;
 				}
 				intel->mutex.unlock();
 
+			} else if(command == "kick") {
+				int i;
+				cin >> i;
+				cout << "Kick once" << endl;
+				intel->mutex.lock();
+				intel->team["us"]->at(i)->kick();
+				intel->mutex.unlock();
+
+			} else if(command == "dribble") {
+				int i;
+				cin >> i;
+				cout << "Dribble once" << endl;
+				intel->mutex.lock();
+				intel->team["us"]->at(i)->dribble(1.0);
+				intel->mutex.unlock();
+
+			} else if(command == "sk") {
+				cin >> s;
+				cout << "setPowerK(" << s << ")" << endl;
+				intel->mutex.lock();
+				((SampledKick *)intel->skill["samk"])->setPowerK(s);
+				intel->mutex.unlock();
+
+			} else if(command[0] == 'm') {
+				cin >> x >> y >> s;
+				cout << "setSpeeds(" << x << "," << y << ")" << endl;
+				cout << "setSpeedAngular(" << s << ")" << endl;
+				intel->mutex.lock();
+				((Move *)intel->skill["move"])->setSpeeds(x, y);
+				((Move *)intel->skill["move"])->setSpeedAngular(s);
+				intel->mutex.unlock();
+
 			} else if(command[0] == 'p') {
 				cin >> x >> y;
-				cout << "skill1->setPoint(" << x << "," << y << ")" << endl;
+				cout << "setPoint(" << x << "," << y << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setPoint(x, y);
 				intel->mutex.unlock();
 
 			} else if(command[0] == 's') {
 				cin >> s;
-				cout << "skill1->setSpeed(" << s << ")" << endl;
+				cout << "setSpeed(" << s << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setSpeed(s);
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'o') {
 				cin >> s;
-				cout << "skill1->setOrientarion(" << s << ")" << endl;
+				cout << "setOrientarion(" << s << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setOrientation(s);
 				intel->mutex.unlock();
 
+			} else if(command[0] == 'c') {
+				int i;
+				cin >> i;
+				cout << "controller robot " << i << endl;
+				intel->mutex.lock();
+				intel->tactic["controller"]->setRobot(intel->team["us"]->at(i));
+				intel->mutex.unlock();
+
 			} else if(command[0] == 'k') {
 				cin >> kp >> ki >> kd;
-				cout << "skill1->setPIDk(" << kp << "," << ki << "," << kd << ")" << endl;
+				cout << "setPIDk(" << kp << "," << ki << "," << kd << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
 				intel->mutex.unlock();
@@ -105,7 +148,7 @@ struct IntelligenceCli : public QThread
 Intelligence::Intelligence(QObject *parent)
 	: QObject(parent),
 	cli(new IntelligenceCli(this)),
-	which(NONE)
+	mode(NONE)
 {
 	commander["blueSim"] = new CommanderSim(this);
 	commander["blueTx"] = new CommanderTxOld(this);
@@ -149,8 +192,8 @@ Intelligence::Intelligence(QObject *parent)
 	}
 
 #ifndef SIMU
-	//team["us"]->at(0)->setPatternId(1);
-	team["us"]->at(0)->setPatternId(3);
+	team["us"]->at(0)->setPatternId(1);
+	team["us"]->at(1)->setPatternId(3);
 	//team["us"]->at(2)->setPatternId(1);
 	//team["us"]->at(3)->setPatternId(1);
 	//team["us"]->at(3)->setPatternId(1);
@@ -164,18 +207,21 @@ Intelligence::Intelligence(QObject *parent)
 	//team["us"][4]->kicker().setNotWorking();
 #endif
 
-	tactic["controller"] = new Controller(this, team["us"]->at(3), 1, 500); //controle no referencial do campo
-	tactic["controller2"] = new Tactics::Controller2(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
+	tactic["controller"] = new Controller2(this, team["us"]->at(3), 1, 500); //controle no referencial do campo
+	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
 	//skill["driveto"] = new DriveTo(this, team["us"]->at(1), -3.14/2., QPointF(0,0), 1000.);
 
 	skill["goto"] = new Goto(this, team["us"]->at(0), 1000, 0, 0, 500, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
-	skill["sampledKick"] = new SampledKick(this, team["us"]->at(1), team["they"]->goal(), true, 0, 1, 500, false);
-	skill["sampledDribble"] = new SampledDribble(this, team["us"]->at(1), team["they"]->at(1), true, 1, 1, 1000);
+	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
+	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 500, true);
+	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
+	skill["loop"] = new Loops::Orbit(this, team["us"]->at(1), 0, 0, 1000, 3000, 1.0);
 
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 1000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(0), 3000, true);
 
-	play["cbr2011"] = new Plays::CBR2011(this, team["they"], stage["main"]);
+	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
+	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
 	//play["bgt"] = new Plays::BGT(this, team["us"], sta);
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
@@ -227,20 +273,26 @@ void Intelligence::update() {
 	updater["referee"]->apply();
 
 	///BEGIN STEPS
-	switch(which) {
+	switch(mode) {
 
 	case PLAY:
-		play["cbr2011"]->step();
-		play["minimax2"]->step();
+		play["cbr"]->step();
+		play["cbr2"]->step();
+		//play["minimax2"]->step();
 		break;
 
 	case TACTIC:
 		tactic["zickler43"]->step();
+		skill["goto"]->step();
 		break;
 
 	case SKILL:
+		skill["samk"]->step();
 		skill["goto"]->step();
 		break;
+
+	case CONTROLLER:
+		tactic["controller"]->step();
 
 	default:
 		break;

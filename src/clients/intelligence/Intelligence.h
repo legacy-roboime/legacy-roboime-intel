@@ -40,7 +40,8 @@ private:
 	map<string, Plays::Play*> play;
 	map<string, Tactics::Tactic*> tactic;
 	map<string, Skills::Skill*> skill;
-	enum {NONE, SKILL, TACTIC, PLAY} which;
+	enum {NONE, SKILL, TACTIC, PLAY, CONTROLLER} mode;
+	int controlled;//tirar quando o controller for para o time inteiro
 
 	// Interface utils
 	map<string, Commander*> commander;
