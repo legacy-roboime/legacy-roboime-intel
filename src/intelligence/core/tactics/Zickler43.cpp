@@ -17,9 +17,9 @@ using namespace Zickler43T;
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
 	driveToBall_(new DriveToBall(this, r, r->enemyGoal(), speed, true)),
-	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., 250)),//speed/.2)),
-	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., 250, false)),//speed/.2, false)),
-	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, 250, false)),//speed/.2, false)),
+	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., speed)),
+	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., speed, false)),
+	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, speed, false)),
 	wait_(new Wait(p, r)),
 	speed(speed)
 {
@@ -41,7 +41,7 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
 	this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
 	this->pushTransition(sampledMiniKick_, new DefaultTrueT(this, sampledMiniKick_, driveToBall_));
-	this->pushTransition(sampledGoalKick_, new DefaultTrueT(this, sampledGoalKick_, driveToBall_));
+	this->pushTransition(sampledGoalKick_, new GoalKickToDriveT(this, sampledGoalKick_, driveToBall_));
 	//this->pushTransition(wait_, new DefaultTrueT(this, wait_, driveToBall_)); //loop maquina
 
 	this->setInitialState(driveToBall_);
@@ -136,6 +136,13 @@ bool DribbleToGoalKickT::condition()
 }
 
 DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
+bool GoalKickToDriveT::condition()
+{
+	return !source_->busy();
+}
+
+GoalKickToDriveT::GoalKickToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
 bool DribbleToMiniKickT::condition()
 {
