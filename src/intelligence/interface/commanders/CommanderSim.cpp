@@ -17,6 +17,7 @@ CommanderSim::CommanderSim(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
+	this->udpSocket->setSocketOption(QAbstractSocket::MulticastTtlOption, 1);
 	//for(size_t n=0; n<5; n++) _robot.push_back(0);
 }
 

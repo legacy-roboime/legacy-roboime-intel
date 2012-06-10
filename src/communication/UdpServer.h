@@ -19,8 +19,10 @@ public:
 	void append(const QByteArray& data);
 	void send();
 
-private:
+protected:
 	QUdpSocket* udpSocket;
+
+private:
 	QHostAddress* address;
 	QQueue<QByteArray> queue;
 	quint16 port;
