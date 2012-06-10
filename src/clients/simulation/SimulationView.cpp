@@ -3,6 +3,7 @@
 #include "UDPServerSimInt.h"
 #include <QTimer>
 #include "DrawObjects.h"
+#include "config.h"
 
 NxVec3 SimulationView::gEye = NxVec3(0, -4000, 3700.0f);
 NxVec3 SimulationView::Dir = NxVec3(0, 1, -0.9); 
@@ -798,7 +799,8 @@ void SimulationView::RenderCallback()
 			out.precision(4);
 			out << "FPS: " << gPerfRenderer.computeFPS() << endl;
 			out << "CENA: " << indexRenderScene.key() << endl;
-			out << cout;
+			out << Simulation::cout.str();
+			Simulation::cout = ostringstream();
 			//printf("MOMENTO ANGULAR: %f %f %f\n", angMomentum.x, angMomentum.y, angMomentum.z);
 			//printf("VELOCIDADE ANGULAR: %f %f %f\n", angVelocity.x, angVelocity.y, angVelocity.z);
 			//printf("MOMENTO LINEAR: %f %f %f\n", linMomentum.x, linMomentum.y, linMomentum.z);
