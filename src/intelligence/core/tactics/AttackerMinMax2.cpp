@@ -18,9 +18,9 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 	: Tactic(p, r, true)
 {
 	action_ = type_actions::null_action;
-	movePoint_ = new Object();
-	kickPoint_ = new Object();
-	dribblePoint_ = new Object();
+	movePoint_ = new Object(0,0);
+	kickPoint_ = new Object(*r->enemyGoal());
+	dribblePoint_ = new Object(*r->enemyGoal());
 	//driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., dribbleSpeed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., dribbleSpeed, false);
