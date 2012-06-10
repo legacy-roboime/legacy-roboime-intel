@@ -70,7 +70,7 @@ void SampledKick::step()
 		robot->kick(power);
 	}
 
-	robot->dribble(0.5); //pegar bola
+	//robot->dribble(0.5); //pegar bola
 
 	DriveToBall::step();
 }
