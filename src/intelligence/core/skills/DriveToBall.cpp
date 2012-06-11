@@ -27,7 +27,7 @@ void DriveToBall::step()
 	Ball* ball = stage()->ball();
 	Robot* robot = this->robot();
 
-	qreal distance = 6*threshold;
+	qreal distance = 4*threshold;
 	qreal t = -distance;
 
 	//Cone maior
@@ -79,10 +79,9 @@ void DriveToBall::step()
 		ret2.setAngle(ret2.angle() + 90);
 		ret2.translate(robot->x() - ret2.p1().x(), robot->y() - ret2.p1().y());
 		QPointF intersect = QPointF(0, 0);
-		//ret1.
 		QLineF::IntersectType interT = ret1.intersect(ret2, &intersect);
 		if(robot->distance(&Object(intersect.x(), intersect.y())).module() > 50){
-			Goto::setPoint(intersect.x(), intersect.y());
+			Goto::setPoint(ret1.x2(), ret1.y2());
 			ret1.setLength(-1);
 			Goto::setOrientation(- ret1.angle() * M_PI / 180.);
 			Goto::step();
