@@ -127,6 +127,7 @@ set(INT_SRC_CORE_SKILLS
     core/skills/KickTo.cpp
     core/skills/Loops.cpp
     core/skills/LinearCombMotion.cpp
+    core/skills/GotoAvoid.cpp
     # add new sources here
 )
 source_group("Sources\\Core\\Skills" FILES ${INT_SRC_CORE_SKILLS})

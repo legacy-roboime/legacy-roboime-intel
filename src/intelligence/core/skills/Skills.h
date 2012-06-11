@@ -21,5 +21,6 @@
 #include "SampledDribble.h"
 #include "SampledKick.h"
 #include "LinearCombMotion.h"
+#include "GotoAvoid.h"
 
 #endif // SKILLS_H
