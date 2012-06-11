@@ -46,6 +46,8 @@ private:
 	// Interface utils
 	map<string, Commander*> commander;
 	map<string, Updater*> updater;
+	bool useSimulation;
+	void resetPatterns();
 
 	QTimer* timer;
 	QThread* cli;

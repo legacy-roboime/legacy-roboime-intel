@@ -42,7 +42,7 @@ struct IntelligenceCli : public QThread
 			if(command == "quit" || command == "exit") {
 				cout << "Bye!" << endl;
 				intel->timer->stop();
-				system("pause");
+				break;
 
 			} else if(command[0] == 'z') {
 				cin >> sub;
@@ -81,6 +81,20 @@ struct IntelligenceCli : public QThread
 				cout << "Dribble once" << endl;
 				intel->mutex.lock();
 				intel->team["us"]->at(i)->dribble(1.0);
+				intel->mutex.unlock();
+
+			} else if(command == "sim") {
+				cout << "Using simulation." << endl;
+				intel->mutex.lock();
+				intel->useSimulation = true;
+				intel->resetPatterns();
+				intel->mutex.unlock();
+
+			} else if(command == "real") {
+				cout << "Using real transmission/SSL." << endl;
+				intel->mutex.lock();
+				intel->useSimulation = false;
+				intel->resetPatterns();
 				intel->mutex.unlock();
 
 			} else if(command == "sk") {
@@ -148,6 +162,7 @@ struct IntelligenceCli : public QThread
 Intelligence::Intelligence(QObject *parent)
 	: QObject(parent),
 	cli(new IntelligenceCli(this)),
+	useSimulation(true),
 	mode(NONE)
 {
 	commander["blueSim"] = new CommanderSim(this);
@@ -191,22 +206,6 @@ Intelligence::Intelligence(QObject *parent)
 		updater["visionSim"]->add(team["they"]->last());
 	}
 
-#ifndef SIMU
-	team["us"]->at(0)->setPatternId(1);
-	team["us"]->at(1)->setPatternId(3);
-	//team["us"]->at(2)->setPatternId(1);
-	//team["us"]->at(3)->setPatternId(1);
-	//team["us"]->at(3)->setPatternId(1);
-	//team["they"][0]->setPatternId(4);
-
-	//set the kicker if it is not working
-	//team["us"][0]->kicker().setNotWorking();
-	//team["us"][1]->kicker().setNotWorking();
-	//team["us"][2]->kicker().setNotWorking();
-	//team["us"][3]->kicker().setNotWorking();
-	//team["us"][4]->kicker().setNotWorking();
-#endif
-
 	tactic["controller"] = new Controller2(this, team["us"]->at(3), 1, 500); //controle no referencial do campo
 	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
 	//skill["driveto"] = new DriveTo(this, team["us"]->at(1), -3.14/2., QPointF(0,0), 1000.);
@@ -239,36 +238,51 @@ Intelligence::Intelligence(QObject *parent)
 	timer->start(10.);//valor que tá no transmission da trunk para realTransmission //30.);//
 #endif
 	
+	resetPatterns();
 	cli->start();
 }
 
-Intelligence::~Intelligence()
+void Intelligence::resetPatterns()
 {
-	team.clear();
-	robot.clear();
-	stage.clear();
-	play.clear();
-	tactic.clear();
-	skill.clear();
-	updater.clear();
-	commander.clear();
-	delete timer, cli;
+	if(useSimulation) {
+		for(int i = 0; i < team["us"]->size(); i++)
+			team["us"]->at(i)->setPatternId(i);
+		for(int i = 0; i < team["they"]->size(); i++)
+			team["they"]->at(i)->setPatternId(i);
+	} else {
+		team["us"]->at(0)->setPatternId(2);
+		team["us"]->at(1)->setPatternId(3);
+		//team["us"]->at(2)->setPatternId(1);
+		//team["us"]->at(3)->setPatternId(1);
+		//team["us"]->at(3)->setPatternId(1);
+		//team["they"][0]->setPatternId(4);
+
+		//set the kicker if it is not working
+		//team["us"][0]->kicker().setNotWorking();
+		//team["us"][1]->kicker().setNotWorking();
+		//team["us"][2]->kicker().setNotWorking();
+		//team["us"][3]->kicker().setNotWorking();
+		//team["us"][4]->kicker().setNotWorking();
+	}
 }
 
-void Intelligence::update() {
-	mutex.lock();
+void Intelligence::update()
+{
 #ifdef DEBUG_TIME
 	QTime t;
 	t.start();
 #endif
 
-#ifdef SIMU
-	updater["visionSim"]->step();
-	updater["visionSim"]->apply();
-#else
-	updater["vision"]->step();
-	updater["vision"]->apply();
-#endif
+	mutex.lock();
+
+	if(useSimulation) {
+		updater["visionSim"]->step();
+		updater["visionSim"]->apply();
+	} else {
+		updater["vision"]->step();
+		updater["vision"]->apply();
+	}
+
 	updater["referee"]->step();
 	updater["referee"]->apply();
 
@@ -299,18 +313,32 @@ void Intelligence::update() {
 	}
 	///END STEPS
 
-#ifdef SIMU
-	commander["blueSim"]->step();
-	((CommanderSim*)commander["blueSim"])->send();
-	commander["yellowSim"]->step();
-	((CommanderSim*)commander["yellowSim"])->send();
-#else
-	commander["blueTx"]->step();
-	((CommanderTxOld*)commander["blueTx"])->send();
-#endif
+	if(useSimulation) {
+		commander["blueSim"]->step();
+		((CommanderSim*)commander["blueSim"])->send();
+		commander["yellowSim"]->step();
+		((CommanderSim*)commander["yellowSim"])->send();
+	} else {
+		commander["blueTx"]->step();
+		((CommanderTxOld*)commander["blueTx"])->send();
+	}
+
+	mutex.unlock();
 
 #ifdef DEBUG_TIME
 	cout << "TEMPO: " << t.elapsed() << "ms" << endl;
 #endif
-	mutex.unlock();
+}
+
+Intelligence::~Intelligence()
+{
+	team.clear();
+	robot.clear();
+	stage.clear();
+	play.clear();
+	tactic.clear();
+	skill.clear();
+	updater.clear();
+	commander.clear();
+	delete timer, cli;
 }
