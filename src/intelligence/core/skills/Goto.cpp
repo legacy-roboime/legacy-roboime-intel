@@ -159,32 +159,29 @@ void Goto::step()
 		}
 	}
 
-	if(!ignoreBrake) {
+	//controle speedX
 
-		//controle speedX
+	controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
+	qreal x = robot()->x();
+	controllerSpeedX.realimentacao = robot()->x();
+	pidService(controllerSpeedX);
+	speedX = controllerSpeedX.saida;
 
-		controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
-		qreal x = robot()->x();
-		controllerSpeedX.realimentacao = robot()->x();
-		pidService(controllerSpeedX);
-		speedX = controllerSpeedX.saida;
+	//controle speedY
 
-		//controle speedY
+	controllerSpeedY.entrada = targetY; //deseja-se que a distância entre o alvo e o robô seja igual a zero
+	qreal y = robot()->y();
+	controllerSpeedY.realimentacao = robot()->y();
+	pidService(controllerSpeedY);
+	speedY = controllerSpeedY.saida;
 
-		controllerSpeedY.entrada = targetY; //deseja-se que a distância entre o alvo e o robô seja igual a zero
-		qreal y = robot()->y();
-		controllerSpeedY.realimentacao = robot()->y();
-		pidService(controllerSpeedY);
-		speedY = controllerSpeedY.saida;
-
-		//calculo speed linear
-		speedTemp = sqrt(speedX*speedX + speedY*speedY);
-		if(speedTemp > speed)
-		{
-			k = speed/speedTemp;
-			speedX *= k;
-			speedY *= k;
-		}
+	//calculo speed linear
+	speedTemp = sqrt(speedX*speedX + speedY*speedY);
+	if(speedTemp > speed || ignoreBrake)
+	{
+		k = speed/speedTemp;
+		speedX *= k;
+		speedY *= k;
 	}
 
 	Steer::setSpeeds(speedX, speedY);

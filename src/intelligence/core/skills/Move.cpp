@@ -17,7 +17,7 @@ using namespace Skills;
 #define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
 qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
 
-
+#define ROBOTACCEL 3500
 
 Move::Move(QObject* p, Robot* r, qreal sx, qreal sy, qreal sa)
 	: Skill(p, r),
@@ -67,15 +67,8 @@ void Move::step()
 	int intervalo = oldTime.msecsTo(newTime);
 	oldTime=newTime;
 
-	qreal acelLin;
-	qreal acelAng;
-	if(false && robot()->id()==1){
-		acelLin=3000*intervalo/1000;
-		acelAng=acelLin/robot()->body().radius();
-	} else {
-		acelLin=2500*intervalo/1000;
-		acelAng=acelLin/robot()->body().radius();
-	}
+	qreal acelLin = ROBOTACCEL * intervalo / 1000;
+	qreal acelAng = acelLin / robot()->body().radius();
 
 	qreal diferenca=speedX-oldSpeedX;
 	if(diferenca>0){

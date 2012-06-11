@@ -16,6 +16,8 @@ endforeach()
 set(CMAKE_DEBUG_POSTFIX d)
 set(CMAKE_MINSIZEREL_POSTFIX min)
 
+include_directories(.)
+
 add_subdirectory(communication)
 add_subdirectory(utils/samplescommoncode)
 add_subdirectory(utils/nxustream2)

@@ -4,6 +4,7 @@
 QMap<int, NxScene1*> Simulation::gScenes = QMap<int, NxScene1*>();
 UserAllocator* Simulation::gMyAllocator = NULL;
 NxPhysicsSDK* Simulation::gPhysicsSDK = 0;
+ostringstream Simulation::cout;
 
 /**
 * Método do PhysX
