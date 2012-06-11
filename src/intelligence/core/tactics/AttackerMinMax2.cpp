@@ -18,9 +18,9 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 	: Tactic(p, r, true)
 {
 	action_ = type_actions::null_action;
-	movePoint_ = new Object(0,0);
-	kickPoint_ = new Object(*r->enemyGoal());
-	dribblePoint_ = new Object(*r->enemyGoal());
+	movePoint_ = new Object();
+	kickPoint_ = new Object();
+	dribblePoint_ = new Object();
 	//driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., dribbleSpeed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., dribbleSpeed, false);
@@ -96,7 +96,9 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
 		movePoint.x = enemyGoal->x();
 		movePoint.y = enemyGoal->y();
+#ifdef SOCCER_DEBUG
 		cout << "ERROR: movePoint == ballPoint" << endl;
+#endif
 	}
 
 	if(action_ == pass || action_ == kick_to_goal){
