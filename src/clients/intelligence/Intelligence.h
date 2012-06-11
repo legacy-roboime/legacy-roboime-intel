@@ -15,6 +15,7 @@
 #include "Skill.h"
 #include "Tactic.h"
 #include "Play.h"
+#include "config.h"
 
 using namespace LibIntelligence;
 
