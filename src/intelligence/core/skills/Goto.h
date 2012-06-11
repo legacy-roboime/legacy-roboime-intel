@@ -3,11 +3,8 @@
 #define GOTO_H
 
 #include "LibIntelligence.h"
-#include "ForceFieldMotion.h"
 #include "PID.h"
 #include "Steer.h"
-#include <qstring.h>
-
 
 namespace LibIntelligence
 {

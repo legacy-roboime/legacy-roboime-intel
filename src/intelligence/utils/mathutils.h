@@ -10,5 +10,6 @@
 //Garante que x fique entre -MPI e MPI
 #define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
 //qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
+#define SQ(x) ((x)*(x))
 
 #endif
