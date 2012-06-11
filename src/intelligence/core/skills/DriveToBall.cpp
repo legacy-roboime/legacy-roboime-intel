@@ -83,7 +83,7 @@ void DriveToBall::step()
 		if(robot->distance(&Object(intersect.x(), intersect.y())).module() > 50){
 			Goto::setPoint(ret1.x2(), ret1.y2());
 			ret1.setLength(-1);
-			Goto::setOrientation(- ret1.angle() * M_PI / 180.);
+			Goto::setOrientation(- ret1.angle() * M_PI / 180.); //TODO: arrumar esse angulo para o robo nao fazer a voltinha.
 			Goto::step();
 		}
 		else
