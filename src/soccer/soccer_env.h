@@ -1,11 +1,15 @@
 #ifndef SOCCER_ENV_H
 #define SOCCER_ENV_H
 
-#include "defs.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif 
+
+#include "defs.h"
+#include "vector.h"
+
+#define LEFT 0
+#define RIGHT 1
 
 typedef struct SoccerEnvironment{
   float sample_period;            /* dt between two invoking minimax_play func */
@@ -25,10 +29,13 @@ typedef struct SoccerEnvironment{
   float max_blue_kick_dist;
   float hfield_w;      /* half field width */
   float hfield_h;      /* half field height */
+  Vector2 red_goal;
+  Vector2 blue_goal;
   Boolean left_red_side;
 } SoccerEnvironment;
 
 void soccer_env_init( void );
+void soccer_env_red_side( int side );
 SoccerEnvironment* soccer_env(void);
 
 #ifdef __cplusplus

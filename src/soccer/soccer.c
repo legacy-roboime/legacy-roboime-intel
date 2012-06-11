@@ -29,15 +29,25 @@ void sstate_restart_game_pos( SoccerState *s )
  s->ball = v2_make((2*DRAND()-1.)*soccer_env()->hfield_w,
                    (2*DRAND() -1.)*soccer_env()->hfield_h ); 
 
- s->red[0] = v2_make( soccer_env()->hfield_w, 0 );
- s->blue[0] = v2_make( -soccer_env()->hfield_w, 0 );
+ s->blue[0] = soccer_env()->blue_goal;
+ s->red[0] = soccer_env()->red_goal;
 
- for( i = 1; i < NPLAYERS; i++ ){
-   s->red[i] = v2_make( DRAND()*soccer_env()->hfield_w,
-                        (2*DRAND() -1.)*soccer_env()->hfield_h ); 
-   s->blue[i] = v2_make((DRAND() -1)*soccer_env()->hfield_w,
-                        (2*DRAND() -1.)*soccer_env()->hfield_h ); 
+ if( soccer_env()->left_red_side ){
+   for( i = 1; i < NPLAYERS; i++ ){
+       s->red[i] = v2_make( DRAND()*soccer_env()->hfield_w,
+                            (2*DRAND() -1.)*soccer_env()->hfield_h ); 
+       s->blue[i] = v2_make((DRAND() -1)*soccer_env()->hfield_w,
+                            (2*DRAND() -1.)*soccer_env()->hfield_h ); 
+   }
  }
+ else{
+   for( i = 1; i < NPLAYERS; i++ ){
+     s->blue[i] = v2_make( DRAND()*soccer_env()->hfield_w,
+                          (2*DRAND() -1.)*soccer_env()->hfield_h ); 
+     s->red[i] = v2_make((DRAND() -1)*soccer_env()->hfield_w,
+                        (2*DRAND() -1.)*soccer_env()->hfield_h ); 
+   }
+ } 
 }
 
 
@@ -52,14 +62,8 @@ float sstate_evaluate( SoccerState *s )
  float ball_dist_to_red_goal, ball_dist_to_blue_goal;
  Vector2 blue_goal, red_goal;
 
- if(soccer_env()->left_red_side){
-   blue_goal = v2_make( +soccer_env()->hfield_w, 0 );
-   red_goal = v2_make( -soccer_env()->hfield_w, 0 );
- }
- else{
-	blue_goal = v2_make( -soccer_env()->hfield_w, 0 );
-	red_goal = v2_make( +soccer_env()->hfield_w, 0 );
- }
+ blue_goal = soccer_env()->blue_goal;
+ red_goal = soccer_env()->red_goal;
   
  min_red_dist_to_ball = sstate_min_red_dist( s, s->ball );
  min_red_dist_to_blue_goal = sstate_min_red_dist( s, blue_goal );
@@ -91,8 +95,8 @@ float sstate_evaluate( SoccerState *s )
  s2 -= 50*min_red_dist_to_ball;
  s2 += 50*min_blue_dist_to_ball;
 
- s3 -= /*50*/1000*min_red_dist_to_red_goal;
- s3 += /*50*/1000*min_blue_dist_to_blue_goal;
+ s3 -= 500*min_red_dist_to_red_goal;
+ s3 += 500*min_blue_dist_to_blue_goal;
 
  if(  s->red_ball_owner >=  0 || 
       (( t = sstate_time_to_red_get_ball( s, &closest_red ) <
@@ -117,14 +121,14 @@ float sstate_evaluate( SoccerState *s )
  for( i = 0; i < NPLAYERS; i++){
    if( (s->red_ball_owner >= 0 ) && 
        sstate_possible_red_pass(s, i, v2_add(s->red[i],v2_make(-.1,0) )) > 0){ 
-           s6 += (400 - /*40*/80*v2_norm( v2_sub( s->red[i], blue_goal ))
+           s6 += (400 - 80*v2_norm( v2_sub( s->red[i], blue_goal ))
                       +20*v2_norm( v2_sub( s->red[i], s->ball ))
                       + 5*sstate_min_blue_dist( s, s->red[i] )
                  );
    }
    if( ( s->blue_ball_owner >= 0 ) &&
        sstate_possible_blue_pass(s, i, v2_add(s->blue[i],v2_make(.1,0) )) > 0){
-           s6 += (-400 + /*40*/80*v2_norm( v2_sub( s->blue[i], red_goal ))
+           s6 += (-400 + 80*v2_norm( v2_sub( s->blue[i], red_goal ))
                        -20*v2_norm( v2_sub( s->blue[i], s->ball ))
                        -5*sstate_min_red_dist( s, s->blue[i] )
                  ); 
