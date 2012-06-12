@@ -7,10 +7,6 @@ file(GLOB NXU_HDR "*.h")
 
 aux_source_directory(. NXU_SRC)
 
-# adding to group
-source_group("Headers" FILES ${NXU_HDR})
-source_group("Sources" FILES ${NXU_SRC})
-
 
 ##############################
 # PhysX stuff
@@ -23,6 +19,10 @@ include_directories(${PHYSX_INCLUDES})
 ##############################
 # Le finale
 #
+
+# adding to group
+directory_source_group(headers . *.h)
+directory_source_group(src . *.cpp)
 
 set(NXU_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -38,3 +38,5 @@ add_library(nxustream2
 target_link_libraries(nxustream2
     ${PHYSX_LIBRARIES}
 )
+
+set_property(TARGET nxustream2 PROPERTY FOLDER 3rdparty)

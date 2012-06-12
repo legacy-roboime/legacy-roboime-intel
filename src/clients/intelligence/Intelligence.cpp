@@ -221,9 +221,11 @@ Intelligence::Intelligence(QObject *parent)
 
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
+	play["retaliate"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], 3000);
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
 	//play["bgt"] = new Plays::BGT(this, team["us"], sta);
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
+	play["minimax2b"] = new Plays::Minmax2(this, team["they"], stage["main"]);
 	//play["freekickem"] = new Plays::FreeKickThem(this, &team["us"], sta);
 
 	tactic["gkpr"] = new Goalkeeper(this, team["they"]->at(0),1000);
@@ -292,7 +294,9 @@ void Intelligence::update()
 	case PLAY:
 		play["cbr"]->step();
 		//play["cbr2"]->step();
-		play["minimax2"]->step();
+		//play["minimax2"]->step();
+		//play["minimax2b"]->step();
+		play["retaliate"]->step();
 		break;
 
 	case TACTIC:
@@ -313,13 +317,23 @@ void Intelligence::update()
 	///END STEPS
 
 	if(useSimulation) {
+#ifdef CONTROL_BLUE
 		commander["blueSim"]->step();
 		((CommanderSim*)commander["blueSim"])->send();
+#endif
+#ifdef CONTROL_YELLOW
 		commander["yellowSim"]->step();
 		((CommanderSim*)commander["yellowSim"])->send();
+#endif
 	} else {
+#ifdef CONTROL_BLUE
 		commander["blueTx"]->step();
 		((CommanderTxOld*)commander["blueTx"])->send();
+#endif
+#ifdef CONTROL_YELLOW
+		//commander["yellowTx"]->step();
+		//((CommanderTxOld*)commander["yellowTx"])->send();
+#endif
 	}
 
 	mutex.unlock();

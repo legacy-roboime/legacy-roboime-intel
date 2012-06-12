@@ -11,3 +11,4 @@
 #include "BGT.h"
 #include "LinearCombPlay.h"
 #include "ObeyReferee.h"
+#include "AutoRetaliate.h"

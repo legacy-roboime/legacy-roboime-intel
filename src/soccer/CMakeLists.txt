@@ -6,7 +6,6 @@ cmake_minimum_required(VERSION 2.8)
 
 include_directories(.)
 file(GLOB SOC_HDR "*.h")
-source_group("Headers" FILES ${SOC_HDR})
 
 ##############################
 # Files which will be compiled
@@ -19,11 +18,10 @@ set(SOC_SRC
     soccer_blue.c
     soccer_red.c
     soccer_env.c
-	soccer_draw.c
-	minimax.c
-	move_table.c
+    soccer_draw.c
+    minimax.c
+    move_table.c
 )
-source_group("Sources" FILES ${SOC_SRC})
 
 
 
@@ -47,6 +45,10 @@ endif()
 # Le finale
 #
 
+# adding to group
+directory_source_group(headers . *.h)
+directory_source_group(src . *.c)
+
 set(SOC_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${OPENGL_INCLUDE_DIR}
@@ -62,3 +64,5 @@ add_library(soccer
 target_link_libraries(soccer
     ${SOC_LIBS}
 )
+
+set_property(TARGET soccer PROPERTY FOLDER modules)
