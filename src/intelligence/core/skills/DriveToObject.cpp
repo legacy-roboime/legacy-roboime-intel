@@ -20,6 +20,7 @@ DriveToObject::DriveToObject(QObject* parent, Robot* slave, const Object* object
 
 DriveToObject::~DriveToObject(void)
 {
+	delete lookPoint;
 }
 
 //Robo se posiciona em posicao oposta ao lookPoint em relação o object ficando alinha lookPoint, object e robo (nessa ordem) 

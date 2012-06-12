@@ -948,18 +948,18 @@ bool Simulation::initSimulation( int nbScenes )
 	NxReal z = allRobots->getRobotByIdByTeam(4, 1)->getInitialPose().t.z;
 	z=0;
 	allRobots->getRobotByIdByTeam(4, 1)->setGlobalPosition(                    NxVec3(sideBlue*1000, 0    , z));
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 5, NxVec3(sideBlue*1000, 1000 , z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(sideBlue*1000, -1000, z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(sideBlue*2000, 1000 , z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(sideBlue*2000, 0    , z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(sideBlue*2000, -1000, z), 1);
+	if(NPLAYERS > 5) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 5, NxVec3(sideBlue*1000, 1000 , z), 1);
+	if(NPLAYERS > 3) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(sideBlue*1000, -1000, z), 1);
+	if(NPLAYERS > 2) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(sideBlue*2000, 1000 , z), 1);
+	if(NPLAYERS > 1) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(sideBlue*2000, 0    , z), 1);
+	if(NPLAYERS > 0) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(sideBlue*2000, -1000, z), 1);
 
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 5, NxVec3(-sideBlue*1000, 1000 , z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 4, NxVec3(-sideBlue*1000, 0    , z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(-sideBlue*1000, -1000, z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(-sideBlue*2000, 1000 , z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(-sideBlue*2000, 0    , z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(-sideBlue*2000, -1000, z), 0);
+	if(NPLAYERS > 5) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 5, NxVec3(-sideBlue*1000, 1000 , z), 0);
+	if(NPLAYERS > 4) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 4, NxVec3(-sideBlue*1000, 0    , z), 0);
+	if(NPLAYERS > 3) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(-sideBlue*1000, -1000, z), 0);
+	if(NPLAYERS > 2) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(-sideBlue*2000, 1000 , z), 0);
+	if(NPLAYERS > 1) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(-sideBlue*2000, 0    , z), 0);
+	if(NPLAYERS > 0) allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(-sideBlue*2000, -1000, z), 0);
 
 
 	for(int i=1; i<nbScenes; i++)

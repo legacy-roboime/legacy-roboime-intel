@@ -23,7 +23,13 @@ UpdateBall::UpdateBall(const SSL_DetectionBall& p, double t1, double t2, int cam
 UpdateBall::UpdateBall(qreal x, qreal y, double t1, double t2, int camId)
 	: Update(t1, t2, camId),
 	QPointF(x, y),
-	pimpl(new UpdateBallImpl(0.0)) {}
+	pimpl(new UpdateBallImpl(0.0))
+{}
+
+UpdateBall::~UpdateBall()
+{
+	delete pimpl;
+}
 
 void UpdateBall::apply(Updater* u) {
 	for(size_t k=u->ballsSize(); k>0; k--) {
