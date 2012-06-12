@@ -21,3 +21,5 @@ add_subdirectory(clients/logplayer)
 add_subdirectory(clients/intelligence)
 add_subdirectory(clients/soccer)
 # add new projects here
+
+set_property(GLOBAL PROPERTY FOLDER generated)

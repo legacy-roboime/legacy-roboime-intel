@@ -50,6 +50,7 @@ set(INT_SRC
     core/plays/LinearCombPlay.cpp
     core/plays/StopReferee.cpp
     core/plays/ObeyReferee.cpp
+    core/plays/AutoRetaliate.cpp
     # add new sources here
 
     core/skills/AttackField.cpp
