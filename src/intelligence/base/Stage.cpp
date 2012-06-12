@@ -24,9 +24,9 @@ Stage::Stage()
 	freeKickDistance_ = 0.0;
 	penaltySpotDistance_ = 0.0;//from field
 	penaltyLineDistance_ = 0.0;//from spot
-	ball_ = new Ball(this, 21.5);
-	blueGoal_ = new Goal(this);
-	yellowGoal_ = new Goal(this);
+	ball_ = new Ball(21.5);
+	blueGoal_ = new Goal();
+	yellowGoal_ = new Goal();
 	blueTeam_ = new Team(this, TeamColor::BLUE);
 	yellowTeam_ = new Team(this, TeamColor::YELLOW);
 }
