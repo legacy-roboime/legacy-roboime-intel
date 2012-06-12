@@ -1,14 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
-
-##############################
-# Files which need to be moc'd
-# Ideally this should be automatic, but it isn't yet
-#
-
-set(SIMC_MOC
-    SimulationView.h
-    # add new headers here
-)
+cmake_minimum_required(VERSION 2.8.8)
 
 ##############################
 # Qt Form files (.ui)
@@ -18,7 +8,6 @@ set(SIMC_UI
 	SimulationView.ui
 	# add new uis here
 )
-source_group("Forms" FILES ${SIMC_UI})
 
 ##############################
 # Qt resources
@@ -28,7 +17,6 @@ set(SIMC_RES
 	SimulationView.qrc
 	# add new resources here
 )
-source_group("Resources" FILES ${SIMC_RES})
 
 ##############################
 # Include all headers
@@ -36,7 +24,6 @@ source_group("Resources" FILES ${SIMC_RES})
 
 include_directories(.)
 file(GLOB SIMC_HDR "*.h")
-source_group("Headers" FILES ${SIMC_HDR})
 
 ##############################
 # Files which will be compiled
@@ -48,7 +35,6 @@ set(SIMC_SRC
     SimulationView.cpp
     # add new sources here
 )
-source_group("Sources" FILES ${SIMC_SRC})
 
 
 
@@ -74,11 +60,10 @@ include_directories(${GLUT_INCLUDE_DIR})
 # Qt stuff
 #
 
-find_package(Qt4 REQUIRED)
 set(QT_USE_QTNETWORK true)
 set(QT_USE_QTOPENGL true)
+find_package(Qt4 REQUIRED)
 
-qt4_wrap_cpp(SIMC_MOC_CPP ${SIMC_MOC})
 qt4_wrap_ui(SIMC_UI_H ${SIMC_UI})
 qt4_add_resources(SIMC_RES_CPP ${SIMC_RES})
 
@@ -101,13 +86,17 @@ include_directories(${PHYSX_INCLUDES})
 #
 
 set(GEN_FILES
-    ${SIMC_MOC_CPP}
     ${SIMC_UI_H}
     ${SIMC_RES_CPP}
 )
 
 # adding to group
 source_group("Generated" FILES ${GEN_FILES})
+directory_source_group(headers . *.h)
+directory_source_group(src . *.cpp)
+directory_source_group(res . *.qrc)
+directory_source_group(forms . *.ui)
+source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
 add_executable(simulation-client
     ${SIMC_HDR}
@@ -125,3 +114,5 @@ target_link_libraries(simulation-client
     ${PHYSX_LIBRARIES}
     ${GLUT_LIBRARIES}
 )
+
+set_property(TARGET simulation-client PROPERTY FOLDER apps)

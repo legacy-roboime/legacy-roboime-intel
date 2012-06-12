@@ -1,46 +1,21 @@
-cmake_minimum_required(VERSION 2.8)
-
-##############################
-# Files which need to be moc'd
-# Ideally this should be automatic, but it isn't yet
-#
-
-set(SIM_MOC
-    Simulation.h
-    interface/UDPMulticastSenderSSLVision.h
-    interface/UDPServerSimInt.h
-    # add new headers here
-)
+cmake_minimum_required(VERSION 2.8.8)
 
 ##############################
 # Include all headers
 #
 
 include_directories(. robot interface)
-
-file(GLOB SIM_HDR "interface/*.h")
-source_group("Headers\\Interface" FILES ${SIM_HDR})
-
-file(GLOB SIM_HDR "robot/*.h")
-source_group("Headers\\Robot" FILES ${SIM_HDR})
-
-file(GLOB SIM_HDR "*.h")
-source_group("Headers" FILES ${SIM_HDR})
-
 file(GLOB_RECURSE SIM_HDR "*.h")
 
 ##############################
 # Files which will be compiled
 #
 
-set(SIM_SRC_INTERFACE
+set(SIM_SRC
     interface/UDPMulticastSenderSSLVision.cpp
     interface/UDPServerSimInt.cpp
     # add new sources here
-)
-source_group("Sources\\Interface" FILES ${SIM_SRC_INTERFACE})
 
-set(SIM_SRC_ROBOT
     robot/NxAllRobots.cpp
     robot/NxDribbler.cpp
     robot/NxRobot.cpp
@@ -48,10 +23,7 @@ set(SIM_SRC_ROBOT
     robot/NxVehicle.cpp
     robot/NxWheel.cpp
     # add new sources here
-)
-source_group("Sources\\Robot" FILES ${SIM_SRC_ROBOT})
 
-set(SIM_SRC_OTHERS
     Simulation.cpp
     MyContactReport.cpp
     MyUserNotify.cpp
@@ -62,14 +34,6 @@ set(SIM_SRC_OTHERS
     NxMath1.cpp
     NxField.cpp
     # add new sources here
-)
-source_group("Sources" FILES ${SIM_SRC_OTHERS})
-
-set(SIM_SRC
-    ${SIM_SRC_INTERFACE}
-    ${SIM_SRC_ROBOT}
-    ${SIM_SRC_OTHERS}
-    # add new source groups here
 )
 
 
@@ -93,11 +57,10 @@ include_directories(${COMM_INC_DIRS})
 # Qt stuff
 #
 
-find_package(Qt4 REQUIRED)
 set(QT_DONT_USE_QTGUI true)
 set(QT_USE_QTNETWORK true)
+find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
-qt4_wrap_cpp(SIM_MOC_CPP ${SIM_MOC})
 
 
 
@@ -114,9 +77,10 @@ include_directories(${PHYSX_INCLUDES})
 # Le finale
 #
 
-set(GEN_FILES
-    ${SIM_MOC_CPP}
-)
+# adding to group
+directory_source_group(headers . *.h)
+directory_source_group(src . *.cpp)
+source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
 set(SIM_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -130,11 +94,7 @@ set(SIM_INC_DIRS
     PARENT_SCOPE
 )
 
-# adding to group
-source_group("Generated" FILES ${GEN_FILES})
-
 add_library(simulation
-    ${GEN_FILES}
     ${SIM_HDR}
     ${SIM_SRC}
 )
@@ -146,3 +106,5 @@ target_link_libraries(simulation
     nxustream2
     communication
 )
+
+set_property(TARGET simulation PROPERTY FOLDER modules)

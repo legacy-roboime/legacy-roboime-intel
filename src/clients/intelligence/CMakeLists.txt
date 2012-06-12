@@ -1,12 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
-
-##############################
-# Files which need to be moc'd
-#
-
-# for convenience we moc EVERYTHING
-# that's not perfect, but it's not that bad either
-file(GLOB_RECURSE INTC_MOC "*.h")
+cmake_minimum_required(VERSION 2.8.8)
 
 ##############################
 # Include all headers
@@ -14,7 +6,6 @@ file(GLOB_RECURSE INTC_MOC "*.h")
 
 include_directories(.)
 file(GLOB INTC_HDR "*.h")
-source_group("Headers" FILES ${INTC_HDR})
 
 ##############################
 # Files which will be compiled
@@ -25,7 +16,6 @@ set(INTC_SRC
     Intelligence.cpp
     # add new sources here
 )
-source_group("Sources" FILES ${INTC_SRC})
 
 
 
@@ -42,11 +32,10 @@ include_directories(${INT_INC_DIRS})
 # Qt stuff
 #
 
-find_package(Qt4 REQUIRED)
 set(QT_USE_QTNETWORK true)
 set(QT_USE_QTOPENGL true)
+find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
-qt4_wrap_cpp(INTC_MOC_CPP ${INTC_MOC})
 
 
 
@@ -54,15 +43,12 @@ qt4_wrap_cpp(INTC_MOC_CPP ${INTC_MOC})
 # Le finale
 #
 
-set(GEN_FILES
-    ${INTC_MOC_CPP}
-)
-
 # adding to group
-source_group("Generated" FILES ${GEN_FILES})
+directory_source_group(headers . *.h)
+directory_source_group(src . *.cpp)
+source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
 add_executable(intelligence-client
-    ${GEN_FILES}
     ${INTC_HDR}
     ${INTC_SRC}
 )
@@ -71,3 +57,5 @@ target_link_libraries(intelligence-client
     intelligence
     ${QT_LIBRARIES}
 )
+
+set_property(TARGET intelligence-client PROPERTY FOLDER apps)

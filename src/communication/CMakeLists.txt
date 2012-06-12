@@ -1,14 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
-
-##############################
-# Files which need to be moc'd
-# Ideally this should be automatic, but it isn't yet
-#
-
-set(COMM_MOC
-    UdpServer.h
-    # add new headers here
-)
+cmake_minimum_required(VERSION 2.8.8)
 
 ##############################
 # Include all headers
@@ -39,21 +29,16 @@ set(COMM_PROTO
     # add new protos here
 )
 
-# adding to group
-source_group("Headers" FILES ${COMM_HDR})
-source_group("Sources" FILES ${COMM_SRC})
-
 
 
 ##############################
 # Qt stuff
 #
 
-find_package(Qt4 REQUIRED)
 set(QT_DONT_USE_QTGUI true)
 set(QT_USE_QTNETWORK true)
+find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})
-qt4_wrap_cpp(COMM_MOC_CPP ${COMM_HDR})
 
 
 
@@ -66,9 +51,6 @@ protobuf_generate_cpp(COMM_PROTO_SRC COMM_PROTO_HDR ${COMM_PROTO})
 
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
 
-# adding to group
-source_group("Messages" FILES ${COMM_PROTO})
-
 
 
 ##############################
@@ -76,7 +58,6 @@ source_group("Messages" FILES ${COMM_PROTO})
 #
 
 set(COMM_GEN
-    ${COMM_MOC_CPP}
     ${COMM_PROTO_SRC}
     ${COMM_PROTO_HDR}
 )
@@ -89,7 +70,11 @@ set(COMM_INC_DIRS
 )
 
 # adding to group
-source_group("Generated" FILES ${COMM_GEN})
+source_group("generated" FILES ${COMM_GEN})
+directory_source_group(headers . *.h)
+directory_source_group(src . *.cpp)
+directory_source_group(proto . *.proto)
+source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
 add_library(communication
     ${COMM_GEN}
@@ -101,3 +86,5 @@ add_library(communication
 target_link_libraries(communication
     ${PROTOBUF_LIBRARIES}
 )
+
+set_property(TARGET communication PROPERTY FOLDER modules)

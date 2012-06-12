@@ -11,14 +11,7 @@ if(WIN32)
     file(GLOB SCC_HDR_X "win/*.h")
     aux_source_directory(win SCC_SRC_X)
     set(EXTRA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/win)
-
-    source_group("Headers\\win" FILES ${SCC_HDR_X})
-    source_group("Sources\\win" FILES ${SCC_SRC_X})
 endif()
-
-# adding to group
-source_group("Headers" FILES ${SCC_HDR})
-source_group("Sources" FILES ${SCC_SRC})
 
 
 ##############################
@@ -41,6 +34,10 @@ include_directories(${PHYSX_INCLUDES})
 # Le finale
 #
 
+# adding to group
+directory_source_group(headers . *.h)
+directory_source_group(src . *.cpp)
+
 set(SCC_INC_DIRS
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${EXTRA_INCLUDE_DIR}
@@ -60,3 +57,5 @@ target_link_libraries(samplescommoncode
     ${PHYSX_LIBRARIES}
     ${GLUT_LIBRARIES}
 )
+
+set_property(TARGET samplescommoncode PROPERTY FOLDER 3rdparty)
