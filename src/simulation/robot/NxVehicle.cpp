@@ -218,7 +218,7 @@ void NxVehicle::updateVehicle(NxReal lastTimeStepSize)
 		wheel->tick(false, _torqueAxleWheelControl[i], 0, lastTimeStepSize);
 	}
 
-	//delete _torqueAxleWheelControl;
+	delete _torqueAxleWheelControl;
 	//printf("---\n");
 }
 

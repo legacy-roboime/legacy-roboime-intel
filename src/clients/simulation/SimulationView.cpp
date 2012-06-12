@@ -224,6 +224,8 @@ void DrawActorIME(NxActor* actor)
 						else{
 							DrawShapeIME(shapes[nShapes], NxVec3(0.3,0.3,1.)); //Azul
 						}
+						delete dribblerName;
+						delete kickerName;
 					}
 					else{
 						DrawShapeIME(shapes[nShapes], NxVec3(0,0,0)); 
@@ -253,6 +255,8 @@ void DrawActorIME(NxActor* actor)
 						else{
 							DrawShapeIME(shapes[nShapes], NxVec3(1,1,0.3)); //Amarelo
 						}
+						delete dribblerName;
+						delete kickerName;
 					}
 					else{
 						DrawShapeIME(shapes[nShapes], NxVec3(0,0,0)); 
