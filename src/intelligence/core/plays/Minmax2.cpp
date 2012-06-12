@@ -132,8 +132,8 @@ void Minmax2::update_soccer_state()
 	Ball* ball = stage_->ball();
 	s->ball.x = ball->x();
 	s->ball.y = ball->y();
-	s->ball_vel.x = 0;//ball->speedX();
-	s->ball_vel.y = 0;//ball->speedY();
+	s->ball_vel.x = ball->speedX();
+	s->ball_vel.y = ball->speedY();
 
 	//as cores nessa play (red e blue) identificam se eh o nosso time (nosso time eh o red)
 	//ou nao, nao esta relacionado com a cor de time da inteligencia (yellow e blue)
