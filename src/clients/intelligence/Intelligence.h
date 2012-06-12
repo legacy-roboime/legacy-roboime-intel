@@ -21,7 +21,7 @@ using namespace LibIntelligence;
 
 class Intelligence : public QObject
 {
-	friend class IntelligenceCli;
+	friend struct IntelligenceCli;
 	Q_OBJECT
 
 public slots:
