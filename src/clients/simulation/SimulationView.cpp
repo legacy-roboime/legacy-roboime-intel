@@ -352,49 +352,52 @@ void SimulationView::appKey(unsigned char key, bool down)
 			//kickerActor->setLinearVelocity(NxVec3(0,10,0));
 			NxAllRobots* robots = indexRenderScene.value()->allRobots;
 
-			//robots->getRobotByIdByTeam(5, 1)->resetToInitialPose();
-			//robots->getRobotByIdByTeam(5, 1)->setGlobalPosition(NxVec3(-1000, -1000, 30));
-			//robots->getRobotByIdByTeam(5, 1)->putToSleep();
+			robots->getRobotByIdByTeam(5, 1)->resetToInitialPose();
+			robots->getRobotByIdByTeam(5, 1)->setGlobalPosition(NxVec3( simulation->sideBlue*1000, 1000 ,30));
+			robots->getRobotByIdByTeam(5, 1)->putToSleep();
 
 			robots->getRobotByIdByTeam(4, 1)->resetToInitialPose();
-			robots->getRobotByIdByTeam(4, 1)->setGlobalPosition(NxVec3(-3000.,0,30));
-			//robots->getRobotByIdByTeam(4, 1)->getActor()->setLinearVelocity(NxVec3(110,110,110));
+			robots->getRobotByIdByTeam(4, 1)->setGlobalPosition(NxVec3( simulation->sideBlue*1000, 0    ,30));
 			robots->getRobotByIdByTeam(4, 1)->putToSleep();
 
 			robots->getRobotByIdByTeam(3, 1)->resetToInitialPose();
-			robots->getRobotByIdByTeam(3, 1)->setGlobalPosition(NxVec3(-2000, 1000, 30));
+			robots->getRobotByIdByTeam(3, 1)->setGlobalPosition(NxVec3( simulation->sideBlue*1000, -1000, 30));
 			robots->getRobotByIdByTeam(3, 1)->putToSleep();
 
 			robots->getRobotByIdByTeam(2, 1)->resetToInitialPose();
-			robots->getRobotByIdByTeam(2, 1)->setGlobalPosition(NxVec3(-2000, -1000, 30));
+			robots->getRobotByIdByTeam(2, 1)->setGlobalPosition(NxVec3( simulation->sideBlue*2000, 1000 , 30));
 			robots->getRobotByIdByTeam(2, 1)->putToSleep();
 
 			robots->getRobotByIdByTeam(1, 1)->resetToInitialPose();
-			robots->getRobotByIdByTeam(1, 1)->setGlobalPosition(NxVec3(-1000, 1000, 30));
+			robots->getRobotByIdByTeam(1, 1)->setGlobalPosition(NxVec3( simulation->sideBlue*2000, 0    , 30));
 			robots->getRobotByIdByTeam(1, 1)->putToSleep();
 
 			robots->getRobotByIdByTeam(0, 1)->resetToInitialPose();
-			robots->getRobotByIdByTeam(0, 1)->setGlobalPosition(NxVec3(-1000, -1000, 30));
+			robots->getRobotByIdByTeam(0, 1)->setGlobalPosition(NxVec3( simulation->sideBlue*2000, -1000, 30));
 			robots->getRobotByIdByTeam(0, 1)->putToSleep();
 
+			robots->getRobotByIdByTeam(5, 0)->resetToInitialPose();
+			robots->getRobotByIdByTeam(5, 0)->setGlobalPosition(NxVec3(-simulation->sideBlue*1000, 1000 , 30));
+			robots->getRobotByIdByTeam(5, 0)->putToSleep();
+
 			robots->getRobotByIdByTeam(4, 0)->resetToInitialPose();
-			robots->getRobotByIdByTeam(4, 0)->setGlobalPosition(NxVec3(3000, 0, 30));
+			robots->getRobotByIdByTeam(4, 0)->setGlobalPosition(NxVec3(-simulation->sideBlue*1000, 0    , 30));
 			robots->getRobotByIdByTeam(4, 0)->putToSleep();
 
 			robots->getRobotByIdByTeam(3, 0)->resetToInitialPose();
-			robots->getRobotByIdByTeam(3, 0)->setGlobalPosition(NxVec3(2000, -1000, 30));
+			robots->getRobotByIdByTeam(3, 0)->setGlobalPosition(NxVec3(-simulation->sideBlue*1000, -1000, 30));
 			robots->getRobotByIdByTeam(3, 0)->putToSleep();
 
 			robots->getRobotByIdByTeam(2, 0)->resetToInitialPose();
-			robots->getRobotByIdByTeam(2, 0)->setGlobalPosition(NxVec3(2000, 1000, 30));
+			robots->getRobotByIdByTeam(2, 0)->setGlobalPosition(NxVec3(-simulation->sideBlue*2000, 1000 , 30));
 			robots->getRobotByIdByTeam(2, 0)->putToSleep();
 
 			robots->getRobotByIdByTeam(1, 0)->resetToInitialPose();
-			robots->getRobotByIdByTeam(1, 0)->setGlobalPosition(NxVec3(1000, -1000, 30));
+			robots->getRobotByIdByTeam(1, 0)->setGlobalPosition(NxVec3(-simulation->sideBlue*2000, 0    , 30));
 			robots->getRobotByIdByTeam(1, 0)->putToSleep();
 
 			robots->getRobotByIdByTeam(0, 0)->resetToInitialPose();
-			robots->getRobotByIdByTeam(0, 0)->setGlobalPosition(NxVec3(1000, 1000, 30));
+			robots->getRobotByIdByTeam(0, 0)->setGlobalPosition(NxVec3(-simulation->sideBlue*2000, -1000, 30));
 			robots->getRobotByIdByTeam(0, 0)->putToSleep();
 
 			NxBall* ball = indexRenderScene.value()->ball;

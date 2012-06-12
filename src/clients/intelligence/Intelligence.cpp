@@ -188,7 +188,7 @@ Intelligence::Intelligence(QObject *parent)
 	updater["visionSim"]->add(stage["main"]->ball());
 	updater["visionSim"]->add(stage["main"]);
 
-	for(quint8 i = 0; i < 5; i++) {
+	for(quint8 i = 0; i < NPLAYERS; i++) {
 		team["us"]->push_back(new Robot(Robots::RobotIME2011(team["us"], i, i, BLUE)));
 		//real
 		commander["blueTx"]->add(team["us"]->last());
@@ -210,14 +210,14 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
 	//skill["driveto"] = new DriveTo(this, team["us"]->at(1), -3.14/2., QPointF(0,0), 1000.);
 
-	skill["goto"] = new Goto(this, team["us"]->at(0), 1000, 0, 0, 500, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
+	skill["goto"] = new Goto(this, team["us"]->at(0), 1000, 0, 0, 3000, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
-	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 500, true);
+	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, true);
 	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
 	skill["loop"] = new Loops::Orbit(this, team["us"]->at(1), 0, 0, 1000, 3000, 1.0);
 
-	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 1000);
-	tactic["zickler43"] = new Zickler43(this, team["us"]->at(0), 3000, true);
+	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
+	tactic["zickler43"] = new Zickler43(this, team["they"]->at(4), 3000, true);
 
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
@@ -297,7 +297,7 @@ void Intelligence::update()
 
 	case TACTIC:
 		tactic["zickler43"]->step();
-		skill["goto"]->step();
+		tactic["attacker"]->step();
 		break;
 
 	case SKILL:
@@ -307,7 +307,6 @@ void Intelligence::update()
 
 	case CONTROLLER:
 		tactic["controller"]->step();
-
 	default:
 		break;
 	}

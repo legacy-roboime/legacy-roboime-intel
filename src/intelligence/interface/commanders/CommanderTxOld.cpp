@@ -6,6 +6,7 @@
 #include <QtNetwork>
 #include <QVector>
 #include "messages_internal_command.pb.h"
+#include "config.h"
 
 using namespace std;
 using namespace LibIntelligence;
@@ -14,7 +15,7 @@ CommanderTxOld::CommanderTxOld(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
-	for(size_t n=0; n<5; n++) robots.push_back(0);
+	for(size_t n=0; n<NPLAYERS; n++) robots.push_back(0);
 }
 
 CommanderTxOld::~CommanderTxOld()
@@ -24,18 +25,18 @@ CommanderTxOld::~CommanderTxOld()
 void CommanderTxOld::add(Robot* r)
 {
 	int i = r->id();
-	if(i<5) {
+	if(i<NPLAYERS) {
 		if(robots[i]!=0) delete robots[i];
 		robots[i] = r;
 	} else {
-		cerr << "Warning: index greater than 4 not supported" << endl;
+		cerr << "Warning: index greater than " << NPLAYERS << "not supported" << endl;
 	}
 }
 
 void CommanderTxOld::step()
 {
 	stringstream out;
-	for(size_t n=0; n<5; n++) {
+	for(size_t n=0; n<NPLAYERS; n++) {
 		if(robots[n]!=0) {
 			Robot* r = robots[n];
 			Command& c = r->command();

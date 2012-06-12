@@ -41,7 +41,7 @@ Play(parent,team,stage),
 
 	//goto_ = new Goto(this, team->at(2));
 
-	for(int i=0; i<5; i++)
+	for(int i=0; i<NPLAYERS; i++)
 		player_[i] = new GotoTactic(this, team->at(i)); 
 
 	attacker = new AttackerMinMax2(this, team->at(0), envReal.red_speed, 

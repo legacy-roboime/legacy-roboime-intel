@@ -127,6 +127,8 @@ private:
 	void sleepComponents();
 	
 public:
+	float sideBlue;
+
 	Simulation(QObject* parent=0);
 	~Simulation(void);
 

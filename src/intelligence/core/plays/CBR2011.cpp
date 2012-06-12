@@ -42,6 +42,11 @@ CBR2011::CBR2011(QObject *parent, Team* team ,Stage* stage)
 			//player_[i] = new Defender(this, team->at(i), 0, 1000);
 			//player_[i] = new Goalkeeper(this, team->at(i),10);
 			break;
+		case 5:
+			player_[i] = new Attacker(this, team->at(i), 1000);
+			//player_[i] = new Defender(this, team->at(i), 0, 1000);
+			//player_[i] = new Goalkeeper(this, team->at(i),10);
+			break;
 		}
 	}
 }
