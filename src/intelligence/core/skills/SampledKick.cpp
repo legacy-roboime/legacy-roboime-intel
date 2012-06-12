@@ -4,8 +4,15 @@
 #include "Goal.h"
 #include "Ball.h"
 #include "Sampler.h"
+#include "config.h"
 
 //#define CART	90.//100.//110.//82.6
+
+#ifdef SIMU
+#define KICKPOWERK 8000
+#else
+#define KICKPOWERK 1000
+#endif
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
@@ -14,14 +21,16 @@ SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool 
 	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15, 50., 5 * M_PI/180.),
 	minPower_(minPower),
 	maxPower_(maxPower),
-	pass_(pass)
+	pass_(pass),
+	powerK(KICKPOWERK)
 {
 	//this->setObjectName("SampledKick");
 	//threshold = CART;
 }
 
-SampledKick::~SampledKick(void)
+void SampledKick::setPowerK(qreal k)
 {
+	powerK = k;
 }
 
 qreal SampledKick::calculatePassPower(qreal s)
@@ -33,7 +42,7 @@ qreal SampledKick::calculatePassPower(qreal s)
 	qreal a = mi*g;
 	qreal power;
 	vInit = sqrt(vFin*vFin + 2*a*s); 
-	power = vInit/8000.;
+	power = vInit/powerK;
 	return power*power;
 }
 
@@ -70,7 +79,7 @@ void SampledKick::step()
 		robot->kick(power);
 	}
 
-	robot->dribble(0.5); //pegar bola
+	//robot->dribble(0.5); //pegar bola
 
 	DriveToBall::step();
 }

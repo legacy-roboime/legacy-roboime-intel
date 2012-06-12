@@ -96,7 +96,9 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
 		movePoint.x = enemyGoal->x();
 		movePoint.y = enemyGoal->y();
+#ifdef SOCCER_DEBUG
 		cout << "ERROR: movePoint == ballPoint" << endl;
+#endif
 	}
 
 	if(action_ == pass || action_ == kick_to_goal){

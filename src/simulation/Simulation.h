@@ -127,8 +127,13 @@ private:
 	void sleepComponents();
 	
 public:
+	float sideBlue;
+
 	Simulation(QObject* parent=0);
 	~Simulation(void);
+
+	// pode ser usado em vez do std::cout
+	static ostringstream cout;
 
 	string parseLegacyString(string);
 	void append(const QString& data);

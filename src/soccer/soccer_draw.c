@@ -110,11 +110,7 @@ void draw_red_kick_sector(SoccerState *s)
 {
  Vector2 blue_goal, p;
 
- if(soccer_env()->left_red_side)
-   blue_goal = v2_make( +soccer_env()->hfield_w, 0 );
- else
-   blue_goal = v2_make( -soccer_env()->hfield_w, 0 );
-
+ blue_goal = soccer_env()->blue_goal;
  p = blue_goal;
 
  if( v2_norm( v2_sub( s->ball, blue_goal)) < 
@@ -140,11 +136,7 @@ void draw_blue_kick_sector(SoccerState *s)
 {
  Vector2 red_goal, p;
 
- if(soccer_env()->left_red_side)
-   red_goal = v2_make( -soccer_env()->hfield_w, 0 );
- else
-   red_goal = v2_make( +soccer_env()->hfield_w, 0 );
-
+ red_goal = soccer_env()->red_goal;
  p = red_goal;
 
  if( v2_norm( v2_sub( s->ball, red_goal)) < 

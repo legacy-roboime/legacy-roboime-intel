@@ -1,6 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include <iostream>
 #include "Intelligence.h"
+#include "config.h"
 
 using namespace std;
 

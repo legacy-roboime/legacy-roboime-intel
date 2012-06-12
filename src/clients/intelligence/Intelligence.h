@@ -15,6 +15,7 @@
 #include "Skill.h"
 #include "Tactic.h"
 #include "Play.h"
+#include "config.h"
 
 using namespace LibIntelligence;
 
@@ -40,10 +41,14 @@ private:
 	map<string, Plays::Play*> play;
 	map<string, Tactics::Tactic*> tactic;
 	map<string, Skills::Skill*> skill;
+	enum {NONE, SKILL, TACTIC, PLAY, CONTROLLER} mode;
+	int controlled;//tirar quando o controller for para o time inteiro
 
 	// Interface utils
 	map<string, Commander*> commander;
 	map<string, Updater*> updater;
+	bool useSimulation;
+	void resetPatterns();
 
 	QTimer* timer;
 	QThread* cli;

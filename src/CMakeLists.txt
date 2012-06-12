@@ -8,6 +8,8 @@ include(${PROJECT_SOURCE_DIR}/../cmake/Utils.cmake)
 standard_config()
 standard_paths(${PROJECT_SOURCE_DIR}/.. bin lib)
 
+include_directories(.)
+
 add_subdirectory(communication)
 add_subdirectory(3rdparty/samplescommoncode)
 add_subdirectory(3rdparty/nxustream2)

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include "messages_internal_command.pb.h"
+#include "config.h"
 
 #define M_2PI	6.2831853071795865
 
@@ -17,7 +18,8 @@ CommanderSim::CommanderSim(QObject* parent, char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {
-	//for(size_t n=0; n<5; n++) _robot.push_back(0);
+	this->udpSocket->setSocketOption(QAbstractSocket::MulticastTtlOption, 1);
+	//for(size_t n=0; n<NPLAYERS; n++) _robot.push_back(0);
 }
 
 CommanderSim::~CommanderSim()
@@ -42,7 +44,7 @@ void CommanderSim::step()
 	//GAMBIARRA
 	if(robots[0]->color() == YELLOW) out << "0 ";
 	else out << "1 ";
-	for(int n = 0; n < 5; n++) {
+	for(int n = 0; n < NPLAYERS; n++) {
 		if(robots[n]!=0) {
 			Robot* r = robots[n];
 			Command& c = r->command();

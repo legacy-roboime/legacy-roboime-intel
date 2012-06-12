@@ -1,4 +1,4 @@
 # ignore bin, lib and build dirs
 build*/*
 bin*/*
-lib/*
+lib*/*

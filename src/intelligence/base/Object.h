@@ -61,9 +61,7 @@ namespace LibIntelligence
 		qreal x_, y_, z_, orientation_, speedX_, speedY_, speedZ_, angSpeedZ_;
 		//TODO: colocar velocidades angulares
 	private:
-		LinearRegression* linearRegressionVx;
-		LinearRegression* linearRegressionVy;
-		LinearRegression* linearRegressionVang;
+
 		double xOld,yOld, orientationOld, timeOld;
 	};
 }

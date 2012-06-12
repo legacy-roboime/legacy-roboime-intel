@@ -73,21 +73,15 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
  float k;
  Vector2 p;
  SoccerAction action = saction_blue_make(s);
- Vector2 red_goal;
-
- if(soccer_env()->left_red_side)
-   red_goal = v2_make( -soccer_env()->hfield_w, 0 );
- else
-   red_goal = v2_make( +soccer_env()->hfield_w, 0 );
 
  if( (s->blue_ball_owner >= 0) && (s->red_ball_owner < 0) &&
-     (v2_norm( v2_sub( s->ball, red_goal )) <
+     (v2_norm( v2_sub( s->ball, soccer_env()->red_goal )) <
        soccer_env()->max_blue_kick_dist) ){
    s->red_goal_covering = 1;
    for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
         k += soccer_env()->robot_radius ){ 
-		  p = red_goal;
-		  p.y += k;
+	  p = soccer_env()->red_goal;
+	  p.y += k;
           is_blue_kick_scored(s, p ); 
           if( s->goal_received ){
               s->red_goal_covering -= ( soccer_env()->robot_radius/
@@ -166,7 +160,7 @@ SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
 
  action = use_blue_move_table(s, robot);  
  do{
-	 attempt++; 
+     attempt++; 
      p = v2_make(radius*DRAND()*cos(2*PI*DRAND()),
                  radius*DRAND()*sin(2*PI*DRAND()) );
      if( robot == s->blue_ball_owner )
@@ -206,10 +200,10 @@ static SoccerAction use_blue_move_table( SoccerState *s, int robot )
    if( i != robot ){
      disp = v2_sub( get_blue_move_table(i), s->blue[i] );
      if( v2_norm( disp ) > .5*soccer_env()->robot_radius ){
-         p = get_blue_move_table(i);
-		 //p = v2_add( s->blue[i], 
-        //            v2_scale( /*100**/(1./(NPLAYERS-1))*soccer_env()->sample_period*
-        //                      soccer_env()->blue_speed, v2_unit(disp) ));
+         p =  v2_add( s->blue[i], 
+                     v2_scale( MAX(1., NPLAYERS*soccer_env()->sample_period
+                                       *soccer_env()->blue_speed ),
+                     v2_unit(disp) ));
         if( sstate_is_valid_blue_pos( s, i, p ) )
           s->blue[i] = p;
      }

@@ -26,16 +26,12 @@ Play(parent,team,stage),
 	soccer_env_init();
 	s = sstate_alloc();
 
-	if(team->color() == TeamColor::BLUE)
-		soccer_env()->left_red_side = Stage::isLeftSideBlueGoal();
+	if(team->color() == TeamColor::BLUE && Stage::isLeftSideBlueGoal())
+		soccer_env_red_side( LEFT );
+	else if (team->color() == TeamColor::YELLOW && !Stage::isLeftSideBlueGoal())
+		soccer_env_red_side( LEFT );
 	else
-		soccer_env()->left_red_side = !Stage::isLeftSideBlueGoal();
-
-	//if((team->color() == TeamColor::BLUE && !Stage::isLeftSideBlueGoal()) ||
-	//		(team->color() != TeamColor::BLUE && Stage::isLeftSideBlueGoal()))
-	//	usRed = true;
-	//else
-	//	usRed = false;
+		soccer_env_red_side( RIGHT );
 
 	envReal = *soccer_env();
 	changeSEnvMeasure(&envReal, 1000.);
@@ -45,7 +41,7 @@ Play(parent,team,stage),
 
 	//goto_ = new Goto(this, team->at(2));
 
-	for(int i=0; i<5; i++)
+	for(int i=0; i<NPLAYERS; i++)
 		player_[i] = new GotoTactic(this, team->at(i)); 
 
 	attacker = new AttackerMinMax2(this, team->at(0), envReal.red_speed, 
@@ -130,14 +126,8 @@ void Minmax2::update_soccer_state()
 {
 	Team* redTeam; 
 	Team* blueTeam;
-	//if(usRed){
-		redTeam = team_;
-		blueTeam = team_->enemyTeam();
-	//}
-	//else{
-	//	blueTeam = team_;
-	//	redTeam = team_->enemyTeam();
-	//}
+	redTeam = team_;
+	blueTeam = team_->enemyTeam();
 
 	Ball* ball = stage_->ball();
 	s->ball.x = ball->x();
@@ -145,7 +135,7 @@ void Minmax2::update_soccer_state()
 	s->ball_vel.x = ball->speedX();
 	s->ball_vel.y = ball->speedY();
 
-	//as cores nessa play (red e blue) identificam se eh o nosso time (nosso time eh o red se usRed for true)
+	//as cores nessa play (red e blue) identificam se eh o nosso time (nosso time eh o red)
 	//ou nao, nao esta relacionado com a cor de time da inteligencia (yellow e blue)
 	for(int i=0; i< blueTeam->size(); i++){
 		Robot* robot = blueTeam->at(i);
@@ -204,17 +194,16 @@ void Minmax2::step()
 	changeSActionMeasure(&red_action, 1000.);
 	changeSActionMeasure(&blue_action, 1000.);
 
-	//if(usRed)
-		act(red_action);
-	//else
-	//	act(blue_action);
+	act(red_action, team_);
+	//act(blue_action, team_->enemyTeam());
 }
 
-void Minmax2::act(SoccerAction& action)
+void Minmax2::act(SoccerAction& action, Team* team)
 {
 	Ball* ball = stage_->ball();
-	int idClosest = stage_->getClosestPlayerToBall(team_)->id();
+	int idClosest = stage_->getClosestPlayerToBall(team)->id();
 
+#ifdef SOCCER_DEBUG
 	if(action.type == kick_to_goal)
 		cout << "Kick To Goal" << endl;
 	else if(action.type == pass)
@@ -229,27 +218,13 @@ void Minmax2::act(SoccerAction& action)
 		cout << "Null action" << endl;
 	else
 		cout << "nenhum nem outro" << endl;
+#endif
 
-	for(int i=0; i < team_->size(); i++){
+	for(int i=0; i < team->size(); i++){
 		Vector2* pos = &action.move[i];
-		Robot* robot = team_->at(i);
+		Robot* robot = team->at(i);
 
 		if( idClosest == robot->id() ){
-			//if(action.type == kick_to_goal)
-			//	cout << "Kick To Goal" << endl;
-			//else if(action.type == pass)
-			//	cout << "Pass" << endl;
-			//else if(action.type == actions::get_ball)
-			//	cout << "Get Ball" << endl;
-			//else if(action.type == actions::move)
-			//	cout << "Move" << endl;
-			//else if(action.type == actions::receive_ball)
-			//	cout << "Receive Ball" << endl;
-			//else if(action.type == actions::null_action)
-			//	cout << "Null action" << endl;
-			//else
-			//	cout << "nenhum nem outro" << endl;
-
 			//cout << "SKILL: " << attacker->getCurrentState()->objectName().toStdString() << endl;
 
 			//DEBUG
@@ -263,8 +238,6 @@ void Minmax2::act(SoccerAction& action)
 			attacker->setRobot(robot);// = new AttackerMinMax2(this, robot, envReal.red_speed, envReal.red_dribble_speed, envReal.red_pass_speed);
 			attacker->updateSoccerAction(action.type, action.kick_point, *pos);
 			attacker->step();
-
-			//delete attacker;
 			
 			//lastOr = angle;
 		}
@@ -278,7 +251,7 @@ void Minmax2::act(SoccerAction& action)
 			//_max_skills.at(i)->step();
 
 			//cout << pos->x << " " << pos->y << endl;
-
+			//((GotoTactic*)player_[i])->setRobot(robot);
 			Goto* g = ((GotoTactic*)player_[i])->goto_;
 			g->setAllowDefenseArea();
 			g->setPoint(pos->x, pos->y);

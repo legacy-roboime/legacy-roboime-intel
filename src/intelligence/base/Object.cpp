@@ -13,10 +13,6 @@ Object::Object(qreal x, qreal y, qreal z, qreal sx, qreal sy, qreal sz, qreal or
 	speedY_(sy),
 	speedZ_(sz),
 	angSpeedZ_(asz),
-
-	linearRegressionVx(new LinearRegression()),
-	linearRegressionVy(new LinearRegression()),
-	linearRegressionVang(new LinearRegression()),
 	xOld(x),
 	yOld(y),
 	orientationOld(orien),
@@ -33,19 +29,10 @@ Object::Object(const Object& object)
 	this->speedX_ = object.speedX();
 	this->speedY_ = object.speedY();
 	this->speedZ_ = object.speedZ();
-	linearRegressionVx = new LinearRegression(*(object.linearRegressionVx));
-	linearRegressionVy = new LinearRegression(*(object.linearRegressionVy));
-	linearRegressionVang = new LinearRegression(*(object.linearRegressionVang));
 }
 
 Object::~Object()
 {
-	if(linearRegressionVx)
-		delete linearRegressionVx;
-	if(linearRegressionVy)
-		delete linearRegressionVy;
-	if(linearRegressionVang)
-		delete linearRegressionVang;
 }
 
 
@@ -64,22 +51,6 @@ void Object::setY(qreal y)
 	y_ = y;
 }
 
-void Object::setY(qreal y, qreal time_capture)
-{
-	static qreal last_time_capture;
-
-	//TODO: tirar daqui e colocar o estimador de velocidade no tracker
-	qreal diffTime = time_capture - last_time_capture;
-	qreal speed = (y - y_)/(diffTime);
-	
-	if(abs(speed) < 10000 && diffTime>0){ //margem limiar para velocidade maxima dos objetos
-		speedY_ = (speedY_ + 2.*speed)/3.;
-		//printf("SPEEDY: %f\n",speed);
-	}
-	
-	y_ = y;
-	last_time_capture = time_capture;
-}
 
 qreal Object::y() const
 {
@@ -184,45 +155,23 @@ void Object::setOrientation(qreal o)
 }
 
 
-void Object::updateSpeed(double time) {
-	double velocity;
+void Object::updateSpeed(double time)
+{
 	double deltaTime = (time - this->timeOld);
-	if(deltaTime != 0){
-		this->timeOld = time;
-		QPointF oldPoint;
+	if(deltaTime != 0)
+	{
+		speedX_ = (this->x() - this->xOld)/deltaTime;
+		speedY_ = (this->y() - this->yOld)/deltaTime;
 
-		//regressão speedX
-		double deltaX = this->x() - xOld;
-		xOld = this->x();
-		velocity = deltaX/deltaTime;
-		QPointF vX(time,velocity);
-		linearRegressionVx->addPoint(vX);
-		speedX_ = linearRegressionVx->estimateY(time);
-		//cout << "Velocidade X: " << speedX_ << endl;
-
-		//regressão speedY
-		double deltaY = this->y() - yOld;
-		yOld = this->y();
-		velocity = deltaY/deltaTime;
-		QPointF vY(time,velocity);
-		linearRegressionVy->addPoint(vY);
-		speedY_ = linearRegressionVy->estimateY(time);
-		//cout << "Velocidade Y: " << speedY_ << endl;
-
-
-		//regressão speed
-		double deltaOrientation = this->orientation() - orientationOld;
-		orientationOld = this->orientation();
-		if(abs(deltaOrientation) <  1){		//GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0
-			velocity = deltaOrientation/deltaTime;
-			QPointF vAng(time,velocity);
-			linearRegressionVang->addPoint(vAng);
-			angSpeedZ_ = linearRegressionVang->estimateY(time);
-			//OBS: SE ATIVAR O COUT VAI RETARDAR O PROGRAMA DAI O ENVIO DE MSG PARA O SIMULADOR FICA PREJUDICADO
-			//cout << "Delta Orientation " << deltaOrientation << endl;
-			//cout << "Velocidade Estimada Ang: " << angSpeedZ_ << " " << "Velocidade Real: " << velocity << endl;
+		if(abs(this->orientation() - this->orientationOld) <  1){		//TODO: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
+			angSpeedZ_ =  (this->orientation() - this->orientationOld)/deltaTime;
 		}
-	} 
+
+		this->xOld = this->x();
+		this->yOld = this->y();
+		this->orientationOld = this->orientation();
+		this->timeOld = time;
+	}
 }
 
 Object Object::distance(const Object* object2) const

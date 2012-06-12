@@ -16,7 +16,7 @@ int main( int argc, char **argv )
 {
  image = ( char* )malloc( 3*WIDTH*HEIGHT );
  soccer_env_init();
- soccer_env()->left_red_side = FALSE;
+ soccer_env_red_side( LEFT );
  s = sstate_alloc();
  minimax_init(s);
  glutInit(&argc, argv);
@@ -55,8 +55,8 @@ void redraw( void ){
    glutSwapBuffers();
    glReadPixels( 0, 0,  WIDTH, HEIGHT, GL_RGB,
                  GL_UNSIGNED_BYTE, image );
-   sprintf( fname, "frame%i.ppm", count++ ); 
-   //img_ppm_write( image, fname );
+  // sprintf( fname, "frame%i.ppm", count++ ); 
+  // img_ppm_write( image, fname );
 }
 
 

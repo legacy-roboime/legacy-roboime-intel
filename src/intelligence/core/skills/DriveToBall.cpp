@@ -27,7 +27,8 @@ void DriveToBall::step()
 	Ball* ball = stage()->ball();
 	Robot* robot = this->robot();
 
-	qreal t = -4*threshold;
+	qreal distance = 4*threshold;
+	qreal t = -distance;
 
 	//Cone maior
 	const Object* lkP = getRefLookPoint();
@@ -44,7 +45,7 @@ void DriveToBall::step()
 	qreal ang = target.angle(); //angulo do cone maior obtido girando no sentido anti-horario
 
 	//Cone Menor
-	qreal goAng = 15;
+	qreal goAng = 20;
 	target.setAngle(target.angle() + goAng);
 	target2.setAngle(target2.angle() - goAng);
 	qreal ang4 = target.angle(); //angulo do cone menor obtido girando no sentido anti-horario
@@ -66,9 +67,27 @@ void DriveToBall::step()
 		}
 	}
 
-	if(inCone){ //esta dentro do cone
+	//Posições destino (dentro do cone menor)
+	goAng = 15;
+	target.setAngle(target.angle() + goAng);
+	target2.setAngle(target2.angle() - goAng);
 
-		DriveToObject::step();
+	if(inCone){ //esta dentro do cone
+		QLineF ret1 = QLineF(lkP->x(), lkP->y(), ball->x(), ball->y());
+		ret1.setLength(ret1.length() + distance);
+		QLineF ret2 = ret1;
+		ret2.setAngle(ret2.angle() + 90);
+		ret2.translate(robot->x() - ret2.p1().x(), robot->y() - ret2.p1().y());
+		QPointF intersect = QPointF(0, 0);
+		QLineF::IntersectType interT = ret1.intersect(ret2, &intersect);
+		if(robot->distance(&Object(intersect.x(), intersect.y())).module() > 50){
+			Goto::setPoint(ret1.x2(), ret1.y2());
+			ret1.setLength(-1);
+			Goto::setOrientation(2*M_PI - ret1.angle() * M_PI / 180.); //TODO: arrumar esse angulo para o robo nao fazer a voltinha.
+			Goto::step();
+		}
+		else
+			DriveToObject::step();
 		//cout << "DENTRO" << endl;
 	}
 	else{ //nao esta dentro do cone

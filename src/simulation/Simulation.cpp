@@ -1,9 +1,11 @@
 #include "Simulation.h"
 #include <QDateTime>
+#include "config.h"
 
 QMap<int, NxScene1*> Simulation::gScenes = QMap<int, NxScene1*>();
 UserAllocator* Simulation::gMyAllocator = NULL;
 NxPhysicsSDK* Simulation::gPhysicsSDK = 0;
+ostringstream Simulation::cout;
 
 /**
 * Método do PhysX
@@ -57,6 +59,8 @@ Simulation::Simulation(QObject* parent) : QObject(parent)
 	gUserNotify = new MyUserNotify(this);
 	timeStep = 1./60.; //timestep de 1/60 e 4 intervalos (baseado na tese do stefan zickler
 	robotContactReport = NxArray<NxUserContactReport *>();
+
+	sideBlue = 1;
 }
 
 Simulation::~Simulation(void)
@@ -943,17 +947,19 @@ bool Simulation::initSimulation( int nbScenes )
 	NxAllRobots* allRobots = Simulation::gScenes[Simulation::gBaseScene]->allRobots;
 	NxReal z = allRobots->getRobotByIdByTeam(4, 1)->getInitialPose().t.z;
 	z=0;
-	float side = 1;
-	allRobots->getRobotByIdByTeam(4, 1)->setGlobalPosition(NxVec3(side*3000, 0, z));
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(side*2000, 1000, z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(side*2000, -1000, z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(side*1000, 1000, z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(side*1000, -1000, z), 1);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 4, NxVec3(-side*3000, 0, 0), z);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(-side*2000, -1000, z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(-side*2000, 1000, z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(-side*1000, -1000, z), 0);
-	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(-side*1000, 1000, z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->setGlobalPosition(                    NxVec3(sideBlue*1000, 0    , z));
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 5, NxVec3(sideBlue*1000, 1000 , z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(sideBlue*1000, -1000, z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(sideBlue*2000, 1000 , z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(sideBlue*2000, 0    , z), 1);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(sideBlue*2000, -1000, z), 1);
+
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 5, NxVec3(-sideBlue*1000, 1000 , z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 4, NxVec3(-sideBlue*1000, 0    , z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 3, NxVec3(-sideBlue*1000, -1000, z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 2, NxVec3(-sideBlue*2000, 1000 , z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 1, NxVec3(-sideBlue*2000, 0    , z), 0);
+	allRobots->getRobotByIdByTeam(4, 1)->cloneRobot(Simulation::gBaseScene, 0, NxVec3(-sideBlue*2000, -1000, z), 0);
 
 
 	for(int i=1; i<nbScenes; i++)
@@ -986,8 +992,7 @@ string Simulation::parseLegacyString(string s) {
 
 		//Lendo argumentos do robo e controlando
 		NxAllRobots* robots = scene->allRobots;
-		for(int indexRobot=0; indexRobot<5; indexRobot++)
-			//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+		for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 		{
 			os >> temp;
 			float speedWheel1 = atof(temp.c_str());
@@ -1064,8 +1069,7 @@ string Simulation::parseLegacyString(string s) {
 
 		NxAllRobots* robots = scene->allRobots;
 		for(int indexTeam=0; indexTeam<2; indexTeam++){
-			for(int indexRobot=0; indexRobot<5; indexRobot++)
-				//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+			for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 			{
 				os >> temp;
 				float x = atof(temp.c_str());
@@ -1202,8 +1206,7 @@ string Simulation::parseLegacyString(string s) {
 		//out << ballPos.y;
 		////Robo
 		//NxAllRobots* robots = this->gScenes[indexScene]->allRobots;
-		//for(int indexRobot=0; indexRobot<5; indexRobot++)
-		//	//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+		//for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 		//{
 		//	NxRobot* robot = robots->getRobotByIdByTeam(indexRobot, indexTeam);
 		//	NxVec3 robotPos = robot->getPos();
@@ -1242,8 +1245,7 @@ string Simulation::parseLegacyString(string s) {
 
 		//Lendo argumentos do robo e controlando
 		NxAllRobots* robots = this->gScenes[indexScene]->allRobots;
-		for(int indexRobot=0; indexRobot<5; indexRobot++)
-			//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+		for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 		{
 			os >> temp;
 			float speedX = atof(temp.c_str());
@@ -1280,8 +1282,7 @@ string Simulation::parseLegacyString(string s) {
 
 		//Lendo argumentos e executando goToThisPose
 		NxAllRobots* robots = this->gScenes[indexScene]->allRobots;
-		for(int indexRobot=0; indexRobot<5; indexRobot++)
-			//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+		for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 		{
 			os >> temp;
 			float x = atof(temp.c_str());
@@ -1310,8 +1311,7 @@ string Simulation::parseLegacyString(string s) {
 
 		//Lendo argumentos e executando InfinePath
 		NxAllRobots* robots = this->gScenes[indexScene]->allRobots;
-		for(int indexRobot=0; indexRobot<5; indexRobot++)
-			//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+		for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 		{
 			robots->getRobotByIdByTeam(indexRobot, indexTeam)->infinitePath();
 		}
@@ -1334,8 +1334,7 @@ string Simulation::parseLegacyString(string s) {
 
 		//Lendo argumentos do robo e controlando
 		NxAllRobots* robots = this->gScenes[indexScene]->allRobots;
-		for(int indexRobot=0; indexRobot<5; indexRobot++)
-			//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+		for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 		{
 			os >> temp;
 			float dribblerSpeed = atof(temp.c_str());
@@ -1507,8 +1506,7 @@ string Simulation::parseLegacyString(string s) {
 
 		//Lendo argumentos do robo e controlando
 		NxAllRobots* robots = this->gScenes[indexScene]->allRobots;
-		for(int indexRobot=0; indexRobot<5; indexRobot++)
-			//for(int indexRobot=1; indexRobot<=5; indexRobot++)
+		for(int indexRobot=0; indexRobot<NPLAYERS; indexRobot++)
 		{
 			os >> temp;
 			float speedWheel1 = atof(temp.c_str());

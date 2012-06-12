@@ -71,6 +71,7 @@ set(INT_SRC
     core/skills/KickTo.cpp
     core/skills/Loops.cpp
     core/skills/LinearCombMotion.cpp
+    core/skills/GotoAvoid.cpp
     # add new sources here
 
     core/tactics/GotoTactic.cpp
