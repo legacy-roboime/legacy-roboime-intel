@@ -1,6 +1,9 @@
 #define SIMU
+
+#ifdef DEBUG
 #define DEBUG_UDP
 //#define SOCCER_DEBUG
+#endif
 
 #define NPLAYERS 6
 
