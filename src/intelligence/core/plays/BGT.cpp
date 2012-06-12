@@ -226,14 +226,14 @@ void BGT::planning(QQueue<StageY*>* solution)
 		QString str("3 0 ");
 		for(int i=0; i<5; i++){
 			Robot* robot = yellowTeam->at(i);
-			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().x()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 		}
 		//cout << str.toStdString() << endl;
 		for(int i=0; i<5; i++){
 			Robot* robot = blueTeam->at(i);
-			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+			str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().y()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 		}
-		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
+		str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speed().x()) + " " + QString::number(ball->speed().y()) + " " + QString::number(0) + "\n";
 		out << str;
 		out << "$" + (*itr)->getBlueTactics()->at(0)->getCurrentState()->objectName() + "\n";
 		planningLog.flush();
@@ -254,14 +254,14 @@ void BGT::goToStage(StageY* stage)
 //	QString str("3 0 ");
 //	for(int i=0; i<5; i++){
 //		Robot* robot = yellowTeam->at(i);
-//		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+//		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().y()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 //	}
 //	//cout << str.toStdString() << endl;
 //	for(int i=0; i<5; i++){
 //		Robot* robot = blueTeam->at(i);
-//		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+//		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().y()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 //	}
-//	str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
+//	str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speed().x()) + " " + QString::number(ball->speed().y()) + " " + QString::number(0) + "\n";
 //	out << str;
 //	out << "%" + QString::number(debugTime) + "\n";
 //	out << "$" + stage->getBlueTactics()->at(0)->getCurrentState()->objectName() + "\n";
@@ -275,14 +275,14 @@ void BGT::goToStage(StageY* stage)
 //	QString strr("3 0 ");
 //	for(int i=0; i<5; i++){
 //		Robot* robot = yellowTeamm->at(i);
-//		strr += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+//		strr += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().y()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 //	}
 //	//cout << strr.toStdString() << endl;
 //	for(int i=0; i<5; i++){
 //		Robot* robot = blueTeamm->at(i);
-//		strr += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+//		strr += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().y()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 //	}
-//	strr += QString::number(balll->x()) + " " + QString::number(balll->y()) + " " + QString::number(balll->speedX()) + " " + QString::number(balll->speedY()) + " " + QString::number(0) + "\n";
+//	strr += QString::number(balll->x()) + " " + QString::number(balll->y()) + " " + QString::number(balll->speed().x()) + " " + QString::number(balll->speed().y()) + " " + QString::number(0) + "\n";
 //	outt << strr;
 //	out << "%" + QString::number(debugTime+1) + "\n";
 //	planningLog.flush();
@@ -299,7 +299,7 @@ void BGT::goToStage(StageY* stage)
 		Robot* robotD =  myTeamD->at(i);
 		execSkills.at(i)->setPoint(robotD->x(), robotD->y());
 		execSkills.at(i)->setOrientation(robotD->orientation());
-		execSkills.at(i)->setSpeed(3000.); //sqrt(robotD->speedX()*robotD->speedX() + robotD->speedY()*robotD->speedY())); TODO: usar o comentado depois q implementarem o calculo da velocidade
+		execSkills.at(i)->setSpeed(3000.); //sqrt(robotD->speed().x()*robotD->speed().x() + robotD->speed().y()*robotD->speed().y())); TODO: usar o comentado depois q implementarem o calculo da velocidade
 		robotS->kick(robotD->kicker().speed()); 
 		robotS->dribble(robotD->dribbler().speed());
 		execSkills.at(i)->step();

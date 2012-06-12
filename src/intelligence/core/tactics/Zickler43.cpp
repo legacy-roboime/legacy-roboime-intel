@@ -6,13 +6,14 @@
 #include "Sampler.h"
 #include <QLineF>
 #include <iostream>
-
-#define M_PI	3.1415926535897932
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 using namespace Zickler43T;
+
+#define MINDIST 500
 
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
@@ -99,9 +100,7 @@ Zickler43::~Zickler43()
 bool DriveToDribbleT::condition()
 {
 	Zickler43* z = (Zickler43*) this->parent();
-	Robot* r = z->robot();
-	Ball*b = z->stage()->ball();
-	return r->distance(b).module() < 500;//!source_->busy(); //
+	return QVector2D(*z->robot() - *z->stage()->ball()).length() < MINDIST;//!source_->busy(); //
 }
 
 DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -116,9 +115,7 @@ bool DribbleToDriveT::condition()
 	//drive->setRefLookPoint(backup);
 	//return busy;
 	Zickler43* z = (Zickler43*) this->parent();
-	Robot* r = z->robot();
-	Ball*b = z->stage()->ball();
-	return !(r->distance(b).module() < 500);//!source_->busy(); //
+	return QVector2D(*z->robot() - *z->stage()->ball()).length() >= MINDIST;//!source_->busy(); //
 }
 
 DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

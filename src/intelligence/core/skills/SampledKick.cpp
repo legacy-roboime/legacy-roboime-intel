@@ -51,29 +51,18 @@ void SampledKick::step()
 	Robot* robot = this->robot();
 	Ball* ball = this->stage()->ball();
 
-	//cout << sqrt(ball->speedX()*ball->speedX() + ball->speedY()*ball->speedY()) << endl;
+	//cout << sqrt(ball->speed().x()*ball->speed().x() + ball->speed().y()*ball->speed().y()) << endl;
 	
 	if(!busy()){
 		qreal power;
-		if(!deterministic_){
-			if(pass_){
-				const Object* lkPoint = getLookPoint();
-				Object* distVec = &(ball->distance(lkPoint));
-				qreal distReal = distVec->module();
-				power = Sampler::sampledPowerKick(minPower_, calculatePassPower(distReal));
-			}
+		if(pass_) {
+			qreal distReal = QVector2D(*ball - *getLookPoint()).length();
+			power = Sampler::sampledPowerKick(minPower_, calculatePassPower(distReal));
+		} else {
+			if(deterministic_)
+				power = maxPower_;
 			else
 				power = Sampler::sampledPowerKick(minPower_, maxPower_);
-		}
-		else{
-			if(pass_){
-				const Object* lkPoint = getLookPoint();
-				Object* distVec = &(ball->distance(lkPoint));
-				qreal distReal = distVec->module();
-				power = calculatePassPower(distReal);
-			}
-			else
-				power = maxPower_;
 		}
 
 		robot->kick(power);

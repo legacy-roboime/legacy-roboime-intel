@@ -106,7 +106,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 		kickPoint_->setY(kickPoint.y);
 	}
 
-	if(action == get_ball && robot->distance(ball).module() < MIN_DIST){
+	if(action == get_ball && QVector2D(*robot - *ball).length() < MIN_DIST){
 		movePoint_->setX(enemyGoal->x());
 		movePoint_->setY(enemyGoal->y());
 	}
@@ -127,9 +127,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 bool GotoToDriveT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	Robot* r = a->robot();
-	Ball* b = a->stage()->ball();
-	return r->distance(b).module() < MIN_DIST;
+	return QVector2D(*a->robot() - *a->stage()->ball()).length() < MIN_DIST;
 }
 
 GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -137,9 +135,7 @@ GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal 
 bool DriveToGotoT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	Robot* r = a->robot();
-	Ball* b = a->stage()->ball();
-	return !(r->distance(b).module() < MIN_DIST);
+	return QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST;
 }
 
 DriveToGotoT::DriveToGotoT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

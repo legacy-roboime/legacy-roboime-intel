@@ -14,7 +14,7 @@ namespace LibIntelligence
 
 	struct UpdateRobotImpl;
 
-	class UpdateRobot : public Update
+	class UpdateRobot : public Update, public QPointF
 	{
 	public:
 		UpdateRobot(TeamColor, const SSL_DetectionRobot&, double t_sent=0.0, double t_capture=0.0, int camera_id=0);
@@ -27,20 +27,12 @@ namespace LibIntelligence
 		TeamColor color() const;
 		quint8 patternId() const;
 
-		void setX(qreal);
-		qreal x() const;
-
-		void setY(qreal);
-		qreal y() const;
+		void setSpeed(const QVector2D &);
+		void setSpeed(const qreal &sx, const qreal &sy);
+		QVector2D speed() const;
 
 		void setTheta(qreal);
 		qreal theta() const;
-
-		void setSpeedX();
-		qreal speedX() const;
-
-		void setSpeedY();
-		qreal speedY() const;
 
 		void setSpeedTheta();
 		qreal speedTheta() const;

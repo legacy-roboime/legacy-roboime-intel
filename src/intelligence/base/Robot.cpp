@@ -8,7 +8,7 @@ using namespace LibIntelligence;
 
 Robot::Robot(const Robot& r)
 	: Component(r.parent()),
-	Object(r.x_, r.y_, r.z_, r.speedX_, r.speedY_, r.speedZ_),
+	Object((Object)r),
 	id_(r.id_),
 	patternId_(r.patternId_),
 	color_(r.color_),

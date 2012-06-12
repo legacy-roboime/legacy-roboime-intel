@@ -148,15 +148,17 @@ void StageX::build()
 		int idTeam = robot->getIdTeam();
 		const Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
 		NxMat34 initPose = robot->getInitialPose();
-		robot->setGlobalPosition(NxVec3(r->x(), r->y(), r->z()));//initPose.t.z));
+		//XXX: ignorando posição z
+		robot->setGlobalPosition(NxVec3(r->x(), r->y(), initPose.t.z));//));
 		NxMat33 newOri = initPose.M;
 		newOri.rotZ(r->orientation());
 		robot->setGlobalOrientation(newOri);
 		//robot->putToSleep();
 		NxActor* actor = robot->getActor();
-		actor->setLinearVelocity(NxVec3(r->speedX(), r->speedY(), r->speedZ()));
-		//cout << r->speedX() << " " << r->speedY() << " " << r->speedZ() << endl;
-		actor->setAngularVelocity(NxVec3(0, 0, r->angSpeedZ()));
+		//XXX: ignorando velocidade em z
+		actor->setLinearVelocity(NxVec3(r->speed().x(), r->speed().y(), 0.0));
+		//cout << r->speed().x() << " " << r->speed().y() << " " << r->speedZ() << endl;
+		actor->setAngularVelocity(NxVec3(0, 0, r->angSpeed()));
 		robot->dribbler->speedToExecute = r->dribbler().speed();
 		robot->kicker->controlKicker(r->kicker().speed(), robot);
 		for(int j=0; j<robot->getNbWheels(); j++){
@@ -172,10 +174,12 @@ void StageX::build()
 	NxBall* ball = scene->ball;
 	NxMat34 initPose = ball->initialPose;
 	NxActor* actor = ball->ball;
-	actor->setGlobalPosition(NxVec3(b->x(), b->y(), b->z()));//initPose.t.z));
+	//XXX: ignorando posição z
+	actor->setGlobalPosition(NxVec3(b->x(), b->y(), initPose.t.z));
 	//ball->putToSleep();
-	actor->setLinearVelocity(NxVec3(b->speedX(), b->speedY(), b->speedZ()));
-	actor->setAngularVelocity(NxVec3(0, 0, b->angSpeedZ()));
+	//XXX: ignorando velocidade em z
+	actor->setLinearVelocity(NxVec3(b->speed().x(), b->speed().y(), 0.0));
+	actor->setAngularVelocity(NxVec3(0, 0, b->angSpeed()));
 
 	built = true;
 }
@@ -226,12 +230,9 @@ void StageX::simulate(const qreal t)
 		NxActor* actor = robot->getActor();
 		NxVec3 rSpeed = actor->getLinearVelocity();
 		// atualizar velocidades que poderiam ser calculadas pelos dados da visao
-		r->setSpeedX(rSpeed.x);
-		r->setSpeedY(rSpeed.y);
-		r->setAngSpeedZ(actor->getAngularVelocity().z);
-		// atualizar StageX com dados 3D
-		r->setZ(actor->getGlobalPosition().z);
-		r->setSpeedZ(rSpeed.z);
+		//XXX: ignorando dados em z
+		r->setSpeed(rSpeed.x, rSpeed.y);
+		r->setAngSpeed(actor->getAngularVelocity().z);
 		// atualizar controle
 		for(int j=0; j<robot->getNbWheels(); j++){
 			NxWheel* wheel = robot->getWheel(j);
@@ -245,12 +246,9 @@ void StageX::simulate(const qreal t)
 	NxActor* b = scene->ball->ball;
 	NxVec3 ballSpeed = b->getLinearVelocity();
 	// atualizar velocidades que poderiam ser calculadas pelos dados da visao
-	ball->setSpeedX(ballSpeed.x);
-	ball->setSpeedY(ballSpeed.y);
-	ball->setAngSpeedZ(b->getAngularVelocity().z);
-	// atualizar StageX com dados 3D
-	ball->setZ(b->getGlobalPosition().z);
-	ball->setSpeedZ(ballSpeed.z);
+	//XXX: ignorando dados em z
+	ball->setSpeed(ballSpeed.x, ballSpeed.y);
+	ball->setAngSpeed(b->getAngularVelocity().z);
 }
 
 uint StageX::getSceneNumber()

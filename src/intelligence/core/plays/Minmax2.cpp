@@ -106,8 +106,8 @@ void Minmax2::ballOwner()
 	s->blue_ball_owner = -1;
 	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
 	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
-	qreal mDist = (mRobot->distance(ball)).module();
-	qreal tDist = (tRobot->distance(ball)).module();
+	qreal mDist = QVector2D(*mRobot - *ball).length();
+	qreal tDist = QVector2D(*tRobot - *ball).length();
 	if(mDist <= tDist){
 		if(mDist < MIN_DIST){
 			s->red_ball_owner = mRobot->id();
@@ -132,8 +132,8 @@ void Minmax2::update_soccer_state()
 	Ball* ball = stage_->ball();
 	s->ball.x = ball->x();
 	s->ball.y = ball->y();
-	s->ball_vel.x = ball->speedX();
-	s->ball_vel.y = ball->speedY();
+	s->ball_vel.x = ball->speed().x();
+	s->ball_vel.y = ball->speed().y();
 
 	//as cores nessa play (red e blue) identificam se eh o nosso time (nosso time eh o red)
 	//ou nao, nao esta relacionado com a cor de time da inteligencia (yellow e blue)

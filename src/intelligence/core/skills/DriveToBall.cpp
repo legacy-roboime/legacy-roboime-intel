@@ -80,7 +80,7 @@ void DriveToBall::step()
 		ret2.translate(robot->x() - ret2.p1().x(), robot->y() - ret2.p1().y());
 		QPointF intersect = QPointF(0, 0);
 		QLineF::IntersectType interT = ret1.intersect(ret2, &intersect);
-		if(robot->distance(&Object(intersect.x(), intersect.y())).module() > 50){
+		if(QVector2D(*robot - intersect).length() > 50){
 			Goto::setPoint(ret1.x2(), ret1.y2());
 			ret1.setLength(-1);
 			Goto::setOrientation(2*M_PI - ret1.angle() * M_PI / 180.); //TODO: arrumar esse angulo para o robo nao fazer a voltinha.
@@ -92,15 +92,9 @@ void DriveToBall::step()
 	}
 	else{ //nao esta dentro do cone
 
-		Object aux2 = Object(target.p2().x(),target.p2().y());
-		Object aux1 = Object(target2.p2().x(),target2.p2().y());
-
-		Object newLKP;
-
-		if((robot->distance(&aux1)).module() < (robot->distance(&aux2)).module())
-			newLKP = Object(aux1);
-		else
-			newLKP = Object(aux2);
+		QPointF newLKP =
+			QVector2D(*robot - target.p2()).length() < QVector2D(*robot - target.p2()).length()
+			? target.p2() : target.p1();
 
 		QLineF target1 = QLineF(ball->x(), ball->y(), newLKP.x(), newLKP.y());
 		target1.setLength(t);
