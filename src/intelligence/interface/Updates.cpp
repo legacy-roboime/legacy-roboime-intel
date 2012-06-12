@@ -5,5 +5,9 @@ using namespace LibIntelligence;
 
 void Updates::apply(Updater* u)
 {
-	while(!empty()) dequeue()->apply(u);
+	while(!empty()){
+		Update* update = dequeue();
+		update->apply(u);
+		delete update;
+	}
 }

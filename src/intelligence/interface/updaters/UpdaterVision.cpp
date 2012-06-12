@@ -53,9 +53,9 @@ void UpdaterVision::receive() {}
 
 void UpdaterVision::prepare() {
 	while(!packets.empty()){
-		SSL_WrapperPacket packet = *(packets.front());
-		if (packet.has_detection()) {
-			SSL_DetectionFrame detection = packet.detection();
+		SSL_WrapperPacket* packet = packets.front();
+		if (packet->has_detection()) {
+			SSL_DetectionFrame detection = packet->detection();
 			//double t_now = GetTimeSec();
 			//printf("Camera ID=%d FRAME=%d T_CAPTURE=%.4f\n",detection.camera_id(),detection.frame_number(),detection.t_capture());
 			//printf("SSL-Vision Processing Latency                   %7.3fms\n",(detection.t_sent()-detection.t_capture())*1000.0);
@@ -74,8 +74,8 @@ void UpdaterVision::prepare() {
 				enqueue(new UpdateRobot(YELLOW, detection.robots_yellow(i), t_sent, t_capture, detection.camera_id()));
 
 		}
-		if(packet.has_geometry()){
-			SSL_GeometryData geom = packet.geometry();
+		if(packet->has_geometry()){
+			SSL_GeometryData geom = packet->geometry();
 			SSL_GeometryFieldSize fieldSize = geom.field();
 			enqueue(new UpdateStageGeometry(geom));
 			/*int calib_n = geom.calib_size();

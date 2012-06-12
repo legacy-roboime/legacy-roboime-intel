@@ -22,6 +22,11 @@ UpdateBall::UpdateBall(const SSL_DetectionBall& p, double t1, double t2, int cam
 UpdateBall::UpdateBall(qreal x, qreal y, double t1, double t2, int camId)
 	: Update(t1,t2,camId), pimpl(new UpdateBallImpl(x, y, 0.0)) {}
 
+UpdateBall::~UpdateBall()
+{
+	delete pimpl;
+}
+
 qreal UpdateBall::x() const
 {
 	return pimpl->x;

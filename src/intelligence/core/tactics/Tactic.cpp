@@ -23,9 +23,8 @@ Tactic::Tactic(QObject* p, Robot* s, const Tactic& tactic) : StateMachine(p ,tac
 
 Tactic::~Tactic()
 {
-	/*for(int i = 0; i < skills.size(); i++) {
-		delete skills.at(i);
-	}*/
+	for(int i=0; i<states_.size(); i++)
+		delete ((Skill*)states_.at(i));
 }
 
 void Tactic::setRobot(Robot* r)

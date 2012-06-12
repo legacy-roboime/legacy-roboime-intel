@@ -17,7 +17,9 @@ UpdaterReferee::UpdaterReferee(QObject* parent, char* address, int port) : Updat
 	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(receiveData()));
 }
 
-UpdaterReferee::~UpdaterReferee() {}
+UpdaterReferee::~UpdaterReferee() {
+	delete udpSocket;
+}
 
 void UpdaterReferee::step() {
 	prepare();
