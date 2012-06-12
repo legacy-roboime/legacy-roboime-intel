@@ -2,17 +2,13 @@
 
 using namespace LibIntelligence;
 
-Ball::Ball(QObject* p, qreal r)
-	: QObject(p),
-	Object(),
+Ball::Ball(qreal r)
+	: Object(),
 	radius_(r) {}
 
-Ball::Ball(const Ball& ball):
-	QObject(ball.parent()),
-	Object(ball)
-{
-	this->radius_ = ball.radius();
-}
+Ball::Ball(const Ball& ball)
+	: Object(ball),
+	radius_(ball.radius_) {}
 
 void Ball::setRadius(qreal d)
 {
@@ -22,11 +18,4 @@ void Ball::setRadius(qreal d)
 qreal Ball::radius() const
 {
 	return radius_;
-}
-
-Ball& Ball::operator=(const Ball& ball)
-{
-	((Object*)this)->operator=(ball);
-	radius_ = ball.radius();
-	return *this;
 }

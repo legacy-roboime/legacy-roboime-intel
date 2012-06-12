@@ -8,18 +8,15 @@
 
 namespace LibIntelligence
 {
-	class Ball : public QObject, public Object
+	class Ball : public Object
 	{
-		Q_OBJECT
-
 	public:
-		Ball(QObject* parent=0, qreal radius=0.0);
+		Ball(qreal radius=0.0);
 		Ball(const Ball& ball);
 
 		void setRadius(qreal);
 		qreal radius() const;
 
-		Ball& operator=(const Ball& ball);
 	private:
 		qreal radius_;
 	};
