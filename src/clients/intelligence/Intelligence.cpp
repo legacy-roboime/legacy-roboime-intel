@@ -171,7 +171,7 @@ Intelligence::Intelligence(QObject *parent)
 	commander["yellowTx"] = new CommanderTxOld(this);
 
 	updater["vision"] = new UpdaterVision(this);
-	updater["visionSim"] = new UpdaterVision(this, "224.5.23.2", 11002);
+	updater["visionSim"] = new UpdaterVision(this, 11002);
 	updater["referee"] = new UpdaterReferee(this);
 
 	stage["main"] = new Stage();
@@ -293,6 +293,7 @@ void Intelligence::update()
 
 	case PLAY:
 		play["cbr"]->step();
+		tactic["zickler43"]->step();
 		//play["cbr2"]->step();
 		//play["minimax2"]->step();
 		//play["minimax2b"]->step();
