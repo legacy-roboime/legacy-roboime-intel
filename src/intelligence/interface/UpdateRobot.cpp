@@ -42,7 +42,7 @@ void UpdateRobot::apply(Updater* u)
 		if(u->robot(k-1)->patternId() == patternId() && u->robot(k-1)->color() == color()) {
 			u->robot(k-1)->updatePosition(*this);
 			u->robot(k-1)->setOrientation(theta());
-			//u->robot(k-1)->updateSpeed(time_capture());
+			u->robot(k-1)->updateSpeed(time_capture());
 		}
 	}
 }
