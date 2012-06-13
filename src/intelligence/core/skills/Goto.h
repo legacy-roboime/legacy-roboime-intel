@@ -25,6 +25,7 @@ namespace LibIntelligence
 			void setSpeed(qreal);
 			void setPIDkGoto(double, double, double);
 			void printPIDk();
+			void setPoint(const QPointF &);
 			void setPoint(qreal targetX, qreal targetY);
 
 		protected:

@@ -86,6 +86,12 @@ void Goto::setAll(qreal x, qreal y, qreal s)
 
 }
 
+void Goto::setPoint(const QPointF &p)
+{
+	targetX = p.x();
+	targetY = p.y();
+}
+
 void Goto::setPoint(qreal _x, qreal _y)
 {
 	targetX = _x;
