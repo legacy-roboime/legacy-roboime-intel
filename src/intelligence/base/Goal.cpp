@@ -35,8 +35,8 @@ void Goal::setY(qreal y)
 
 void Goal::updatePoints()
 {
-	setP1(QPointF(x(), y() - width_));
-	setP2(QPointF(x(), y() + width_));
+	setP1(QPointF(x(), y() - width_ / 2));
+	setP2(QPointF(x(), y() + width_ / 2));
 }
 
 void Goal::setWidth(qreal w)

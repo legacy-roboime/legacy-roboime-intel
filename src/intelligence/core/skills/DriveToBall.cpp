@@ -93,8 +93,8 @@ void DriveToBall::step()
 	else{ //nao esta dentro do cone
 
 		QPointF newLKP =
-			QVector2D(*robot - target.p2()).length() < QVector2D(*robot - target.p2()).length()
-			? target.p2() : target.p1();
+			QVector2D(*robot - target.p2()).length() < QVector2D(*robot - target2.p2()).length()
+			? target.p2() : target2.p2();
 
 		QLineF target1 = QLineF(ball->x(), ball->y(), newLKP.x(), newLKP.y());
 		target1.setLength(t);
