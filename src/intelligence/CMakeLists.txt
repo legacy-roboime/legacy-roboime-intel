@@ -141,20 +141,6 @@ include_directories(${SOC_INC_DIRS})
 # Communication
 include_directories(${COMM_INC_DIRS})
 
-# Kalman
-find_library(KALMAN_LIBRARY "libKalman.lib" "${PROJECT_SOURCE_DIR}/../lib")
-find_library(KALMAN_LIBRARY_DEBUG "libKalmand.lib" "${PROJECT_SOURCE_DIR}/../lib")
-
-
-
-##############################
-# Qt stuff
-#
-
-set(QT_USE_QTNETWORK true)
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-
 
 
 ##############################
@@ -190,10 +176,15 @@ add_library(intelligence
 
 target_link_libraries(intelligence
     ${QT_LIBRARIES}
-    ${KALMAN_LIBRARY}
-    simulation
     soccer
     communication
 )
 
+if(PHYSX_FOUND)
+    target_link_libraries(intelligence
+        simulation
+    )
+endif()
+
 set_property(TARGET intelligence PROPERTY FOLDER modules)
+

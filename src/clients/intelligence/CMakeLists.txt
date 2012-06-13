@@ -29,17 +29,6 @@ include_directories(${INT_INC_DIRS})
 
 
 ##############################
-# Qt stuff
-#
-
-set(QT_USE_QTNETWORK true)
-set(QT_USE_QTOPENGL true)
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-
-
-
-##############################
 # Le finale
 #
 
@@ -59,3 +48,4 @@ target_link_libraries(intelligence-client
 )
 
 set_property(TARGET intelligence-client PROPERTY FOLDER apps)
+

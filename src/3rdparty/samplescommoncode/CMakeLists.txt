@@ -1,5 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
-
+cmake_minimum_required(VERSION 2.8.8)
 
 # Include all headers
 include_directories(.)
@@ -13,21 +12,6 @@ if(WIN32)
     set(EXTRA_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/win)
 endif()
 
-
-##############################
-# GLUT stuff
-#
-
-find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIR})
-
-
-##############################
-# PhysX stuff
-#
-
-find_package(PhysX REQUIRED)
-include_directories(${PHYSX_INCLUDES})
 
 
 ##############################
@@ -59,3 +43,4 @@ target_link_libraries(samplescommoncode
 )
 
 set_property(TARGET samplescommoncode PROPERTY FOLDER 3rdparty)
+
