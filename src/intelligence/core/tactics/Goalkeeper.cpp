@@ -40,7 +40,7 @@ void Goalkeeper::step()
 	myGoal = robot->goal();
 
 	QLineF bolaGol(myGoal->x(), myGoal->y(), ball->x(), ball->y());
-
+/*
 	//Nova versao
 	Robot* Inimigo = stage->getClosestPlayerToBall(robot->enemyTeam());
 	qreal IniX = Inimigo->x();
@@ -97,10 +97,10 @@ void Goalkeeper::step()
 		GoliePos.setY(myGoal->y() - myGoal->width()/2);
 */
 
-	goto_->setOrientation(IniX - robot->x(), IniY - robot->y());
+	/*goto_->setOrientation(IniX - robot->x(), IniY - robot->y());
 	//goto_->setPoint(GoliePos.x(), GoliePos.y());
 	goto_->setPoint(GoliePos.x(), GoliePos.y());
-	goto_->step();
+	goto_->step();*/
 
 
 	/* Modificacao anterior
@@ -113,15 +113,14 @@ void Goalkeeper::step()
 	goto_->step();
 
 	*/
-	/*
 	//Gambiarra:
 	//TODO: corrigir valores de tamanho e posicao do gol
 	//myGoal->setX(-3000.0);
 	//myGoal->setWidth(
 
 	//Coordenadas do robo inimigo
-	//Robot* Inimigo = stage->getCloserPlayerToBall(robot->enemyTeam());
-	Robot* Inimigo = stage->getCloserPlayerToBall(robot->team());
+	//Robot* Inimigo = stage->getClosestPlayerToBall(robot->enemyTeam());
+	Robot* Inimigo = stage->getClosestPlayerToBall(robot->team());
 	qreal IniX = Inimigo->x();
 	qreal IniY = Inimigo->y();
 
@@ -160,5 +159,5 @@ void Goalkeeper::step()
 	goto_->setOrientation(IniX - robot->x(), IniY - robot->y());
 	//goto_->setPoint(GoliePos.x(), GoliePos.y());
 	goto_->setPoint(gx, gy);
-	goto_->step();*/
+	goto_->step();
 }

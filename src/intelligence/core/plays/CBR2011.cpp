@@ -88,14 +88,14 @@ void CBR2011::step(){
 	QString str("3 0 ");
 	for(int i=0; i<5; i++){
 		Robot* robot = yellowTeam->at(i);
-		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().y()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 	}
 	//cout << str.toStdString() << endl;
 	for(int i=0; i<5; i++){
 		Robot* robot = blueTeam->at(i);
-		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speedX()) + " " + QString::number(robot->speedY()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
+		str += QString::number(robot->x()) + " " + QString::number(robot->y()) + " " + QString::number(robot->orientation()) + " " + QString::number(robot->speed().x()) + " " + QString::number(robot->speed().y()) + " " + QString::number(0) + " " + QString::number(0) + " " + QString::number(0) + " ";
 	}
-	str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speedX()) + " " + QString::number(ball->speedY()) + " " + QString::number(0) + "\n";
+	str += QString::number(ball->x()) + " " + QString::number(ball->y()) + " " + QString::number(ball->speed().x()) + " " + QString::number(ball->speed().y()) + " " + QString::number(0) + "\n";
 	out << str;
 	log.flush();
 #endif

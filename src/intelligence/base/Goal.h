@@ -11,13 +11,14 @@
 
 namespace LibIntelligence
 {
-	class Goal : public QObject, public Object
+	class Goal : public QLineF, public Object
 	{
-		Q_OBJECT
-
 	public:
-		Goal(QObject* parent=0, qreal x=0.0, qreal y=0.0, qreal width=0.0, qreal depth=0.0, qreal wallWidth=0.0);
-		Goal(const Goal& goal);
+		Goal(qreal x=0.0, qreal y=0.0, qreal width=0.0, qreal depth=0.0, qreal wallWidth=0.0);
+		Goal(const Goal &goal);
+
+		void setX(qreal);
+		void setY(qreal);
 
 		void setWidth(qreal);
 		qreal width() const;
@@ -34,8 +35,8 @@ namespace LibIntelligence
 		void setPenaltyLine(qreal);
 		qreal penaltyLine() const;
 
-		Goal& operator=(const Goal& goal);
 	private:
+		void updatePoints();
 		qreal width_, depth_, wallWidth_;
 		QPointF penaltyMark_;
 		qreal penaltyLine_; //coordenada x da linha de penalty

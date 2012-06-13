@@ -7,43 +7,36 @@ namespace LibIntelligence
 {
 	struct UpdateBallImpl
 	{
-		UpdateBallImpl(qreal x, qreal y, qreal z)
-			: x(x), y(y), z(z) {}
-
-		qreal x, y, z;
+		UpdateBallImpl(qreal z)
+			: z(z) {}
+		qreal z;
 	};
 }
 
 using namespace LibIntelligence;
 
 UpdateBall::UpdateBall(const SSL_DetectionBall& p, double t1, double t2, int camId)
-	: Update(t1,t2,camId), pimpl(new UpdateBallImpl(p.x(), p.y(), p.has_z() ? p.z() : 0.0)) {}
+	: Update(t1, t2, camId),
+	QPointF(p.x(), p.y()),
+	pimpl(new UpdateBallImpl(p.has_z() ? p.z() : 0.0)) {}
 
 UpdateBall::UpdateBall(qreal x, qreal y, double t1, double t2, int camId)
-	: Update(t1,t2,camId), pimpl(new UpdateBallImpl(x, y, 0.0)) {}
+	: Update(t1, t2, camId),
+	QPointF(x, y),
+	pimpl(new UpdateBallImpl(0.0))
+{}
 
 UpdateBall::~UpdateBall()
 {
 	delete pimpl;
 }
 
-qreal UpdateBall::x() const
-{
-	return pimpl->x;
-}
-
-qreal UpdateBall::y() const
-{
-	return pimpl->y;
-}
-
 void UpdateBall::apply(Updater* u) {
 	for(size_t k=u->ballsSize(); k>0; k--) {
 		//TODO: identify which ball is which
 		//if(u->ball(k-1)->i()==_i) {
-			u->ball(k-1)->setX(pimpl->x);
-			u->ball(k-1)->setY(pimpl->y);
-			u->ball(k-1)->updateSpeed(time_capture());
+			u->ball(k-1)->updatePosition(*this);
+			//u->ball(k-1)->updateSpeed(time_capture());
 		//}
 	}
 }

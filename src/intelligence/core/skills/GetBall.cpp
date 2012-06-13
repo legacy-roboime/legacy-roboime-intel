@@ -174,7 +174,7 @@ void GetBall::step()
 	by = stage->ball()->y();
 	rx = robot->x();
 	ry = robot->y();
-	//speedBall = sqrt(pow(stage()->ball()->speedX(),2) + pow(stage()->ball()->speedY(),2));
+	//speedBall = sqrt(pow(stage()->ball()->speed().x(),2) + pow(stage()->ball()->speed().y(),2));
 	//printf("velocidade linear bola: %f\n",speedBall);
 	//qreal rOrientation = robot()->orientation();
 

@@ -13,11 +13,11 @@
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterVision::UpdaterVision(QObject* parent, char* address, quint16 port) : Updater() {
+UpdaterVision::UpdaterVision(QObject* parent, quint16 port, char* address) : Updater() {
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);
-    udpSocket->bind(port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+	udpSocket->bind(port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 	udpSocket->joinMulticastGroup(groupAddress);
 	//udpSocket->bind(
 

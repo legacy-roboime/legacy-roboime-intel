@@ -150,7 +150,6 @@ find_library(KALMAN_LIBRARY_DEBUG "libKalmand.lib" "${PROJECT_SOURCE_DIR}/../lib
 # Qt stuff
 #
 
-set(QT_DONT_USE_QTGUI true)
 set(QT_USE_QTNETWORK true)
 find_package(Qt4 REQUIRED)
 include(${QT_USE_FILE})

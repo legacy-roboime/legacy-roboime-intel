@@ -2,26 +2,47 @@
 
 using namespace LibIntelligence;
 
-Goal::Goal(QObject* p, qreal x, qreal y, qreal w, qreal d, qreal ww)
-	: QObject(p),
+Goal::Goal(qreal x, qreal y, qreal w, qreal d, qreal ww)
+	: QLineF(),
 	Object(x, y),
 	width_(w),
 	depth_(d),
-	wallWidth_(ww) {}
-
-void Goal::setWidth(qreal w)
+	wallWidth_(ww)
 {
-	width_ = w;
+	updatePoints();
 }
 
 Goal::Goal(const Goal& goal)
-	: QObject(goal.parent()),
+	: QLineF(goal),
 	Object(goal),
 	width_(goal.width()),
 	depth_(goal.depth()),
 	wallWidth_(goal.wallWidth()),
 	penaltyMark_(goal.penaltyMark()),
 	penaltyLine_(goal.penaltyLine()) {}
+
+void Goal::setX(qreal x)
+{
+	Object::setX(x);
+	updatePoints();
+}
+
+void Goal::setY(qreal y)
+{
+	Object::setY(y);
+	updatePoints();
+}
+
+void Goal::updatePoints()
+{
+	setP1(QPointF(x(), y() - width_));
+	setP2(QPointF(x(), y() + width_));
+}
+
+void Goal::setWidth(qreal w)
+{
+	width_ = w;
+}
 
 void Goal::setDepth(qreal d)
 {
@@ -62,15 +83,4 @@ void Goal::setPenaltyLine(qreal x){
 
 qreal Goal::penaltyLine() const{
 	return penaltyLine_;
-}
-
-Goal& Goal::operator=(const Goal& goal)
-{
-	((Object*)this)->operator=(goal);
-	this->width_ = goal.width();
-	this->depth_ = goal.depth();
-	this->wallWidth_ = goal.wallWidth();
-	this->penaltyLine_ = goal.penaltyLine();
-	this->penaltyMark_ = goal.penaltyMark();
-	return *this;
 }
