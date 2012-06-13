@@ -45,7 +45,7 @@ private:
 	//static 
 	UDPServerSimInt* intServer;
 
-	static bool bLeftMouseButtonPressed;
+	static bool bRightMouseButtonPressed;
 	//static NxReal gMouseDepth;
 	//static NxDistanceJoint* gMouseJoint;
 	//static NxActor* gMouseSphere;
