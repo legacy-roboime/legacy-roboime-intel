@@ -109,7 +109,7 @@ float minimax_getMaxValue(SoccerState s, int depth,
 
  if( depth == 0 ){
       saux = s;
-      sstate_red_kick_to_goal(&saux);
+      //sstate_red_kick_to_goal(&saux);
       return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
  }
  for( i = 0; i < MAX_NPLAYS; i++ ){
@@ -141,7 +141,7 @@ float minimax_getMinValue(SoccerState s, int depth,
 
  if( depth == 0 ){
      saux = s;
-     sstate_blue_kick_to_goal(&saux); 
+     //sstate_blue_kick_to_goal(&saux); 
      return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
  }
  for( i = 0; i < MIN_NPLAYS; i++ ){
