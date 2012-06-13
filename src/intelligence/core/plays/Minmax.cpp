@@ -1,3 +1,4 @@
+#ifdef USE_PHYSX
 #include "Minmax.h"
 #include "Goal.h"
 #include "Ball.h"
@@ -334,3 +335,6 @@ void Minmax::expandMax( StageX *s, int action )
 	//_max_plays[action]->setTeam(s->getTeamFromColor(this->team()->color()));
 	_max_plays[action]->step();
 }
+
+#endif
+

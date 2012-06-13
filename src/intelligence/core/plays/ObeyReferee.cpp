@@ -71,38 +71,38 @@ void ObeyReferee::step()
 
 	TeamColor usColor = team()->color();
 
-	if(cmd == 'f' && usColor == TeamColor::YELLOW)
+	if(cmd == 'f' && usColor == YELLOW)
 		play->step();
-	else if(cmd == 'f' && usColor == TeamColor::BLUE){
+	else if(cmd == 'f' && usColor == BLUE){
 		if(dist<100)
 			stopReferee->step();
 		else
 			play->step();
 	}
-	else if(cmd == 'F' && usColor == TeamColor::YELLOW){
+	else if(cmd == 'F' && usColor == YELLOW){
 		if(dist<100)
 			stopReferee->step();
 		else
 			play->step();
 	}
-	else if(cmd == 'F' && usColor == TeamColor::BLUE)
+	else if(cmd == 'F' && usColor == BLUE)
 		play->step();
 
-	else if(cmd == 'i' && usColor == TeamColor::YELLOW)
+	else if(cmd == 'i' && usColor == YELLOW)
 		play->step();
-	else if(cmd == 'i' && usColor == TeamColor::BLUE){
+	else if(cmd == 'i' && usColor == BLUE){
 		if(dist<100)
 			stopReferee->step();
 		else
 			play->step();
 	}
-	else if(cmd == 'I' && usColor == TeamColor::YELLOW){
+	else if(cmd == 'I' && usColor == YELLOW){
 		if(dist<100)
 			stopReferee->step();
 		else
 			play->step();
 	}
-	else if(cmd == 'I' && usColor == TeamColor::BLUE)
+	else if(cmd == 'I' && usColor == BLUE)
 		play->step();
 
 	else if(cmd == 'H')
@@ -126,13 +126,13 @@ void ObeyReferee::step()
 	else if(cmd == 'z' || cmd == 'g' || cmd == 'G' || cmd == 'd' || cmd == 'D' || cmd == 'y' || cmd == 'Y' || cmd == 'r' || cmd == 'R' || cmd == 'c')
 		stopReferee->step();
 
-	else if(cmd == 'p' && usColor == TeamColor::YELLOW)
+	else if(cmd == 'p' && usColor == YELLOW)
 		stopReferee->step();
-	else if(cmd == 'p' && usColor == TeamColor::BLUE)
+	else if(cmd == 'p' && usColor == BLUE)
 		stopReferee->step();
-	else if(cmd == 'P' && usColor == TeamColor::YELLOW)
+	else if(cmd == 'P' && usColor == YELLOW)
 		stopReferee->step();
-	else if(cmd == 'P' && usColor == TeamColor::BLUE)
+	else if(cmd == 'P' && usColor == BLUE)
 		stopReferee->step();
 
 	else

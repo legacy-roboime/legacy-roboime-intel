@@ -19,9 +19,9 @@ namespace LibIntelligence
 
 		public:
 			DriveTo(QObject* parent, Robot* slave, qreal maxErrorD = 100., qreal maxErrorA = 10 * M_PI/180., qreal bAngle = 0., QPointF bPoint = QPointF(0.,0.), qreal threshold = 10., qreal tAngle = 0, qreal speed = 3000.);
-			DriveTo::~DriveTo(void);
+			~DriveTo();
 
-			bool busy(); 
+			bool busy();
 			void step();
 
 			qreal getSpeed();

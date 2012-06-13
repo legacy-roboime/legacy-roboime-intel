@@ -4,6 +4,9 @@
 #include "Goal.h"
 #include "Ball.h"
 #include <QLineF>
+#include <cmath>
+
+using namespace std;
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;

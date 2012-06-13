@@ -98,7 +98,8 @@ void DriveToBall::step()
 
 		QLineF target1 = QLineF(ball->x(), ball->y(), newLKP.x(), newLKP.y());
 		target1.setLength(t);
-		setRefLookPoint(&Object(target1.p2().x(),target1.p2().y()));
+		Object reflp = Object(target1.p2().x(),target1.p2().y());
+		setRefLookPoint(&reflp);
 
 		qreal backup = threshold;
 		threshold = -t;

@@ -3,7 +3,7 @@
 #include "Robot.h"
 #include "Skills.h"
 #include "Goal.h"
-#include "goalswitcheroo.h"
+#include "GoalSwitcheroo.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;

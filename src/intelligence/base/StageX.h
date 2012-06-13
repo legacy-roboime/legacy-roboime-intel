@@ -1,4 +1,4 @@
-#pragma once
+#ifdef HAVE_WINDOWS
 #ifndef STAGEX_H
 #define STAGEX_H
 
@@ -45,3 +45,5 @@ namespace LibIntelligence
 }
 
 #endif // STAGEX_H
+#endif
+

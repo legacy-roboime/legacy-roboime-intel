@@ -206,8 +206,10 @@ Intelligence::Intelligence(QObject *parent)
 		updater["visionSim"]->add(team["they"]->last());
 	}
 
+#ifdef HAVE_WINDOWS
 	tactic["controller"] = new Controller2(this, team["us"]->at(3), 1, 500); //controle no referencial do campo
 	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
+#endif
 	//skill["driveto"] = new DriveTo(this, team["us"]->at(1), -3.14/2., QPointF(0,0), 1000.);
 
 	//skill["goto"] = new Goto(this, team["us"]->at(0), 1000, 0, 0, 3000, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
@@ -310,8 +312,10 @@ void Intelligence::update()
 		skill["goto"]->step();
 		break;
 
+#ifdef HAVE_WINDOWS
 	case CONTROLLER:
 		tactic["controller"]->step();
+#endif
 	default:
 		break;
 	}

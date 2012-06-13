@@ -5,6 +5,7 @@
 #include "LibIntelligence.h"
 #include "PID.h"
 #include "Steer.h"
+#include <QPointF>
 
 namespace LibIntelligence
 {

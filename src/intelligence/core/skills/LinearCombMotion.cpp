@@ -1,4 +1,5 @@
-#include  "LinearCombMotion.h"
+#include "LinearCombMotion.h"
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;

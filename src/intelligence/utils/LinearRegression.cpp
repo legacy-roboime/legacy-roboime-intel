@@ -1,4 +1,5 @@
 #include "LinearRegression.h"
+#include "mathutils.h"
 
 LinearRegression::LinearRegression(QPointF *p, long size, unsigned char max_size_points)
 	: xPoints(new QVector<float>()), yPoints(new QVector<float>())

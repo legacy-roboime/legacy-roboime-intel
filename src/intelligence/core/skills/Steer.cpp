@@ -3,12 +3,6 @@
 #include "PID.h"
 #include "mathutils.h"
 
-#define RATE	6.2//2.50
-#define M_2PI	6.2831853071795865
-#define M_PI	3.1415926535897932
-#define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
-//qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
-
 using namespace LibIntelligence;
 using namespace Skills;
 

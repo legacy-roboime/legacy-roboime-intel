@@ -1,4 +1,4 @@
-#pragma once
+#ifdef HAVE_WINDOWS
 #ifndef CONTROLLER2_H
 #define CONTROLLER2_H
 
@@ -26,3 +26,5 @@ namespace LibIntelligence
 }
 
 #endif // CONTROLLER_H
+#endif
+

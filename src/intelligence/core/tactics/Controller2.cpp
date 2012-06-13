@@ -1,3 +1,4 @@
+#ifdef HAVE_WINDOWS
 #include "Controller2.h"
 #include "CXBOXController.h"
 #include "Move.h"
@@ -114,3 +115,6 @@ void Controller2::step() {
 		move->step();
 	}
 }
+
+#endif
+

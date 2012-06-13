@@ -28,9 +28,9 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alp
 	s = sstate_alloc();
 	sL = sstate_alloc();
 
-	if(team->color() == TeamColor::BLUE && Stage::isLeftSideBlueGoal())
+	if(team->color() == BLUE && Stage::isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
-	else if (team->color() == TeamColor::YELLOW && !Stage::isLeftSideBlueGoal())
+	else if (team->color() == YELLOW && !Stage::isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
 	else
 		soccer_env_red_side( RIGHT );

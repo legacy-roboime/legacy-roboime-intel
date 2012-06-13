@@ -3,7 +3,9 @@
 #include "Team.h"
 #include "Goal.h"
 #include <cmath>
+#include <cfloat>
 #include <limits.h>
+
 using namespace LibIntelligence;
 
 bool Stage::isLeftSideBlueGoal_ = true;
@@ -27,8 +29,8 @@ Stage::Stage()
 	ball_ = new Ball(21.5);
 	blueGoal_ = new Goal();
 	yellowGoal_ = new Goal();
-	blueTeam_ = new Team(this, TeamColor::BLUE);
-	yellowTeam_ = new Team(this, TeamColor::YELLOW);
+	blueTeam_ = new Team(this, BLUE);
+	yellowTeam_ = new Team(this, YELLOW);
 }
 
 Stage::Stage(const Stage& stage)

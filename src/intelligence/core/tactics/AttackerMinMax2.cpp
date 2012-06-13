@@ -6,8 +6,8 @@
 #include "Sampler.h"
 #include <QLineF>
 #include <iostream>
-
-#define M_PI	3.1415926535897932
+#include "mathutils.h"
+#include "soccer.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
@@ -17,7 +17,7 @@ using namespace AttackerMinMax2T;
 AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbleSpeed, qreal passSpeed)
 	: Tactic(p, r, true)
 {
-	action_ = type_actions::null_action;
+	action_ = null_action;
 	movePoint_ = new Object();
 	kickPoint_ = new Object();
 	dribblePoint_ = new Object();

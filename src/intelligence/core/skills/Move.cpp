@@ -3,6 +3,7 @@
 #include <cmath>
 #include <QVector>
 #include "PID.h"
+#include "mathutils.h"
 #define MAX_RPS_BIWHEEL 4.0
 #define WHEEL_INTERDISTANCE 
 #define REALROBOT
@@ -10,11 +11,7 @@
 using namespace LibIntelligence;
 using namespace Skills;
 
-#define MIN(x,y) (x < y ? x : y)
-#define MAX(x,y) (x > y ? x : y)
-#define M_2PI	6.2831853071795865
-#define M_PI	3.1415926535897932
-#define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
+
 qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
 
 #define ROBOTACCEL 3500

@@ -6,11 +6,10 @@
 #include "Goal.h"
 #include "Ball.h"
 #include <QLineF>
-
-#define M_PI	3.1415926535897932
+#include "mathutils.h"
 
 //valor carteado
-#define CART	82.6
+#define CART 82.6
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;

@@ -7,7 +7,7 @@
 #include <QString>
 #include "Object.h"
 #include <QPointF>
-#include <QlineF>
+#include <QLineF>
 
 namespace LibIntelligence
 {

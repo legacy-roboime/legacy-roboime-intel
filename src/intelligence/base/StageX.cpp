@@ -1,3 +1,4 @@
+#ifdef USE_PHYSX
 #include "StageX.h"
 #include "Simulation.h"
 #include "Ball.h"
@@ -255,3 +256,6 @@ uint StageX::getSceneNumber()
 {
 	return sceneNumber;
 }
+
+#endif
+
