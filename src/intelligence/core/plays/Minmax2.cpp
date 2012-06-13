@@ -4,6 +4,7 @@
 #include "Robot.h"
 #include <QLineF>
 #include "GotoTactic.h"
+#include "config.h"
 
 #define LOGGING
 
@@ -12,8 +13,8 @@ using namespace LibIntelligence;
 using namespace Plays;
 using namespace Tactics;
 
-Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alpha, float beta, qreal speed):
-Play(parent,team,stage),
+Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alpha, float beta, qreal speed)
+	: Play(parent, team,stage),
 	log("C:\\Users\\Bill\\Desktop\\log.dat"),
 	depth_(depth),
 	alpha_(alpha),
@@ -42,9 +43,9 @@ Play(parent,team,stage),
 	//goto_ = new Goto(this, team->at(2));
 
 	for(int i=0; i<NPLAYERS; i++)
-		player_[i] = new GotoTactic(this, team->at(i)); 
+		player_[i] = new GotoTactic((Play *)this, team->at(i)); 
 
-	attacker = new AttackerMinMax2(this, team->at(0), envReal.red_speed, 
+	attacker = new AttackerMinMax2((Play *)this, team->at(0), envReal.red_speed, 
 								   envReal.red_dribble_speed, 
 								   envReal.red_pass_speed); 
 }
@@ -152,50 +153,59 @@ void Minmax2::update_soccer_state()
 	ballOwner();
 }
 
-void Minmax2::step()
+void Minmax2::run()
 {
 	static SoccerState saux;
-	update_soccer_state();
 
-	saux = *s;
+	while(true) {
+		update_soccer_state();
 
-	minimax_use_next_red_robot();
-	minimax_use_next_blue_robot();
-
-	changeSStateMeasure(&saux, 0.001);
+		saux = *s;
 
 #ifdef SOCCER_DEBUG
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	int winWidth = 1200;
-	int winHeight = 400;
-	glViewport(0, 0, winWidth/2., winHeight );   
-	soccer_redraw( &saux );
+		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+		int winWidth = 1200;
+		int winHeight = 400;
+		glViewport(0, 0, winWidth/2., winHeight );   
+		soccer_redraw( &saux );
 #endif
 
-	if(!init){
-		minimax_init(&saux);
-		init = true;
+		minimax_use_next_red_robot();
+		minimax_use_next_blue_robot();
+
+		changeSStateMeasure(&saux, 0.001);
+
+		if(!init){
+			minimax_init(&saux);
+			init = true;
+		}
+
+		minimax_play( &saux, depth_ );
+
+		mutex.lock();
+		red_action = *minimax_get_best_red_action();
+		blue_action = *minimax_get_best_blue_action();
+
+#ifdef SOCCER_DEBUG
+		saction_blue_act( &saux, &blue_action );
+		saction_red_act( &saux, &red_action );
+		glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
+		soccer_redraw( &saux ); 
+		glutSwapBuffers();
+		//usleep(800000);
+#endif
+
+		changeSActionMeasure(&red_action, 1000.);
+		changeSActionMeasure(&blue_action, 1000.);
+		mutex.unlock();
 	}
+}
 
-	minimax_play( &saux, depth_ );
-
-	red_action = *minimax_get_best_red_action();
-	blue_action = *minimax_get_best_blue_action();
-
-#ifdef SOCCER_DEBUG
-	saction_blue_act( &saux, &blue_action );
-	saction_red_act( &saux, &red_action );
-	glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
-	soccer_redraw( &saux ); 
-	glutSwapBuffers();
-	//usleep(800000);
-#endif
-
-	changeSActionMeasure(&red_action, 1000.);
-	changeSActionMeasure(&blue_action, 1000.);
-
+void Minmax2::step()
+{	mutex.lock();
 	act(red_action, team_);
 	//act(blue_action, team_->enemyTeam());
+	mutex.unlock();
 }
 
 void Minmax2::act(SoccerAction& action, Team* team)

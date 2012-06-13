@@ -8,7 +8,8 @@
 #include "Stage.h"
 #include <QFile>
 #include <QDataStream>
-#include "config.h"
+#include <QThread>
+#include <QMutex>
 
 using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Skills;
@@ -17,10 +18,17 @@ namespace LibIntelligence
 {
 	namespace Plays
 	{
-		class Minmax2: public Play {
+		class Minmax2: public Play
+		{
+		public:
+			Minmax2(QObject *parent, Team* team ,Stage* stage, int depth = MINIMAX_MAX_LEVEL, float alpha = -MAX_FLOAT, float beta = MAX_FLOAT, qreal speed = 3000.);
+			~Minmax2(); 
+			void step();
+			void run();
 
 		private:
 			QFile log; 
+			QMutex mutex;
 
 			AttackerMinMax2* attacker;
 			QVector<Goto*> _max_skills;
@@ -42,11 +50,6 @@ namespace LibIntelligence
 			void changeSEnvMeasure(SoccerEnvironment *s, double scale);
 			void changeSStateMeasure(SoccerState *s, double scale);
 			void changeSActionMeasure(SoccerAction *a, double scale);
-
-		public:
-			Minmax2(QObject *parent, Team* team ,Stage* stage, int depth = MINIMAX_MAX_LEVEL, float alpha = -MAX_FLOAT, float beta = MAX_FLOAT, qreal speed = 3000.);
-			~Minmax2(); 
-			void step();
 		};
 	}
 }
