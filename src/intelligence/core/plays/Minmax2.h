@@ -25,10 +25,12 @@ namespace LibIntelligence
 			~Minmax2(); 
 			void step();
 			void run();
+			void drawOpenGL();
 
 		private:
 			QFile log; 
 			QMutex mutex;
+			QMutex statemutex;
 
 			AttackerMinMax2* attacker;
 			QVector<Goto*> _max_skills;
@@ -36,6 +38,7 @@ namespace LibIntelligence
 			qreal speed_;
 
 			SoccerState *s;
+			SoccerState *sL;
 			int depth_;
 			float alpha_;
 			float beta_;

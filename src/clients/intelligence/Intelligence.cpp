@@ -223,7 +223,7 @@ Intelligence::Intelligence(QObject *parent)
 
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
-	play["retaliate"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], 3000);
+	play["retaliate"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], 3000);
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
 	//play["bgt"] = new Plays::BGT(this, team["us"], sta);
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
@@ -235,11 +235,9 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["def3"] = new Defender(this, team["they"]->at(3), 0, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
 	
-#ifndef SOCCER_DEBUG
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
 	timer->start(10.);//valor que tá no transmission da trunk para realTransmission //30.);//
-#endif
 	
 	resetPatterns();
 	cli->start();
@@ -293,14 +291,13 @@ void Intelligence::update()
 	switch(mode) {
 
 	case PLAY:
-		play["cbr"]->step();
-		tactic["zickler43"]->step();
+		//play["cbr"]->step();
 		//play["cbr2"]->step();
 		//play["minimax2"]->step();
 		if(!((QThread *)play["minimax2"])->isRunning())
 			((QThread *)play["minimax2"])->start();
 		play["minimax2"]->step();
-		//play["retaliate"]->step();
+		play["retaliate"]->step();
 		break;
 
 	case TACTIC:

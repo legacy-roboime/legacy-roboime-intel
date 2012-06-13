@@ -11,6 +11,9 @@ static QCoreApplication* app;
 
 #ifdef SOCCER_DEBUG
 #include "minimax.h"
+#include "Minmax2.h"
+
+using namespace LibIntelligence::Plays;
 
 void reshape(int wid, int ht)
 {
@@ -26,9 +29,8 @@ void reshape(int wid, int ht)
 void idleFunc(void)
 {
 	QCoreApplication::processEvents();
-	intel->update();
+	((Minmax2 *)intel->play["minimax2"])->drawOpenGL();
 }
-
 #endif
 
 int main(int argc, char *argv[])

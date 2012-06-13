@@ -26,6 +26,7 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alp
 
 	soccer_env_init();
 	s = sstate_alloc();
+	sL = sstate_alloc();
 
 	if(team->color() == TeamColor::BLUE && Stage::isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
@@ -155,54 +156,71 @@ void Minmax2::update_soccer_state()
 
 void Minmax2::run()
 {
-	static SoccerState saux;
-
 	while(true) {
-		update_soccer_state();
-
-		saux = *s;
-
 #ifdef SOCCER_DEBUG
-		glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		int winWidth = 1200;
-		int winHeight = 400;
-		glViewport(0, 0, winWidth/2., winHeight );   
-		soccer_redraw( &saux );
+		statemutex.lock();
 #endif
+		update_soccer_state();
 
 		minimax_use_next_red_robot();
 		minimax_use_next_blue_robot();
 
-		changeSStateMeasure(&saux, 0.001);
+		changeSStateMeasure(s, 0.001);
 
 		if(!init){
-			minimax_init(&saux);
+			minimax_init(s);
 			init = true;
 		}
 
-		minimax_play( &saux, depth_ );
+		minimax_play( s, depth_ );
+
+#ifdef SOCCER_DEBUG
+		*sL = *s;
+#endif
 
 		mutex.lock();
 		red_action = *minimax_get_best_red_action();
 		blue_action = *minimax_get_best_blue_action();
 
-#ifdef SOCCER_DEBUG
-		saction_blue_act( &saux, &blue_action );
-		saction_red_act( &saux, &red_action );
-		glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
-		soccer_redraw( &saux ); 
-		glutSwapBuffers();
-		//usleep(800000);
-#endif
-
 		changeSActionMeasure(&red_action, 1000.);
 		changeSActionMeasure(&blue_action, 1000.);
 		mutex.unlock();
+
+#ifdef SOCCER_DEBUG
+		changeSStateMeasure(s, 1000.);
+		statemutex.unlock();
+#endif
 	}
 }
 
+void Minmax2::drawOpenGL()
+{
+	statemutex.lock();
+	changeSStateMeasure(s, 0.001);
+	changeSActionMeasure(&red_action, .001);
+	changeSActionMeasure(&blue_action, .001);
+
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	int winWidth = 1200;
+	int winHeight = 400;
+	glViewport(0, 0, winWidth/2., winHeight );   
+	soccer_redraw( s );
+
+	saction_blue_act( sL, &blue_action );
+	saction_red_act( sL, &red_action );
+	glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
+	soccer_redraw( sL ); 
+	glutSwapBuffers();
+
+	changeSStateMeasure(s, 1000.);
+	changeSActionMeasure(&red_action, 1000.);
+	changeSActionMeasure(&blue_action, 1000.);
+	statemutex.unlock();
+}
+
 void Minmax2::step()
-{	mutex.lock();
+{
+	mutex.lock();
 	act(red_action, team_);
 	//act(blue_action, team_->enemyTeam());
 	mutex.unlock();

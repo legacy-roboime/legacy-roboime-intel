@@ -31,18 +31,18 @@ public:
 	Intelligence(QObject *parent=0);
 	~Intelligence();
 
-private:
-	// Basic objects
-	map<string, Team*> team;
-	map<string, Robot*> robot;
-	map<string, Stage*> stage;
-
 	// STP utils
 	map<string, Plays::Play*> play;
 	map<string, Tactics::Tactic*> tactic;
 	map<string, Skills::Skill*> skill;
 	enum {NONE, SKILL, TACTIC, PLAY, CONTROLLER} mode;
 	int controlled;//tirar quando o controller for para o time inteiro
+
+private:
+	// Basic objects
+	map<string, Team*> team;
+	map<string, Robot*> robot;
+	map<string, Stage*> stage;
 
 	// Interface utils
 	map<string, Commander*> commander;
