@@ -354,7 +354,9 @@ void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 	// Start simulation
 	// Physics code
 	//if(this->gScenes[indexScene]->ball->ball->getGlobalPosition().x > 3025)
-	//	cout << "BOLA SPEED " << this->gScenes[indexScene]->ball->ball->getLinearVelocity().magnitude() << endl;
+#ifdef BALL_SPEED_SIM
+	cout << "BOLA SPEED " << this->gScenes[indexScene]->ball->ball->getLinearVelocity().magnitude() << endl;
+#endif
 	//if (gScenes[indexScene]->scene && !gPause)
 	//{
 		 gScenes[indexScene]->scene->setTiming(dt, maxStepIter, NX_TIMESTEP_FIXED);

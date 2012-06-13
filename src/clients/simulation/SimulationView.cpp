@@ -12,9 +12,7 @@ NxVec3 SimulationView::Up = NxVec3();
 int SimulationView::mx = 0;
 int SimulationView::my = 0;
 int SimulationView::gMainHandle = 0;
-bool SimulationView::keyDown[256];//={false};
-//FILE * SimulationView::outputfile = fopen("C:\\Users\\Bill\\Desktop\\testee.txt","w");
-//bool SimulationView::gravar = false;
+bool SimulationView::keyDown[256];
 int SimulationView::count = 0;
 DebugRenderer SimulationView::gDebugRenderer = DebugRenderer();
 PerfRenderer SimulationView::gPerfRenderer;
@@ -23,24 +21,9 @@ GLdouble SimulationView::zNear = 0.9f;
 GLdouble SimulationView::zFar = 10000.0f;//
 QMapIterator<int, NxScene1*> SimulationView::indexRenderScene = QMapIterator<int, NxScene1*>(QMap<int, NxScene1*>());
 bool SimulationView::gDebugVisualization = false;
-//bool SimulationView::bLeftMouseButtonPressed = false;
-//NxReal SimulationView::gMouseDepth = 0.0f;
-//NxDistanceJoint* SimulationView::gMouseJoint = NULL;
-//NxActor* SimulationView::gMouseSphere = NULL;
-//NxActor* SimulationView::gSelectedActor = NULL;
-
-bool SimulationView::bLeftMouseButtonPressed = false;
-//NxReal SimulationView::gMouseDepth = 0.0f;
-//NxDistanceJoint* SimulationView::gMouseJoint = NULL;
-//NxActor* SimulationView::gMouseSphere = NULL;
-//NxActor* SimulationView::gSelectedActor = NULL;
-//NxScene* SimulationView::scene = NULL;
-//NxPhysicsSDK* SimulationView::physicsSDK = NULL;
+bool SimulationView::bRightMouseButtonPressed = false;
 ActorPicking* SimulationView::actorPicking = NULL;
-
 Simulation* SimulationView::simulation = new Simulation();
-//UDPServerSimInt* SimulationView::intServer = new UDPServerSimInt();
-//UDPMulticastSenderSSLVision* SimulationView::visionServer = new UDPMulticastSenderSSLVision();
 
 SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -641,7 +624,7 @@ void SimulationView::MouseCallback(int button, int state, int x, int y)
 	actorPicking->scene = indexRenderScene.value()->scene;
 	actorPicking->physicsSDK = simulation->gPhysicsSDK;
 
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
 #if !defined(_XBOX) && !defined (__CELLOS_LV2__) // no picking on consoles
 		//if (!PickActor(x,y))
@@ -654,14 +637,14 @@ void SimulationView::MouseCallback(int button, int state, int x, int y)
 		actorPicking->PickActor(x,y);
 #endif
 	}
-	else if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
 	{
-		bLeftMouseButtonPressed = true;
+		bRightMouseButtonPressed = true;
 	}
 	else if (state == GLUT_UP)
 	{
 		actorPicking->LetGoActor();
-		bLeftMouseButtonPressed = false;
+		bRightMouseButtonPressed = false;
 	}
 }
 
@@ -675,7 +658,7 @@ void SimulationView::MotionCallback(int x, int y)
 	{
 		actorPicking->MoveActor(x,y);
 	}
-	else if(bLeftMouseButtonPressed || mx == 0){
+	else if(bRightMouseButtonPressed || mx == 0){
 		Dir.normalize();
 		N.cross(Dir,NxVec3(0,0,1));
 
@@ -936,7 +919,7 @@ void SimulationView::changeCamera(){
 	else if(camera == 0){
 		gEye.x = 0.0;
 		gEye.y = 0.0;
-		gEye.z = 5E3;
+		gEye.z = 5000.;
 		Dir.x = 0.0;
 		Dir.y = 0.0;
 		Dir.z = -1.0;
