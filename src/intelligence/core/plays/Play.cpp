@@ -4,7 +4,7 @@ using namespace LibIntelligence;
 using namespace Plays;
 
 Play::Play(QObject* parent, Team* team, Stage* stage)
-	: QObject(parent)
+	: QThread(parent)
 {
 	stage_ = stage;
 	team_ = team;

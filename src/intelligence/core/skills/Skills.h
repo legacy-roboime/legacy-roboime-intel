@@ -22,5 +22,6 @@
 #include "SampledKick.h"
 #include "LinearCombMotion.h"
 #include "GotoAvoid.h"
+#include "FollowAndCover.h"
 
 #endif // SKILLS_H
