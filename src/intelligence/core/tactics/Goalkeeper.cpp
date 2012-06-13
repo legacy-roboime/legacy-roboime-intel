@@ -19,7 +19,7 @@ Goalkeeper::Goalkeeper(QObject* p, Robot* r, qreal s)
 	//goto_->setSpeed(speed);
 	this->pushState(goto_);
 	//skills.append(goto_);//this is important
-	goto_->setIgnoreBrake();
+	//goto_->setIgnoreBrake();
 	//skills.append(kickTo_);
 	//skills.append(getBall_);
 }
@@ -31,133 +31,48 @@ bool Goalkeeper::busy()
 
 void Goalkeeper::step()
 {
-	Stage* stage = this->stage();
-	Robot* robot = this->robot();
-	goto_->step();
-	Goal* myGoal;
-	Ball* ball = stage->ball();
+	//shortcuts:
+	//TODO: make an architecture which naturally favors these shortcuts
+	Stage &stage(*this->stage());
+	Robot &robot(*this->robot());
+	Goal &goal(*robot.goal());
+	Team &myTeam(*robot.team());
+	Team &enemyTeam(*robot.enemyTeam());
+	Ball &ball(*stage.ball());
 
-	myGoal = robot->goal();
+	//TODO: if ball is inside area and is slow, kick/pass it far far away
 
-	QLineF bolaGol(myGoal->x(), myGoal->y(), ball->x(), ball->y());
-/*
-	//Nova versao
-	Robot* Inimigo = stage->getClosestPlayerToBall(robot->enemyTeam());
-	qreal IniX = Inimigo->x();
-	qreal IniY = Inimigo->y();
+	/// Build the home line
 
-	//Coordenadas do goleiro
-	qreal GolieX = robot->team()->at(2)->x();
-	qreal GolieY = robot->team()->at(2)->y();
+	//This angle is how much inside the goal the goalkeeper must be
+	//when 0 it's completely outside, when 90, it's half inside, when 180 it's completely inside
+	//values greater than 90 don't make much sense
+	const qreal angle(45);//TODO parametrize this
 
-	//Reta entre o inimigo e a bola
-	QLineF IniBallLine = QLineF(ball->x(), ball->y(), IniX, IniY);
+	//Auxiliar lines to translate the goal line ends
+	QLineF l1 = QLineF::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 - angle : angle);
+	QLineF l2 = QLineF::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 + angle : -angle);
 
-	//Reta de posicao do goleiro
-	qreal displace = myGoal->x() > 0 ? -150.0 : 150.0; //Distancia entre a posicao do goleiro e o gol
-	QLineF GoalLine = QLineF(myGoal->x() + displace, 0.0, myGoal->x() + displace, 1.0);
+	QLineF homeline(l1.translated(goal.p1()).p2(), l2.translated(goal.p2()).p2());
 
+	/// Findout where in the homeline should we stay
 
-	QPointF GoliePos;
-	GoalLine.intersect(IniBallLine, &GoliePos);
+	//watch the enemy
+	//TODO: get the chain of badguys, (badguy and who can it pass to)
+	Robot &badguy = *enemyTeam.getClosestPlayerToBall();
 
-	qreal goalWidth = myGoal->width();
-	qreal goalY = myGoal->y();
-	qreal robotY = GoliePos.y();
+	//watch our attacker
+	//TODO: if self then we should kick/pass the ball
+	Robot &goodguy = *myTeam.getClosestPlayerToBall();
 
-	QLineF ballGoalLine = QLineF(ball->x(),ball->y(),robot->goal()->x(),robot->goal()->y());
-	if(robotY > goalY + goalWidth/2) {
-		ballGoalLine.intersect(GoalLine, &GoliePos);
-		//GoliePos.setY(goalY + goalWidth/2);
-	}
-	else if(robotY < goalY - goalWidth/2)
-	{
-		ballGoalLine.intersect(GoalLine, &GoliePos);
-		//GoliePos.setY(goalY - goalWidth/2);
-	}
+	/// TODO
 
-	robotY = GoliePos.y();
-	if(robotY > goalY + goalWidth/2) {
-		//ballGoalLine.intersect(GoalLine, &GoliePos);
-		GoliePos.setY(goalY + goalWidth/2);
-
-		//if(stage->ball()->y() * robot->y() < 0)  GoliePos.setY(goalY - goalWidth/2);
-	}
-	else if(robotY < goalY - goalWidth/2)
-	{
-		//ballGoalLine.intersect(GoalLine, &GoliePos);
-		GoliePos.setY(goalY - goalWidth/2);
-	//	if(stage->ball()->y() * robot->y() < 0)  GoliePos.setY(goalY + goalWidth/2);
-	}
-	/*
-	if(GoliePos.y() > myGoal->width()/2 + myGoal->y()) 
-		GoliePos.setY(myGoal->width()/2 + myGoal->y());
-
-	else if(GoliePos.y() < myGoal->y() - myGoal->width()/2)
-		GoliePos.setY(myGoal->y() - myGoal->width()/2);
-*/
-
-	/*goto_->setOrientation(IniX - robot->x(), IniY - robot->y());
-	//goto_->setPoint(GoliePos.x(), GoliePos.y());
-	goto_->setPoint(GoliePos.x(), GoliePos.y());
-	goto_->step();*/
-
-
-	/* Modificacao anterior
-	qreal raio = myGoal->width() / 2;
-
-	QPointF ponto(myGoal->x() - (myGoal->x() - ball->x()) * raio / bolaGol.length(), - (myGoal->y() - ball->y()) * raio / bolaGol.length());
-
-	goto_->setOrientation(bolaGol.dx(), bolaGol.dy());
-	goto_->setPoint(ponto.x(), ponto.y());
-	goto_->step();
-
-	*/
-	//Gambiarra:
-	//TODO: corrigir valores de tamanho e posicao do gol
-	//myGoal->setX(-3000.0);
-	//myGoal->setWidth(
-
-	//Coordenadas do robo inimigo
-	//Robot* Inimigo = stage->getClosestPlayerToBall(robot->enemyTeam());
-	Robot* Inimigo = stage->getClosestPlayerToBall(robot->team());
-	qreal IniX = Inimigo->x();
-	qreal IniY = Inimigo->y();
-
-	//Coordenadas do goleiro
-	qreal GolieX = robot->team()->at(2)->x();
-	qreal GolieY = robot->team()->at(2)->y();
-
-	//Reta entre a bola e o jogador
-	QLineF IniBallLine = QLineF(ball->x(), ball->y(), IniX, IniY);
-	//QLineF IniBallLine = QLineF(ball->x(), ball->y(), myGoal->x(), 0.0);
-
-	//Reta do gol
-
-	qreal displace = myGoal->x() > 0 ? -300.0 : 300.0;
-	QLineF GoalLine = QLineF(myGoal->x() + displace, 0.0, myGoal->x() + displace, 1.0);
-
-
-	QPointF GoliePos;
-	GoalLine.intersect(IniBallLine, &GoliePos);
-
-
-	if(GoliePos.y() > myGoal->width()/2 + myGoal->y()) 
-		GoliePos.setY(myGoal->width()/2 + myGoal->y());
-
-	else if(GoliePos.y() < myGoal->y() - myGoal->width()/2)
-		GoliePos.setY(myGoal->y() - myGoal->width()/2);
-
-	//make goalkeeper position
-	qreal ratio = myGoal->width() / 2 / sqrt((stage->ball()->x() - myGoal->x()) * (stage->ball()->x() - myGoal->x()) + (stage->ball()->y() - myGoal->y()) * (stage->ball()->y() - myGoal->y()));
-	//qreal gx = (stage->ball()->x() - myGoal->x()) * ratio + myGoal->x();
-	//qreal gy = (stage->ball()->y() - myGoal->y()) * ratio + myGoal->y();
-	GoalLine = QLineF(myGoal->x(), myGoal->y(), stage->ball()->x(), stage->ball()->y());
-	qreal gx = - GoalLine.normalVector().dx() * ratio + myGoal->x();
-	qreal gy = - GoalLine.normalVector().dy() * ratio + myGoal->y();
-
-	goto_->setOrientation(IniX - robot->x(), IniY - robot->y());
-	//goto_->setPoint(GoliePos.x(), GoliePos.y());
-	goto_->setPoint(gx, gy);
+	/// The backup plan
+	QLineF ballToGoal(ball, goal);//to the center of the goal
+	QPointF target;
+	if(homeline.intersect(ballToGoal, &target) == QLineF::BoundedIntersection)
+		goto_->setPoint(target);
+	else
+		goto_->setPoint(homeline.pointAt(target.y() > 0 ? 1 : 0));
 	goto_->step();
 }
