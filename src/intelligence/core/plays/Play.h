@@ -4,6 +4,7 @@
 #include <string.h>
 #include "Stage.h"
 #include "Tactic.h"
+#include <QThread>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ namespace LibIntelligence
 {
 	namespace Plays
 	{	
-		class Play : public QObject
+		class Play : public QThread
 		{
 			Q_OBJECT
 
