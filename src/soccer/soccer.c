@@ -1,5 +1,12 @@
 #include "soccer.h"
 
+static float goal_hole_size( SoccerState *s, Vector2 src_point, Vector2 goal );
+static void is_kick_scored( SoccerState *s, 
+                                Vector2 src_point, Vector2 goal_point );
+
+static float goal_covering( SoccerState *s );
+static float goal_distance( SoccerState *s );
+
 
 static float goal_covering( SoccerState *s );
 static float goal_distance( SoccerState *s );
@@ -54,7 +61,7 @@ void sstate_restart_game_pos( SoccerState *s )
 float sstate_evaluate( SoccerState *s )
 {
  int i, closest_red, closest_blue;
- float t, s0 = 0, s1 = 0, s2 = 0, s3 = 0, s4 = 0, s5 = 0, s6 = 0;
+ float t, s0 = 0, s1 = 0, s2 = 0, s3 = 0, s4 = 0, s5 = 0, s6 = 0, s7=0;
  float min_red_dist_to_ball, min_red_dist_to_blue_goal,
        min_red_dist_to_red_goal;
  float min_blue_dist_to_ball,  min_blue_dist_to_blue_goal, 
@@ -135,7 +142,15 @@ float sstate_evaluate( SoccerState *s )
    }
  } 
 
- return s0 + s1 + s2 + s3 + s4 + s5 + s6;
+ 
+   if( min_red_dist_to_ball < 1 )
+      s7 += 1000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );
+   if( min_blue_dist_to_ball < 1 )
+      s7 -= 1000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
+
+
+
+ return s0 + s1 + s2 + s3 + s4 + s5 + s6 + s7;
 } 
 
 
@@ -211,4 +226,47 @@ float time_to_intersect( Vector2 friend_pos, Vector2 friend_direction,
     return MAX_FLOAT;
 }
 
+
+float goal_hole_size( SoccerState *s, Vector2 src_point, Vector2 goal )
+{
+ float dy = .1;
+ float k, hole_size = 0;
+ Vector2 p;
+
+ for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size; k += dy ){ 
+          p = goal;
+          p.y = p.y + k;
+          is_kick_scored(s, src_point, p );
+          if( s->goal_scored )
+              hole_size += dy;
+ }
+ return hole_size;
+}
+
+
+static void is_kick_scored( SoccerState *s, Vector2 src_point, Vector2 goal_point )
+{
+ int i;
+ Boolean goal_scored;
+ float dotprod_red, dotprod_blue;
+ Vector2 goal_direction, red_relpos, blue_relpos, proj_red, proj_blue;
+
+ goal_scored = TRUE;
+ for( i = 0; i < NPLAYERS; i++ ){
+       goal_direction = v2_unit( v2_sub( goal_point,  src_point) );
+       blue_relpos = v2_sub( s->blue[i],  src_point );
+       red_relpos = v2_sub( s->red[i],  src_point );
+       proj_blue = v2_scale( dotprod_blue = v2_dot( blue_relpos, goal_direction ), 
+                        goal_direction );
+       proj_red = v2_scale( dotprod_red = v2_dot( red_relpos, goal_direction ), 
+                        goal_direction );
+       if( (dotprod_red > 0 ) && sstate_is_inside_field( s, s->red[i] ) &&
+           (v2_norm( v2_sub( red_relpos, proj_red )) < soccer_env()->robot_radius)  )
+              goal_scored = FALSE;  
+       if( (dotprod_blue > 0 ) && sstate_is_inside_field( s, s->blue[i] ) &&
+           (v2_norm( v2_sub( blue_relpos, proj_blue )) < soccer_env()->robot_radius)  )
+              goal_scored = FALSE;  
+     }
+ return goal_scored;
+}
 

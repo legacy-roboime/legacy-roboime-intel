@@ -239,24 +239,14 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
        action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
  }
 
- if( (i >= 26) && (i < 97 ) )
+ if( (i >= 26) &&  (NPLAYS - 2) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
-/* if( (i>= 50) && ( i < 60) )
-     action = sstate_blue_move(s, blue_robot,(1./2)*move_radius );
- if( (i >= 60) && ( i < 70) )
-     action = sstate_blue_move(s, blue_robot,(1./4)*move_radius );
- if( (i >= 70) && ( i < 80) )
-     action = sstate_blue_move(s, blue_robot, (1./8)*move_radius);
- if( (i >= 80) && ( i < 90) )
-     action = sstate_blue_move(s, blue_robot, (1./16)*move_radius );
- if( (i >= 90) && ( i < 98) )
-     action = sstate_blue_move(s, blue_robot, (1./32)*move_radius  ); */
- if( i == 98 ){
+ if( i == (NPLAYS - 2) ){
      s->blue[blue_robot] = get_blue_move_table(blue_robot);
      action.move[blue_robot] = get_blue_move_table(blue_robot);
      action.prune = FALSE;
  }   
- if( i == 99 )
+ if( i == (NPLAYS - 1) )
    action.prune = FALSE; 
  
  s->blue_time_stamp += saction_blue_elapsed_time(&action); 
