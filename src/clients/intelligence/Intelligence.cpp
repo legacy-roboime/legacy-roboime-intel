@@ -292,22 +292,12 @@ void Intelligence::update()
 
 	case PLAY:
 		//play["cbr"]->step();
-<<<<<<< 753c
 		//play["cbr2"]->step();
 		//play["minimax2"]->step();
 		if(!((QThread *)play["minimax2"])->isRunning())
 			((QThread *)play["minimax2"])->start();
 		play["minimax2"]->step();
 		play["retaliate"]->step();
-=======
-		//tactic["zickler43"]->step();
-		//play["cbr2"]->step();
-		//play["minimax2"]->step();
-	if(!((QThread *)play["minimax2"])->isRunning())
-		((QThread *)play["minimax2"])->start();
-	play["minimax2"]->step();
-	play["retaliate"]->step();
->>>>>>> local
 		break;
 
 	case TACTIC:
