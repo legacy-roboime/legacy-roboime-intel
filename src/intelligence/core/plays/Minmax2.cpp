@@ -5,6 +5,7 @@
 #include <QLineF>
 #include "GotoTactic.h"
 #include "config.h"
+#include <QTime>
 
 #define LOGGING
 
@@ -157,6 +158,9 @@ void Minmax2::update_soccer_state()
 void Minmax2::run()
 {
 	while(true) {
+#ifdef MINMAX2_DELAY
+		QTime time1 = QTime::currentTime();
+#endif
 #ifdef SOCCER_DEBUG
 		statemutex.lock();
 #endif
@@ -189,6 +193,11 @@ void Minmax2::run()
 #ifdef SOCCER_DEBUG
 		changeSStateMeasure(s, 1000.);
 		statemutex.unlock();
+#endif
+#ifdef MINMAX2_DELAY
+		QTime time2 = QTime::currentTime();
+		double mSec = (time2.minute() * 60 * 1000 + time2.second() * 1000 + time2.msec()) - (time1.minute() * 60 * 1000 + time1.second() * 1000 + time1.msec());
+		cout << "Minmax delay: " << mSec << endl;
 #endif
 	}
 }
@@ -231,7 +240,7 @@ void Minmax2::act(SoccerAction& action, Team* team)
 	Ball* ball = stage_->ball();
 	int idClosest = stage_->getClosestPlayerToBall(team)->id();
 
-#ifdef SOCCER_DEBUG
+#ifdef SOCCER_ACTION
 	if(action.type == kick_to_goal)
 		cout << "Kick To Goal" << endl;
 	else if(action.type == pass)
