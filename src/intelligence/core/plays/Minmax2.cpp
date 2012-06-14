@@ -262,21 +262,24 @@ void Minmax2::act(SoccerAction& action, Team* team)
 		Robot* robot = team->at(i);
 
 		if( idClosest == robot->id() ){
-			//cout << "SKILL: " << attacker->getCurrentState()->objectName().toStdString() << endl;
+#ifdef SKILL_OWNER
+			cout << "SKILL DO ROBO MAIS PERTO DA BOLA: " << attacker->getCurrentState()->objectName().toStdString() << endl;
+#endif
+#ifdef DELTA_POS_OWNER
+			static Vector2 lastPos = *pos;
+			cout << v2_norm(v2_sub(lastPos, *pos)) << endl;
+#endif
+#ifdef MOVE_OWNER
+			cout << pos->x << " " << pos->y << endl;
+#endif
 
-			//DEBUG
-			//QLineF l = QLineF(0, 0, pos->x, pos->y);
-			//qreal angle = 360 - l.angle(); //convenção sentido horario para classe QLineF
-			//qreal orientation = robot->orientation() * 180 / M_PI;
-			//static qreal lastOr = angle;//orientation;
-			//cout << abs(angle - lastOr) << endl;
-			//cout << pos->x << " " << pos->y << endl;
-
-			attacker->setRobot(robot);// = new AttackerMinMax2(this, robot, envReal.red_speed, envReal.red_dribble_speed, envReal.red_pass_speed);
+			attacker->setRobot(robot);
 			attacker->updateSoccerAction(action.type, action.kick_point, *pos);
 			attacker->step();
 			
-			//lastOr = angle;
+#ifdef DELTA_POS_OWNER
+			lastPos = *pos;
+#endif
 		}
 		else{
 			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());

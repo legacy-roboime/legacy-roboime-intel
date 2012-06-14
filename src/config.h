@@ -2,6 +2,8 @@
 
 #ifdef _DEBUG
 #define DEBUG_UDP
+//#define DELTA_POS_OWNER
+//#define MOVE_OWNER
 //#define SOCCER_DEBUG
 //#define BALL_SPEED_SIM
 //#define MINMAX2_DELAY
