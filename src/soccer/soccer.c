@@ -128,14 +128,14 @@ float sstate_evaluate( SoccerState *s )
  for( i = 0; i < NPLAYERS; i++){
    if( (s->red_ball_owner >= 0 ) && 
        sstate_possible_red_pass(s, i, v2_add(s->red[i],v2_make(-.1,0) )) > 0){ 
-           s6 += (400 - 80*v2_norm( v2_sub( s->red[i], blue_goal ))
+           s6 += (400 - 40*v2_norm( v2_sub( s->red[i], blue_goal ))
                       +20*v2_norm( v2_sub( s->red[i], s->ball ))
                       + 5*sstate_min_blue_dist( s, s->red[i] )
                  );
    }
    if( ( s->blue_ball_owner >= 0 ) &&
        sstate_possible_blue_pass(s, i, v2_add(s->blue[i],v2_make(.1,0) )) > 0){
-           s6 += (-400 + 80*v2_norm( v2_sub( s->blue[i], red_goal ))
+           s6 += (-400 + 40*v2_norm( v2_sub( s->blue[i], red_goal ))
                        -20*v2_norm( v2_sub( s->blue[i], s->ball ))
                        -5*sstate_min_red_dist( s, s->blue[i] )
                  ); 
@@ -143,12 +143,10 @@ float sstate_evaluate( SoccerState *s )
  } 
 
  
-   if( min_red_dist_to_ball < 1 )
-      s7 += 1000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );
-   if( min_blue_dist_to_ball < 1 )
-      s7 -= 1000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
-
-
+   if( min_red_dist_to_ball < 2 )
+      s7 += 100000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );
+   if( min_blue_dist_to_ball < 2 )
+      s7 -= 100000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
 
  return s0 + s1 + s2 + s3 + s4 + s5 + s6 + s7;
 } 
@@ -229,7 +227,7 @@ float time_to_intersect( Vector2 friend_pos, Vector2 friend_direction,
 
 float goal_hole_size( SoccerState *s, Vector2 src_point, Vector2 goal )
 {
- float dy = .1;
+ float dy = .15;
  float k, hole_size = 0;
  Vector2 p;
 
