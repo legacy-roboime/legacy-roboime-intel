@@ -217,7 +217,7 @@ Intelligence::Intelligence(QObject *parent)
 
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
-	play["retaliateU"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], 3000);
+	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], 3000);
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
@@ -294,9 +294,10 @@ void Intelligence::update()
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
 		//play["referee"]->step();
-		if(!((QThread *)play["minimax2"])->isRunning())
-			((QThread *)play["minimax2"])->start();
-		play["minimax2"]->step();
+		//if(!((QThread *)play["minimax2"])->isRunning())
+		//	((QThread *)play["minimax2"])->start();
+		//play["minimax2"]->step();
+		play["retaliateU"]->step();
 		play["retaliateT"]->step();
 		break;
 
@@ -308,6 +309,7 @@ void Intelligence::update()
 	case SKILL:
 		skill["fac"]->step();
 		skill["goto"]->step();
+		((Goto*)skill["goto"])->setAllowDefenseArea();
 		break;
 
 	case CONTROLLER:
