@@ -150,6 +150,32 @@ SoccerAction sstate_red_pass( SoccerState *s, int recv, float recv_radius )
 }
 
 
+SoccerAction sstate_red_block( SoccerState *s, int robot, Vector2 src_point )
+{
+ int maxIter = 10;	 
+ int attempt = 0;
+ Vector2 goal_point, new_pos;
+ SoccerAction action = saction_red_make(s);
+ 
+ do{
+   goal_point = v2_add( soccer_env()->red_goal,
+	                    v2_make(0, (DRAND() - .5)*soccer_env()->goal_size ));
+   new_pos = v2_lerp( DRAND(), goal_point, src_point );
+ }
+ while( (attempt < maxIter) && (!sstate_is_valid_red_pos( s, robot, new_pos )) ); 
+
+ if( attempt ==  maxIter )
+	return action;
+ 
+ action.type = move;
+ s->red[robot] = new_pos;
+ if( robot == s->red_ball_owner )
+    s->ball = new_pos;
+ action.prune = FALSE;
+ return action;
+}
+
+
 
 SoccerAction sstate_red_move( SoccerState *s, int robot, float radius )
 {
