@@ -31,7 +31,8 @@ Stage::Stage()
 }
 
 Stage::Stage(const Stage& stage)
-	: QObject()
+	: QObject(),
+	isLeftSideBlueGoal_(stage.isLeftSideBlueGoal_)
 {
 	//TODO: make default ball/sizes/...
 	this->_time_left = stage.getTimeLeft();
@@ -48,6 +49,7 @@ Stage::Stage(const Stage& stage)
 	this->penaltySpotDistance_ = stage.penaltySpotDistance();
 	this->penaltyLineDistance_ = stage.penaltyLineDistance();
 	ball_ = new Ball(*(stage.ball()));
+
 	blueGoal_ = new Goal(*(stage.blueGoal()));
 	yellowGoal_ = new Goal(*(stage.yellowGoal()));
 	blueTeam_ = new Team(this, *(stage.blueTeam()));
