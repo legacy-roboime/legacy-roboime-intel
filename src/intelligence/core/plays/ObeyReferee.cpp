@@ -10,7 +10,8 @@ ObeyReferee::ObeyReferee(QObject *q, Play *p)
 	: Play(q, p->team(), p->stage()),
 	play(p),
 	halt(new Halt(this, p->team(), p->stage())),
-	stopReferee(new StopReferee(this, p->team(), p->stage()))
+	stopReferee(new StopReferee(this, p->team(), p->stage())),
+	lastCmd('H')
 {}
 
 ObeyReferee::~ObeyReferee()
@@ -50,23 +51,24 @@ void ObeyReferee::setStage(Stage *s)
 
 void ObeyReferee::step()
 {
+	Stage *sta = this->stage();
 	//Commands Referee
-	char cmd = Stage::getCmdReferee();//sta->getCmdReferee(); //TODO: utilizar o getCmdReferee
+	char cmd = sta->getCmdReferee();//sta->getCmdReferee(); //TODO: utilizar o getCmdReferee
 
-	//printf("JUIZ: %c\n",cmd);
+#ifdef REFERRE_CMD
+	cout << "JUIZ: " << cmd << endl;
+#endif
 
-	static char lastCmd = 'H';
-	static qreal bx, by;
+	lastCmd = 'H';
 	qreal dist=-1;
 
-	Ball *ball = stage()->ball();
+	Ball *ball = sta->ball();
 
-	dist = sqrt(pow(bx - ball->x(), 2) + pow(by - ball->y(), 2));
+	dist = sqrt(pow(lastBall.x() - ball->x(), 2) + pow(lastBall.y() - ball->y(), 2));
 
 	if(lastCmd != cmd){
 		lastCmd = cmd;
-		bx = ball->x();
-		by = ball->y();
+		lastBall = *ball;
 	}
 
 	TeamColor usColor = team()->color();

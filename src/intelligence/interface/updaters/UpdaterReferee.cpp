@@ -7,7 +7,11 @@
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterReferee::UpdaterReferee(QObject* parent, char* address, int port) : Updater() {
+UpdaterReferee::UpdaterReferee(QObject* parent, char* address, int port) 
+	: Updater(),
+	cmd_counter_tmp(-1),
+	packets(new QQueue<RefData>())
+{
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);
@@ -33,16 +37,20 @@ void UpdaterReferee::receiveData() {
 		datagram.resize(udpSocket->pendingDatagramSize());
 		udpSocket->readDatagram(datagram.data(), datagram.size());
 		char* packet = datagram.data();
-		//store the packet:
-		unsigned char cmd_counter = (unsigned char)packet[1];
+		RefData data;
 
-		static unsigned char cmd_counter_tmp = -1;
+		//store the packet: 
+		uchar cmd_counter = (uchar)(packet[1]);
+
 		if ( cmd_counter != cmd_counter_tmp ) 
 		{ // se nao houver nenhum comando novo, fazer nada
 			cmd_counter_tmp = cmd_counter;
-			packets.push_back(packet);
-
-			Stage::setCmdReferee((char)packet[0]);
+			data.cmd = (char)packet[0];
+			data.cmd_counter = (uchar)packet[1];
+			data.goals_blue = (uchar)packet[2];
+			data.goals_yellow = (uchar)packet[3];
+			data.time_remaining = ((int)(packet[4]) << 8)  + (int)(packet[5]); //byte mais significativo
+			packets->push_back(data);
 		}
 	}
 }
@@ -50,14 +58,9 @@ void UpdaterReferee::receiveData() {
 void UpdaterReferee::receive() {}
 
 void UpdaterReferee::prepare() {
-	while(!packets.empty()){
-		char* packet = packets.front();
-		char cmd_tmp = (char)packet[0];
-		unsigned char cmd_counter = (unsigned char)packet[1];
-		unsigned char goals_blue = (unsigned char)packet[2];
-		unsigned char goals_yellow = (unsigned char)packet[3];
-		int time_remaining = ((int)(packet[4]) << 8)  + (int)(packet[5]); //byte mais significativo
-		enqueue(new UpdateReferee(cmd_tmp, cmd_counter, goals_blue, goals_yellow, time_remaining));
-		packets.pop_front();
+	while(!packets->empty()){
+		RefData& data = packets->front();
+		enqueue(new UpdateReferee(data.cmd, data.cmd_counter, data.goals_blue, data.goals_yellow, data.time_remaining));
+		packets->pop_front();
 	}
 }

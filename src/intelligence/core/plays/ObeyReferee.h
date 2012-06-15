@@ -24,6 +24,8 @@ namespace LibIntelligence
 			Play *play;
 			Play *stopReferee;
 			Play *halt;
+			char lastCmd;
+			QPointF lastBall;
 		};
 	}
 }

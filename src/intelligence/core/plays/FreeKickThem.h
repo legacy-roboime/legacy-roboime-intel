@@ -19,6 +19,9 @@ namespace LibIntelligence
 			FreeKickThem(QObject*, Team*,Stage*);
 			~FreeKickThem();
 			virtual void step();
+
+		private:
+			QPointF lastBall;
 		};
 	}
 }
