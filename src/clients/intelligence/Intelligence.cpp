@@ -317,6 +317,8 @@ void Intelligence::update()
 	}
 	///END STEPS
 
+
+
 	if(useSimulation) {
 #ifdef CONTROL_BLUE
 		commander["blueSim"]->step();

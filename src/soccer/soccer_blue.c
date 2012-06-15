@@ -199,7 +199,7 @@ static SoccerAction use_blue_move_table( SoccerState *s, int robot )
  for( i=0; i < NPLAYERS; i++ )
    if( i != robot ){
      disp = v2_sub( get_blue_move_table(i), s->blue[i] );
-     if( v2_norm( disp ) > .5*soccer_env()->robot_radius ){
+     if( v2_norm( disp ) > .1*soccer_env()->robot_radius ){
          p =  v2_add( s->blue[i], 
                      v2_scale( MAX(1., NPLAYERS*soccer_env()->sample_period
                                        *soccer_env()->blue_speed ),
