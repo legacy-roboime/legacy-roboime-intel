@@ -1,3 +1,36 @@
+/*
+Command type 	Command Description 	Command
+=================================================================================
+Control commands
+	Halt 	                        H
+	Stop 	                        S
+	Ready 	                        ' ' (space character)
+	Start 	                        s
+Game Notifications
+	Begin first half 	        1
+	Begin half time 	        h
+	Begin second half 	        2
+	Begin overtime half 1 	        o
+	Begin overtime half 2 	        O
+	Begin penalty shootout 	        a
+
+	Command type 	Command Description 	Yellow Team Command 	Blue Team Command
+	=================================================================================
+	Game restarts
+	Kick off 	                k                       K
+	Penalty 	                p 	                P
+	Direct Free kick 	        f 	                F
+	Indirect Free kick 	        i 	                I
+	Extras
+	Timeout 	                t 	                T
+	Timeout end 	                z 	                z
+	Goal scored 	                g 	                G
+	decrease Goal score 	        d 	                D
+	Yellow Card 	                y 	                Y
+	Red Card 	                r 	                R
+	Cancel 	                        c
+*/
+
 #include "ObeyReferee.h"
 #include "Ball.h"
 #include "StopReferee.h"
@@ -59,7 +92,6 @@ void ObeyReferee::step()
 	cout << "JUIZ: " << cmd << endl;
 #endif
 
-	lastCmd = 'H';
 	qreal dist=-1;
 
 	Ball *ball = sta->ball();
@@ -68,24 +100,29 @@ void ObeyReferee::step()
 
 	if(lastCmd != cmd){
 		lastCmd = cmd;
-		lastBall = *ball;
+		//lastBall = *ball;
 	}
 
 	TeamColor usColor = team()->color();
 
+	//Comportamento muda caso a bola tenha se deslocado
 	if(cmd == 'f' && usColor == TeamColor::YELLOW)
 		play->step();
 	else if(cmd == 'f' && usColor == TeamColor::BLUE){
 		if(dist<100)
 			stopReferee->step();
-		else
+		else{
+			//lastBall = *ball;
 			play->step();
+		}
 	}
 	else if(cmd == 'F' && usColor == TeamColor::YELLOW){
 		if(dist<100)
 			stopReferee->step();
-		else
+		else{
+			//lastBall = *ball;
 			play->step();
+		}
 	}
 	else if(cmd == 'F' && usColor == TeamColor::BLUE)
 		play->step();
@@ -95,17 +132,22 @@ void ObeyReferee::step()
 	else if(cmd == 'i' && usColor == TeamColor::BLUE){
 		if(dist<100)
 			stopReferee->step();
-		else
+		else{
+			//lastBall = *ball;
 			play->step();
+		}
 	}
 	else if(cmd == 'I' && usColor == TeamColor::YELLOW){
 		if(dist<100)
 			stopReferee->step();
-		else
+		else{
+			//lastBall = *ball;
 			play->step();
+		}
 	}
 	else if(cmd == 'I' && usColor == TeamColor::BLUE)
 		play->step();
+
 
 	else if(cmd == 'H')
 		halt->step();
@@ -121,13 +163,14 @@ void ObeyReferee::step()
 
 	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
-
+	
 	else if(cmd == 't' || cmd == 'T')
 		halt->step();
 
 	else if(cmd == 'z' || cmd == 'g' || cmd == 'G' || cmd == 'd' || cmd == 'D' || cmd == 'y' || cmd == 'Y' || cmd == 'r' || cmd == 'R' || cmd == 'c')
 		stopReferee->step();
 
+	//Penalty
 	else if(cmd == 'p' && usColor == TeamColor::YELLOW)
 		stopReferee->step();
 	else if(cmd == 'p' && usColor == TeamColor::BLUE)
