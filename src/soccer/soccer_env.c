@@ -12,7 +12,7 @@ void soccer_env_init( void )
  senv.red_pass_speed = 3.5;
  senv.blue_pass_speed = 3.5;
  senv.red_move_radius = 6.;
- senv.blue_move_radius = 1;
+ senv.blue_move_radius = 6;
  senv.red_recv_radius = .1;
  senv.blue_recv_radius = .1;
  senv.robot_radius = .09;

@@ -194,7 +194,8 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
      if( (i >=8 ) && (i < 14) )
        action = sstate_red_receive_ball( s, i%NPLAYERS ); 
  }
- 
+ if( (i == 14) )
+	   action.prune = FALSE;
  if( (i >= 14) && i < (MAX_NPLAYS-2) )
      action = sstate_red_move(s, red_robot, move_radius );
  if( i ==  (MAX_NPLAYS-2)  ){
@@ -203,7 +204,7 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
      action.prune = FALSE;
  }   
  if( i ==  (MAX_NPLAYS-1)  )
-   action.prune = FALSE; 
+	action = sstate_red_block(s, red_robot, s->ball); 
 
  s->red_time_stamp += saction_red_elapsed_time(&action); 
  return action;
@@ -229,7 +230,8 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
      if( (i >=8 ) && (i <14) )
        action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
  }
-
+  if( i == 14 )
+	  action = sstate_blue_block(s, blue_robot, s->ball);
  if( (i >= 14) &&  i < (MIN_NPLAYS - 2) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
 
@@ -239,7 +241,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
      action.prune = FALSE;
  }   
  if( i == (MIN_NPLAYS - 1) )
-   action.prune = FALSE; 
+     action.prune = FALSE; 
  
  s->blue_time_stamp += saction_blue_elapsed_time(&action); 
  return action;
