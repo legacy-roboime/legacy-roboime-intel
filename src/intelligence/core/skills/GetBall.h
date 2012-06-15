@@ -9,7 +9,7 @@ namespace LibIntelligence
 {
 	namespace Skills
 	{
-		class GetBall : public Goto
+		class GetBall : public Goto //BROKEN CODE
 		{
 			Q_OBJECT
 

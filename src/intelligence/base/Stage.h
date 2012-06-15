@@ -78,8 +78,8 @@ namespace LibIntelligence
 		void setPenaltyLineDistance(qreal);
 		qreal penaltyLineDistance() const;
 
-		static void setCmdReferee(char);
-		static char getCmdReferee();
+		void setCmdReferee(char);
+		char getCmdReferee() const;
 
 		void setTimeLeft(double);
 		double getTimeLeft() const;
@@ -97,7 +97,7 @@ namespace LibIntelligence
 		bool operator==(const Stage& stage);
 		bool operator==(const Stage* stage);
 
-		static bool isLeftSideBlueGoal();
+		bool isLeftSideBlueGoal();
 	private:
 		qreal lineWidth_;
 		qreal fieldLength_;
@@ -111,7 +111,7 @@ namespace LibIntelligence
 		qreal penaltySpotDistance_;//from field
 		qreal penaltyLineDistance_;//from spot
 
-		static char cmdReferee_;
+		char cmdReferee_;
 		double _time_left;
 		//fields:
 		Ball* ball_;
@@ -119,7 +119,7 @@ namespace LibIntelligence
 		Goal* yellowGoal_;
 		Team* blueTeam_;
 		Team* yellowTeam_;
-		static bool isLeftSideBlueGoal_;
+		bool isLeftSideBlueGoal_;
 	};
 }
 

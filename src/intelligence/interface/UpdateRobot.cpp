@@ -19,13 +19,15 @@ using namespace LibIntelligence;
 UpdateRobot::UpdateRobot(TeamColor tc, const SSL_DetectionRobot& p, double t1, double t2, int camId)
 	: Update(t1, t2, camId),
 	QPointF(p.x(), p.y()),
-	pimpl(new UpdateRobotImpl(tc, p.robot_id(), p.orientation()))
+	pimpl(new UpdateRobotImpl(tc, p.robot_id(), p.orientation())),
+	last_time_capture(0)
 {}
 
 UpdateRobot::UpdateRobot(TeamColor tc, quint8 i, qreal x, qreal y, qreal theta, double t1, double t2, int camId)
 	: Update(t1,t2,camId),
 	QPointF(x, y),
-	pimpl(new UpdateRobotImpl(tc, i, theta))
+	pimpl(new UpdateRobotImpl(tc, i, theta)),
+	last_time_capture(0)
 {}
 
 UpdateRobot::~UpdateRobot()
@@ -36,7 +38,6 @@ UpdateRobot::~UpdateRobot()
 void UpdateRobot::apply(Updater* u)
 {
 	//cout << to_string() << endl;//test
-	static qreal last_time_capture = 0;
 	qreal time = time_capture();
 	for(quint32 k = u->robotsSize(); k > 0; k--) {
 		if(u->robot(k-1)->patternId() == patternId() && u->robot(k-1)->color() == color()) {

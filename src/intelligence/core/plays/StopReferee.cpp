@@ -14,22 +14,25 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage)
 		switch(i){
 			case 0:
 				//player_[i] = new Blocker(this,team->at(i),0);
-				player_[i] = new Goalkeeper(this,team->at(i), 700);
+				player_[i] = new Goalkeeper(this, team->at(i), 700);
 				break;
 			case 1:
-				player_[i] = new Blocker(this,team->at(i),0);
+				player_[i] = new Blocker(this, team->at(i), 0);
 				//player_[i] = new Goalkeeper(this,team->at(i), 700);
 				//player_[i] = new Goalkeeper(this,team->at(i), 700);
 				break;
 			case 2:
-				player_[i] = new Blocker(this,team->at(i),-deltaTeta);
+				player_[i] = new Blocker(this, team->at(i), -deltaTeta);
 				break;
 			case 3:
 				//player_[i] = new Defender(this,team->at(i), 0, 1000);
-				player_[i] = new Blocker(this,team->at(i),+deltaTeta);
+				player_[i] = new Blocker(this, team->at(i),+deltaTeta);
 				break;
 			case 4:
-				player_[i] = new Blocker(this,team->at(i),+2*deltaTeta);
+				player_[i] = new Defender(this, team->at(i), 0, 3000);
+				break;
+			case 5:
+				player_[i] = new Defender(this, team->at(i), -1, 3000);
 				break;
 		}
 	}

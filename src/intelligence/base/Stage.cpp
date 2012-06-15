@@ -6,11 +6,10 @@
 #include <limits.h>
 using namespace LibIntelligence;
 
-bool Stage::isLeftSideBlueGoal_ = true;
-char Stage::cmdReferee_ = 'H';
-
 Stage::Stage()
-	: QObject()
+	: QObject(),
+	isLeftSideBlueGoal_(true),
+	cmdReferee_('H')
 {
 	//TODO: make default ball/sizes/...
 	lineWidth_ = 0.0;
@@ -253,7 +252,7 @@ void Stage::setCmdReferee(char cmdReferee){
 	cmdReferee_ = cmdReferee;
 }
 
-char Stage::getCmdReferee(){
+char Stage::getCmdReferee() const{
 	return cmdReferee_;
 }
 

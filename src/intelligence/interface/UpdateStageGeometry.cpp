@@ -66,7 +66,7 @@ void UpdateStageGeometry::apply(Updater* u)
 		Stage* stage = u->stage(k-1);
 		Goal* blueGoal = stage->blueGoal();
 		Goal* yellowGoal = stage->yellowGoal();
-		if(Stage::isLeftSideBlueGoal()){
+		if(stage->isLeftSideBlueGoal()){
 			blueGoal->setX(-fieldLength()/2.);
 			blueGoal->setY(0);
 			blueGoal->setDepth(goal_depth());

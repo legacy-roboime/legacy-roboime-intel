@@ -39,6 +39,7 @@ namespace LibIntelligence
 
 	private:
 		UpdateRobotImpl* pimpl;
+		qreal last_time_capture;
 	};
 }
 

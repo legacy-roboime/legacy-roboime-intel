@@ -8,6 +8,7 @@
 //#define BALL_SPEED_SIM
 //#define MINMAX2_DELAY
 //#define SOCCER_ACTION
+//#define REFERRE_CMD
 #endif
 
 #define NPLAYERS 6

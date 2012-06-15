@@ -7,11 +7,18 @@
 #include <QQueue>
 
 class QUdpSocket;
-
 //using namespace std;
 
 namespace LibIntelligence
 {
+	struct RefData{
+		char cmd;
+		uchar cmd_counter;
+		uchar goals_blue;
+		uchar goals_yellow;
+		int time_remaining;
+	};
+
 	class UpdaterReferee : public Updater
 	{
 		Q_OBJECT
@@ -28,7 +35,8 @@ namespace LibIntelligence
 		void receiveData();
 
 	private:
+		uchar cmd_counter_tmp;
 		QUdpSocket* udpSocket;
-		QQueue<char*> packets;
+		QQueue<RefData>* packets;
 	};
 }
