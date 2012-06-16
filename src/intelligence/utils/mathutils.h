@@ -12,4 +12,7 @@
 //qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
 #define SQ(x) ((x)*(x))
 
+#define DEGTORAD(x) (M_PI * (x) / 180)
+#define RADTODEG(x) (180 * (x) / M_PI)
+
 #endif
