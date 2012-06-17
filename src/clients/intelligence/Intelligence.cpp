@@ -219,14 +219,14 @@ Intelligence::Intelligence(QObject *parent)
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], 3000);
-	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["referee"] = new Plays::ObeyReferee(this, play["retaliateU"]);
 
-	tactic["controller"] = new Controller2(this, team["us"]->at(3), 1, 500); //controle no referencial do campo
-	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
+	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
+	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 500); //controle no referencial do robo
+	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 500); //controle no referencial do campo
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["they"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["they"]->at(0),1000);
