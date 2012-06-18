@@ -44,7 +44,7 @@ void FollowAndCover::step()
 	//we may also want to orient torwards the followed
 	//keep in mind we use radians and qt uses degrees
 	//TODO: use degrees too, it's easy
-	Goto::setOrientation(DEGTORAD(180 - base.angle()));
+	Goto::setOrientation(DEGTORAD(180 + base.angle()));
 
 	//that's all folks!
 	Goto::step();
