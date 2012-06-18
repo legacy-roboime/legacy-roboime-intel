@@ -46,12 +46,7 @@ private:
 	UDPServerSimInt* intServer;
 
 	static bool bRightMouseButtonPressed;
-	//static NxReal gMouseDepth;
-	//static NxDistanceJoint* gMouseJoint;
-	//static NxActor* gMouseSphere;
-	//static NxActor* gSelectedActor;
-	//static NxScene* scene;
-	//static NxPhysicsSDK* physicsSDK;
+
 	static ActorPicking* actorPicking;
 	static QMapIterator<int, NxScene1*> indexRenderScene;
 	//static FILE * outputfile;
@@ -100,9 +95,7 @@ private:
 	friend class ActorPicking;
 	friend class Actors;
 private slots:
-	//void startVisionClicked();
 	void simulate();
-	//void ttt ();
 };
 
 #endif // SIMULATIONVIEW_H

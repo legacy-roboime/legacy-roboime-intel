@@ -281,12 +281,6 @@ void Simulation::append(const QString& d)
 
 void Simulation::simulateReal(float dt, int maxStepIter)
 {
-	//QTime time = QTime::currentTime();
-	//static double lTime = 0;
-	//double mSec = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec() - lTime;
-	//printf("SIM %f\n",mSec);
-	//lTime = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec();
-
 	//static int count=0; //coloca para executar o ultimo comando um periodo de tempo assim como o nosso robo real TODO: perguntar pro renault qual é o tempo
 	//static QString& stringO = QString("");
 	//if(!qCommand.isEmpty()) {
@@ -328,7 +322,6 @@ void Simulation::simulate()
 		i.next();
 		if (i.value()->scene && !gPause)
 		{
-			//printf("RODA: %f\n", ((NxWheel2*)(i.value()->allRobots->getRobotByIdByTeam(0, 1)->getWheel(0)))->getWheelShape()->getAxleSpeed());
 			//timestep de 1/60 e 4 intervalos (baseado na tese do stefan zickler
 			i.value()->scene->setTiming(timeStep, 4, NX_TIMESTEP_FIXED);
 			i.value()->scene->simulate(timeStep);
@@ -350,10 +343,8 @@ void Simulation::simulate()
 
 void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 {
-	//parseLegacyString("15 0 1 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0\n");
 	// Start simulation
 	// Physics code
-	//if(this->gScenes[indexScene]->ball->ball->getGlobalPosition().x > 3025)
 #ifdef BALL_SPEED_SIM
 	cout << "BOLA SPEED " << this->gScenes[indexScene]->ball->ball->getLinearVelocity().magnitude() << endl;
 #endif
@@ -364,7 +355,7 @@ void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 		 gScenes[indexScene]->scene->flushStream();
 		 gScenes[indexScene]->scene->fetchResults(NX_RIGID_BODY_FINISHED, true);
 	//}
-	//cout << "d " << this->gScenes[indexScene]->allRobots->getRobotByIdByTeam(4,1)->getGlobalPose().t.x << endl;
+
 	// ~Physics code
 }
 
