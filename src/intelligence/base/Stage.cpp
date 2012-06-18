@@ -6,30 +6,29 @@
 #include <limits.h>
 using namespace LibIntelligence;
 
-bool Stage::isLeftSideBlueGoal_ = true;
+bool Stage::isLeftSideBlueGoal_ = false;
 char Stage::cmdReferee_ = 'H';
 
 Stage::Stage()
-	: QObject()
-{
+	: QObject(),
 	//TODO: make default ball/sizes/...
-	lineWidth_ = 0.0;
-	fieldLength_ = 0.0;
-	fieldWidth_ = 0.0;
-	boundaryWidth_ = 0.0;
-	refereeWidth_ = 0.0;
-	centerCircleRadius_ = 0.0;
-	defenseRadius_ = 0.0;
-	defenseStretch_ = 0.0;
-	freeKickDistance_ = 0.0;
-	penaltySpotDistance_ = 0.0;//from field
-	penaltyLineDistance_ = 0.0;//from spot
-	ball_ = new Ball(21.5);
-	blueGoal_ = new Goal();
-	yellowGoal_ = new Goal();
-	blueTeam_ = new Team(this, TeamColor::BLUE);
-	yellowTeam_ = new Team(this, TeamColor::YELLOW);
-}
+	lineWidth_(0.0),
+	fieldLength_(0.0),
+	fieldWidth_ (0.0),
+	boundaryWidth_(0.0),
+	refereeWidth_(0.0),
+	centerCircleRadius_(0.0),
+	defenseRadius_(0.0),
+	defenseStretch_(0.0),
+	freeKickDistance_(0.0),
+	penaltySpotDistance_(0.0),//from field
+	penaltyLineDistance_(0.0),//from spot
+	ball_(new Ball(21.5)),
+	blueGoal_(new Goal()),
+	yellowGoal_(new Goal()),
+	blueTeam_(new Team(this, BLUE)),
+	yellowTeam_(new Team(this, YELLOW))
+{}
 
 Stage::Stage(const Stage& stage)
 	: QObject()
