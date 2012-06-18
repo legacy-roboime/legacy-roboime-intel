@@ -2,6 +2,7 @@
 #include "Robot.h"
 #include "Sampler.h"
 #include "geomutils.h"
+#include "mathutils.h"
 
 #define CART	70 //DISTANCIA DO CORTE DA CARRENAGEM
 
@@ -39,11 +40,8 @@ void DriveToObject::step()
 	bPoint.setX(object->x());
 	bPoint.setY(object->y());
 
-	//Line ttt = Line(0,0,1,1); //ESTRANHO: SAIDA 315
-	//qreal anggg = ttt.angle(); //ESTRANHO: SAIDA 315
-
-	bAngle = target.angle() * M_PI / 180.; //angulo na classe QLineF eh invertido (positivo no sentido horario, estranho pq na documentacao tem o contrario), alem disso eh em graus
-	tAngle = M_PI + bAngle;
+	bAngle = M_PI + DEGTORAD(target.angle());
+	tAngle = bAngle - M_PI;
 
 	DriveTo::step();
 }
