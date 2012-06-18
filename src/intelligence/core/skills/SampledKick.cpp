@@ -56,7 +56,7 @@ void SampledKick::step()
 	if(!busy()){
 		qreal power;
 		if(pass_) {
-			qreal distReal = QVector2D(*ball - *getLookPoint()).length();
+			qreal distReal = Vector(*ball - *getLookPoint()).length();
 			power = Sampler::sampledPowerKick(minPower_, calculatePassPower(distReal));
 		} else {
 			if(deterministic_)

@@ -5,7 +5,6 @@
 #include "Ball.h"
 #include "Goal.h"
 #include <cmath>
-#include <QLineF>
 
 #define M_PI	3.1415926535897932
 
@@ -41,7 +40,7 @@ void Blocker::step()
 	else
 		myGoal = stage->yellowGoal();
 
-	QLineF target = QLineF(ball->x(), ball->y(), myGoal->x(), myGoal->y());
+	Line target = Line(ball->x(), ball->y(), myGoal->x(), myGoal->y());
 	target.setLength(700);
 	qreal angle = target.angle();
 	target.setAngle(angle + (angle_ * 180. / M_PI));

@@ -5,24 +5,24 @@
 #ifndef LINEARREGRESSION_H
 #define LINEARREGRESSION_H
 
-#include <qpoint.h>
-#include "qvector.h"
 #include <iostream>
+#include "geomutils.h"
 
 using namespace std;
+using namespace LibIntelligence;
 
 class LinearRegression
 {
 public:
 	// Constructor using an array of QPoint objects
 	// This is also the default constructor
-	LinearRegression(QPointF *p = 0, long size = 0, unsigned char max_size_points = 50); 
+	LinearRegression(Point *p = 0, long size = 0, unsigned char max_size_points = 50); 
 	LinearRegression(const LinearRegression& linearRegression); 
 	~LinearRegression();
 
 	virtual void addXY(const double& x, const double& y);
 	//void clear() { sumX = sumY = sumXsquared = sumYsquared = sumXY = n = 0; }
-	void addPoint(const QPointF& p) { addXY(p.x(), p.y()); }
+	void addPoint(const Point& p) { addXY(p.x(), p.y()); }
 
 	// Must have at least 3 points to calculate
 	// standard error of estimate. Do we have enough data?
@@ -36,7 +36,7 @@ public:
 	double getCoefCorrel() const { return coefC; }
 	double getStdErrorEst() const { return stdError; }
 	virtual double estimateY(double x) const { return (a + b * x); }
-	QPointF* getLastPointInserted();
+	Point* getLastPointInserted();
 
 
 protected:

@@ -21,7 +21,6 @@ namespace LibIntelligence
 		public:
 			Skill(QObject* parent, Robot* slave, bool deterministic=false);
 			Skill(const Skill& skill);
-			~Skill();
 
 			virtual void step() = 0;
 			virtual bool busy() = 0;
@@ -36,8 +35,6 @@ namespace LibIntelligence
 
 		private:
 			Robot* robot_;
-			//the stage is retreived from the robot
-			Stage* stage_;
 		};
 	}
 }

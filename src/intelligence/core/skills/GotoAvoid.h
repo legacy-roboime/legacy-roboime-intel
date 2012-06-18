@@ -2,24 +2,51 @@
 #define GOTOAVOID_H
 
 #include "Goto.h"
+#include "Stage.h"
+#include "Ball.h"
+#include "PID.h"
 
 namespace LibIntelligence
 {
 	namespace Skills
 	{
-		class GotoAvoid : protected Goto
+		class GotoAvoid : public Goto
 		{
 		public:
-			GotoAvoid(QObject *parent, Robot *slave, qreal targetX, qreal targetY, qreal avoidX, qreal avoidY, qreal speed);
+			GotoAvoid(QObject *parent, Robot *slave, Point *target, Point *avoid, qreal speed);
+			~GotoAvoid();
 
-			void setTarget(qreal x, qreal y);
-			void setAvoid(qreal x, qreal y);
+			void setTarget(Point *);
+			void setAvoid(Point *);
 			void setSpeed(qreal);
 
 			void step();
 
-		private:
-			qreal avoidX, avoidY;
+		protected:
+			Point *avoid;
+			Point *tangPoint;
+			CONTROLLER_S circlePID;
+		};
+
+		class GotoBall : public GotoAvoid
+		{
+		public:
+			GotoBall(QObject *parent, Robot *slave, Point *lookPoint, qreal speed)
+				: GotoAvoid(parent, slave, new Point(), NULL, speed), lookPoint(lookPoint) {
+					setAvoid(stage()->ball());
+			}
+
+			~GotoBall() {delete target;}
+
+			void step() {
+				Line line(*lookPoint, *avoid);
+				line.setLength(line.length() + robot()->body().radius() + stage()->ball()->radius());
+				*target = line.p2();
+				GotoAvoid::step();
+			}
+
+		protected:
+			Point *lookPoint;
 		};
 	}
 }

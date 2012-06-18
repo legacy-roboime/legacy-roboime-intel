@@ -5,7 +5,7 @@
 #include "LibIntelligence.h"
 #include "Tactic.h"
 //#include "Steer.h"
-#include "SteerToBall.h"
+#include "SteerToPoint.h"
 
 namespace LibIntelligence
 {
@@ -21,8 +21,8 @@ namespace LibIntelligence
 		protected:
 			int id;
 			qreal speed;
-			//Skills::Steer* steer;
-			Skills::SteerToBall* steer;
+			//Skills::Steer steer;
+			Skills::SteerToBall steer;
 		};
 	}	
 }

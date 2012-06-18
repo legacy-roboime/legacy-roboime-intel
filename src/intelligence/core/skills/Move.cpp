@@ -3,6 +3,8 @@
 #include <cmath>
 #include <QVector>
 #include "PID.h"
+#include "geomutils.h"
+
 #define MAX_RPS_BIWHEEL 4.0
 #define WHEEL_INTERDISTANCE 
 #define REALROBOT
@@ -37,6 +39,12 @@ void Move::setAll(qreal sx, qreal sy, qreal sa)
 	speedAngular = sa;
 }
 
+void Move::setSpeed(Vector s)
+{
+	speedX = s.x();
+	speedY = s.y();
+}
+
 void Move::setSpeeds(qreal sx, qreal sy)
 {
 	speedX = sx;
@@ -56,6 +64,7 @@ bool Move::busy()
 
 void Move::step()
 {
+	//TODO: implementar condução com drible (centro na bola) e sem drible (sem omni)
 	static qreal theta, alpha;
 	static QVector<qreal> speed;//(robot()->wheelsSize());
 	speed.resize(robot()->wheelsSize());

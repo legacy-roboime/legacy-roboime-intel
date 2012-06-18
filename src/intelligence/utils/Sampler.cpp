@@ -36,12 +36,12 @@ qreal Sampler::sampledPowerKick(qreal minPower, qreal maxPower)
 	return (randFloat() * (maxPower - minPower) + minPower);
 }
 
-QPointF Sampler::sampledPointKick(QLineF target)
+Point Sampler::sampledPointKick(Line target)
 {
 	return target.pointAt(randFloat());
 }
 
-QPointF Sampler::sampledPointKickH(QLineF target)
+Point Sampler::sampledPointKickH(Line target)
 {
 	//TODO: Colocar uma heuristica para diminuir o espaço de busca do ponto melhor para chutar
 	return target.pointAt(randFloat());

@@ -3,8 +3,7 @@
 #define SAMPLER_H
 
 #include "LibIntelligence.h"
-#include <QPointF>
-#include <QLineF>
+#include "geomutils.h"
 #include <QObject>
 
 namespace LibIntelligence
@@ -18,8 +17,8 @@ namespace LibIntelligence
 		~Sampler(void);
 		static qreal sampledPowerDribble(qreal minPower, qreal maxPower);
 		static qreal sampledPowerKick(qreal minPower, qreal maxPower);
-		static QPointF sampledPointKick(QLineF target);
-		static QPointF sampledPointKickH(QLineF target);
+		static Point sampledPointKick(Line target);
+		static Point sampledPointKickH(Line target);
 		static bool sampledUniformDist(qreal min, qreal max);
 		static qreal randFloat(); //entre 0 e 1
 		static long randInt(int low, int high);

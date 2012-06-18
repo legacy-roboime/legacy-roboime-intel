@@ -1,4 +1,10 @@
 #include  "LinearCombMotion.h"
+#include "Robot.h"
+#include "Stage.h"
+#include "Team.h"
+#include "Ball.h"
+#include "Skill.h"
+#include "Move.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;

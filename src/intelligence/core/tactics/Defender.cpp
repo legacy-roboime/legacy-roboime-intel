@@ -5,7 +5,7 @@
 #include "Goal.h"
 #include "Team.h"
 #include <cmath>
-#include <QLineF>
+#include "geomutils.h"
 
 #define MINDIST 2000
 

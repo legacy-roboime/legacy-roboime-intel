@@ -4,7 +4,6 @@
 #include "Ball.h"
 #include "Goal.h"
 #include "Sampler.h"
-#include <QLineF>
 #include <iostream>
 
 #define M_PI	3.1415926535897932
@@ -106,7 +105,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 		kickPoint_->setY(kickPoint.y);
 	}
 
-	if(action == get_ball && QVector2D(*robot - *ball).length() < MIN_DIST){
+	if(action == get_ball && Vector(*robot - *ball).length() < MIN_DIST){
 		movePoint_->setX(enemyGoal->x());
 		movePoint_->setY(enemyGoal->y());
 	}
@@ -115,7 +114,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 		movePoint_->setY(movePoint.y);
 	}
 
-	QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
+	Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
 	qreal orientation = 2 * M_PI - line.angle() * M_PI / 180.;
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
@@ -127,7 +126,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 bool GotoToDriveT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return QVector2D(*a->robot() - *a->stage()->ball()).length() < MIN_DIST;
+	return Vector(*a->robot() - *a->stage()->ball()).length() < MIN_DIST;
 }
 
 GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -135,7 +134,7 @@ GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal 
 bool DriveToGotoT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST;
+	return Vector(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST;
 }
 
 DriveToGotoT::DriveToGotoT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

@@ -4,7 +4,6 @@
 
 #include "LibIntelligence.h"
 #include "Object.h"
-#include <QObject>
 
 namespace LibIntelligence
 {
