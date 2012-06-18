@@ -44,6 +44,7 @@ ObeyReferee::ObeyReferee(QObject *q, Play *p)
 	play(p),
 	halt(new Halt(this, p->team(), p->stage())),
 	stopReferee(new StopReferee(this, p->team(), p->stage())),
+	cmd('H'),
 	lastCmd('H')
 {}
 
@@ -86,7 +87,10 @@ void ObeyReferee::step()
 {
 	Stage *sta = this->stage();
 	//Commands Referee
-	char cmd = sta->getCmdReferee();//sta->getCmdReferee(); //TODO: utilizar o getCmdReferee
+	if(cmd != sta->getCmdReferee()){
+		lastCmd = cmd;
+		cmd = sta->getCmdReferee();
+	}
 
 #ifdef REFERRE_CMD
 	cout << "JUIZ: " << cmd << endl;
@@ -98,10 +102,10 @@ void ObeyReferee::step()
 
 	dist = sqrt(pow(lastBall.x() - ball->x(), 2) + pow(lastBall.y() - ball->y(), 2));
 
-	if(lastCmd != cmd){
-		lastCmd = cmd;
+	//if(lastCmd != cmd){
+	//	lastCmd = cmd;
 		//lastBall = *ball;
-	}
+	//}
 
 	TeamColor usColor = team()->color();
 
@@ -126,7 +130,6 @@ void ObeyReferee::step()
 	}
 	else if(cmd == 'F' && usColor == TeamColor::BLUE)
 		play->step();
-
 	else if(cmd == 'i' && usColor == TeamColor::YELLOW)
 		play->step();
 	else if(cmd == 'i' && usColor == TeamColor::BLUE){
@@ -147,39 +150,48 @@ void ObeyReferee::step()
 	}
 	else if(cmd == 'I' && usColor == TeamColor::BLUE)
 		play->step();
-
-
-	else if(cmd == 'H')
-		halt->step();
-	else if(cmd == 'S')
+	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
+	else if(cmd == 'p' || cmd == 'P')
+		stopReferee->step();
+
+	//Penalty, kickoff, normal start e force start (ordem dos else if importa)
+	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == TeamColor::YELLOW)
+		play->step();
+	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == TeamColor::BLUE){
+		if(dist<100)
+			stopReferee->step();
+		else{
+			//lastBall = *ball;
+			play->step();
+		}
+	}
+	else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == TeamColor::YELLOW){
+		if(dist<100)
+			stopReferee->step();
+		else{
+			//lastBall = *ball;
+			play->step();
+		}
+	}
+	else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == TeamColor::BLUE)
+		play->step();
 	else if(cmd == ' ')
 		play->step();
 	else if(cmd == 's')
 		play->step();
 
+	//Comportamento halt, stop e jogo
+	else if(cmd == 'H')
+		halt->step();
+	else if(cmd == 'S')
+		stopReferee->step();
 	else if(cmd == '1' || cmd == 'h' || cmd == '2' || cmd == 'o' || cmd == 'O' || cmd == 'a')
 		stopReferee->step();
-
-	else if(cmd == 'k' || cmd == 'K')
-		stopReferee->step();
-	
 	else if(cmd == 't' || cmd == 'T')
 		halt->step();
-
 	else if(cmd == 'z' || cmd == 'g' || cmd == 'G' || cmd == 'd' || cmd == 'D' || cmd == 'y' || cmd == 'Y' || cmd == 'r' || cmd == 'R' || cmd == 'c')
 		stopReferee->step();
-
-	//Penalty
-	else if(cmd == 'p' && usColor == TeamColor::YELLOW)
-		stopReferee->step();
-	else if(cmd == 'p' && usColor == TeamColor::BLUE)
-		stopReferee->step();
-	else if(cmd == 'P' && usColor == TeamColor::YELLOW)
-		stopReferee->step();
-	else if(cmd == 'P' && usColor == TeamColor::BLUE)
-		stopReferee->step();
-
 	else
 		play->step();
 }
