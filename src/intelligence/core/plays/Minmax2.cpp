@@ -281,8 +281,8 @@ void Minmax2::act(SoccerAction& action, Team* team)
 #endif
 		}
 		else{
-			Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
-			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe Line
+			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
+			qreal orientation = line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
 			//_max_skills.at(i)->setPoint(pos->x, pos->y);
 			//_max_skills.at(i)->setSpeed(envReal.red_speed);

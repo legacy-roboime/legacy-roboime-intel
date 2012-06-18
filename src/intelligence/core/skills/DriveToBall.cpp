@@ -28,7 +28,7 @@ void DriveToBall::step()
 
 	qreal distance = 4*threshold;
 	qreal t = -distance;
-
+	
 	//Cone maior
 	const Object* lkP = getRefLookPoint();
 	Line target = Line(ball->x(), ball->y(), lkP->x(), lkP->y());
@@ -82,7 +82,7 @@ void DriveToBall::step()
 		if(Vector(*robot - intersect).length() > 50){
 			Goto::setPoint(ret1.x2(), ret1.y2());
 			ret1.setLength(-1);
-			Goto::setOrientation(2*M_PI - ret1.angle() * M_PI / 180.); //TODO: arrumar esse angulo para o robo nao fazer a voltinha.
+			Goto::setOrientation(ret1.angle() * M_PI / 180.); //TODO: arrumar esse angulo para o robo nao fazer a voltinha.
 			Goto::step();
 		}
 		else

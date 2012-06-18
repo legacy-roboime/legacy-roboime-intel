@@ -42,7 +42,7 @@ void DriveToObject::step()
 	//Line ttt = Line(0,0,1,1); //ESTRANHO: SAIDA 315
 	//qreal anggg = ttt.angle(); //ESTRANHO: SAIDA 315
 
-	bAngle = M_PI - target.angle() * M_PI / 180.; //angulo na classe Line eh invertido (positivo no sentido horario, estranho pq na documentacao tem o contrario), alem disso eh em graus
+	bAngle = target.angle() * M_PI / 180.; //angulo na classe QLineF eh invertido (positivo no sentido horario, estranho pq na documentacao tem o contrario), alem disso eh em graus
 	tAngle = M_PI + bAngle;
 
 	DriveTo::step();
@@ -70,7 +70,7 @@ const Object* DriveToObject::getLookPoint() const
 //	Line target = Line(lookPoint->x(), lookPoint->y(), object->x(), object->y());
 //	bPoint.setX(object->x());
 //	bPoint.setY(object->y());
-//	bAngle = -target.angle() * M_PI / 180.; //angulo na classe Line eh invertido (positivo no sentido horario, estranho pq na documentacao tem o contrario), alem disso eh em graus
+//	bAngle = target.angle() * M_PI / 180.;
 //	tAngle = M_PI + bAngle;
 //	//if(tAngle > 2*M_PI)
 //	//	tAngle -= 2*M_PI;
@@ -81,7 +81,7 @@ bool DriveToObject::busy()
 	//Line target = Line(lookPoint->x(), lookPoint->y(), object->x(), object->y()); //posicao oposta ao lookPoint
 	//bPoint.setX(object->x());
 	//bPoint.setY(object->y());
-	//bAngle = -target.angle() * M_PI / 180.; //angulo na classe Line eh invertido (positivo no sentido horario, estranho pq na documentacao tem o contrario), alem disso eh em graus
+	//bAngle = target.angle() * M_PI / 180.; 
 	//tAngle = M_PI + bAngle;
 	//if(tAngle > 2*M_PI)
 	//	tAngle -= 2*M_PI;

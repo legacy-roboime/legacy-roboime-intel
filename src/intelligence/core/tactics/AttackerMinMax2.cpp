@@ -115,7 +115,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	}
 
 	Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
-	qreal orientation = 2 * M_PI - line.angle() * M_PI / 180.;
+	qreal orientation = line.angle() * M_PI / 180.;
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
 
