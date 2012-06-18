@@ -18,13 +18,13 @@ using namespace LibIntelligence;
 
 UpdateRobot::UpdateRobot(TeamColor tc, const SSL_DetectionRobot& p, double t1, double t2, int camId)
 	: Update(t1, t2, camId),
-	QPointF(p.x(), p.y()),
+	Point(p.x(), p.y()),
 	pimpl(new UpdateRobotImpl(tc, p.robot_id(), p.orientation()))
 {}
 
 UpdateRobot::UpdateRobot(TeamColor tc, quint8 i, qreal x, qreal y, qreal theta, double t1, double t2, int camId)
 	: Update(t1,t2,camId),
-	QPointF(x, y),
+	Point(x, y),
 	pimpl(new UpdateRobotImpl(tc, i, theta))
 {}
 

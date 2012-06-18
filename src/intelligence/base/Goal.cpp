@@ -3,7 +3,7 @@
 using namespace LibIntelligence;
 
 Goal::Goal(qreal x, qreal y, qreal w, qreal d, qreal ww)
-	: QLineF(),
+	: Line(),
 	Object(x, y),
 	width_(w),
 	depth_(d),
@@ -13,7 +13,7 @@ Goal::Goal(qreal x, qreal y, qreal w, qreal d, qreal ww)
 }
 
 Goal::Goal(const Goal& goal)
-	: QLineF(goal),
+	: Line(goal),
 	Object(goal),
 	width_(goal.width()),
 	depth_(goal.depth()),
@@ -35,8 +35,8 @@ void Goal::setY(qreal y)
 
 void Goal::updatePoints()
 {
-	setP1(QPointF(x(), y() - width_ / 2));
-	setP2(QPointF(x(), y() + width_ / 2));
+	setP1(Point(x(), y() - width_ / 2));
+	setP2(Point(x(), y() + width_ / 2));
 }
 
 void Goal::setWidth(qreal w)
@@ -73,7 +73,7 @@ void Goal::setPenaltyMark(qreal penaltyMarkX, qreal penaltyMarkY){
 	this->penaltyMark_.setY(penaltyMarkY);
 }
 
-QPointF Goal::penaltyMark() const{
+Point Goal::penaltyMark() const{
 	return penaltyMark_;
 }
 

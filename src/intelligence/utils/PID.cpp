@@ -1,4 +1,6 @@
 #include "PID.h"
+#include <iostream>
+using namespace std;
 
 #define MIN(A,B)	((A)<(B)?(A):(B))
 #define MAX(A,B)	((A)<(B)?(B):(A))
@@ -29,4 +31,6 @@ void pidService(CONTROLLER_S& Controlador){
     // limita a saída
     Controlador.saida = MAX(Controlador.saida, -Controlador.saidaMax);
     Controlador.saida = MIN(Controlador.saida, Controlador.saidaMax);
+	if(Controlador.saida == Controlador.saidaMax)
+		cout << "Warning: MAX LINEAR SPEED LIMIT REACHED." << endl;
  }

@@ -3,15 +3,7 @@
 #define LINEAR_COMB_MOTION_H
 
 #include "LibIntelligence.h"
-#include "Robot.h"
-#include "Stage.h"
-#include "Team.h"
-#include "Ball.h"
-#include "Skill.h"
-#include "Move.h"
-#include "SteerToBall.h" 
-
-
+#include "SteerToPoint.h" 
 
 namespace LibIntelligence
 { 

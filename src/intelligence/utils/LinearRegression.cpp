@@ -1,6 +1,10 @@
 #include "LinearRegression.h"
+#include <QVector>
+#include "geomutils.h"
 
-LinearRegression::LinearRegression(QPointF *p, long size, unsigned char max_size_points)
+using namespace LibIntelligence;
+
+LinearRegression::LinearRegression(Point *p, long size, unsigned char max_size_points)
 	: xPoints(new QVector<float>()), yPoints(new QVector<float>())
 {
 	MAX_SIZE_POINTS = max_size_points;
@@ -89,10 +93,10 @@ void LinearRegression::Calculate()
 	}
 }
 
-QPointF* LinearRegression::getLastPointInserted()
+Point* LinearRegression::getLastPointInserted()
 {
 	if(n > 0) 
-		return new QPointF(xPoints->at(n % MAX_SIZE_POINTS), yPoints->at(n % MAX_SIZE_POINTS));
+		return new Point(xPoints->at(n % MAX_SIZE_POINTS), yPoints->at(n % MAX_SIZE_POINTS));
 	else 
-		return new QPointF(0,0);
+		return new Point(0,0);
 }

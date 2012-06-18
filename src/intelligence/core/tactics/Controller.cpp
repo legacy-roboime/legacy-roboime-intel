@@ -14,13 +14,15 @@ Controller::Controller(QObject* p, Robot* r, int i, qreal s)
 	: Tactic(p,r),
 	id(i),
 	speed(s),
-	steer(new SteerToBall(this, r))
+	steer(this, r)
 {
-	this->pushState(steer);
+	this->pushState(&steer);
 	//skills.append(steer);//this is important
 }
 
 void Controller::step() {
+	//FIXME: tirar statics daqui
+	//FIXME: reimplementar setRobot para chamar os setRobots das skills respectivas
 	static CXBOXController* controller = new CXBOXController(id);
 	static qreal sx = 0.0, sy = 0.0, dx = 0.0, dy = 0.0, sBoost = 1.0, aBoostAng = 1.0;
 	static qint32 dribSign = 1;
@@ -38,7 +40,7 @@ void Controller::step() {
 		} else {
 			aBoostAng = 1.0;
 		}
-		steer->setRate(1.5 * aBoostAng);//PARAMETRO CARTEADO
+		steer.setRate(1.5 * aBoostAng);//PARAMETRO CARTEADO
 
 		//movement
 		sx = controller->ThumbLX();
@@ -53,7 +55,7 @@ void Controller::step() {
 		} else {
 			sBoost = 1.0;
 		}
-		steer->setAll(sx * sBoost * speed, sy * sBoost * speed, dx, dy);
+		steer.setAll(sx * sBoost * speed, sy * sBoost * speed, dx, dy);
 		//if(controller->ButtonPressed(XINPUT_
 
 		//dribbler
@@ -65,7 +67,7 @@ void Controller::step() {
 		} else {
 			robot()->kick(0.0);
 		}
-		steer->step();
+		steer.step();
 
 		//getBall
 		static Blocker bl(this, robot(), 0.0, speed);

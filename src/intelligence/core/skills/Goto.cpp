@@ -11,92 +11,150 @@
 using namespace LibIntelligence;
 using namespace Skills;
 
-#define REP 10.00
-#define ATT 0.001
 #define LIMERR 2
+#define MAXCSPEED 20000
 
-bool isInDefenseArea(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
+Point intersceptLineCircle(Line path, const Point &center, const qreal &radius)
 {
-	qreal x0 = x_goal - x;
-	if(x_goal > 0)
-		if(x > x_goal - r)
-			if(y<s/2 + sqrt(r*r-x0*x0) && y>-s/2-sqrt(r*r-x0*x0))	
-				return true;
-			else
-				if(x < x_goal + r)
-					if(y<s/2 + sqrt(r*r-x0*x0) && y>-s/2-sqrt(r*r-x0*x0))	
-						return true;
-	return false;
+	//get the normal line starting at the center of the circle
+	Line normal(Line::fromPolar(1, path.angle() + 90).translated(center));
+	//make it a segment to the intersection with the path
+	Point temp;
+	normal.intersect(path, &temp);
+	normal.setP2(temp);
+	//the distance to the circle intersception
+	//XXX: warning this will only work if path.p1() is outside and path.p2() is inside the circle
+	qreal dist(sqrt(SQ(radius) - SQ(normal.length())));
+	//the magic, it's hard to explain:
+	path.setP2(temp);
+	path.setLength(path.length() - dist);
+	//believe me this is right
+	return path.p2();
 }
 
-QPointF awayFromDefensePoint(qreal x, qreal y, qreal r, qreal x_goal, qreal s)
+bool isInDefenseArea(const Line &path, const Robot *r, const Point *g, Point *corrected)
 {
-	QPointF result = QPointF(0, 0);
-	if(x_goal > 0)
-	{
-		QLineF area_line = QLineF(x_goal - r , s/2, x_goal -r, -s/2);
-		QLineF join_to_goal = QLineF(x, y, x_goal, 0);
+	Stage *s(r->stage());
+	qreal halfStretch(s->defenseStretch() / 2);
+	qreal radius(r->body().radius() + s->defenseRadius());
+	// this is the stretch line over the goal
+	Line base(g->x(), g->y() - halfStretch, g->x(), g->y() + halfStretch);
 
-		join_to_goal.intersect(area_line, &result);
-		if(result.y() > -s/2 && result.y()< s/2) return result;
+	//inside the rectangle
+	if(path.p2().y() >= base.p1().y() && path.p2().y() <= base.p2().y() && fabs(path.p2().x() - g->x()) < radius) {
+		//the defense line is the line which must not be crossed
+		Line defenseLine(base.translated(g->x() > 0 ? -radius : radius, 0));
+		//find out where we should stop on our way to that line
+		defenseLine.intersect(path, corrected);
+		return true;
 
-		else
-		{
-			qreal dist_goal = sqrt((x-x_goal)*(x-x_goal) + y*y);
-			qreal sin_o = y/dist_goal, cos_o = (x-x_goal)/dist_goal;
-			result.setX(x_goal + r*cos_o);
-			result.setY(r*sin_o);
-			return result;
-		}
-	}
-	else
-	{
-		QLineF area_line = QLineF(x_goal - r , s/2, x_goal -r, -s/2);
-		QLineF join_to_goal = QLineF(x, y, x_goal, 0);
+	} else if(Line(path.p2(), base.p1()).length() < radius) {
+		//this is the line which describes the movement we're doing
+		*corrected = intersceptLineCircle(path, base.p1(), radius);
+		return true;
 
-		join_to_goal.intersect(area_line, &result);
-		if(result.y() > -s / 2 && result.y() < s / 2) return result;
+	} else if(Line(path.p2(), base.p2()).length() < radius) {
+		//this is the line which describes the movement we're doing
+		*corrected = intersceptLineCircle(path, base.p2(), radius);
+		return true;
 
-		else
-		{
-			qreal dist_goal = sqrt((x - x_goal) * (x - x_goal) + y * y);
-			qreal sin_o = y / dist_goal, cos_o = (x - x_goal)/dist_goal;
-			result.setX(x_goal + r * cos_o);
-			result.setY(r * sin_o);
-			return result;
-		}
-	}
+	} else return false;
 }
 
+Goto::Goto(QObject* p, Robot* r, Point *t, qreal o, qreal s, bool a)
+	: Steer(p, r, 0, 0, o),
+	ignoreBrake(false),
+	managedPoint(false),
+	lookAt(NULL),
+	allowDefenseArea(a),
+	target(t),
+	speed(s),
+	old(0, 0),
+	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
+{}
 
+Goto::Goto(QObject* p, Robot* r, Point *t, Point *l, qreal s, bool a)
+	: Steer(p, r, 0, 0, 0),
+	ignoreBrake(false),
+	managedPoint(false),
+	lookAt(l),
+	allowDefenseArea(a),
+	target(t),
+	speed(s),
+	old(0, 0),
+	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
+{}
 
 Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
 	: Steer(p, r, 0, 0, o),
 	ignoreBrake(false), 
+	managedPoint(true),
+	lookAt(NULL),
 	allowDefenseArea(a), 
-	targetX(x),
-	targetY(y),
+	target(new Point(0, 0)),
 	speed(s),
-	controllerSpeedX(2, 0, 0.0, M_INF, LIMERR),//valores carteados
-	controllerSpeedY(2, 0, 0.0, M_INF, LIMERR)//valores carteados
+	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
 
-void Goto::setAll(qreal x, qreal y, qreal s)
+Goto::~Goto()
 {
-
+	if(managedPoint)
+		delete target;
 }
 
-void Goto::setPoint(const QPointF &p)
+void Goto::setManagedPoint()
 {
-	targetX = p.x();
-	targetY = p.y();
+	managedPoint = true;
 }
 
-void Goto::setPoint(qreal _x, qreal _y)
+void Goto::setNotManagedPoint()
 {
-	targetX = _x;
-	targetY = _y;
+	managedPoint = false;
 }
+
+void Goto::setPoint(const Point &p)
+{
+	if(!managedPoint) {
+		target = new Point(p);
+		managedPoint = true;
+	} else {
+		//*target = p;
+		target->setX(p.x());
+		target->setY(p.y());
+	}
+}
+
+void Goto::setPoint(Point *p)
+{
+	if(managedPoint) delete target;
+	target = p;
+}
+
+void Goto::setPoint(qreal x, qreal y)
+{
+	setPoint(Point(x, y));
+}
+
+void Goto::setLookAt(Point *p)
+{
+	lookAt = p;
+}
+
+void Goto::setOrientation(qreal o)
+{
+	lookAt = NULL;
+	Steer::setOrientation(o);
+}
+
+void Goto::setOrientation(qreal dx, qreal dy)
+{
+	lookAt = NULL;
+	Steer::setOrientation(dx, dy);
+}
+
 
 void Goto::setIgnoreBrake()
 {
@@ -135,11 +193,19 @@ void Goto::printPIDk()
 {
 	cout << controllerSpeedX.Kp << " " << controllerSpeedX.Ki << " " << controllerSpeedX.Kd << endl;
 }
-void Goto::step()
+void Goto::step(Point *optionalPoint)
 {
 	//TODO: valores objetivos devem ser alterados para valor nao deterministico (soma um float a speedx speedy e speedang)
 
 	qreal targetTempX, targetTempY, speedX, speedY, speedTemp, k;
+	qreal targetX, targetY;
+	if(optionalPoint) {
+		targetX = optionalPoint->x();
+		targetY = optionalPoint->y();
+	} else {
+		targetX = target->x();
+		targetY = target->y();
+	}
 	speedX = speedY = 0;
 	targetTempX = targetX;
 	targetTempY = targetY;
@@ -155,31 +221,27 @@ void Goto::step()
 	targetY = targetY < minY ? minY : targetY > maxY ? maxY : targetY;
 
 	//limitar fora da area
-
-	if(!allowDefenseArea) {
-		if(isInDefenseArea(targetX, targetY, stage()->defenseRadius() + robot()->body().radius(), robot()->goal()->x(), stage()->defenseStretch() + robot()->body().radius()))
+	/*if(!allowDefenseArea) {
+		Point corrected;
+		if(isInDefenseArea(Line(*target, old), robot(), robot()->team()->goal(), &corrected))
 		{
-			QPointF new_pos = awayFromDefensePoint(targetX, targetY, stage()->defenseRadius() + robot()->body().radius(), robot()->goal()->x(), stage()->defenseStretch() + robot()->body().radius());
-			targetX = new_pos.x();
-			targetY = new_pos.y();
+			targetX = corrected.x();
+			targetY = corrected.y();
 		}
-	}
+	}*/
 
 	//controle speedX
-
 	controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
-	qreal x = robot()->x();
 	controllerSpeedX.realimentacao = robot()->x();
 	pidService(controllerSpeedX);
 	speedX = controllerSpeedX.saida;
 
 	//controle speedY
-
 	controllerSpeedY.entrada = targetY; //deseja-se que a distância entre o alvo e o robô seja igual a zero
-	qreal y = robot()->y();
 	controllerSpeedY.realimentacao = robot()->y();
 	pidService(controllerSpeedY);
 	speedY = controllerSpeedY.saida;
+	qreal a = Line(0, 0, 1, 1).angle();
 
 	//calculo speed linear
 	speedTemp = sqrt(speedX*speedX + speedY*speedY);
@@ -190,10 +252,11 @@ void Goto::step()
 		speedY *= k;
 	}
 
+	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot(), *lookAt).angle()));
 	Steer::setSpeeds(speedX, speedY);
 	Steer::step();
 
-	//restaura targetX, targetY
-	targetX = targetTempX;
-	targetY = targetTempY;
+	//save this iteration
+	old.setX(targetX);
+	old.setY(targetY);
 }

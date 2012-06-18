@@ -2,7 +2,6 @@
 #include "Goal.h"
 #include "Ball.h"
 #include "Robot.h"
-#include <QLineF>
 #include "GotoTactic.h"
 #include "config.h"
 
@@ -108,8 +107,8 @@ void Minmax2::ballOwner()
 	s->blue_ball_owner = -1;
 	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
 	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
-	qreal mDist = QVector2D(*mRobot - *ball).length();
-	qreal tDist = QVector2D(*tRobot - *ball).length();
+	qreal mDist = Vector(*mRobot - *ball).length();
+	qreal tDist = Vector(*tRobot - *ball).length();
 	if(mDist <= tDist){
 		if(mDist < MIN_DIST){
 			s->red_ball_owner = mRobot->id();
@@ -256,8 +255,8 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			//cout << "SKILL: " << attacker->getCurrentState()->objectName().toStdString() << endl;
 
 			//DEBUG
-			//QLineF l = QLineF(0, 0, pos->x, pos->y);
-			//qreal angle = 360 - l.angle(); //convenção sentido horario para classe QLineF
+			//Line l = Line(0, 0, pos->x, pos->y);
+			//qreal angle = 360 - l.angle(); //convenção sentido horario para classe Line
 			//qreal orientation = robot->orientation() * 180 / M_PI;
 			//static qreal lastOr = angle;//orientation;
 			//cout << abs(angle - lastOr) << endl;
@@ -270,8 +269,8 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			//lastOr = angle;
 		}
 		else{
-			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
-			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
+			Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe Line
 
 			//_max_skills.at(i)->setPoint(pos->x, pos->y);
 			//_max_skills.at(i)->setSpeed(envReal.red_speed);

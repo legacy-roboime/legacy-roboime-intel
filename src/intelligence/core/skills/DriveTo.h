@@ -5,7 +5,6 @@
 #include "LibIntelligence.h"
 #include "Goto.h"
 #include "Wait.h"
-#include <QPointF>
 
 #define M_PI	3.1415926535897932
 
@@ -18,7 +17,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			DriveTo(QObject* parent, Robot* slave, qreal maxErrorD = 100., qreal maxErrorA = 10 * M_PI/180., qreal bAngle = 0., QPointF bPoint = QPointF(0.,0.), qreal threshold = 10., qreal tAngle = 0, qreal speed = 3000.);
+			DriveTo(QObject* parent, Robot* slave, qreal maxErrorD = 100., qreal maxErrorA = 10 * M_PI/180., qreal bAngle = 0., Point bPoint = Point(0.,0.), qreal threshold = 10., qreal tAngle = 0, qreal speed = 3000.);
 			DriveTo::~DriveTo(void);
 
 			bool busy(); 
@@ -29,14 +28,14 @@ namespace LibIntelligence
 		protected:
 			qreal speed;
 			qreal bAngle; //base angle
-			QPointF bPoint; //base point
+			Point bPoint; //base point
 			qreal threshold;
 			qreal tAngle; //target angle
 			qreal maxErrorD;
 			qreal maxErrorA;
 
 		private:
-			QPointF tPoint; //target point 
+			Point tPoint; //target point 
 		};
 	}
 }

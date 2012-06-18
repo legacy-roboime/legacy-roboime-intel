@@ -12,8 +12,16 @@
 using namespace LibIntelligence;
 using namespace Skills;
 
+Steer::Steer(QObject* p, Robot* r, Vector s, Point *l)
+	: Move(p, r, s.x(), s.y()),
+	lookPoint(l),
+	rate(RATE),
+	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
+{}
+
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal o)
 	: Move(p, r, sx, sy),
+	lookPoint(NULL),
 	rate(RATE),
 	orientation(o),
 	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
@@ -21,6 +29,7 @@ Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal o)
 
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal dx, qreal dy)
 	: Move(p, r, sx, sy),
+	lookPoint(NULL),
 	rate(RATE),
 	orientation(atan2(dy,dx)),
 	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
@@ -31,13 +40,18 @@ void Steer::setRate(qreal r)
 	rate = r;
 }
 
+void Steer::setLookPoint(Point *p)
+{
+	lookPoint = p;
+}
+
 void Steer::step()
 {
 	qreal omega;
 	//P Control
 	//qreal aThreshold = M_PI;
 	//qreal errorP = -2.*pow(omega/aThreshold,3)+3*pow(omega/aThreshold,2);
-	controller.entrada = __q(orientation - robot()->orientation());
+	controller.entrada = __q((lookPoint ? DEGTORAD(Line(*robot(), *lookPoint).angle()) : orientation) - robot()->orientation());
 	controller.realimentacao = 0.0;
 	pidService(controller);
 	Move::setSpeedAngular(controller.saida);

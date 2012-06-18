@@ -17,12 +17,12 @@ using namespace LibIntelligence;
 
 UpdateBall::UpdateBall(const SSL_DetectionBall& p, double t1, double t2, int camId)
 	: Update(t1, t2, camId),
-	QPointF(p.x(), p.y()),
+	Point(p.x(), p.y()),
 	pimpl(new UpdateBallImpl(p.has_z() ? p.z() : 0.0)) {}
 
 UpdateBall::UpdateBall(qreal x, qreal y, double t1, double t2, int camId)
 	: Update(t1, t2, camId),
-	QPointF(x, y),
+	Point(x, y),
 	pimpl(new UpdateBallImpl(0.0))
 {}
 
