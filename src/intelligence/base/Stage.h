@@ -6,6 +6,7 @@
 #include "Robot.h"
 #include "Team.h"
 #include <QObject>
+#include <map>
 
 namespace LibIntelligence
 {
@@ -86,6 +87,9 @@ namespace LibIntelligence
 
 		Robot* getClosestPlayerToBall(const Team*) const;
 		Robot* getClosestPlayerToBallThatCanKick(const Team*) const;
+		map<qreal, Robot*> getClosestPlayersToBall(const Team* team) const;
+		map<qreal, Robot*> getClosestPlayersToBallThatCanKick(const Team* team) const;
+		Robot* getClosestOrderPlayerToBall(const Team* team, int order) const;
 		Team* getTeamFromColor(const TeamColor& color);
 		Team* getTeamFromOtherColor(const TeamColor& color);
 		Goal* getGoalFromOtherColor(const TeamColor& color);

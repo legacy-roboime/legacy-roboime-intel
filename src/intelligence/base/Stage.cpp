@@ -4,6 +4,7 @@
 #include "Goal.h"
 #include <cmath>
 #include <limits.h>
+
 using namespace LibIntelligence;
 
 Stage::Stage()
@@ -371,6 +372,53 @@ Robot* Stage::getClosestPlayerToBallThatCanKick(const Team* team) const
 	}
 
 	return bestFit;
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade da bola
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade da bola
+map<qreal, Robot*> Stage::getClosestPlayersToBall(const Team* team) const
+{
+	map<qreal, Robot*> robots;
+	for(int i = 0; i < team->count(); i++) {
+
+		qreal dy = team->at(i)->y() - this->ball()->y();
+		qreal dx = team->at(i)->x() - this->ball()->x();
+
+		qreal d = sqrt(dy * dy + dx * dx);
+
+		robots[d] = team->at(i);
+	}
+
+	return robots;
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade da bola
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade da bola
+map<qreal, Robot*> Stage::getClosestPlayersToBallThatCanKick(const Team* team) const
+{
+	map<qreal, Robot*> robots;
+	for(int i = 0; i < team->count() && team->at(i)->canKick(); i++) {
+
+		qreal dy = team->at(i)->y() - this->ball()->y();
+		qreal dx = team->at(i)->x() - this->ball()->x();
+
+		qreal d = sqrt(dy * dy + dx * dx);
+
+		robots[d] = team->at(i);
+	}
+
+	return robots;
+}
+
+Robot* Stage::getClosestOrderPlayerToBall(const Team* team, int order) const
+{
+	map<qreal, Robot*> m = getClosestPlayersToBall(team);
+	map<qreal, Robot*>::iterator it = m.begin();
+	for(int i=0; i<order; i++)
+		it++;
+	return (*it).second;
 }
 
 Stage& Stage::operator=(const Stage& stage)
