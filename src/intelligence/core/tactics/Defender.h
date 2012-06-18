@@ -4,10 +4,8 @@
 
 #include "LibIntelligence.h"
 #include "Tactic.h"
-#include "Goto.h"
-#include "GetBall.h"
-#include "KickTo.h"
-
+#include "Skills.h"
+#include "MachineTransition.h"
 
 namespace LibIntelligence
 {
@@ -18,17 +16,30 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			Defender(QObject* parent, Robot* slave, int position, qreal speed);
-
-			void step();
+			Defender(QObject* parent, Robot* slave, const Object* enemy, qreal speed);
+			const Object* enemy();
 
 		protected:
-			int position_;
-			Skills::Goto* goto_;
-			Skills::GetBall* getBall_;
-			Skills::KickTo* kickTo_;
+			const Object* enemy_;
+			Skills::DriveToObject* driveToObj;
+			Skills::FollowAndCover* fac;
 		};
 	}	
+
+	namespace DefenderT
+	{
+		class DriveObjToFacT : public MachineTransition{ 
+		public:
+			DriveObjToFacT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
+
+		class FacToDriveObjT : public MachineTransition{ 
+		public:
+			FacToDriveObjT(QObject* parent = 0, State* source = 0, State* target = 0, qreal probability = 1.);
+			bool condition();
+		};
+	}
 }
 
 #endif // DEFENDER_H
