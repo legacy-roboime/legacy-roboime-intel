@@ -56,7 +56,7 @@ set(INT_SRC
     core/skills/AttackField.cpp
     core/skills/Wait.cpp
     core/skills/DriveTo.cpp
-    core/skills/SteerToBall.cpp
+    core/skills/SteerToPoint.cpp
     core/skills/DriveToBall.cpp
     core/skills/Steer.cpp
     core/skills/DriveToObject.cpp

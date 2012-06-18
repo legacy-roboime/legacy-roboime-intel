@@ -14,7 +14,7 @@
 #include "GetBall.h"
 //#include "Touch.h"
 #include "KickTo.h"
-#include "SteerToBall.h"
+#include "SteerToPoint.h"
 #include "GotoOld.h"
 #include "DriveTo.h"
 #include "DriveToBall.h"
