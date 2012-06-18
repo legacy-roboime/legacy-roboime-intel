@@ -48,6 +48,6 @@ void Blocker::step()
 	qreal y = target.p2().y();
 	goto_->setPoint(x, y);
 	goto_->setSpeed(speed);
-	goto_->setOrientation(target.angle() * M_PI / 180.);
+	goto_->setOrientation(M_PI + target.angle() * M_PI / 180.);
 	goto_->step();
 }
