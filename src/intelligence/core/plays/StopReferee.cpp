@@ -6,33 +6,32 @@ using namespace LibIntelligence;
 using namespace Plays;
 using namespace Tactics;
 
-StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage)
+StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 	: Play(parent, team, stage)
 {
 	qreal deltaTeta = (17*3.14)/180.;
+	Team* enemyTeam = team->enemyTeam();
+
 	for( int i = 0; i < team->size(); i++){
 		switch(i){
 			case 0:
 				//player_[i] = new Blocker(this,team->at(i),0);
-				player_[i] = new Goalkeeper(this, team->at(i), 700);
+				player_[i] = new Goalkeeper(this, gk, 700);
 				break;
 			case 1:
 				player_[i] = new Blocker(this, team->at(i), 0, 3000);
-				//player_[i] = new Goalkeeper(this,team->at(i), 700);
-				//player_[i] = new Goalkeeper(this,team->at(i), 700);
 				break;
 			case 2:
 				player_[i] = new Blocker(this, team->at(i), -deltaTeta, 3000);
 				break;
 			case 3:
-				//player_[i] = new Defender(this,team->at(i), 0, 1000);
-				player_[i] = new Blocker(this, team->at(i),+deltaTeta, 3000);
+				player_[i] = new Blocker(this, team->at(i), +deltaTeta, 3000);
 				break;
 			case 4:
-				player_[i] = new Defender(this, team->at(i), 0, 3000);
+				player_[i] = new Defender(this, team->at(i), enemyTeam->at(i), 3000);
 				break;
 			case 5:
-				player_[i] = new Defender(this, team->at(i), -1, 3000);
+				player_[i] = new Defender(this, team->at(i), enemyTeam->at(i), 3000);
 				break;
 		}
 	}
