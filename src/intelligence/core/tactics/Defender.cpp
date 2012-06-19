@@ -7,18 +7,18 @@
 #include <cmath>
 #include "geomutils.h"
 
-#define MINDIST 2000
+#define MINDIST 3000
 
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 using namespace DefenderT;
 
-Defender::Defender(QObject* p, Robot* r, const Object* enemy, qreal speed)
+Defender::Defender(QObject* p, Robot* r, Object* enemy, qreal dist, qreal speed)
 	: Tactic(p,r),
-	driveToObj(new DriveToObject(this, r, r->goal(), -500, enemy, 100, 0.1745329251, speed, true)),
-	fac(new FollowAndCover(this, r, (QPointF*) enemy, r->goal(), 300, speed)),
-	enemy_(enemy)
+	enemy_(enemy),
+	driveToObj(new DriveToObject(this, r, r->goal(), -(dist + r->body().cut()), enemy_, 100, 0.1745329251, speed, true)),
+	fac(new FollowAndCover(this, r, (Point*) enemy_, r->goal(), 300, speed))
 {
 	this->pushState(driveToObj);
 	this->pushState(fac);
@@ -34,7 +34,14 @@ Defender::Defender(QObject* p, Robot* r, const Object* enemy, qreal speed)
 	this->reset();
 }
 
-const Object* Defender::enemy()
+void Defender::setEnemy(Object* enemy)
+{
+	enemy_ = enemy;
+	driveToObj->setRefLookPoint(enemy);
+	fac->setFollow(enemy);
+}
+
+Object* Defender::enemy()
 {
 	return enemy_;
 }
