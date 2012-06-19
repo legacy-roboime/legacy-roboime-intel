@@ -378,15 +378,43 @@ Robot* Stage::getClosestPlayerToBallThatCanKick(const Team* team) const
 /// retorno: map dos robots em ordem de proximidade da bola
 map<qreal, Robot*> Stage::getClosestPlayersToBall(const Team* team) const
 {
+	return getClosestPlayersToPoint(team, ball_);
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade do ponto
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade do ponto
+map<qreal, Robot*> Stage::getClosestPlayersToPoint(const Team* team, Point* point) const
+{
 	map<qreal, Robot*> robots;
 	for(int i = 0; i < team->count(); i++) {
 
-		qreal dy = team->at(i)->y() - this->ball()->y();
-		qreal dx = team->at(i)->x() - this->ball()->x();
+		qreal dy = team->at(i)->y() - point->y();
+		qreal dx = team->at(i)->x() - point->x();
 
 		qreal d = sqrt(dy * dy + dx * dx);
 
 		robots[d] = team->at(i);
+	}
+
+	return robots;
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade do ponto
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade do ponto
+map<qreal, Robot*> Stage::getClosestPlayersToPointThatCanKick(const Team* team, Point* point) const
+{
+	map<qreal, Robot*> robots;
+	for(int i = 0; i < team->count(); i++) {
+		if(team->at(i)->canKick()){
+			qreal dy = team->at(i)->y() - point->y();
+			qreal dx = team->at(i)->x() - point->x();
+
+			qreal d = sqrt(dy * dy + dx * dx);
+
+			robots[d] = team->at(i);
+		}
 	}
 
 	return robots;
@@ -397,18 +425,7 @@ map<qreal, Robot*> Stage::getClosestPlayersToBall(const Team* team) const
 /// retorno: map dos robots em ordem de proximidade da bola
 map<qreal, Robot*> Stage::getClosestPlayersToBallThatCanKick(const Team* team) const
 {
-	map<qreal, Robot*> robots;
-	for(int i = 0; i < team->count() && team->at(i)->canKick(); i++) {
-
-		qreal dy = team->at(i)->y() - this->ball()->y();
-		qreal dx = team->at(i)->x() - this->ball()->x();
-
-		qreal d = sqrt(dy * dy + dx * dx);
-
-		robots[d] = team->at(i);
-	}
-
-	return robots;
+	return getClosestPlayersToPointThatCanKick(team, (Point*)ball_);
 }
 
 Robot* Stage::getClosestOrderPlayerToBall(const Team* team, int order) const
