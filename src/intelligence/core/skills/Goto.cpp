@@ -13,7 +13,7 @@ using namespace Skills;
 
 #define LIMERR 2
 #define MAXCSPEED 20000
-#define AREADISC 20
+#define AREADISC 5
 
 Point awayFromDefenseArea(const Point &point, const Robot *r, const Point *g)
 {
