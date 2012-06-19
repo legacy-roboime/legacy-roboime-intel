@@ -13,26 +13,9 @@ using namespace Skills;
 
 #define LIMERR 2
 #define MAXCSPEED 20000
+#define AREADISC 20
 
-Point intersceptLineCircle(Line path, const Point &center, const qreal &radius)
-{
-	//get the normal line starting at the center of the circle
-	Line normal(Line::fromPolar(1, path.angle() + 90).translated(center));
-	//make it a segment to the intersection with the path
-	Point temp;
-	normal.intersect(path, &temp);
-	normal.setP2(temp);
-	//the distance to the circle intersception
-	//XXX: warning this will only work if path.p1() is outside and path.p2() is inside the circle
-	qreal dist(sqrt(SQ(radius) - SQ(normal.length())));
-	//the magic, it's hard to explain:
-	path.setP2(temp);
-	path.setLength(path.length() - dist);
-	//believe me this is right
-	return path.p2();
-}
-
-bool isInDefenseArea(const Line &path, const Robot *r, const Point *g, Point *corrected)
+Point awayFromDefenseArea(const Point &point, const Robot *r, const Point *g)
 {
 	Stage *s(r->stage());
 	qreal halfStretch(s->defenseStretch() / 2);
@@ -41,24 +24,38 @@ bool isInDefenseArea(const Line &path, const Robot *r, const Point *g, Point *co
 	Line base(g->x(), g->y() - halfStretch, g->x(), g->y() + halfStretch);
 
 	//inside the rectangle
-	if(path.p2().y() >= base.p1().y() && path.p2().y() <= base.p2().y() && fabs(path.p2().x() - g->x()) < radius) {
+	if(point.y() >= base.p1().y() && point.y() <= base.p2().y() && fabs(point.x() - g->x()) < radius) {
 		//the defense line is the line which must not be crossed
 		Line defenseLine(base.translated(g->x() > 0 ? -radius : radius, 0));
-		//find out where we should stop on our way to that line
-		defenseLine.intersect(path, corrected);
-		return true;
+		return Point(defenseLine.p1().x(), point.y());
 
-	} else if(Line(path.p2(), base.p1()).length() < radius) {
-		//this is the line which describes the movement we're doing
-		*corrected = intersceptLineCircle(path, base.p1(), radius);
-		return true;
+	} else if(Line(point, base.p1()).length() < radius) {
+		Line line(base.p1(), point);
+		line.setLength(radius);
+		return line.p2();
 
-	} else if(Line(path.p2(), base.p2()).length() < radius) {
-		//this is the line which describes the movement we're doing
-		*corrected = intersceptLineCircle(path, base.p2(), radius);
-		return true;
+	} else if(Line(point, base.p2()).length() < radius) {
+		Line line(base.p2(), point);
+		line.setLength(radius);
+		return line.p2();
+	} else {
+		// this is not suposed to be reached on normal flow
+		return Point();
+	}
+}
 
-	} else return false;
+bool isInDefenseArea(const Point &point, const Robot *r, const Point *g)
+{
+	Stage *s(r->stage());
+	qreal halfStretch(s->defenseStretch() / 2);
+	qreal radius(r->body().radius() + s->defenseRadius());
+	// this is the stretch line over the goal
+	Line base(g->x(), g->y() - halfStretch, g->x(), g->y() + halfStretch);
+
+	//inside the rectangle
+	return (point.y() >= base.p1().y() && point.y() <= base.p2().y() && abs(point.x() - g->x()) < radius)
+		|| (Line(point, base.p1()).length() < radius)
+		|| (Line(point, base.p2()).length() < radius);
 }
 
 Goto::Goto(QObject* p, Robot* r, Point *t, qreal o, qreal s, bool a)
@@ -69,7 +66,7 @@ Goto::Goto(QObject* p, Robot* r, Point *t, qreal o, qreal s, bool a)
 	allowDefenseArea(a),
 	target(t),
 	speed(s),
-	old(0, 0),
+	old(0.0, 0.0),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
 	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
@@ -82,7 +79,7 @@ Goto::Goto(QObject* p, Robot* r, Point *t, Point *l, qreal s, bool a)
 	allowDefenseArea(a),
 	target(t),
 	speed(s),
-	old(0, 0),
+	old(0.0, 0.0),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
 	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
@@ -95,6 +92,7 @@ Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
 	allowDefenseArea(a), 
 	target(new Point(0, 0)),
 	speed(s),
+	old(0.0, 0.0),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
 	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
@@ -221,14 +219,24 @@ void Goto::step(Point *optionalPoint)
 	targetY = targetY < minY ? minY : targetY > maxY ? maxY : targetY;
 
 	//limitar fora da area
-	/*if(!allowDefenseArea) {
-		Point corrected;
-		if(isInDefenseArea(Line(*target, old), robot(), robot()->team()->goal(), &corrected))
+	if(!allowDefenseArea) {
+		if(isInDefenseArea(*target, robot(), robot()->team()->goal()))
 		{
+			Point corrected(awayFromDefenseArea(*target, robot(), robot()->team()->goal()));
 			targetX = corrected.x();
 			targetY = corrected.y();
+			Line path(*robot(), corrected);
+			for(uint t = 0.0; t < AREADISC; t++) {
+				Point p(path.pointAt(t / AREADISC));
+				if(isInDefenseArea(p, robot(), robot()->team()->goal())) {
+					Point corrected(awayFromDefenseArea(*target, robot(), robot()->team()->goal()));
+					targetX = corrected.x();
+					targetY = corrected.y();
+					break;
+				}
+			}
 		}
-	}*/
+	}
 
 	//controle speedX
 	controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
@@ -255,8 +263,4 @@ void Goto::step(Point *optionalPoint)
 	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot(), *lookAt).angle()));
 	Steer::setSpeeds(speedX, speedY);
 	Steer::step();
-
-	//save this iteration
-	old.setX(targetX);
-	old.setY(targetY);
 }
