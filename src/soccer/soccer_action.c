@@ -3,7 +3,7 @@
 
 SoccerAction saction_red_make( SoccerState *s )
 {
- int i;
+ int i, j;
  SoccerAction action;
 
  for( i = 0; i < NPLAYERS; i++ ){ 
@@ -42,7 +42,7 @@ float saction_red_elapsed_time( SoccerAction *sa )
  float pass_delay = 0;
 
  if(sa->type == kick_to_goal)
-   return 0;
+   return soccer_env()->red_kick_delay;
 
  for( i = 0; i < NPLAYERS; i++ ){
    dist = v2_norm(v2_sub( sa->pos[i], sa->move[i] ));
@@ -54,7 +54,7 @@ float saction_red_elapsed_time( SoccerAction *sa )
                         dist/soccer_env()->red_speed );
  }
  if( sa->type == pass )
-   pass_delay = v2_norm( v2_sub(sa->passer_pos, sa->kick_point))/
+   pass_delay = soccer_env()->red_pass_delay + v2_norm( v2_sub(sa->passer_pos, sa->kick_point))/
                         soccer_env()->red_pass_speed;
 
  return MAX( pass_delay, move_delay );
@@ -67,6 +67,9 @@ float saction_blue_elapsed_time( SoccerAction *sa )
  float dist, move_delay = 0;
  float pass_delay = 0;
 
+ if(sa->type == kick_to_goal)
+   return soccer_env()->blue_kick_delay;
+
  for( i = 0; i < NPLAYERS; i++ ){
    dist = v2_norm(v2_sub( sa->pos[i], sa->move[i] ));
    if( sa->ball_owner == i )
@@ -77,7 +80,7 @@ float saction_blue_elapsed_time( SoccerAction *sa )
                         dist/soccer_env()->blue_speed );
  }
  if( sa->type == pass )
-   pass_delay = v2_norm(v2_sub(sa->passer_pos, sa->kick_point))/
+   pass_delay = soccer_env()->blue_pass_delay + v2_norm(v2_sub(sa->passer_pos, sa->kick_point))/
                         soccer_env()->blue_pass_speed;
 
  return MAX( pass_delay, move_delay );

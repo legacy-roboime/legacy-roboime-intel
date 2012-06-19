@@ -108,10 +108,15 @@ void Minmax2::ballOwner()
 	s->blue_ball_owner = -1;
 	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
 	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
-	qreal mDist = Vector(*mRobot - *ball).length();
-	qreal tDist = Vector(*tRobot - *ball).length();
+	qreal orientation = mRobot->orientation();
+	qreal dist = 70;
+	QPointF mDribbler = QPointF(mRobot->x() + cos(orientation)*dist, mRobot->y() + sin(orientation)*dist);
+	orientation = tRobot->orientation();
+	QPointF tDribbler = QPointF(tRobot->x() + cos(orientation)*dist, tRobot->y() + sin(orientation)*dist);
+	qreal mDist = QVector2D(mDribbler - *ball).length();
+	qreal tDist = QVector2D(tDribbler - *ball).length();
 	if(mDist <= tDist){
-		if(mDist < MIN_DIST){
+		if(mDist  < MIN_DIST){
 			s->red_ball_owner = mRobot->id();
 			s->blue_ball_owner = -1;
 		}
@@ -165,8 +170,8 @@ void Minmax2::run()
 #endif
 		update_soccer_state();
 
-		minimax_use_next_red_robot();
-		minimax_use_next_blue_robot();
+		//minimax_use_next_red_robot();
+		//minimax_use_next_blue_robot();
 
 		changeSStateMeasure(s, 0.001);
 
@@ -175,11 +180,11 @@ void Minmax2::run()
 			init = true;
 		}
 
-		minimax_play( s, depth_ );
-
-#ifdef SOCCER_DEBUG
+//#ifdef SOCCER_DEBUG
 		*sL = *s;
-#endif
+//#endif
+
+		minimax_play( sL, depth_ );
 
 		mutex.lock();
 		red_action = *minimax_get_best_red_action();

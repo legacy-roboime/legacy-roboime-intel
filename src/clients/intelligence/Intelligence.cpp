@@ -294,10 +294,10 @@ void Intelligence::update()
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
 		//play["referee"]->step();
-		//if(!((QThread *)play["minimax2"])->isRunning())
-		//	((QThread *)play["minimax2"])->start();
-		//play["minimax2"]->step();
-		play["retaliateU"]->step();
+		if(!((QThread *)play["minimax2"])->isRunning())
+			((QThread *)play["minimax2"])->start();
+		play["minimax2"]->step();
+		//play["retaliateU"]->step();
 		play["retaliateT"]->step();
 		break;
 

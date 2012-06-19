@@ -16,7 +16,9 @@ void minimax_init( SoccerState *s )
 {
  int i;
  best_red_action.prune = TRUE;
- best_blue_action.prune = TRUE; 
+ best_blue_action.prune = TRUE;
+ best_red_action.type = null_action;
+ best_blue_action.type = null_action;
 
  for( i = 0; i < NPLAYERS; i++ ){
    best_red_action.move[i] = s->red[i];
@@ -57,9 +59,14 @@ void  minimax_play( SoccerState *s, int depth )
 {
  s->red_time_stamp = 0;
  s->blue_time_stamp = 0; 
- minimax_use_next_red_robot();
-// minimax_use_next_blue_robot(); 
- blue_robot = (int)(DRAND()*NPLAYERS);
+ //minimax_use_next_red_robot(); 
+ //minimax_use_next_red_robot();
+ minimax_use_next_blue_robot(); 
+ //red_robot = (int)(DRAND()*NPLAYERS);
+// if( s->blue_ball_owner <= 0 )
+   red_robot = sstate_closest_red(s, s->blue[blue_robot]);
+// else
+//   red_robot = sstate_closest_red(s, s->ball);
 
  if(  sstate_min_red_dist(s, s->ball ) < 
       sstate_min_blue_dist(s, s->ball ))
@@ -177,6 +184,7 @@ float minimax_blue_time_weight_func( SoccerState *s )
 
 SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
 {
+ int j;
  float move_radius , recv_radius;
  SoccerAction action = saction_red_make(s);
  move_radius = soccer_env()->red_move_radius;
@@ -196,17 +204,28 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
  }
  if( (i == 14) )
 	   action.prune = FALSE;
- if( (i >= 14) && i < (MAX_NPLAYS-2) )
+ if( (i >= 15) &&  (i < 25) )
+	 action = sstate_red_move(s, blue_robot, .3 );  
+ if( (i >= 25) &&  (i < 30) )
+	 action = sstate_red_move(s, blue_robot, .8 );  
+ if( (i >= 30) &&  (i < 35) )
+	 action = sstate_red_move(s, blue_robot, 1.2 );  
+ if( (i >= 35) && (i < (MAX_NPLAYS-2)) )
      action = sstate_red_move(s, red_robot, move_radius );
  if( i ==  (MAX_NPLAYS-2)  ){
-     s->red[red_robot] = get_red_move_table(red_robot);
+	 //for( j=0; j < NPLAYERS;j++ ){
+  //     s->red[j] = get_red_move_table(j);
+  //     action.move[j] = get_red_move_table(j);
+  //     action.prune = FALSE;
+	 //}
+	 s->red[red_robot] = get_red_move_table(red_robot);
      action.move[red_robot] = get_red_move_table(red_robot);
      action.prune = FALSE;
  }   
  if( i ==  (MAX_NPLAYS-1)  )
 	action = sstate_red_block(s, red_robot, s->ball); 
 
- s->red_time_stamp += saction_red_elapsed_time(&action); 
+ s->red_time_stamp += saction_red_elapsed_time(&action);  
  return action;
 }
 
@@ -221,18 +240,24 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  if( s->blue_ball_owner >= 0 ){
      if( i== 0 )
         action = sstate_blue_kick_to_goal(s);
-     if ( (i >= 2) && (i < 8) )
-       action = sstate_blue_pass(s, i%NPLAYERS, recv_radius ); 
+  //   if ( (i >= 2) && (i < 8) )
+   //    action = sstate_blue_pass(s, i%NPLAYERS, recv_radius ); 
  }
  else{
      if( i == 1 )
        action = sstate_blue_get_ball(s); 
-     if( (i >=8 ) && (i <14) )
-       action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
+  //   if( (i >=8 ) && (i <14) )
+   //    action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
  }
   if( i == 14 )
-	  action = sstate_blue_block(s, blue_robot, s->ball);
- if( (i >= 14) &&  i < (MIN_NPLAYS - 2) )
+	  action.prune = FALSE; 
+ if( (i >= 15) &&  (i < 25) )
+	 action = sstate_blue_move(s, blue_robot, .2 );  
+ if( (i >= 25) &&  (i < 30) )
+	 action = sstate_blue_move(s, blue_robot, .8 );  
+ if( (i >= 30) &&  (i < 35) )
+	 action = sstate_blue_move(s, blue_robot, 1.2 );  
+ if( (i >= 35) &&  i < (MIN_NPLAYS - 2) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
 
  if( i == (MIN_NPLAYS - 2) ){
@@ -241,7 +266,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
      action.prune = FALSE;
  }   
  if( i == (MIN_NPLAYS - 1) )
-     action.prune = FALSE; 
+	 sstate_blue_block(s, blue_robot, s->ball); 
  
  s->blue_time_stamp += saction_blue_elapsed_time(&action); 
  return action;
