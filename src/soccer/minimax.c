@@ -8,6 +8,12 @@ static SoccerAction best_blue_action;
 static int red_robot = 0;
 static int blue_robot = 0;
 
+static int current_index = 0;
+static int red_robots_list[NPLAYERS];
+static int blue_robots_list[NPLAYERS];
+
+static void robots_lists_generate( SoccerState *s );
+static Boolean not_in_list( int tested, int* robot_list, int end ); 
 
 static void adjust_move_tables( void );
 
@@ -34,13 +40,15 @@ void minimax_init( SoccerState *s )
 
 void minimax_use_next_red_robot(void)
 {
- red_robot = (red_robot+1)%NPLAYERS;
+ red_robot = red_robots_list[current_index];
+ current_index = ( current_index + 1 )%NPLAYERS;
 }
 
 
 void minimax_use_next_blue_robot(void)
 {
- blue_robot = (blue_robot+1)%NPLAYERS;
+ blue_robot = blue_robots_list[current_index];
+ current_index = ( current_index + 1 )%NPLAYERS;
 }
 
 SoccerAction* minimax_get_best_red_action( void )
@@ -59,14 +67,31 @@ void  minimax_play( SoccerState *s, int depth )
 {
  s->red_time_stamp = 0;
  s->blue_time_stamp = 0; 
- //minimax_use_next_red_robot(); 
- //minimax_use_next_red_robot();
- minimax_use_next_blue_robot(); 
+
+ if( current_index == 0 )
+   robots_lists_generate(s);
+
+ red_robot = red_robots_list[current_index];
+ blue_robot = blue_robots_list[current_index];
+
+ //printf( "%i %i %i\n", red_robot, blue_robot,  current_index  );
+
+ current_index = ( current_index + 1 )%NPLAYERS;
+
+// minimax_use_next_blue_robot(); 
  //red_robot = (int)(DRAND()*NPLAYERS);
-// if( s->blue_ball_owner <= 0 )
-   red_robot = sstate_closest_red(s, s->blue[blue_robot]);
-// else
-//   red_robot = sstate_closest_red(s, s->ball);
+
+ /*
+ if(  sstate_min_red_dist(s, s->ball ) + .3 < 
+      sstate_min_blue_dist(s, s->ball ) ){
+        minimax_use_next_blue_robot(); 
+        red_robot = sstate_closest_red(s, s->ball);
+ }
+ else{
+   minimax_use_next_red_robot();	  
+   blue_robot = sstate_closest_blue(s, s->ball);
+ }
+ */
 
  if(  sstate_min_red_dist(s, s->ball ) < 
       sstate_min_blue_dist(s, s->ball ))
@@ -75,6 +100,42 @@ void  minimax_play( SoccerState *s, int depth )
    minimax_playMin( s, depth );
 
  adjust_move_tables();
+}
+
+void robots_lists_generate( SoccerState *s )
+{
+ int i, j, closest_red, closes_blue;
+ float dist, smallest_red_dist, smallest_blue_dist;
+
+ red_robots_list[0] = sstate_closest_red(s, s->ball);
+ blue_robots_list[0] = sstate_closest_blue(s, s->ball);
+ 
+ for( i = 1; i < NPLAYERS; i++ ){
+	smallest_red_dist = MAX_FLOAT;
+	smallest_blue_dist = MAX_FLOAT;  
+    for( j = 0; j < NPLAYERS; j++ ){
+       if( (( dist = v2_norm( v2_sub( s->red[j], s->red[i-1]) ) ) < smallest_red_dist) && not_in_list(  j, red_robots_list, i ) ){
+          red_robots_list[i] = j;
+		  smallest_red_dist = dist;
+	   } 
+       if( (( dist = v2_norm( v2_sub( s->blue[j], s->blue[i-1]) ) ) < smallest_blue_dist) && not_in_list( j, blue_robots_list, i )){
+          blue_robots_list[i] = j;
+		  smallest_blue_dist = dist;
+	   } 
+	}
+ }
+}
+
+Boolean not_in_list( int tested, int* robot_list, int end )
+{
+ Boolean is_not_in_list = TRUE;
+ int i;
+
+ for( i = 0; i < end; i++ )
+    if( tested == robot_list[i] )
+      is_not_in_list = FALSE;
+ 
+ return is_not_in_list;
 }
 
 

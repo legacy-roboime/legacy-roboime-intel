@@ -120,7 +120,7 @@ float sstate_evaluate( SoccerState *s )
  for( i = 0; i < NPLAYERS; i++){
    if( (s->red_ball_owner >= 0 ) && 
        sstate_possible_red_pass(s, i, v2_add(s->red[i],v2_make(-.1,0) )) > 0){ 
-           s6 += (1000 - 1000*v2_norm( v2_sub( s->red[i], blue_goal ))
+           s6 += (100 - 1000*v2_norm( v2_sub( s->red[i], blue_goal ))
                       -40*SQR( v2_norm( v2_sub( s->red[i], s->ball )) - 3. )
                       + 30*sstate_min_blue_dist( s, s->red[i] )
 					  + 15*goal_hole_size( s, s->red[i], soccer_env()->blue_goal )
@@ -128,7 +128,7 @@ float sstate_evaluate( SoccerState *s )
    }
    if( ( s->blue_ball_owner >= 0 ) &&
        sstate_possible_blue_pass(s, i, v2_add(s->blue[i],v2_make(.1,0) )) > 0){
-           s6 += (-1000 + 1000*v2_norm( v2_sub( s->blue[i], red_goal ))
+           s6 += (-100 + 1000*v2_norm( v2_sub( s->blue[i], red_goal ))
                        +40*SQR( v2_norm( v2_sub( s->blue[i], s->ball )) - 3. )
                        -30*sstate_min_red_dist( s, s->blue[i] ) 
 					   -15*goal_hole_size( s, s->blue[i], soccer_env()->red_goal )
@@ -138,11 +138,11 @@ float sstate_evaluate( SoccerState *s )
 
  
    if( s->red_ball_owner >= 0 )
-      s7 += 1100*goal_hole_size( s, s->ball, soccer_env()->blue_goal );
+      s7 += 20000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );
    else
 	  s7 += 10000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );  
    if(  s->blue_ball_owner >= 0  )
-      s7 -= 11000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
+      s7 -= 20000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
    else
       s7 += 10000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
 
