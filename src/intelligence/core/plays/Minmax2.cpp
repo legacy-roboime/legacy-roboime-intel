@@ -28,6 +28,9 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alp
 	s = sstate_alloc();
 	sL = sstate_alloc();
 
+	red_action = saction_red_make(s);
+	blue_action = saction_blue_make(s);
+
 	if(team->color() == TeamColor::BLUE && stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
 	else if (team->color() == TeamColor::YELLOW && !stage->isLeftSideBlueGoal())
@@ -115,7 +118,7 @@ void Minmax2::ballOwner()
 	QPointF tDribbler = QPointF(tRobot->x() + cos(orientation)*dist, tRobot->y() + sin(orientation)*dist);
 	qreal mDist = QVector2D(mDribbler - *ball).length();
 	qreal tDist = QVector2D(tDribbler - *ball).length();
-	if(mDist <= tDist){
+	if(mDist + .3<= tDist){
 		if(mDist  < MIN_DIST){
 			s->red_ball_owner = mRobot->id();
 			s->blue_ball_owner = -1;
@@ -262,7 +265,8 @@ void Minmax2::act(SoccerAction& action, Team* team)
 #endif
 
 	for(int i=0; i < team->size(); i++){
-		Vector2* pos = &action.move[i];
+		Vector2 pos = v2_make(0, 0); 
+		pos = action.move[i];
 		Robot* robot = team->at(i);
 
 		if( idClosest == robot->id() ){
@@ -278,7 +282,7 @@ void Minmax2::act(SoccerAction& action, Team* team)
 #endif
 
 			attacker->setRobot(robot);
-			attacker->updateSoccerAction(action.type, action.kick_point, *pos);
+			attacker->updateSoccerAction(action.type, action.kick_point, pos);
 			attacker->step();
 			
 #ifdef DELTA_POS_OWNER
@@ -297,8 +301,8 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			//cout << pos->x << " " << pos->y << endl;
 			//((GotoTactic*)player_[i])->setRobot(robot);
 			Goto* g = ((GotoTactic*)player_[i])->goto_;
-			g->setAllowDefenseArea();
-			g->setPoint(pos->x, pos->y);
+			//g->setAllowDefenseArea();
+			g->setPoint(pos.x, pos.y);
 			g->setSpeed(speed_);//envReal.red_speed);
 			g->setOrientation(orientation);
 			player_[i]->step();
