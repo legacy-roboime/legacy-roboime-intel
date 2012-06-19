@@ -189,7 +189,7 @@ Intelligence::Intelligence(QObject *parent)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-		team["us"]->push_back(new Robot(Robots::RobotIME2011(team["us"], i, i, BLUE)));
+		team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i, BLUE)));
 		//real
 		commander["blueTx"]->add(team["us"]->last());
 		updater["vision"]->add(team["us"]->last());
@@ -197,7 +197,7 @@ Intelligence::Intelligence(QObject *parent)
 		commander["blueSim"]->add(team["us"]->last());
 		updater["visionSim"]->add(team["us"]->last());
 
-		team["they"]->push_back(new Robot(Robots::RobotIME2011(team["they"], i, i, YELLOW)));
+		team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW)));
 		//real
 		commander["yellowTx"]->add(team["they"]->last());
 		updater["vision"]->add(team["they"]->last());
@@ -206,7 +206,8 @@ Intelligence::Intelligence(QObject *parent)
 		updater["visionSim"]->add(team["they"]->last());
 	}
 	
-	skill["driveto"] = new DriveTo(this, team["us"]->at(1));
+	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
+	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
 	skill["goto"] = new Goto(this, team["they"]->at(1), 1000, 0, 0, 3000, true);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
@@ -230,9 +231,9 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["they"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["they"]->at(0),1000);
-	tactic["def"] = new Defender(this, team["they"]->at(1), team["us"]->at(1), 1000);
-	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 1000);
-	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 1000);
+	tactic["def"] = new Defender(this, team["they"]->at(1), team["us"]->at(1), 500, 1000);
+	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
+	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
 	
 	timer = new QTimer(this);
@@ -303,14 +304,15 @@ void Intelligence::update()
 
 	case TACTIC:
 		tactic["zickler43"]->step();
-		tactic["attacker"]->step();
-		tactic["def"]->step();
+		//tactic["attacker"]->step();
+		//tactic["def"]->step();
 		break;
 
 	case SKILL:
-		skill["fac"]->step();
-		skill["goto"]->step();
-		((Goto*)skill["goto"])->setAllowDefenseArea();
+		//skill["fac"]->step();
+		//skill["goto"]->step();
+		//((Goto*)skill["goto"])->setAllowDefenseArea();
+		skill["drivetoObj"]->step();
 		break;
 
 	case CONTROLLER:
