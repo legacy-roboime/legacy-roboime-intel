@@ -123,6 +123,7 @@ void Goto::setPoint(Point *p)
 
 void Goto::setPoint(qreal x, qreal y)
 {
+	if(pTarget) pTarget = NULL;
 	target.setX(x);
 	target.setY(y);
 }
