@@ -28,10 +28,10 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 				player_[i] = new Blocker(this, team->at(i), +deltaTeta, 3000);
 				break;
 			case 4:
-				player_[i] = new Defender(this, team->at(i), enemyTeam->at(i), 3000);
+				player_[i] = new Defender(this, team->at(i), enemyTeam->at(i), 600, 3000);
 				break;
 			case 5:
-				player_[i] = new Defender(this, team->at(i), enemyTeam->at(i), 3000);
+				player_[i] = new Defender(this, team->at(i), enemyTeam->at(i), 600, 3000);
 				break;
 		}
 	}

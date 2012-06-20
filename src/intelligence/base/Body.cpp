@@ -5,12 +5,16 @@ using namespace LibIntelligence;
 Body::Body(const Body& b)
 	: Component(b.parent()),
 	height_(b.height()),
-	radius_(b.radius()) {}
+	radius_(b.radius()),
+	cut_(b.cut())
+{}
 
-Body::Body(QObject* p, qreal h, qreal r)
+Body::Body(QObject* p, qreal h, qreal r, qreal c)
 	: Component(p),
 	height_(h),
-	radius_(r) {}
+	radius_(r),
+	cut_(c)
+{}
 
 void Body::setHeight(qreal h)
 {
@@ -30,4 +34,14 @@ void Body::setRadius(qreal r)
 qreal Body::radius() const
 {
 	return radius_;
+}
+
+void Body::setCut(qreal c)
+{
+	cut_ = c;
+}
+
+qreal Body::cut() const
+{
+	return cut_;
 }

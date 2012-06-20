@@ -13,7 +13,7 @@ namespace LibIntelligence
 
 	public:
 		Body(const Body&);
-		Body(QObject* parent=0, qreal height=0.0, qreal radius=0.0);
+		Body(QObject* parent=0, qreal height=0.0, qreal radius=0.0, qreal cut=0.);
 
 		void setHeight(qreal);
 		qreal height() const;
@@ -21,9 +21,13 @@ namespace LibIntelligence
 		void setRadius(qreal);
 		qreal radius() const;
 
+		void setCut(qreal);
+		qreal cut() const;
+
 	private:
 		qreal height_;
 		qreal radius_;
+		qreal cut_;
 	};
 }
 
