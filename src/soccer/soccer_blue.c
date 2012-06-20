@@ -166,8 +166,10 @@ SoccerAction sstate_blue_block( SoccerState *s, int robot, Vector2 src_point )
  }
  while( (attempt < maxIter) && (!sstate_is_valid_blue_pos( s, robot, new_pos )) ); 
 
- if( attempt ==  maxIter )
-	return action;
+ if( attempt ==  maxIter ){
+	 action.type = move_table;
+	 return action;
+ }
  
  action.type = move;
  action.move[robot] = new_pos;
@@ -202,8 +204,10 @@ SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
  }while( (attempt < maxIter) && (/*(sstate_min_red_dist(s, new_pos) < d )  ||*/
            (!sstate_is_valid_blue_pos( s, robot, new_pos ) &&
              sstate_is_inside_field( s, s->blue[robot] ))) );
- if( attempt == maxIter )
+ if( attempt == maxIter ){
+	 action.type = move_table;
 	 return action;
+ }
  DEBUG5( "blue move %i: (%f,%f) -> (%f,%f)", i,
           s->blue[robot].x, s->blue[robot].y , new_pos.x, new_pos.y ); 
  s->blue[robot] = new_pos;

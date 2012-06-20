@@ -27,7 +27,7 @@ extern "C" {
 #define DEBUG4(s,a,b,c,d)    ;
 #define DEBUG5(s,a,b,c,d,e)  ;
 
-enum actions {get_ball, receive_ball, kick_to_goal, pass, move, null_action};
+enum actions {get_ball, receive_ball, kick_to_goal, pass, move, null_action, move_table, blocker};
 
 typedef enum actions type_actions;
 

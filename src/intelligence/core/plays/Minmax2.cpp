@@ -260,6 +260,10 @@ void Minmax2::act(SoccerAction& action, Team* team)
 		cout << "Receive Ball" << endl;
 	else if(action.type == actions::null_action)
 		cout << "Null action" << endl;
+	else if(action.type == actions::blocker)
+		cout << "Blocker" << endl;
+	else if(action.type == actions::move_table)
+		cout << "Move table" << endl;
 	else
 		cout << "nenhum nem outro" << endl;
 #endif
