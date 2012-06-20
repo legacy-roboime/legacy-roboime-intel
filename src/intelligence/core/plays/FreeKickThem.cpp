@@ -16,19 +16,19 @@ FreeKickThem::FreeKickThem(QObject* parent, Team* team ,Stage* stage)
 	for( int i = 0; i < team->size(); i++){
 		switch(i){
 			case 0:
-				player_[i] = new Blocker(this,team->at(i),0,1000);
+				player_[i] = new Blocker(this, team->at(i), 0, 1000);
 				break;
 			case 1:
-				player_[i] = new Goalkeeper(this,team->at(i), 1000);
+				player_[i] = new Goalkeeper(this, team->at(i), 1000);
 				break;
 			case 2:
-				player_[i] = new Blocker(this,team->at(i),-deltaTeta,1000);
+				player_[i] = new Blocker(this, team->at(i), -deltaTeta, 1000);
 				break;
 			case 3:
-				player_[i] = new Defender(this,team->at(i), 0, 1000);
+				player_[i] = new Defender(this,team->at(i), team->enemyTeam()->at(i), 600, 1000);
 				break;
 			case 4:
-				player_[i] = new Blocker(this,team->at(i),deltaTeta,1000);
+				player_[i] = new Blocker(this,team->at(i), deltaTeta, 1000);
 				break;
 		}
 	}

@@ -88,6 +88,8 @@ namespace LibIntelligence
 		Robot* getClosestPlayerToBall(const Team*) const;
 		Robot* getClosestPlayerToBallThatCanKick(const Team*) const;
 		map<qreal, Robot*> getClosestPlayersToBall(const Team* team) const;
+		map<qreal, Robot*> getClosestPlayersToPoint(const Team* team, Point* point) const;
+		map<qreal, Robot*> getClosestPlayersToPointThatCanKick(const Team* team, Point* point) const;
 		map<qreal, Robot*> getClosestPlayersToBallThatCanKick(const Team* team) const;
 		Robot* getClosestOrderPlayerToBall(const Team* team, int order) const;
 		Team* getTeamFromColor(const TeamColor& color);
@@ -102,6 +104,7 @@ namespace LibIntelligence
 		bool operator==(const Stage* stage);
 
 		bool isLeftSideBlueGoal();
+		void setIsLeftSideBlueGoal(bool);
 	private:
 		qreal lineWidth_;
 		qreal fieldLength_;

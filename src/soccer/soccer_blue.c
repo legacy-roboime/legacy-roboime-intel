@@ -70,6 +70,7 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
 SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
 {
  int i;
+ float dy = .15;
  float k;
  Vector2 p;
  SoccerAction action = saction_blue_make(s);
@@ -79,7 +80,7 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
        soccer_env()->max_blue_kick_dist) ){
    s->red_goal_covering = 1;
    for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
-        k += soccer_env()->robot_radius ){ 
+        k += .2 ){ 
 	  p = soccer_env()->red_goal;
 	  p.y += k;
           is_blue_kick_scored(s, p ); 
@@ -155,19 +156,23 @@ SoccerAction sstate_blue_block( SoccerState *s, int robot, Vector2 src_point )
  int maxIter = 10;	 
  int attempt = 0;
  Vector2 goal_point, new_pos;
- SoccerAction action = saction_blue_make(s);
+ SoccerAction action = use_blue_move_table(s, robot);
  
  do{
+   attempt++;
    goal_point = v2_add( soccer_env()->blue_goal,
 	                    v2_make(0, (DRAND() - .5)*soccer_env()->goal_size ));
    new_pos = v2_lerp( DRAND(), goal_point, src_point );
  }
  while( (attempt < maxIter) && (!sstate_is_valid_blue_pos( s, robot, new_pos )) ); 
 
- if( attempt ==  maxIter )
-	return action;
+ if( attempt ==  maxIter ){
+	 action.type = move_table;
+	 return action;
+ }
  
  action.type = move;
+ action.move[robot] = new_pos;
  s->blue[robot] = new_pos;
  if( robot == s->blue_ball_owner )
     s->ball = new_pos;
@@ -182,7 +187,7 @@ SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
  int maxIter = 10;
  float d;
  Vector2 p, new_pos;
- SoccerAction action; 
+ SoccerAction action = use_blue_move_table(s, robot); 
 
  action = use_blue_move_table(s, robot);  
  do{
@@ -196,11 +201,13 @@ SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
      new_pos = v2_add( s->blue[robot], p ); 
      action.move[robot] = new_pos; 
      action.prune = FALSE;
- }while( (attempt < maxIter) && ((sstate_min_red_dist(s, new_pos) < d )  ||
+ }while( (attempt < maxIter) && (/*(sstate_min_red_dist(s, new_pos) < d )  ||*/
            (!sstate_is_valid_blue_pos( s, robot, new_pos ) &&
              sstate_is_inside_field( s, s->blue[robot] ))) );
- if( attempt == maxIter )
+ if( attempt == maxIter ){
+	 action.type = move_table;
 	 return action;
+ }
  DEBUG5( "blue move %i: (%f,%f) -> (%f,%f)", i,
           s->blue[robot].x, s->blue[robot].y , new_pos.x, new_pos.y ); 
  s->blue[robot] = new_pos;
