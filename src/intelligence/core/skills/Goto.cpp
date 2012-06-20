@@ -61,8 +61,19 @@ bool isInDefenseArea(const Point &point, const Robot *r, const Point *g)
 Goto::Goto(QObject* p, Robot* r, Point *t, qreal o, qreal s, bool a)
 	: Steer(p, r, 0, 0, o),
 	ignoreBrake(false),
-	managedPoint(false),
 	lookAt(NULL),
+	allowDefenseArea(a),
+	pTarget(t),
+	speed(s),
+	old(0.0, 0.0),
+	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
+{}
+
+Goto::Goto(QObject* p, Robot* r, Point t, Point *l, qreal s, bool a)
+	: Steer(p, r, 0, 0, 0),
+	ignoreBrake(false),
+	lookAt(l),
 	allowDefenseArea(a),
 	target(t),
 	speed(s),
@@ -74,10 +85,9 @@ Goto::Goto(QObject* p, Robot* r, Point *t, qreal o, qreal s, bool a)
 Goto::Goto(QObject* p, Robot* r, Point *t, Point *l, qreal s, bool a)
 	: Steer(p, r, 0, 0, 0),
 	ignoreBrake(false),
-	managedPoint(false),
 	lookAt(l),
 	allowDefenseArea(a),
-	target(t),
+	pTarget(t),
 	speed(s),
 	old(0.0, 0.0),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
@@ -87,10 +97,9 @@ Goto::Goto(QObject* p, Robot* r, Point *t, Point *l, qreal s, bool a)
 Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
 	: Steer(p, r, 0, 0, o),
 	ignoreBrake(false), 
-	managedPoint(true),
 	lookAt(NULL),
 	allowDefenseArea(a), 
-	target(new Point(0, 0)),
+	target(0, 0),
 	speed(s),
 	old(0.0, 0.0),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
@@ -99,41 +108,23 @@ Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
 
 Goto::~Goto()
 {
-	if(managedPoint)
-		delete target;
-}
-
-void Goto::setManagedPoint()
-{
-	managedPoint = true;
-}
-
-void Goto::setNotManagedPoint()
-{
-	managedPoint = false;
 }
 
 void Goto::setPoint(const Point &p)
 {
-	if(!managedPoint) {
-		target = new Point(p);
-		managedPoint = true;
-	} else {
-		//*target = p;
-		target->setX(p.x());
-		target->setY(p.y());
-	}
+	if(pTarget) pTarget = NULL;
+	target = p;
 }
 
 void Goto::setPoint(Point *p)
 {
-	if(managedPoint) delete target;
-	target = p;
+	pTarget = p;
 }
 
 void Goto::setPoint(qreal x, qreal y)
 {
-	setPoint(Point(x, y));
+	target.setX(x);
+	target.setY(y);
 }
 
 void Goto::setLookAt(Point *p)
@@ -200,9 +191,12 @@ void Goto::step(Point *optionalPoint)
 	if(optionalPoint) {
 		targetX = optionalPoint->x();
 		targetY = optionalPoint->y();
+	} else if(pTarget) {
+		targetX = pTarget->x();
+		targetY = pTarget->y();
 	} else {
-		targetX = target->x();
-		targetY = target->y();
+		targetX = target.x();
+		targetY = target.y();
 	}
 	speedX = speedY = 0;
 	targetTempX = targetX;
@@ -220,16 +214,16 @@ void Goto::step(Point *optionalPoint)
 
 	//limitar fora da area
 	if(!allowDefenseArea) {
-		if(isInDefenseArea(*target, robot(), robot()->team()->goal()))
+		if(isInDefenseArea(targetCopy(), robot(), robot()->team()->goal()))
 		{
-			Point corrected(awayFromDefenseArea(*target, robot(), robot()->team()->goal()));
+			Point corrected(awayFromDefenseArea(targetCopy(), robot(), robot()->team()->goal()));
 			targetX = corrected.x();
 			targetY = corrected.y();
 			Line path(*robot(), corrected);
 			for(uint t = 0.0; t < AREADISC; t++) {
 				Point p(path.pointAt(t / AREADISC));
 				if(isInDefenseArea(p, robot(), robot()->team()->goal())) {
-					Point corrected(awayFromDefenseArea(*target, robot(), robot()->team()->goal()));
+					Point corrected(awayFromDefenseArea(targetCopy(), robot(), robot()->team()->goal()));
 					targetX = corrected.x();
 					targetY = corrected.y();
 					break;
