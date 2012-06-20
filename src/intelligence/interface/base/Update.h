@@ -12,6 +12,7 @@ namespace LibIntelligence
 	{
 	public:
 		Update(double timeSent=0.0, double timeCapture=0.0, int camId=0);
+		virtual ~Update() {}
 
 		virtual void apply(Updater*) = 0;//apply an update through an updater
 		double time_sent();

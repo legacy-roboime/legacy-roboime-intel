@@ -44,8 +44,8 @@ void GotoAvoid::step()
 	Robot &robot = *this->robot();
 
 	//robot-target-avoid angle
-	Line robot_target(robot, *target);
-	Line avoid_target(*avoid, *target);
+	Line robot_target(robot, pTarget ? *pTarget : target);
+	Line avoid_target(*avoid, pTarget ? *pTarget : target);
 	qreal rta_angle = robot_target.angleTo(avoid_target);
 
 	Steer::setOrientation(DEGTORAD(avoid_target.angle()));
@@ -76,7 +76,7 @@ void GotoAvoid::step()
 		qreal dist(sqrt(SQ(robot_avoid.length()) - SQ(avoid_target.length())));
 		Point tangPoint1(Line::fromPolar(dist, robot_avoid.angle() + theta).translated(robot).p2());
 		Point tangPoint2(Line::fromPolar(dist, robot_avoid.angle() - theta).translated(robot).p2());
-		*tangPoint = Line(tangPoint1, *target).length() < Line(tangPoint2, *target).length() ? tangPoint1 : tangPoint2;
+		*tangPoint = Line(tangPoint1, targetCopy()).length() < Line(tangPoint2, targetCopy()).length() ? tangPoint1 : tangPoint2;
 		Goto::step(tangPoint);
 	}
 }

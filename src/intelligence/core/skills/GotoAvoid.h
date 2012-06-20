@@ -14,6 +14,7 @@ namespace LibIntelligence
 		{
 		public:
 			GotoAvoid(QObject *parent, Robot *slave, Point *target, Point *avoid, qreal speed);
+			GotoAvoid(QObject *parent, Robot *slave, Point target, Point *avoid, qreal speed);
 			~GotoAvoid();
 
 			void setTarget(Point *);
@@ -32,16 +33,14 @@ namespace LibIntelligence
 		{
 		public:
 			GotoBall(QObject *parent, Robot *slave, Point *lookPoint, qreal speed)
-				: GotoAvoid(parent, slave, new Point(), NULL, speed), lookPoint(lookPoint) {
+				: GotoAvoid(parent, slave, Point(), NULL, speed), lookPoint(lookPoint) {
 					setAvoid(stage()->ball());
 			}
-
-			~GotoBall() {delete target;}
 
 			void step() {
 				Line line(*lookPoint, *avoid);
 				line.setLength(line.length() + robot()->body().radius() + stage()->ball()->radius());
-				*target = line.p2();
+				target = line.p2();
 				GotoAvoid::step();
 			}
 

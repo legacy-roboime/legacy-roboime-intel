@@ -21,7 +21,7 @@ namespace LibIntelligence
 
 	public:
 		Updater(QObject* parent=0);
-		~Updater();
+		virtual ~Updater();
 
 		virtual void receive();
 		virtual void prepare();
