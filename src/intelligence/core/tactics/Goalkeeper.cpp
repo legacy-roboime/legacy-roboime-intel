@@ -12,11 +12,15 @@ using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 
+#define MINBALLSPEED 10
+#define MAXLOOKAHEADTIME 2
+
 Goalkeeper::Goalkeeper(QObject* p, Robot* r, qreal s)
 	: Tactic(p,r),
 	goto_(new Goto(this, r, 0.0, 0.0, 0.0, s, true))//, kickTo_(new KickTo(this, r))//, getBall_(new GetBall(this, r, 1000))
 {
 	((Steer *)goto_)->setLookPoint(stage()->ball());
+	goto_->setPoint(robot()->goal());
 	//goto_->setSpeed(speed);
 	this->pushState(goto_);
 	//skills.append(goto_);//this is important
@@ -66,14 +70,23 @@ void Goalkeeper::step()
 	//TODO: if self then we should kick/pass the ball
 	Robot &goodguy = *myTeam.getClosestPlayerToBall();
 
-	/// TODO
+	//if the ball is moving fast* torwards the goal, defend it: THE CATCH
+	//*: define fast
+	Line ballPath(Line(Point(0, 0), ball.speed().toPointF()).translated(ball));
+	ballPath.setLength(ball.speed().length() * MAXLOOKAHEADTIME);
+	Point importantPoint;
+	if(ball.speed().length() >= MINBALLSPEED && ballPath.intersect(goal, &importantPoint) == Line::BoundedIntersection) {
+		goto_->setPoint(importantPoint);
+		goto_->step();
+		return;
+	}
 
-	/// The backup plan
-	Line ballToGoal(ball, goal);//to the center of the goal
-	Point target;
-	if(homeline.intersect(ballToGoal, &target) == Line::BoundedIntersection)
-		goto_->setPoint(target);
-	else
-		goto_->setPoint(homeline.pointAt(target.y() > 0 ? 1 : 0));
+	//if the badguy has closest  reach to the ball than watch it's orientation
+	//TODO
+
+	//otherwise try to close the largest gap
+	//TODO
+
+	//continue stepping the last strategy
 	goto_->step();
 }
