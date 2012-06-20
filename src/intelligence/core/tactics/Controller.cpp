@@ -69,8 +69,8 @@ void Controller::step() {
 		}
 		steer.step();
 
-		//getBall
-		static Blocker bl(this, robot(), 0.0, speed);
+		//blocker
+		static Blocker bl = Blocker(this, robot(), 0, speed);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_A)) {
 			bl.step();
 		}
@@ -87,11 +87,12 @@ void Controller::step() {
 			gk.step();
 		}
 
-		//attacker
-		static Attacker atk(this, robot(),speed);
+		//zickler
+		static Zickler43 zk = Zickler43(this, robot(), speed, true);
 		//static IndirectKick atk(this, robot(),speed,500);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
-			atk.step();
+			zk.step();
+			//robot()->dribble(0);
 		}
 
 		//goto 0.0 0.0
