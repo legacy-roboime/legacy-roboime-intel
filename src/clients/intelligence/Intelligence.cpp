@@ -120,7 +120,27 @@ struct IntelligenceCli : public QThread
 				((Goto *)intel->skill["goto"])->setPoint(x, y);
 				intel->mutex.unlock();
 
-			} else if(command[0] == 's') {
+			}
+			else if(command == "side") {
+				string side;
+				cin >> side;
+				cout << "setSide(" << side << ")" << endl;
+				intel->mutex.lock();
+				if(side.compare("left") == 0){ //left
+					if(intel->team["us"]->color() == BLUE)
+						intel->stage["main"]->setIsLeftSideBlueGoal(true);
+					else
+						intel->stage["main"]->setIsLeftSideBlueGoal(false);
+				}
+				else{
+					if(intel->team["us"]->color() == BLUE)
+						intel->stage["main"]->setIsLeftSideBlueGoal(false);
+					else
+						intel->stage["main"]->setIsLeftSideBlueGoal(true);
+				}
+				intel->mutex.unlock();
+
+			}else if(command[0] == 's') {
 				cin >> s;
 				cout << "setSpeed(" << s << ")" << endl;
 				intel->mutex.lock();
@@ -149,7 +169,7 @@ struct IntelligenceCli : public QThread
 				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
 				intel->mutex.unlock();
 
-			} else {
+			}else {
 				cout << "Comando nao reconhecido." << endl;
 
 			}
@@ -209,7 +229,7 @@ Intelligence::Intelligence(QObject *parent)
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
-	skill["goto"] = new Goto(this, team["they"]->at(1), 1000, 0, 0, 3000, true);
+	skill["goto"] = new Goto(this, team["us"]->at(1), 0, 0, 0, 500, true);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
 	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, true);
 	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
@@ -226,10 +246,10 @@ Intelligence::Intelligence(QObject *parent)
 	play["referee"] = new Plays::ObeyReferee(this, play["retaliateU"], team["us"]->at(0));
 
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
-	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 500); //controle no referencial do robo
-	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 500); //controle no referencial do campo
+	tactic["controller"] = new Controller2(this, team["us"]->at(3), 1, 500); //controle no referencial do robo
+	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 3000); //controle no referencial do campo
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
-	tactic["zickler43"] = new Zickler43(this, team["they"]->at(4), 3000, true);
+	tactic["zickler43"] = new Zickler43(this, team["they"]->at(3), 1000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["they"]->at(0),1000);
 	tactic["def"] = new Defender(this, team["they"]->at(1), team["us"]->at(1), 500, 1000);
 	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
@@ -252,9 +272,9 @@ void Intelligence::resetPatterns()
 		for(int i = 0; i < team["they"]->size(); i++)
 			team["they"]->at(i)->setPatternId(i);
 	} else {
-		team["us"]->at(0)->setPatternId(2);
-		team["us"]->at(1)->setPatternId(3);
-		//team["us"]->at(2)->setPatternId(1);
+		team["us"]->at(3)->setPatternId(4);
+		team["us"]->at(0)->setPatternId(4);
+		team["us"]->at(1)->setPatternId(4);
 		//team["us"]->at(3)->setPatternId(1);
 		//team["us"]->at(3)->setPatternId(1);
 		//team["they"][0]->setPatternId(4);
@@ -298,7 +318,7 @@ void Intelligence::update()
 		if(!((QThread *)play["minimax2"])->isRunning())
 			((QThread *)play["minimax2"])->start();
 		play["minimax2"]->step();
-		//play["retaliateU"]->step();
+		play["retaliateU"]->step();
 		play["retaliateT"]->step();
 		break;
 
@@ -310,9 +330,9 @@ void Intelligence::update()
 
 	case SKILL:
 		//skill["fac"]->step();
-		//skill["goto"]->step();
+		skill["goto"]->step();
 		//((Goto*)skill["goto"])->setAllowDefenseArea();
-		skill["drivetoObj"]->step();
+		//skill["drivetoObj"]->step();
 		break;
 
 	case CONTROLLER:
