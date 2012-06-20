@@ -89,5 +89,6 @@ void UpdaterVision::prepare() {
 			}*/
 		}
 		packets.pop_front();
+		delete packet;
 	}
 }
