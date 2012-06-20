@@ -104,6 +104,7 @@ namespace LibIntelligence
 		bool operator==(const Stage* stage);
 
 		bool isLeftSideBlueGoal();
+		void setIsLeftSideBlueGoal(bool);
 	private:
 		qreal lineWidth_;
 		qreal fieldLength_;

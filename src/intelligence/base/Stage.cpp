@@ -270,6 +270,10 @@ bool Stage::isLeftSideBlueGoal(){
 	return isLeftSideBlueGoal_;
 }
 
+void Stage::setIsLeftSideBlueGoal(bool s){
+	isLeftSideBlueGoal_ = s;
+}
+
 Team* Stage::getTeamFromColor(const TeamColor& color)
 {
 	if(color == BLUE)
