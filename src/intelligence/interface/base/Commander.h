@@ -14,7 +14,8 @@ namespace LibIntelligence
 	{
 	public:
 		Commander();
-		~Commander();
+		virtual ~Commander();
+
 		//methods:
 		virtual void add(Robot*);
 		virtual void del(Robot*);

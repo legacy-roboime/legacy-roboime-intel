@@ -15,8 +15,6 @@ UpdateReferee::UpdateReferee(char cmd, unsigned char cmd_counter, unsigned char 
 	this->time_remaining = time_remaining;
 }
 
-UpdateReferee::~UpdateReferee(void) {}
-
 void UpdateReferee::apply(Updater* u) {
 	//cout << to_string() << endl;
 	for(size_t k=u->stagesSize(); k>0; k--) {
