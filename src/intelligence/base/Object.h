@@ -16,6 +16,8 @@ namespace LibIntelligence
 		Object(const Point &center, const Vector &speed, const qreal &theta, const qreal &omega);
 		Object(const Object& object);
 
+		virtual ~Object() {};
+
 		void updatePosition(const Point &);
 		void updateSpeed(double time);
 
