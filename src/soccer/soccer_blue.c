@@ -70,7 +70,7 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
 SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
 {
  int i;
- float dy = .05;
+ float dy = .15;
  float k;
  Vector2 p;
  SoccerAction action = saction_blue_make(s);
@@ -156,7 +156,7 @@ SoccerAction sstate_blue_block( SoccerState *s, int robot, Vector2 src_point )
  int maxIter = 10;	 
  int attempt = 0;
  Vector2 goal_point, new_pos;
- SoccerAction action = saction_blue_make(s);
+ SoccerAction action = use_blue_move_table(s, robot);
  
  do{
    attempt++;

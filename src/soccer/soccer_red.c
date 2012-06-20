@@ -70,7 +70,7 @@ SoccerAction sstate_red_receive_ball( SoccerState *s, int recv )
 
 SoccerAction sstate_red_kick_to_goal( SoccerState *s )
 {
- float dy = .05;	 
+ float dy = .15;	 
  float k;
  Vector2 p;
  SoccerAction action = saction_red_make(s);

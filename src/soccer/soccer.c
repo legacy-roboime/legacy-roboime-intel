@@ -83,19 +83,19 @@ float sstate_evaluate( SoccerState *s )
  ball_dist_to_red_goal = v2_norm( v2_sub( s->ball, red_goal ) );
  ball_dist_to_blue_goal = v2_norm( v2_sub( s->ball, blue_goal ) );
 
- if( s->goal_received )
-     s0 = -1000000 + 1000000*s->red_goal_covering; 
+// if( s->goal_received )
+//     s0 = -1000000 + 1000000*s->red_goal_covering; 
  if( s->goal_scored )
      s0 = 1000000 - 1000000*s->blue_goal_covering;
 
- s1 += 100*ball_dist_to_red_goal;
- s1 -= 100*ball_dist_to_blue_goal;
+ s1 += 1000*ball_dist_to_red_goal;
+ s1 -= 1000*ball_dist_to_blue_goal;
 
- s2 -= min_red_dist_to_ball;
- s2 += min_blue_dist_to_ball;
+ s2 -= 100*min_red_dist_to_ball;
+ s2 += 100*min_blue_dist_to_ball;
 
- s3 -= 100000*min_red_dist_to_red_goal;
- s3 += 100000*min_blue_dist_to_blue_goal;
+ s3 -= 20*min_red_dist_to_red_goal;
+ s3 += 20*min_blue_dist_to_blue_goal;
 
  if(  s->red_ball_owner >=  0 )/*|| 
       (( t = sstate_time_to_red_get_ball( s, &closest_red ) <
@@ -106,16 +106,19 @@ float sstate_evaluate( SoccerState *s )
        sstate_time_to_blue_get_ball( s, &closest_red )) && ( t > 0 )) ) */
          s4 -= 5000; 
 
- 
+/* 
  if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
-    s5 = 300*MAX(min_blue_dist_to_ball,3);
- else
+    s5 += 300*MAX(min_blue_dist_to_ball,3);
+ else{
+	if( s->ball
     s5 = 900;
 
+ }
  if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
     s5 = -300*MAX(min_red_dist_to_ball,3);
  else
     s5 = -900;
+	*/
  
  for( i = 0; i < NPLAYERS; i++){
    if( (s->red_ball_owner >= 0 ) && 
@@ -137,26 +140,25 @@ float sstate_evaluate( SoccerState *s )
  } 
 
  
-   if( s->red_ball_owner >= 0 )
-      s7 += 20000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );
+  /* if( s->red_ball_owner >= 0 )
+      s7 += 100000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );
    else
-	  s7 += 10000*goal_hole_size( s, s->ball, soccer_env()->blue_goal );  
+	  s7 += 10000*goal_hole_size( s, s->ball, soccer_env()->blue_goal ); */
    if(  s->blue_ball_owner >= 0  )
-      s7 -= 20000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
+      s7 -= 1000000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
    else
-      s7 += 10000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
-
-/*
-  for( i = 0; i < NPLAYERS; i++){
-     if( s->red_ball_owner < 0 )
-	     s8 += 5*goal_hole_size( s, s->red[i], soccer_env()->blue_goal );
-     if( s->blue_ball_owner < 0  )
-       s8 -= 10*goal_hole_size( s, s->blue[i], soccer_env()->red_goal );
-  }
-  */
+      s7 -= 20000*goal_hole_size( s, s->ball, soccer_env()->red_goal );
 
 
- return  s1 +/* s2 +*/ s3 + s4 + s6 + s7;// + s8;// + s3 + s4 + s5 + s6 + s7 + s8;
+ // for( i = 0; i < NPLAYERS; i++){
+    // if( s->red_ball_owner < 0 
+	//   s8 += 10*goal_hole_size( s, s->red[i], soccer_env()->blue_goal );
+  //   if( s->blue_ball_owner < 0  )
+    //   s8 -= 10*goal_hole_size( s, s->blue[i], soccer_env()->red_goal );
+ // }
+ 
+
+ return /* s0 */ s1 + s2 + s7; //s0 +  s1 + s2 /*+ s3 + s4 + s6 + */ + s7; //  +  s3 + s4 + s5 + s6 + s7;// + s8;// + s3 + s4 + s5 + s6 + s7 + s8;*/
 } 
 
 
@@ -165,7 +167,7 @@ Boolean sstate_is_valid_red_pos( SoccerState *s, int robot, Vector2 p )
  int i;
  float diameter = 2*soccer_env()->robot_radius;
 
- if( sstate_is_inside_field( s, p ) ){
+ if( sstate_is_inside_field( s, p ) ||  !sstate_is_inside_field( s, s->red[robot] ) ){
    for( i = 0; i < NPLAYERS; i++ ){
       if( (i != robot) && (v2_norm( v2_sub( p, s->red[i] )) < diameter) ){
          return FALSE;
@@ -185,7 +187,7 @@ Boolean sstate_is_valid_blue_pos( SoccerState *s, int robot, Vector2 p )
  int i;
  float diameter = 2*soccer_env()->robot_radius;
 
- if( sstate_is_inside_field( s, p ) ){
+ if( sstate_is_inside_field( s, p ) ||  !sstate_is_inside_field( s, s->blue[robot] ) ){
    for( i = 0; i < NPLAYERS; i++ ){
       if( v2_norm( v2_sub( p, s->red[i] )) < diameter )
         return FALSE;
@@ -243,8 +245,7 @@ float goal_hole_size( SoccerState *s, Vector2 src_point, Vector2 goal )
           p = goal;
           p.y = p.y + k;
           is_kick_scored(s, src_point, p );
-          if( s->goal_scored )
-              hole_size += dy;
+          hole_size += dy;
  }
  return hole_size;
 }

@@ -28,7 +28,7 @@ SoccerAction saction_blue_make( SoccerState *s )
     action.pos[i] = s->blue[i];
  }
  action.prune = TRUE;
- action.type == null_action;
+ action.type = null_action;
  action.ball_owner = s->blue_ball_owner;
  action.passer = s->blue_passer;
  return action;
