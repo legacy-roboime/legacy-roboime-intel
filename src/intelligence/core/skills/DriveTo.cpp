@@ -9,7 +9,7 @@ using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 DriveTo::DriveTo(QObject* parent, Robot* slave, qreal maxErrorD, qreal maxErrorA, qreal bAngle, Point point, qreal threshold, qreal tAngle, qreal speed)
-	: Goto(parent, slave)
+	: Goto(parent, slave, (Point*)NULL, (Point*)NULL, speed)
 {
 	this->maxErrorA = maxErrorA;
 	this->maxErrorD = maxErrorD;
