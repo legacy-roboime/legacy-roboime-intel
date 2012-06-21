@@ -13,7 +13,8 @@ SoccerAction sstate_blue_get_ball( SoccerState *s )
  if( (s->red_ball_owner < 0) && (s->blue_ball_owner < 0) ){
    if( ((t =  sstate_time_to_blue_get_ball( s, &closest_blue )) <
        sstate_time_to_red_get_ball( s, &closest_red )) && ( t > 0 ) ){
-          DEBUG("blue get ball\n");  
+        //action = use_blue_move_table(s, s->blue_ball_owner ); 
+        DEBUG("blue get ball\n");  
         s->ball = v2_add( s->ball, v2_scale( t, s->ball_vel ) );
         s->ball_vel = v2_make(0,0);
         action.move[closest_blue] = s->ball;
@@ -38,6 +39,7 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
  if( (s->red_ball_owner >= 0) || (s->blue_ball_owner >= 0))
      return action;
 
+ //action = use_blue_move_table(s, recv );
  time_to_red_block = sstate_time_to_blue_get_ball( s, &closest_red ); 
  time_to_receive = time_to_intersect( s->ball, s->ball_vel, s->blue[recv], 
                                       v2_norm( s->ball_vel ), 
@@ -78,6 +80,7 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
  if( (s->blue_ball_owner >= 0) && (s->red_ball_owner < 0) &&
      (v2_norm( v2_sub( s->ball, soccer_env()->red_goal )) <
        soccer_env()->max_blue_kick_dist) ){
+ //  action = use_blue_move_table(s, s->blue_ball_owner );
    s->red_goal_covering = 1;
    for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
         k += .2 ){ 
@@ -127,6 +130,7 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
 
  if( (s->blue_ball_owner >= 0) && (s->blue_ball_owner != recv ) &&
      (s->red_ball_owner < 0 )){
+		// action = use_blue_move_table(s, s->blue_ball_owner );
          p = v2_make(recv_radius*DRAND()*cos(2*PI*DRAND()),
                      recv_radius*DRAND()*sin(2*PI*DRAND()) );
          new_recv_pos = v2_add( s->blue[recv], p );
