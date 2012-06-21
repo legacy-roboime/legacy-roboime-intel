@@ -171,7 +171,7 @@ bool GoalKickToDribbleT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
 	
-	return QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST && !(a->action() == kick_to_goal); 
+	return /*QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST &&*/ !(a->action() == kick_to_goal); 
 }
 
 GoalKickToDribbleT::GoalKickToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -187,7 +187,7 @@ DribbleToPassT::DribbleToPassT(QObject* parent, State* source, State* target, qr
 bool PassToDribbleT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST && !(a->action() == pass);
+	return /*QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST &&*/ !(a->action() == pass);
 }
 
 PassToDribbleT::PassToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

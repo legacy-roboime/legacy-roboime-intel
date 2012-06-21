@@ -118,7 +118,7 @@ void Minmax2::ballOwner()
 	QPointF tDribbler = QPointF(tRobot->x() + cos(orientation)*dist, tRobot->y() + sin(orientation)*dist);
 	qreal mDist = QVector2D(mDribbler - *ball).length();
 	qreal tDist = QVector2D(tDribbler - *ball).length();
-	if(mDist + 1.5 <= tDist){
+	if(mDist <= tDist){
 		if(mDist  < MIN_DIST){
 			s->red_ball_owner = mRobot->id();
 			s->blue_ball_owner = -1;
