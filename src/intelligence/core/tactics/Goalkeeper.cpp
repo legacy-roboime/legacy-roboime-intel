@@ -52,7 +52,7 @@ void Goalkeeper::step()
 	//This angle is how much inside the goal the goalkeeper must be
 	//when 0 it's completely outside, when 90, it's half inside, when 180 it's completely inside
 	//values greater than 90 don't make much sense
-	const qreal angle(45);//TODO parametrize this
+	const qreal angle(0);//TODO parametrize this
 
 	//Auxiliar lines to translate the goal line ends
 	Line l1 = Line::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 - angle : angle);
