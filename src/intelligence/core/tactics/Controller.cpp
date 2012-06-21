@@ -92,7 +92,7 @@ void Controller::step() {
 		//static IndirectKick atk(this, robot(),speed,500);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
 			zk.step();
-			//robot()->dribble(0);
+			robot()->dribble(0);
 		}
 
 		//goto 0.0 0.0
@@ -105,7 +105,7 @@ void Controller::step() {
 		}
 
 		//direcionais
-		static Move mv(this, robot(), 0.0, 0.0, 0.0);
+		Move mv(this, robot(), 0.0, 0.0, 0.0);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
 			mv.setAll(0.0, -speed, 0.0);
 			mv.step();
