@@ -229,7 +229,7 @@ Intelligence::Intelligence(QObject *parent)
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
-	skill["goto"] = new Goto(this, team["us"]->at(1), 0, 0, 0, 500, true);
+	skill["goto"] = new Goto(this, team["us"]->at(3), 0, 0, 0, 500, true);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
 	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, true);
 	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
@@ -238,20 +238,21 @@ Intelligence::Intelligence(QObject *parent)
 
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
-	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(0), 3000);
+	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 3000);
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
-	play["referee"] = new Plays::ObeyReferee(this, play["retaliateU"], team["us"]->at(0));
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"], team["us"]->at(0));
+	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0));
 
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
-	tactic["controller"] = new Controller2(this, team["us"]->at(3), 1, 500); //controle no referencial do robo
-	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 3000); //controle no referencial do campo
+	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
+	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
-	tactic["zickler43"] = new Zickler43(this, team["they"]->at(3), 1000, true);
-	tactic["gkpr"] = new Goalkeeper(this, team["they"]->at(0),1000);
-	tactic["def"] = new Defender(this, team["they"]->at(1), team["us"]->at(1), 500, 1000);
+	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
+	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(3),3000);
+	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
 	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
 	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
@@ -272,12 +273,12 @@ void Intelligence::resetPatterns()
 		for(int i = 0; i < team["they"]->size(); i++)
 			team["they"]->at(i)->setPatternId(i);
 	} else {
-		team["us"]->at(3)->setPatternId(4);
-		team["us"]->at(0)->setPatternId(4);
-		team["us"]->at(1)->setPatternId(4);
-		//team["us"]->at(3)->setPatternId(1);
-		//team["us"]->at(3)->setPatternId(1);
-		//team["they"][0]->setPatternId(4);
+		team["us"]->at(4)->setPatternId(4);
+		team["us"]->at(0)->setPatternId(0);
+		team["us"]->at(1)->setPatternId(1);
+		team["us"]->at(3)->setPatternId(3);
+		team["us"]->at(2)->setPatternId(2);
+		team["us"]->at(5)->setPatternId(5);
 
 		//set the kicker if it is not working
 		//team["us"][0]->kicker().setNotWorking();
@@ -314,18 +315,19 @@ void Intelligence::update()
 	case PLAY:
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
-		//play["referee"]->step();
-		if(!((QThread *)play["minimax2"])->isRunning())
-			((QThread *)play["minimax2"])->start();
-		play["minimax2"]->step();
-		play["retaliateU"]->step();
-		play["retaliateT"]->step();
+		play["refereeU"]->step();
+		//if(!((QThread *)play["minimax2"])->isRunning())
+		//	((QThread *)play["minimax2"])->start();
+		//play["minimax2"]->step();
+		//play["retaliateU"]->step();
+		//tactic["zickler43"]->step();
+		//play["retaliateT"]->step();
 		break;
 
 	case TACTIC:
-		tactic["zickler43"]->step();
-		//tactic["attacker"]->step();
-		//tactic["def"]->step();
+		//tactic["zickler43"]->step();
+		//tactic["gkpr"]->step();
+		tactic["def"]->step();
 		break;
 
 	case SKILL:

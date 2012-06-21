@@ -66,6 +66,7 @@ private:
 	static bool gDebugVisualization;
 	static PerfRenderer gPerfRenderer;
 	static bool gTextEnabled;
+	static GLuint mTexId;
 	//AVI GENERATOR OPENGL
 	//CAVIGenerator AviGen;	// generator
 	//BYTE* bmBits;	// image buffer
@@ -88,6 +89,8 @@ private:
 	static bool FileExistTestSimple(const char *fname);
 	static void CSL_Scene();
 	static void DrawForce(NxActor* actor, NxVec3& forceVec, const NxVec3& color);
+	static bool createTexture(const char *filename);
+	static void drawTexture(bool shadows);
 
 	friend class NxRobot;
 	friend class Simulation;

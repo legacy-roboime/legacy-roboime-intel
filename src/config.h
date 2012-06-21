@@ -1,4 +1,4 @@
-#define SIMU
+//#define SIMU
 
 #ifdef _DEBUG
 #define DEBUG_UDP

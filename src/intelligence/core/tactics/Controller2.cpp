@@ -51,6 +51,25 @@ void Controller2::step() {
 			sx = 0;
 			sy = 0;
 		}
+
+		//direcionais
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
+			sx = 0;
+			sy = -1;
+		}
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_UP)) {
+			sx = 0;
+			sy = 1;
+		}
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_LEFT)) {
+			sx = -1;
+			sy = 0;
+		}
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+			sx = 1;
+			sy = 0;
+		}
+
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_LEFT_THUMB)) {
 			sBoost = 10.0;
 		} else {
@@ -61,6 +80,7 @@ void Controller2::step() {
 		qreal ssx = sx * cos(theta) - sy * sin(theta);
 		qreal ssy = sx * sin(theta) + sy * cos(theta);
 		//steer->setAll(ssx * sBoost * speed, ssy * sBoost * speed, dx, dy);
+
 		move->setSpeeds(ssy * sBoost * speed, - ssx * sBoost * speed);
 
 		//dribbler

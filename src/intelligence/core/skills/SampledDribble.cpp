@@ -35,6 +35,8 @@ void SampledDribble::step()
 		robot->dribble(maxPower_);
 	}
 
+	robot->dribble(0);
+
 	qreal backup = threshold;
 	threshold = 50;//82.6; //para que o robô conduza numa direção é feita uma diminuição do threshold
 	DriveToBall::step();
