@@ -316,6 +316,7 @@ void Intelligence::update()
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
 		play["refereeU"]->step();
+		play["refereeT"]->step();
 		//if(!((QThread *)play["minimax2"])->isRunning())
 		//	((QThread *)play["minimax2"])->start();
 		//play["minimax2"]->step();

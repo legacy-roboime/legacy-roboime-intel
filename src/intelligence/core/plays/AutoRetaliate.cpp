@@ -60,15 +60,33 @@ void AutoRetaliate::step(){
 	while(i<ids.size()){
 		Robot* robot = (*it2).second;
 		if(i == 0){
-			((Defender*)player_[3])->setEnemy((*it3).second);
+			if((*it3).second != NULL && stage->inField((const Object&)(*(*it3).second))){
+				((Defender*)player_[3])->setEnemy((*it3).second);
+			}
+			else{
+				((Defender*)player_[3])->setEnemy(ball);
+				((Defender*)player_[3])->reset();
+			}
 			player_[3]->setRobot(robot);
 		}
 		else if(i == 1){
-			((Defender*)player_[4])->setEnemy((*it3).second);
+			if((*it3).second != NULL && stage->inField((const Object&)(*(*it3).second))){
+				((Defender*)player_[4])->setEnemy((*it3).second);
+			}
+			else{
+				((Defender*)player_[4])->setEnemy(ball);
+				((Defender*)player_[4])->reset();
+			}
 			player_[4]->setRobot(robot);
 		}
 		else if(i == 2){
-			((Defender*)player_[5])->setEnemy((*it3).second);
+			if((*it3).second != NULL && stage->inField((const Object&)(*(*it3).second))){
+				((Defender*)player_[5])->setEnemy((*it3).second);
+			}
+			else{
+				((Defender*)player_[5])->setEnemy(ball);
+				((Defender*)player_[5])->reset();
+			}
 			player_[5]->setRobot(robot);
 		}
 
@@ -76,10 +94,6 @@ void AutoRetaliate::step(){
 		it2++;
 		it3++;
 	}
-
-	Object* obj1 = ((Defender*)player_[3])->enemy();
-	Object* obj2 = ((Defender*)player_[4])->enemy();
-	Object* obj3 = ((Defender*)player_[5])->enemy();
 
 	for(int i = 0; i < team->size(); i++){
 		player_[i]->step();	
