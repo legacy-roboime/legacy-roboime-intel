@@ -31,14 +31,20 @@ void StopReferee::step()
 	Ball* ball = stage->ball();
 	Goal* myGoal = team->goal();
 
-	map<qreal, Robot*> close = stage->getClosestPlayersToBall(team);
+	map<int/*qreal*/, Robot*> ids1;// = stage->getClosestPlayersToBall(team);
 	map<int, Robot*> ids;
 	map<qreal, Robot*> enemys = stage->getClosestPlayersToPoint(team->enemyTeam(), (Point*)team->goal());
 
-	//3 Blocker
+	for(int i=0; i<team->size(); i++){
+		Robot* r = team->at(i);
+		if(r->id() != player_[0]->robot()->id())
+			ids1[r->id()] = r;
+	}
+
+	////3 Blocker
 	int i=0;
-	map<qreal, Robot*>::iterator it1 = close.begin();
-	while(i<close.size()-1){
+	map</*qreal*/int, Robot*>::iterator it1 = ids1.begin();
+	while(i<ids.size()-1){
 		if((*it1).second->id() == player_[0]->robot()->id()){
 			it1++;
 			continue;

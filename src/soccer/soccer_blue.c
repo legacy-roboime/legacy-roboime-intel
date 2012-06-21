@@ -72,7 +72,7 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
 SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
 {
  int i;
- float dy = .15;
+ float dy = .1;
  float k;
  Vector2 p;
  SoccerAction action = saction_blue_make(s);
@@ -80,12 +80,13 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
  if( (s->blue_ball_owner >= 0) && (s->red_ball_owner < 0) &&
      (v2_norm( v2_sub( s->ball, soccer_env()->red_goal )) <
        soccer_env()->max_blue_kick_dist) ){
- //  action = use_blue_move_table(s, s->blue_ball_owner );
+   action = use_blue_move_table(s, s->blue_ball_owner );
    s->red_goal_covering = 1;
+   //k = (DRAND() - .5)*soccer_env()->goal_size;
    for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
         k += .2 ){ 
-	  p = soccer_env()->red_goal;
-	  p.y += k;
+	      p = soccer_env()->red_goal;
+	      p.y += ( k + .5*dy*DRAND() );
           is_blue_kick_scored(s, p ); 
           if( s->goal_received ){
               s->red_goal_covering -= ( soccer_env()->robot_radius/

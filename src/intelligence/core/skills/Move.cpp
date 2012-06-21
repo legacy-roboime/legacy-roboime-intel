@@ -19,7 +19,7 @@ using namespace Skills;
 #define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
 qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
 
-#define ROBOTACCEL 2500
+//#define ROBOTACCEL 3500
 
 Move::Move(QObject* p, Robot* r, qreal sx, qreal sy, qreal sa)
 	: Skill(p, r),

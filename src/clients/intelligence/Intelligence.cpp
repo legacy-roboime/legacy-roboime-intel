@@ -243,15 +243,16 @@ Intelligence::Intelligence(QObject *parent)
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
-	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"], team["us"]->at(0));
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2));
 	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0));
+	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
 	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
-	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(3),3000);
+	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
 	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
 	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
 	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
@@ -274,11 +275,18 @@ void Intelligence::resetPatterns()
 			team["they"]->at(i)->setPatternId(i);
 	} else {
 		team["us"]->at(4)->setPatternId(4);
-		team["us"]->at(0)->setPatternId(0);
+		team["us"]->at(0)->setPatternId(5);
 		team["us"]->at(1)->setPatternId(1);
 		team["us"]->at(3)->setPatternId(3);
 		team["us"]->at(2)->setPatternId(2);
-		team["us"]->at(5)->setPatternId(5);
+		team["us"]->at(5)->setPatternId(0);
+
+		team["they"]->at(0)->setPatternId(1);
+		team["they"]->at(1)->setPatternId(2);
+		team["they"]->at(2)->setPatternId(3);
+		team["they"]->at(3)->setPatternId(4);
+		team["they"]->at(4)->setPatternId(7);
+		team["they"]->at(5)->setPatternId(5);
 
 		//set the kicker if it is not working
 		//team["us"][0]->kicker().setNotWorking();
@@ -315,10 +323,13 @@ void Intelligence::update()
 	case PLAY:
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
-		play["refereeU"]->step();
-		play["refereeT"]->step();
+		//play["stoprefT"]->step();
 		//if(!((QThread *)play["minimax2"])->isRunning())
 		//	((QThread *)play["minimax2"])->start();
+		play["refereeU"]->step();
+		//play["refereeT"]->step();
+		//play["stoprefT"]->step();
+		//play["retaliateT"]->step();
 		//play["minimax2"]->step();
 		//play["retaliateU"]->step();
 		//tactic["zickler43"]->step();
