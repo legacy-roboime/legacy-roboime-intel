@@ -75,7 +75,7 @@ void Goalkeeper::step()
 	Line ballPath(Line(Point(0, 0), ball.speed().toPointF()).translated(ball));
 	ballPath.setLength(ball.speed().length() * MAXLOOKAHEADTIME);
 	Point importantPoint;
-	if(ball.speed().length() >= MINBALLSPEED && ballPath.intersect(goal, &importantPoint) == Line::BoundedIntersection) {
+	if(ball.speed().length() >= MINBALLSPEED && ballPath.intersect(homeline, &importantPoint) == Line::BoundedIntersection) {
 		goto_->setPoint(importantPoint);
 		goto_->step();
 		return;
