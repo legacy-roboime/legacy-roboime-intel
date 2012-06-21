@@ -1,4 +1,5 @@
 #include "Goal.h"
+#include "Sampler.h"
 
 using namespace LibIntelligence;
 
@@ -20,6 +21,11 @@ Goal::Goal(const Goal& goal)
 	wallWidth_(goal.wallWidth()),
 	penaltyMark_(goal.penaltyMark()),
 	penaltyLine_(goal.penaltyLine()) {}
+
+Point Goal::randomPoint() const
+{
+	return pointAt(Sampler::randFloat());
+}
 
 void Goal::setX(qreal x)
 {
