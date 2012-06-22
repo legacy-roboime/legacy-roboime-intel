@@ -318,7 +318,7 @@ void Intelligence::update()
 		if(!((QThread *)play["minimax2"])->isRunning())
 			((QThread *)play["minimax2"])->start();
 		play["minimax2"]->step();
-		play["retaliateU"]->step();
+		//play["retaliateU"]->step();
 		play["retaliateT"]->step();
 		break;
 
