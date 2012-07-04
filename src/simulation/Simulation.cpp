@@ -1577,17 +1577,19 @@ SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber, float deltaTime){
 		detectionBall->set_y(ballGlobalPos.y);
 		detectionBall->set_z(1);
 
-		map<int, int> mapping;
-		map<int, int>::iterator it = mapping.begin();
-		mapping[0] = 5;
-		mapping[0] = 1;
-		mapping[0] = 2;
+		//map<int, int> mapping;
+		//map<int, int>::iterator it = mapping.begin();
+		//mapping[0] = 5;
+		//mapping[0] = 1;
+		//mapping[0] = 2;
 
 		NxArray<NxRobot*> allRobots = scene1->allRobots->getRobots();
 		for(int i=0; i<allRobots.size(); i++)
 		{
 			NxRobot* robot = allRobots[i];
-			if(isInRectangle(robot, NxVec3(-3250, -2000, 0), NxVec3(+3250, 2000, 0))){
+			NxVec3 robotPoss = robot->getPos();
+			//std::cout << robotPoss.x << " " << robotPoss.y << endl;
+			//if(isInRectangle(robot, NxVec3(-3250, -2000, 0), NxVec3(+3250, 2000, 0))){
 				NxVec3 robotPos = robot->getPos();
 				SSL_DetectionRobot* detectionRobot;
 
@@ -1604,7 +1606,7 @@ SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber, float deltaTime){
 				detectionRobot->set_robot_id(robot->getId()/*-1*/); //FOI SUBTRAIDO 1 PQ NO TEAMBOTS OS INDICES DOS ROBOS VAI DE 0 A 4
 				detectionRobot->set_x(robotPos.x);
 				detectionRobot->set_y(robotPos.y);
-			}
+			//}
 		}
 
 		SSL_DetectionFrame * nframe = wrapperPacket.mutable_detection();
