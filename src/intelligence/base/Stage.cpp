@@ -9,7 +9,7 @@ using namespace LibIntelligence;
 
 Stage::Stage()
 	: QObject(),
-	isLeftSideBlueGoal_(true),
+	isLeftSideBlueGoal_(false),
 	cmdReferee_('H'),
 	//TODO: make default ball/sizes/...
 	lineWidth_(0.0),

@@ -8,8 +8,8 @@ extern "C" {
 #include "soccer.h"
 #include "soccer_draw.h"
 
-#define MAX_NPLAYS 40
-#define MIN_NPLAYS 40
+#define MAX_NPLAYS 60
+#define MIN_NPLAYS 60
 
 #define MINIMAX_MAX_LEVEL 2
 

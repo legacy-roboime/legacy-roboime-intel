@@ -249,16 +249,16 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
      if( (i >=8 ) && (i < 14) )
        action = sstate_red_receive_ball( s, i%NPLAYERS ); 
  }  
- if( (i == 14) )
-     action = sstate_red_move(s, red_robot, 0 ); 
- if( (i >= 15) &&  i < (MIN_NPLAYS - 2) /* (i < 25)*/ )
-	 action = sstate_red_move(s, red_robot, 1. );  
-/* if( (i >= 25) &&  (i < 30) )
-	 action = sstate_red_move(s, red_robot, .8 );  
- if( (i >= 30) &&  (i < 35) )
-	 action = sstate_red_move(s, red_robot, 1.2 );  
- if( (i >= 35) && (i < (MAX_NPLAYS-2)) ) 
-     action = sstate_red_move(s, red_robot, move_radius ); */
+ //if( (i == 14) )
+ //    action = sstate_red_move(s, red_robot, 0 ); 
+ //if( (i >= 15) &&   (i < 25) )
+	// action = sstate_red_move(s, red_robot, 1. );  
+ //if( (i >= 25) &&  (i < 30) )
+	// action = sstate_red_move(s, red_robot, .8 );  
+ //if( (i >= 30) &&  (i < 35) )
+	// action = sstate_red_move(s, red_robot, 1.2 );  
+ //if( (i >= 35) && (i < (MAX_NPLAYS-2)) ) 
+ //    action = sstate_red_move(s, red_robot, move_radius );
  if( i ==  (MAX_NPLAYS-2)  ){
 	 s->red[red_robot] = get_red_move_table(red_robot);
      action.move[red_robot] = get_red_move_table(red_robot);
@@ -292,20 +292,19 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  else{
      if( i == 1 )
        action = sstate_blue_get_ball(s); 
-     if( (i >=8 ) && (i <14) )
-       action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
+//     if( (i >=8 ) && (i <14) )
+ //      action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
  }
   if( i == 14 )
 	  action = sstate_blue_move(s, blue_robot, 0 );
- if( (i >= 15) &&  (i < (MIN_NPLAYS - 2)/*25*/) )
+ if( (i >= 15) &&  (i < 25) )
 	 action = sstate_blue_move(s, blue_robot, 1. );  
- /*if( (i >= 25) &&  (i < 30) )
+ if( (i >= 25) &&  (i < 30) )
 	 action = sstate_blue_move(s, blue_robot, .8 );  
  if( (i >= 30) &&  (i < 35) )
 	 action = sstate_blue_move(s, blue_robot, 1.2 );  
  if( (i >= 35) &&  i < (MIN_NPLAYS - 2) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
-	 */
  if( i == (MIN_NPLAYS - 2) ){
      s->blue[blue_robot] = get_blue_move_table(blue_robot);
      action.move[blue_robot] = get_blue_move_table(blue_robot);
