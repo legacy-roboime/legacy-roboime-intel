@@ -23,8 +23,8 @@ void soccer_env_init( void )
  senv.goal_size = .7;
  senv.max_red_kick_dist = 12.;
  senv.max_blue_kick_dist = 12.;
- senv.hfield_w = 3.025; 
- senv.hfield_h = 2.025; 
+ senv.hfield_w = 1.880;//3.025; 
+ senv.hfield_h = 1.425;//2.025; 
  senv.red_goal = v2_make( senv.hfield_w, 0 );
  senv.blue_goal = v2_make( -senv.hfield_w, 0 );
  senv.left_red_side = TRUE;
