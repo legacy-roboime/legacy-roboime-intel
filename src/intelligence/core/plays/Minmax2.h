@@ -21,7 +21,7 @@ namespace LibIntelligence
 		class Minmax2: public Play
 		{
 		public:
-			Minmax2(QObject *parent, Team* team ,Stage* stage, int depth = MINIMAX_MAX_LEVEL, float alpha = -MAX_FLOAT, float beta = MAX_FLOAT, qreal speed = 3000.);
+			Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed = 3000., int depth = MINIMAX_MAX_LEVEL, float alpha = -MAX_FLOAT, float beta = MAX_FLOAT);
 			~Minmax2(); 
 			void step();
 			void run();

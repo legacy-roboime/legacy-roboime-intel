@@ -13,7 +13,7 @@ using namespace LibIntelligence;
 using namespace Plays;
 using namespace Tactics;
 
-Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alpha, float beta, qreal speed)
+Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int depth, float alpha, float beta)
 	: Play(parent, team,stage),
 	log("C:\\Users\\Bill\\Desktop\\log.dat"),
 	depth_(depth),
@@ -285,6 +285,9 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			cout << pos->x << " " << pos->y << endl;
 #endif
 
+#ifdef KICK_POINT
+			cout << action.kick_point.x << " " << action.kick_point.y << endl;
+#endif
 			attacker->setRobot(robot);
 			attacker->updateSoccerAction(action.type, action.kick_point, pos);
 			attacker->step();
