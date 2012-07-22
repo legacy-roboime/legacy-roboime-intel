@@ -92,35 +92,30 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	Ball* ball = this->stage()->ball();
 	Goal* enemyGoal = robot->enemyGoal();
 
-	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
-		movePoint.x = enemyGoal->x();
-		movePoint.y = enemyGoal->y();
-#ifdef SOCCER_ACTION
-		cout << "ERROR: movePoint == ballPoint" << endl;
-#endif
-	}
-
 	if(action_ == pass || action_ == kick_to_goal){
 		kickPoint_->setX(kickPoint.x);
 		kickPoint_->setY(kickPoint.y);
 	}
 
-	if(action == get_ball && Vector(*robot - *ball).length() < MIN_DIST){
-		movePoint_->setX(enemyGoal->x());
-		movePoint_->setY(enemyGoal->y());
-	}
-	else{
-		movePoint_->setX(movePoint.x);
-		movePoint_->setY(movePoint.y);
-	}
+	movePoint_->setX(movePoint.x);
+	movePoint_->setY(movePoint.y);
 
 	Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
 	qreal orientation = line.angle() * M_PI / 180.;
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
 
-	dribblePoint_->setX(movePoint.x);
-	dribblePoint_->setY(movePoint.y);
+	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
+		dribblePoint_->setX(enemyGoal->x());
+		dribblePoint_->setY(enemyGoal->y());
+#ifdef SOCCER_ACTION
+		cout << "ERROR: movePoint == ballPoint" << endl;
+#endif
+	}
+	else{
+		dribblePoint_->setX(movePoint.x);
+		dribblePoint_->setY(movePoint.y);
+	}
 }
 
 bool GotoToDriveT::condition()
