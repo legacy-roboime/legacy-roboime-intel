@@ -24,6 +24,25 @@ void Object::updatePosition(const QPointF &p)
 	setY(p.y());
 }
 
+void Object::updateSpeed(double time)
+{
+	double deltaTime = (time - this->timeOld_);
+	if(deltaTime != 0)
+	{
+		speed_.setX((x() - posOld_.x())/deltaTime);
+		speed_.setY((y() - posOld_.y())/deltaTime);
+
+		if(abs(this->orientation() - thetaOld_) <  1){		//TODO: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
+			omega_ =  (this->orientation() - thetaOld_)/deltaTime;
+		}
+
+		posOld_.setX(x());
+		posOld_.setY(y());
+		thetaOld_ = this->orientation();
+		timeOld_ = time;
+	}
+}
+
 qreal Object::orientation() const
 {
 	return theta_;

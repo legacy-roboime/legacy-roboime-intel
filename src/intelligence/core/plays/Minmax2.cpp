@@ -46,8 +46,8 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alp
 	for(int i=0; i<NPLAYERS; i++)
 		player_[i] = new GotoTactic((Play *)this, team->at(i)); 
 
-	attacker = new AttackerMinMax2((Play *)this, team->at(0), envReal.red_speed, 
-								   envReal.red_dribble_speed, 
+	attacker = new AttackerMinMax2(this, team->at(0), speed_, 
+								   speed_, 
 								   envReal.red_pass_speed); 
 }
 
@@ -283,7 +283,7 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			Goto* g = ((GotoTactic*)player_[i])->goto_;
 			g->setAllowDefenseArea();
 			g->setPoint(pos->x, pos->y);
-			g->setSpeed(envReal.red_speed);
+			g->setSpeed(speed_);//envReal.red_speed);
 			g->setOrientation(orientation);
 			player_[i]->step();
 		}

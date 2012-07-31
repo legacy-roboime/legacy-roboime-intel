@@ -1,5 +1,6 @@
 #include "minimax.h"
 #include "soccer_draw.h"
+#include <windows.h>
 
 static int winWidth, winHeight;
 static SoccerState *s, saux;
@@ -45,7 +46,7 @@ void redraw( void ){
    saction_red_act( &saux, &red_action );
    glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
    soccer_redraw( &saux ); 
-  // usleep(1000000);
+   Sleep(100);
    saction_simulate( s, &red_action, &blue_action, 
                      soccer_env()->sample_period );
    glViewport(0, 0, winWidth/2., winHeight );   

@@ -36,7 +36,7 @@ void UpdateBall::apply(Updater* u) {
 		//TODO: identify which ball is which
 		//if(u->ball(k-1)->i()==_i) {
 			u->ball(k-1)->updatePosition(*this);
-			//u->ball(k-1)->updateSpeed(time_capture());
+			u->ball(k-1)->updateSpeed(time_capture());
 		//}
 	}
 }

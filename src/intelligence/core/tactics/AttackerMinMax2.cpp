@@ -22,9 +22,9 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 	kickPoint_ = new Object();
 	dribblePoint_ = new Object();
 	//driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
-	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., dribbleSpeed);
-	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., dribbleSpeed, false);
-	pass_ = new SampledKick(this, r, kickPoint_, true, 0.4, 0.4, dribbleSpeed, true);
+	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., speed);
+	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., speed, false);
+	pass_ = new SampledKick(this, r, kickPoint_, true, 0.4, 0.4, speed, true);
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
 	this->speed = speed;
 

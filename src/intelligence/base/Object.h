@@ -19,6 +19,7 @@ namespace LibIntelligence
 		Object(const Object& object);
 
 		void updatePosition(const QPointF &);
+		void updateSpeed(double time);
 
 		void setOrientation(qreal);
 		qreal orientation() const;
@@ -34,6 +35,9 @@ namespace LibIntelligence
 	private:
 		QVector2D speed_;
 		qreal theta_, omega_;
+
+		qreal timeOld_, thetaOld_;
+		QPointF posOld_;
 	};
 }
 
