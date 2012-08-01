@@ -160,6 +160,7 @@ struct IntelligenceCli : public QThread
 				cout << "controller robot " << i << endl;
 				intel->mutex.lock();
 				intel->tactic["controller"]->setRobot(intel->team["us"]->at(i));
+				intel->tactic["controller1"]->setRobot(intel->team["us"]->at(i));
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'k') {
@@ -272,19 +273,19 @@ void Intelligence::resetPatterns()
 		for(int i = 0; i < team["they"]->size(); i++)
 			team["they"]->at(i)->setPatternId(i);
 	} else {
-		team["us"]->at(3)->setPatternId(4);
-		team["us"]->at(0)->setPatternId(4);
-		team["us"]->at(1)->setPatternId(4);
-		//team["us"]->at(3)->setPatternId(1);
-		//team["us"]->at(3)->setPatternId(1);
-		//team["they"][0]->setPatternId(4);
+		team["us"]->at(0)->setPatternId(0);
+		team["us"]->at(1)->setPatternId(1);
+		team["us"]->at(2)->setPatternId(2);
+		team["us"]->at(3)->setPatternId(3);
+		team["us"]->at(4)->setPatternId(4);
+		team["us"]->at(5)->setPatternId(5);
 
-		//set the kicker if it is not working
-		//team["us"][0]->kicker().setNotWorking();
-		//team["us"][1]->kicker().setNotWorking();
-		//team["us"][2]->kicker().setNotWorking();
-		//team["us"][3]->kicker().setNotWorking();
-		//team["us"][4]->kicker().setNotWorking();
+		team["they"]->at(0)->setPatternId(0);
+		team["they"]->at(1)->setPatternId(1);
+		team["they"]->at(2)->setPatternId(2);
+		team["they"]->at(3)->setPatternId(3);
+		team["they"]->at(4)->setPatternId(4);
+		team["they"]->at(5)->setPatternId(5);
 	}
 }
 
