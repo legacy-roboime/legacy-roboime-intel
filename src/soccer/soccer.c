@@ -259,7 +259,7 @@ float time_to_intersect( Vector2 friend_pos, Vector2 friend_direction,
  float a, b, c, delta;
  Vector2 r;
 
- if( friend_speed < EPS )
+ if( ( friend_speed < EPS ) || ( v2_norm( friend_direction ) < EPS ) )
    return v2_norm( v2_sub( enemy_pos, friend_pos ) )/
           enemy_speed; 
 
