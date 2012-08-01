@@ -1,10 +1,10 @@
 #include "Controller.h"
 #include "CXBOXController.h"
-#include "Tactics.h"
-#include "Skills.h"
 #include "Robot.h"
 #include <iostream>
 #include <cmath>
+#include "Tactics.h"
+#include "Skills.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
@@ -13,19 +13,21 @@ using namespace Skills;
 Controller::Controller(QObject* p, Robot* r, int i, qreal s)
 	: Tactic(p,r),
 	id(i),
-	speed(s),
-	steer(this, r)
+	speed(s)
 {
-	this->pushState(&steer);
-	//skills.append(steer);//this is important
+	steer = new SteerToBall(this, r, s, s);
+	bl = new Blocker(this, robot(), 0, speed);
+	gs = new GoalSwitcheroo(this, robot(), speed);
+	zk = new Zickler43(this, robot(), speed, true);
+	mv = new Move(this, robot(), 0.0, 0.0, 0.0);
+	gt = new Goto(this, robot(), 0.0, 0.0);
+	gk = new Goalkeeper(this, robot(), speed);
+	controller = new CXBOXController(id);
 }
 
 void Controller::step() {
-	//FIXME: tirar statics daqui
-	//FIXME: reimplementar setRobot para chamar os setRobots das skills respectivas
-	static CXBOXController* controller = new CXBOXController(id);
-	static qreal sx = 0.0, sy = 0.0, dx = 0.0, dy = 0.0, sBoost = 1.0, aBoostAng = 1.0;
-	static qint32 dribSign = 1;
+	qreal sx = 0.0, sy = 0.0, dx = 0.0, dy = 0.0, sBoost = 1.0, aBoostAng = 1.0;
+	qint32 dribSign = 1;
 
 	if(controller->IsConnected()){
 		//rotation
@@ -40,7 +42,7 @@ void Controller::step() {
 		} else {
 			aBoostAng = 1.0;
 		}
-		steer.setRate(1.5 * aBoostAng);//PARAMETRO CARTEADO
+		steer->setRate(1.5 * aBoostAng);//PARAMETRO CARTEADO
 
 		//movement
 		sx = controller->ThumbLX();
@@ -55,7 +57,7 @@ void Controller::step() {
 		} else {
 			sBoost = 1.0;
 		}
-		steer.setAll(sx * sBoost * speed, sy * sBoost * speed, dx, dy);
+		steer->setAll(sx * sBoost * speed, sy * sBoost * speed, dx, dy);
 		//if(controller->ButtonPressed(XINPUT_
 
 		//dribbler
@@ -67,60 +69,54 @@ void Controller::step() {
 		} else {
 			robot()->kick(0.0);
 		}
-		steer.step();
+		steer->step();
 
 		//blocker
-		static Blocker bl = Blocker(this, robot(), 0, speed);
+		
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_A)) {
-			bl.step();
+			bl->step();
 		}
 
 		//goto
-		static GoalSwitcheroo gs(this, robot(), speed);
+		
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_B)) {
-			gs.step();
+			gs->step();
 		}
 
 		//goalkeeper
-		static Goalkeeper gk(this, robot(), speed);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_X)) {
-			gk.step();
+			gk->step();
 		}
 
 		//zickler
-		static Zickler43 zk = Zickler43(this, robot(), speed, true);
-		//static IndirectKick atk(this, robot(),speed,500);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
-			zk.step();
+			zk->step();
 			//robot()->dribble(0);
 		}
 
-		//goto 0.0 0.0
-		//static GotoOld gt(this, robot(), 0.0, 0.0);
-		static Goto gt(this, robot(), 0.0, 0.0);
-		gt.setAll(0.0, 0.0, speed);
-		gt.setOrientation(dx, dy);
+		//goto
+		gt->setAll(0.0, 0.0, speed);
+		gt->setOrientation(dx, dy);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_LEFT_SHOULDER)) {
-			gt.step();
+			gt->step();
 		}
 
-		//direcionais
-		static Move mv(this, robot(), 0.0, 0.0, 0.0);
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
-			mv.setAll(0.0, -speed, 0.0);
-			mv.step();
-		}
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_UP)) {
-			mv.setAll(0.0, speed, 0.0);
-			mv.step();
-		}
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_LEFT)) {
-			mv.setAll(-speed, 0.0, 0.0);
-			mv.step();
-		}
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) {
-			mv.setAll(speed, 0.0, 0.0);
-			mv.step();
-		}
+		////direcionais
+		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
+		//	mv->setAll(0.0, -speed, 0.0);
+		//	mv->step();
+		//}
+		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_UP)) {
+		//	mv->setAll(0.0, speed, 0.0);
+		//	mv->step();
+		//}
+		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_LEFT)) {
+		//	mv->setAll(-speed, 0.0, 0.0);
+		//	mv->step();
+		//}
+		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+		//	mv->setAll(speed, 0.0, 0.0);
+		//	mv->step();
+		//}
 	}
 }

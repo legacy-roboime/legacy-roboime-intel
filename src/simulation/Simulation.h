@@ -65,8 +65,6 @@ private:
 	//extern NxUserContactReport * robotContactReport;
 	NxArray<NxUserContactReport *> robotContactReport;
 	
-	timeval timeLastSimulate;
-	
 	friend class MyUserNotify;
 	friend class UDPServerSimInt;
 	friend class SimulationView;
