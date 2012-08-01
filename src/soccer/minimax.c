@@ -249,16 +249,16 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
      if( (i >=8 ) && (i < 14) )
        action = sstate_red_receive_ball( s, i%NPLAYERS ); 
  }  
- if( (i == 14) )
-     action = sstate_red_move(s, red_robot, 0 ); 
- if( (i >= 15) &&   (i < 25) )
-	 action = sstate_red_move(s, red_robot, 1. );  
- if( (i >= 25) &&  (i < 30) )
-	 action = sstate_red_move(s, red_robot, .8 );  
- if( (i >= 30) &&  (i < 35) )
-	 action = sstate_red_move(s, red_robot, 1.2 );  
- if( (i >= 35) && (i < (MAX_NPLAYS-2)) ) 
-     action = sstate_red_move(s, red_robot, move_radius );
+ //if( (i == 14) )
+ //    action = sstate_red_move(s, red_robot, 0 ); 
+ //if( (i >= 15) &&   (i < 25) )
+	// action = sstate_red_move(s, red_robot, 1. );  
+ //if( (i >= 25) &&  (i < 30) )
+	// action = sstate_red_move(s, red_robot, .8 );  
+ //if( (i >= 30) &&  (i < 35) )
+	// action = sstate_red_move(s, red_robot, 1.2 );  
+ //if( (i >= 35) && (i < (MAX_NPLAYS-2)) ) 
+ //    action = sstate_red_move(s, red_robot, move_radius );
  if( i ==  (MAX_NPLAYS-2)  ){
 	 s->red[red_robot] = get_red_move_table(red_robot);
      action.move[red_robot] = get_red_move_table(red_robot);

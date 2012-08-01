@@ -86,25 +86,27 @@ void ObeyReferee::setStage(Stage *s)
 void ObeyReferee::step()
 {
 	Stage *sta = this->stage();
-	//Commands Referee
-	if(cmd != sta->getCmdReferee()){
-		lastCmd = cmd;
-		cmd = sta->getCmdReferee();
-	}
-
-#ifdef REFERRE_CMD
-	cout << "JUIZ: " << cmd << endl;
-#endif
-
 	qreal dist=-1;
 
 	Ball *ball = sta->ball();
 
 	dist = sqrt(pow(lastBall.x() - ball->x(), 2) + pow(lastBall.y() - ball->y(), 2));
 
+	
+	//Commands Referee
+	if(cmd != sta->getCmdReferee()){
+		lastCmd = cmd;
+		cmd = sta->getCmdReferee();
+		lastBall = *ball;
+	}
+
+#ifdef REFERRE_CMD
+	cout << "JUIZ: " << cmd << endl;
+#endif
+
 	//if(lastCmd != cmd){
-	//	lastCmd = cmd;
-		//lastBall = *ball;
+	////	lastCmd = cmd;
+	//	lastBall = *ball;
 	//}
 
 	TeamColor usColor = team()->color();
@@ -113,7 +115,7 @@ void ObeyReferee::step()
 	if(cmd == 'f' && usColor == TeamColor::YELLOW)
 		play->step();
 	else if(cmd == 'f' && usColor == TeamColor::BLUE){
-		if(dist<100)
+		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -121,7 +123,7 @@ void ObeyReferee::step()
 		}
 	}
 	else if(cmd == 'F' && usColor == TeamColor::YELLOW){
-		if(dist<100)
+		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -133,7 +135,7 @@ void ObeyReferee::step()
 	else if(cmd == 'i' && usColor == TeamColor::YELLOW)
 		play->step();
 	else if(cmd == 'i' && usColor == TeamColor::BLUE){
-		if(dist<100)
+		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -141,7 +143,7 @@ void ObeyReferee::step()
 		}
 	}
 	else if(cmd == 'I' && usColor == TeamColor::YELLOW){
-		if(dist<100)
+		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -159,7 +161,7 @@ void ObeyReferee::step()
 	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == TeamColor::YELLOW)
 		play->step();
 	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == TeamColor::BLUE){
-		if(dist<100)
+		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -167,7 +169,7 @@ void ObeyReferee::step()
 		}
 	}
 	else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == TeamColor::YELLOW){
-		if(dist<100)
+		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;

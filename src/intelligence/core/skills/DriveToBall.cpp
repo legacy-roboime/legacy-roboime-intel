@@ -44,7 +44,7 @@ void DriveToBall::step()
 	qreal ang = target.angle(); //angulo do cone maior obtido girando no sentido anti-horario
 
 	//Cone Menor
-	qreal goAng = 20;
+	qreal goAng = 15;
 	target.setAngle(target.angle() + goAng);
 	target2.setAngle(target2.angle() - goAng);
 	qreal ang4 = target.angle(); //angulo do cone menor obtido girando no sentido anti-horario
@@ -67,7 +67,7 @@ void DriveToBall::step()
 	}
 
 	//Posições destino (dentro do cone menor)
-	goAng = 15;
+	goAng = 20;
 	target.setAngle(target.angle() + goAng);
 	target2.setAngle(target2.angle() - goAng);
 

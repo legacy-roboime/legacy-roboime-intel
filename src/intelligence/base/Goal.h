@@ -33,6 +33,8 @@ namespace LibIntelligence
 		void setPenaltyLine(qreal);
 		qreal penaltyLine() const;
 
+		Point randomPoint() const;
+
 	private:
 		void updatePoints();
 		qreal width_, depth_, wallWidth_;

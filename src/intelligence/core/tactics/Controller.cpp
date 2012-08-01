@@ -91,7 +91,7 @@ void Controller::step() {
 		//zickler
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
 			zk->step();
-			//robot()->dribble(0);
+			robot()->dribble(0);
 		}
 
 		//goto
@@ -101,22 +101,23 @@ void Controller::step() {
 			gt->step();
 		}
 
-		////direcionais
-		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
-		//	mv->setAll(0.0, -speed, 0.0);
-		//	mv->step();
-		//}
-		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_UP)) {
-		//	mv->setAll(0.0, speed, 0.0);
-		//	mv->step();
-		//}
-		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_LEFT)) {
-		//	mv->setAll(-speed, 0.0, 0.0);
-		//	mv->step();
-		//}
-		//if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) {
-		//	mv->setAll(speed, 0.0, 0.0);
-		//	mv->step();
-		//}
+		//direcionais
+		Move mv(this, robot(), 0.0, 0.0, 0.0);
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
+			mv.setAll(0.0, -speed, 0.0);
+			mv.step();
+		}
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_UP)) {
+			mv.setAll(0.0, speed, 0.0);
+			mv.step();
+		}
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_LEFT)) {
+			mv.setAll(-speed, 0.0, 0.0);
+			mv.step();
+		}
+		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+			mv.setAll(speed, 0.0, 0.0);
+			mv.step();
+		}
 	}
 }

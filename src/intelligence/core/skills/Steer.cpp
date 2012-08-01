@@ -8,6 +8,7 @@
 #define M_PI	3.1415926535897932
 #define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
 //qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
+#define CART1 1.8
 
 using namespace LibIntelligence;
 using namespace Skills;
@@ -16,7 +17,7 @@ Steer::Steer(QObject* p, Robot* r, Vector s, Point *l)
 	: Move(p, r, s.x(), s.y()),
 	lookPoint(l),
 	rate(RATE),
-	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
+	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
 {}
 
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal o)
@@ -24,7 +25,7 @@ Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal o)
 	lookPoint(NULL),
 	rate(RATE),
 	orientation(o),
-	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
+	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
 {}
 
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal dx, qreal dy)
@@ -32,7 +33,7 @@ Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal dx, qreal dy)
 	lookPoint(NULL),
 	rate(RATE),
 	orientation(atan2(dy,dx)),
-	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
+	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
 {}
 
 void Steer::setRate(qreal r)

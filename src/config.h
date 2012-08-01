@@ -1,4 +1,4 @@
-#define SIMU
+//#define SIMU
 
 #ifdef _DEBUG
 #define DEBUG_UDP
@@ -7,7 +7,7 @@
 //#define SOCCER_DEBUG
 //#define BALL_SPEED_SIM
 //#define MINMAX2_DELAY
-#define SOCCER_ACTION
+//#define SOCCER_ACTION
 //#define KICK_POINT
 //#define REFERRE_CMD
 //#define SKILL_OWNER

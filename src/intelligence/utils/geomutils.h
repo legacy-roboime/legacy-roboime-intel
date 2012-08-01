@@ -20,7 +20,7 @@ namespace LibIntelligence
 		Line(const QLineF & line ) : QLineF(line) {}
 
 		static Line fromPolar(qreal length, qreal angle) {
-			return QLineF::fromPolar(length, 360 - length);
+			return QLineF::fromPolar(length, 360 - angle);
 		}
 
 		qreal angle() const {

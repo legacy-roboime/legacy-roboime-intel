@@ -4,6 +4,7 @@
 #include <QTimer>
 #include "DrawObjects.h"
 #include "config.h"
+#include "BmpLoader.h"
 
 NxVec3 SimulationView::gEye = NxVec3(0, -4000, 3700.0f);
 NxVec3 SimulationView::Dir = NxVec3(0, 1, -0.9); 
@@ -24,6 +25,7 @@ bool SimulationView::gDebugVisualization = false;
 bool SimulationView::bRightMouseButtonPressed = false;
 ActorPicking* SimulationView::actorPicking = NULL;
 Simulation* SimulationView::simulation = new Simulation();
+GLuint SimulationView::mTexId = 0;
 
 SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -42,6 +44,10 @@ SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	timerSim = new QTimer(this);
 	connect(timerSim, SIGNAL(timeout()), this, SLOT(simulate()));
 	timerSim->start(simulation->timeStep * 1000);
+
+	const char *texFilename = "campoRules.bmp";
+	if (texFilename)
+		createTexture(texFilename);
 }
 
 SimulationView::~SimulationView()
@@ -50,6 +56,10 @@ SimulationView::~SimulationView()
 	delete intServer;
 	delete simulation;
 	delete timerSim;
+	if (mTexId) {
+		glDeleteTextures(1, &mTexId);
+		mTexId = 0;
+	}
 }
 
 void SimulationView::simulate()
@@ -696,9 +706,10 @@ void SimulationView::RenderCallback()
 			}
 		}
 		//draw field lines
-		NxVec3 fposition = indexRenderScene.value()->field->actorCampo->getGlobalPosition();
-		NxReal FIELD_LENGTH = indexRenderScene.value()->field->linesLength;
-		NxReal FIELD_WIDTH = indexRenderScene.value()->field->linesWidth;
+		NxField* field = indexRenderScene.value()->field;
+		NxVec3 fposition =  field->actorCampo->getGlobalPosition();
+		NxReal FIELD_LENGTH =  field->linesLength;
+		NxReal FIELD_WIDTH =  field->linesWidth;
 		glColor4f(1.f,1.f, 1.f, 1.f);//white
 		glLineWidth(6);
 		glBegin(GL_LINES);
@@ -712,6 +723,10 @@ void SimulationView::RenderCallback()
 		glVertex3f(fposition.x - FIELD_LENGTH/2., fposition.y + FIELD_WIDTH/2., 8);//fposition.z
 		glEnd();
 		glLineWidth(1);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x - FIELD_LENGTH/2., fposition.y - field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x - FIELD_LENGTH/2., fposition.y + field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x + FIELD_LENGTH/2., fposition.y - field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x + FIELD_LENGTH/2., fposition.y + field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
 
 		//Print profile results (if enabled)
 		gPerfRenderer.render(indexRenderScene.value()->scene->readProfileData(true), glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
@@ -728,6 +743,8 @@ void SimulationView::RenderCallback()
 			GLFontRenderer::setColor(0.9f, 1.0f, 0.0f, 1.0f);
 			GLFontRenderer::print(0.01, 0.9, 0.030, out.str().c_str(), false, 11, true);
 		}
+
+		drawTexture(true);
 	}
 
 	///* Draw code where bmBits is filled. 
@@ -762,6 +779,113 @@ void SimulationView::setupCamera()
 	// Setup modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+bool SimulationView::createTexture(const char *filename)
+{
+	BmpLoader bl;
+	if (!bl.loadBmp(filename)) return false;
+
+	glGenTextures(1, &mTexId);
+	if (!mTexId) return false;
+	glBindTexture(GL_TEXTURE_2D, mTexId);
+#ifndef __PPCGEKKO__
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+#endif
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+		bl.mWidth, bl.mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, bl.mRGB);
+
+	return true;
+}
+
+void SimulationView::drawTexture(bool shadows)
+{
+	//static NxU32 numVertices = mNumVertices;
+	//NxU32 numElements = mNumIndices;
+	//numVertices = mNumVertices;
+
+	//// Disable pressure if tearing occurs
+	//if (mTeared && (mCloth->getFlags() & NX_CLF_PRESSURE))
+	//{
+	//	// Disable Pressure
+	//	mCloth->setFlags(mCloth->getFlags() & ~NX_CLF_PRESSURE);
+	//	mCloth->setPressure(0);
+
+	//	// Reduce tearing factor
+	//	NxReal oldTearing = mCloth->getTearFactor();
+	//	oldTearing = (oldTearing - 1) / 3 + 1;
+	//	mCloth->setTearFactor(oldTearing);
+
+	//	// Reduce bending stiffness
+	//	if (mCloth->getBendingStiffness() > 0.9f)
+	//		mCloth->setBendingStiffness(0.2f);
+
+	//	// Apply explosion in the middle of the cloth
+	//	NxBounds3 bounds;
+	//	mCloth->getWorldBounds(bounds);
+	//	NxVec3 center;
+	//	bounds.getCenter(center);
+	//	NxReal radius = bounds.min.distance(bounds.max);
+	//	mCloth->addForceAtPos(center, 7 * NxMath::pow(radius,3), radius, NX_IMPULSE);
+	//	printf("Pressure disabled\n");
+	//}
+
+	//if (mTexId > 0)
+	//{
+	//	updateTextureCoordinates();
+	//}
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+
+	//glVertexPointer(3, GL_FLOAT, sizeof(RenderBufferVertexElement), numVertices, &(mVertexRenderBuffer[0].position.x));
+	//glNormalPointer(GL_FLOAT, sizeof(RenderBufferVertexElement), numVertices, &(mVertexRenderBuffer[0].normal.x));
+
+	if (mTexId) {
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		//glTexCoordPointer(2, GL_FLOAT, sizeof(RenderBufferVertexElement), numVertices, &(mVertexRenderBuffer[0].texCoord[0]));
+
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, mTexId);
+		glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+	}
+
+//#ifdef __CELLOS_LV2__	
+//	glDrawRangeElements(GL_TRIANGLES, 0, numVertices-1, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#else
+//	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#endif
+
+	if (mTexId) {
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisable(GL_TEXTURE_2D);
+	}
+
+//	if (shadows) {
+//		const static float ShadowMat[]={ 1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,1 };
+//		glPushMatrix();
+//		glMultMatrixf(ShadowMat);
+//		glDisable(GL_LIGHTING);
+//		glColor4f(0.05f, 0.1f, 0.15f,1.0f);
+//
+//#ifdef __CELLOS_LV2__	
+//		glDrawRangeElements(GL_TRIANGLES, 0, numVertices-1, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#else
+//		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#endif
+//		
+//		glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+//		glEnable(GL_LIGHTING);
+//		glPopMatrix();
+//	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 void SimulationView::changeCamera(){
