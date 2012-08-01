@@ -282,7 +282,7 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			cout << v2_norm(v2_sub(lastPos, *pos)) << endl;
 #endif
 #ifdef MOVE_OWNER
-			cout << pos->x << " " << pos->y << endl;
+			cout << pos.x << " " << pos.y << endl;
 #endif
 
 #ifdef KICK_POINT
