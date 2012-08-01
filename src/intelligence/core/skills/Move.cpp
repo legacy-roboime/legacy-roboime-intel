@@ -7,7 +7,7 @@
 
 #define MAX_RPS_BIWHEEL 4.0
 #define WHEEL_INTERDISTANCE 
-#define REALROBOT
+//#define REALROBOT
 
 using namespace LibIntelligence;
 using namespace Skills;
