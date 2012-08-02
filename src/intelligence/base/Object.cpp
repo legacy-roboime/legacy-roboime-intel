@@ -32,7 +32,7 @@ void Object::updateSpeed(double time)
 		speed_.setX((x() - posOld_.x())/deltaTime);
 		speed_.setY((y() - posOld_.y())/deltaTime);
 
-		if(abs(this->orientation() - thetaOld_) <  1){		//TODO: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
+		if(abs((long)(this->orientation() - thetaOld_)) <  1){		//TODO: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
 			omega_ =  (this->orientation() - thetaOld_)/deltaTime;
 		}
 

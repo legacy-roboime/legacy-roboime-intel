@@ -28,6 +28,9 @@ set(COMM_PROTO
     messages_robocup_ssl_geometry.proto
     messages_robocup_ssl_refbox_log.proto
     messages_robocup_ssl_wrapper.proto
+    grSim_Commands.proto
+    grSim_Replacement.proto
+    grSim_Packet.proto
     # add new protos here
 )
 

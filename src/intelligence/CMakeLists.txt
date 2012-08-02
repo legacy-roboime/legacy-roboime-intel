@@ -107,6 +107,7 @@ set(INT_SRC
     interface/commanders/CommanderTxOld.cpp
     interface/commanders/CommanderTx.cpp
     interface/commanders/CommanderSim.cpp
+    interface/commanders/CommanderGrSim.cpp
     # add new sources here
 
     interface/updaters/UpdaterReferee.cpp

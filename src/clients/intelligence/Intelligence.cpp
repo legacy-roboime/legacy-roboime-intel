@@ -13,6 +13,7 @@
 #include "CommanderTx.h"
 #include "CommanderTxOld.h"
 #include "CommanderSim.h"
+#include "CommanderGrSim.h"
 #include "UpdaterVision.h"
 #include "UpdaterReferee.h"
 #include "Ball.h"
@@ -166,8 +167,10 @@ Intelligence::Intelligence(QObject *parent)
 	mode(NONE)
 {
 	commander["blueSim"] = new CommanderSim(this);
+    commander["blueGrSim"] = new CommanderGrSim(this);
 	commander["blueTx"] = new CommanderTxOld(this);
 	commander["yellowSim"] = new CommanderSim(this);
+    commander["yellowGrSim"] = new CommanderGrSim(this);
 	commander["yellowTx"] = new CommanderTxOld(this);
 
 	updater["vision"] = new UpdaterVision(this);
@@ -189,21 +192,26 @@ Intelligence::Intelligence(QObject *parent)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-		team["us"]->push_back(new Robot(Robots::RobotIME2011(team["us"], i, i, BLUE)));
+        Robot* robot;
+        robot = new Robot(Robots::RobotIME2011(team["us"], i, i, BLUE));
+		team["us"]->push_back(robot);
 		//real
-		commander["blueTx"]->add(team["us"]->last());
-		updater["vision"]->add(team["us"]->last());
+		commander["blueTx"]->add(robot);
+		updater["vision"]->add(robot);
 		//simu
-		commander["blueSim"]->add(team["us"]->last());
-		updater["visionSim"]->add(team["us"]->last());
+		commander["blueSim"]->add(robot);
+        commander["blueGrSim"]->add(robot);
+		updater["visionSim"]->add(robot);
 
-		team["they"]->push_back(new Robot(Robots::RobotIME2011(team["they"], i, i, YELLOW)));
+        robot = new Robot(Robots::RobotIME2011(team["they"], i, i, YELLOW));
+		team["they"]->push_back(robot);
 		//real
-		commander["yellowTx"]->add(team["they"]->last());
-		updater["vision"]->add(team["they"]->last());
+		commander["yellowTx"]->add(robot);
+		updater["vision"]->add(robot);
 		//simu
-		commander["yellowSim"]->add(team["they"]->last());
-		updater["visionSim"]->add(team["they"]->last());
+		commander["yellowSim"]->add(robot);
+        commander["yellowGrSim"]->add(robot);
+		updater["visionSim"]->add(robot);
 	}
 
 #ifdef HAVE_WINDOWS
@@ -239,7 +247,7 @@ Intelligence::Intelligence(QObject *parent)
 	
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	timer->start(10.);//valor que tá no transmission da trunk para realTransmission //30.);//
+	timer->start(5.);//valor que tá no transmission da trunk para realTransmission //30.);//
 	
 	resetPatterns();
 	cli->start();
@@ -323,11 +331,15 @@ void Intelligence::update()
 
 	if(useSimulation) {
 #ifdef CONTROL_BLUE
+        commander["blueGrSim"]->step();
 		commander["blueSim"]->step();
+        ((CommanderGrSim*)commander["blueGrSim"])->send();
 		((CommanderSim*)commander["blueSim"])->send();
 #endif
 #ifdef CONTROL_YELLOW
+        commander["yellowGrSim"]->step();
 		commander["yellowSim"]->step();
+        ((CommanderGrSim*)commander["yellowGrSim"])->send();
 		((CommanderSim*)commander["yellowSim"])->send();
 #endif
 	} else {

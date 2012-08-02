@@ -32,12 +32,9 @@ void UdpServer::send()
 	//	udpSocket->writeDatagram(datagram.data(), datagram.size(), *address, port);
 	//}
 
-	QByteArray datagram;
 	if(!queue.isEmpty()){
-		datagram = queue.last();
-		udpSocket->writeDatagram(datagram.data(), datagram.size(), *address, port);
+        QByteArray& datagram(queue.last());
+		udpSocket->writeDatagram(datagram, *address, port);
 		queue.clear();
 	}
-	else if(!datagram.isEmpty())
-		udpSocket->writeDatagram(datagram.data(), datagram.size(), *address, port);
 }
