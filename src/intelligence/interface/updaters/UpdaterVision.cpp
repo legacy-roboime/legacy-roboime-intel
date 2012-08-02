@@ -64,8 +64,10 @@ void UpdaterVision::prepare() {
 			double t_capture = detection.t_capture();
 			double t_sent = detection.t_sent();
 
-			for (int i = 0; i < detection.balls_size(); i++)
-				enqueue(new UpdateBall(detection.balls(i), t_sent, t_capture, detection.camera_id()));
+			for (int i = 0; i < detection.balls_size(); i++){
+				//if(detection.camera_id() == 0)
+					enqueue(new UpdateBall(detection.balls(i), t_sent, t_capture, detection.camera_id()));
+			}
 
 			for (int i = 0; i < detection.robots_blue_size(); i++)
 				enqueue(new UpdateRobot(BLUE, detection.robots_blue(i), t_sent, t_capture, detection.camera_id()));
@@ -89,5 +91,6 @@ void UpdaterVision::prepare() {
 			}*/
 		}
 		packets.pop_front();
+		delete packet;
 	}
 }

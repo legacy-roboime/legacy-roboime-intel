@@ -4,6 +4,7 @@
 
 #include "LibIntelligence.h"
 #include "Skill.h"
+#include "geomutils.h"
 #include <QTime>
 
 #define ROBOT_MAX_LINEAR_SPEED 1000
@@ -23,6 +24,7 @@ namespace LibIntelligence
 
 			void step();
 			void setAll(qreal speedX, qreal speedY, qreal speedAngular);
+			void setSpeed(Vector speed);
 			void setSpeeds(qreal speedX, qreal speedY);
 			void setSpeedAngular(qreal speedAngular);
 			bool busy();

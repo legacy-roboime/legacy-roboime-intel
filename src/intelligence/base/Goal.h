@@ -6,12 +6,10 @@
 #include <QObject>
 #include <QString>
 #include "Object.h"
-#include <QPointF>
-#include <QLineF>
 
 namespace LibIntelligence
 {
-	class Goal : public QLineF, public Object
+	class Goal : public Line, public Object
 	{
 	public:
 		Goal(qreal x=0.0, qreal y=0.0, qreal width=0.0, qreal depth=0.0, qreal wallWidth=0.0);
@@ -30,15 +28,17 @@ namespace LibIntelligence
 		qreal wallWidth() const;
 
 		void setPenaltyMark(qreal , qreal);
-		QPointF penaltyMark() const;
+		Point penaltyMark() const;
 
 		void setPenaltyLine(qreal);
 		qreal penaltyLine() const;
 
+		Point randomPoint() const;
+
 	private:
 		void updatePoints();
 		qreal width_, depth_, wallWidth_;
-		QPointF penaltyMark_;
+		Point penaltyMark_;
 		qreal penaltyLine_; //coordenada x da linha de penalty
 	};
 }

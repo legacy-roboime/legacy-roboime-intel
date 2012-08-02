@@ -3,26 +3,47 @@
 #include "PID.h"
 #include "mathutils.h"
 
+#define RATE	6.2//2.50
+#define M_2PI	6.2831853071795865
+#define M_PI	3.1415926535897932
+#define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
+//qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
+#define CART1 1.8
+
 using namespace LibIntelligence;
 using namespace Skills;
 
+Steer::Steer(QObject* p, Robot* r, Vector s, Point *l)
+	: Move(p, r, s.x(), s.y()),
+	lookPoint(l),
+	rate(RATE),
+	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
+{}
+
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal o)
 	: Move(p, r, sx, sy),
-	orientation(o),
+	lookPoint(NULL),
 	rate(RATE),
-	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
+	orientation(o),
+	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
 {}
 
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal dx, qreal dy)
 	: Move(p, r, sx, sy),
-	orientation(atan2(dy,dx)),
+	lookPoint(NULL),
 	rate(RATE),
-	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
+	orientation(atan2(dy,dx)),
+	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
 {}
 
 void Steer::setRate(qreal r)
 {
 	rate = r;
+}
+
+void Steer::setLookPoint(Point *p)
+{
+	lookPoint = p;
 }
 
 void Steer::step()
@@ -31,7 +52,7 @@ void Steer::step()
 	//P Control
 	//qreal aThreshold = M_PI;
 	//qreal errorP = -2.*pow(omega/aThreshold,3)+3*pow(omega/aThreshold,2);
-	controller.entrada = __q(orientation - robot()->orientation());
+	controller.entrada = __q((lookPoint ? DEGTORAD(Line(*robot(), *lookPoint).angle()) : orientation) - robot()->orientation());
 	controller.realimentacao = 0.0;
 	pidService(controller);
 	Move::setSpeedAngular(controller.saida);

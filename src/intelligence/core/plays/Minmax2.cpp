@@ -2,9 +2,9 @@
 #include "Goal.h"
 #include "Ball.h"
 #include "Robot.h"
-#include <QLineF>
 #include "GotoTactic.h"
 #include "config.h"
+#include <QTime>
 
 #define LOGGING
 
@@ -13,7 +13,7 @@ using namespace LibIntelligence;
 using namespace Plays;
 using namespace Tactics;
 
-Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alpha, float beta, qreal speed)
+Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int depth, float alpha, float beta)
 	: Play(parent, team,stage),
 	log("C:\\Users\\Bill\\Desktop\\log.dat"),
 	speed_(speed),
@@ -28,9 +28,12 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alp
 	s = sstate_alloc();
 	sL = sstate_alloc();
 
-	if(team->color() == BLUE && Stage::isLeftSideBlueGoal())
+	red_action = saction_red_make(s);
+	blue_action = saction_blue_make(s);
+
+	if(team->color() == BLUE && stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
-	else if (team->color() == YELLOW && !Stage::isLeftSideBlueGoal())
+	else if (team->color() == YELLOW && !stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
 	else
 		soccer_env_red_side( RIGHT );
@@ -108,10 +111,15 @@ void Minmax2::ballOwner()
 	s->blue_ball_owner = -1;
 	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
 	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
-	qreal mDist = QVector2D(*mRobot - *ball).length();
-	qreal tDist = QVector2D(*tRobot - *ball).length();
+	qreal orientation = mRobot->orientation();
+	qreal dist = 70;
+	QPointF mDribbler = QPointF(mRobot->x() + cos(orientation)*dist, mRobot->y() + sin(orientation)*dist);
+	orientation = tRobot->orientation();
+	QPointF tDribbler = QPointF(tRobot->x() + cos(orientation)*dist, tRobot->y() + sin(orientation)*dist);
+	qreal mDist = QVector2D(mDribbler - *ball).length();
+	qreal tDist = QVector2D(tDribbler - *ball).length();
 	if(mDist <= tDist){
-		if(mDist < MIN_DIST){
+		if(mDist  < MIN_DIST){
 			s->red_ball_owner = mRobot->id();
 			s->blue_ball_owner = -1;
 		}
@@ -157,13 +165,16 @@ void Minmax2::update_soccer_state()
 void Minmax2::run()
 {
 	while(true) {
+#ifdef MINMAX2_DELAY
+		QTime time1 = QTime::currentTime();
+#endif
 #ifdef SOCCER_DEBUG
 		statemutex.lock();
 #endif
 		update_soccer_state();
 
-		minimax_use_next_red_robot();
-		minimax_use_next_blue_robot();
+		//minimax_use_next_red_robot();
+		//minimax_use_next_blue_robot();
 
 		changeSStateMeasure(s, 0.001);
 
@@ -172,11 +183,11 @@ void Minmax2::run()
 			init = true;
 		}
 
-		minimax_play( s, depth_ );
-
-#ifdef SOCCER_DEBUG
+//#ifdef SOCCER_DEBUG
 		*sL = *s;
-#endif
+//#endif
+
+		minimax_play( sL, depth_ );
 
 		mutex.lock();
 		red_action = *minimax_get_best_red_action();
@@ -189,6 +200,11 @@ void Minmax2::run()
 #ifdef SOCCER_DEBUG
 		changeSStateMeasure(s, 1000.);
 		statemutex.unlock();
+#endif
+#ifdef MINMAX2_DELAY
+		QTime time2 = QTime::currentTime();
+		double mSec = (time2.minute() * 60 * 1000 + time2.second() * 1000 + time2.msec()) - (time1.minute() * 60 * 1000 + time1.second() * 1000 + time1.msec());
+		cout << "Minmax delay: " << mSec << endl;
 #endif
 	}
 }
@@ -231,7 +247,7 @@ void Minmax2::act(SoccerAction& action, Team* team)
 	Ball* ball = stage_->ball();
 	int idClosest = stage_->getClosestPlayerToBall(team)->id();
 
-#ifdef SOCCER_DEBUG
+#ifdef SOCCER_ACTION
 	if(action.type == kick_to_goal)
 		cout << "Kick To Goal" << endl;
 	else if(action.type == pass)
@@ -244,34 +260,45 @@ void Minmax2::act(SoccerAction& action, Team* team)
 		cout << "Receive Ball" << endl;
 	else if(action.type == actions::null_action)
 		cout << "Null action" << endl;
+	else if(action.type == actions::blocker)
+		cout << "Blocker" << endl;
+	else if(action.type == actions::move_table)
+		cout << "Move table" << endl;
 	else
 		cout << "nenhum nem outro" << endl;
 #endif
 
 	for(int i=0; i < team->size(); i++){
-		Vector2* pos = &action.move[i];
+		Vector2 pos = v2_make(0, 0); 
+		pos = action.move[i];
 		Robot* robot = team->at(i);
 
 		if( idClosest == robot->id() ){
-			//cout << "SKILL: " << attacker->getCurrentState()->objectName().toStdString() << endl;
+#ifdef SKILL_OWNER
+			cout << "SKILL DO ROBO MAIS PERTO DA BOLA: " << attacker->getCurrentState()->objectName().toStdString() << endl;
+#endif
+#ifdef DELTA_POS_OWNER
+			static Vector2 lastPos = *pos;
+			cout << v2_norm(v2_sub(lastPos, *pos)) << endl;
+#endif
+#ifdef MOVE_OWNER
+			cout << pos.x << " " << pos.y << endl;
+#endif
 
-			//DEBUG
-			//QLineF l = QLineF(0, 0, pos->x, pos->y);
-			//qreal angle = 360 - l.angle(); //convenção sentido horario para classe QLineF
-			//qreal orientation = robot->orientation() * 180 / M_PI;
-			//static qreal lastOr = angle;//orientation;
-			//cout << abs(angle - lastOr) << endl;
-			//cout << pos->x << " " << pos->y << endl;
-
-			attacker->setRobot(robot);// = new AttackerMinMax2(this, robot, envReal.red_speed, envReal.red_dribble_speed, envReal.red_pass_speed);
-			attacker->updateSoccerAction(action.type, action.kick_point, *pos);
+#ifdef KICK_POINT
+			cout << action.kick_point.x << " " << action.kick_point.y << endl;
+#endif
+			attacker->setRobot(robot);
+			attacker->updateSoccerAction(action.type, action.kick_point, pos);
 			attacker->step();
 			
-			//lastOr = angle;
+#ifdef DELTA_POS_OWNER
+			lastPos = *pos;
+#endif
 		}
 		else{
 			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
-			qreal orientation = PITIMES2 - line.angle() * PI / 180; //convenção sentido horario para classe QLineF
+			qreal orientation = line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
 			//_max_skills.at(i)->setPoint(pos->x, pos->y);
 			//_max_skills.at(i)->setSpeed(envReal.red_speed);
@@ -281,8 +308,8 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			//cout << pos->x << " " << pos->y << endl;
 			//((GotoTactic*)player_[i])->setRobot(robot);
 			Goto* g = ((GotoTactic*)player_[i])->goto_;
-			g->setAllowDefenseArea();
-			g->setPoint(pos->x, pos->y);
+			//g->setAllowDefenseArea();
+			g->setPoint(pos.x, pos.y);
 			g->setSpeed(speed_);//envReal.red_speed);
 			g->setOrientation(orientation);
 			player_[i]->step();

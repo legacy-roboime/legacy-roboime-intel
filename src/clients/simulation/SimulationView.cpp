@@ -4,6 +4,7 @@
 #include <QTimer>
 #include "DrawObjects.h"
 #include "config.h"
+#include "BmpLoader.h"
 
 NxVec3 SimulationView::gEye = NxVec3(0, -4000, 3700.0f);
 NxVec3 SimulationView::Dir = NxVec3(0, 1, -0.9); 
@@ -24,6 +25,7 @@ bool SimulationView::gDebugVisualization = false;
 bool SimulationView::bRightMouseButtonPressed = false;
 ActorPicking* SimulationView::actorPicking = NULL;
 Simulation* SimulationView::simulation = new Simulation();
+GLuint SimulationView::mTexId = 0;
 
 SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -31,8 +33,7 @@ SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	indexRenderScene = QMapIterator<int, NxScene1*>(simulation->gScenes);
 	indexRenderScene.next();
 	ui.setupUi(this);
-	//intServer->setSimulation(this->simulation);
-	//this->simulation = new Simulation(parent);
+
 	intServer = new UDPServerSimInt(parent, this->simulation);
 #ifdef REALPORT
 	visionServer = new UDPMulticastSenderSSLVision(parent, this->simulation);
@@ -40,14 +41,13 @@ SimulationView::SimulationView(QWidget *parent, Qt::WFlags flags)
 	visionServer = new UDPMulticastSenderSSLVision(parent, this->simulation, "224.5.23.2", 11002);
 #endif
 
-	/*time = new QTimer(this);
-	connect(time, SIGNAL(timeout()), this, SLOT(ttt()));
-	time->start(5);*/
-
 	timerSim = new QTimer(this);
 	connect(timerSim, SIGNAL(timeout()), this, SLOT(simulate()));
 	timerSim->start(simulation->timeStep * 1000);
-	//timerSim->start(1000./60.);
+
+	const char *texFilename = "campoRules.bmp";
+	if (texFilename)
+		createTexture(texFilename);
 }
 
 SimulationView::~SimulationView()
@@ -56,23 +56,15 @@ SimulationView::~SimulationView()
 	delete intServer;
 	delete simulation;
 	delete timerSim;
+	if (mTexId) {
+		glDeleteTextures(1, &mTexId);
+		mTexId = 0;
+	}
 }
-
-//void SimulationView::ttt()
-//{
-//	simulation->append("15 0 1 18.8456 -18.8456 -18.8456 18.8456 0 0 18.8456 -18.8456 -18.8456 18.8456 0 0 18.8456 -18.8456 -18.8456 18.8456 0 0 18.8456 -18.8456 -18.8456 18.8456 0 0 18.8456 -18.8456 -18.8456 18.8456 0 0\n");
-//}
-
-/*void startVisionClicked()
-{
-	visionServer->startSending();
-}*/
 
 void SimulationView::simulate()
 {
-	//cout << "a " << simulation->gScenes[0]->allRobots->getRobotByIdByTeam(0,0)->getGlobalPose().t.x << endl;
 	simulation->simulateReal(1./60.);
-	//cout << "d " << simulation->gScenes[0]->allRobots->getRobotByIdByTeam(0,0)->getGlobalPose().t.x << endl;
 }
 
 void DrawForce(NxActor* actor, NxVec3& forceVec, const NxVec3& color)
@@ -679,8 +671,6 @@ void SimulationView::MotionCallback(int x, int y)
 
 void SimulationView::RenderCallback()
 {
-	//QMutexLocker locker(&simulation->mutex);
-
 	//compute elapsed time
 	//static unsigned int PreviousTime = 0;
 	//unsigned int CurrentTime = getTime();
@@ -690,45 +680,6 @@ void SimulationView::RenderCallback()
 
 	// Clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//if(gravar)
-	//{
-
-	//	//fprintf(outputfile,"%d	%f	%f	%f	%f	%f	%f	%f	%f	%f	%f\n",count, pos.x, pos.y, pos.z, ang, velLin.x, velLin.y, velLin.z, velAng.x, velAng.y, velAng.z);
-	//	fprintf(outputfile,"%d	%f	%f\n", count, ang/NxPi*180, velAng.z/NxPi*180); //giro
-
-	//goToThisPose( 1000/*110*/, 1000, 3* NxPi / 2., 4, 0);
-	//NxRobot* robot = simulation->gScenes[simulation->gBaseScene]->allRobots->getRobotByIdByTeam(4,1);
-	//robot->goToThisPose(-3000, 0, NxPi);
-
-	//float teta = NxPi/180.;
-	//Dir.normalize();
-	//N.cross(Dir,NxVec3(0,1,0));
-	//NxMat33 rotMat = NxMat33(NxVec3(NxMath::cos(teta),-NxMath::sin(teta),0),NxVec3(NxMath::sin(teta),NxMath::cos(teta),0),NxVec3(0,0,1));
-	//Dir = rotMat*Dir;
-
-	//simulation->infinitePath(4,0);
-	//simulation->goToThisPose( 1000/*110*/, 1000, 3* NxPi / 2., 4, 1);
-	//simulation->simulate();
-
-	//	count++;
-
-	//	if(count == 1000) exit(0);
-	//}
-	
-	//NxBall* ball = indexRenderScene.value()->ball;
-	//NxActor* actor = ball->ball;
-	//NxVec3 teste = ball->ball->getLinearVelocity();
-	//printf("velocidade linear bola: %f\n", teste.magnitude());
-
-	//double diff;
-	//timeval tv;
-	//TimePosix::gettimeofday(&tv,NULL);
-	//diff =  ((double)tv.tv_sec + tv.tv_usec*(1.0E-6)) - ((double)simulation->timeLastSimulate.tv_sec + simulation->timeLastSimulate.tv_usec*(1.0E-6));
-	//if(diff>=simulation->timeStep){
-	//	simulation->simulate();//simulation->gBaseScene,/*diff*/simulation->timeStep/*ElapsedTime*/,8);
-	//	TimePosix::gettimeofday(&simulation->timeLastSimulate,NULL);
-	//}
 
 	//Setup camera
 	setupCamera();
@@ -748,21 +699,17 @@ void SimulationView::RenderCallback()
 			//glPopMatrix();
 		}
 		else{
-			//glColor4f(0.7f, 0.7f, 0.7f, 1.0f);
-			//glColor4f(0.6f,0.6f,0.6f,1.0f);
 			int nbActors = indexRenderScene.value()->scene->getNbActors();
 			for(unsigned int j = 0 ; j < nbActors ; j++ )
 			{
 				DrawActorIME(indexRenderScene.value()->scene->getActors()[j]);
-				//DrawActor(simulation->gScenes[indexRenderScene]->scene->getActors()[j]);
-				//DrawActorShadow(simulation->gScenes[indexRenderScene]->scene->getActors()[j]);
-				//simulation->allRobots.drawRobots(gDebugVisualization);
 			}
 		}
 		//draw field lines
-		NxVec3 fposition = indexRenderScene.value()->field->actorCampo->getGlobalPosition();
-		NxReal FIELD_LENGTH = indexRenderScene.value()->field->linesLength;
-		NxReal FIELD_WIDTH = indexRenderScene.value()->field->linesWidth;
+		NxField* field = indexRenderScene.value()->field;
+		NxVec3 fposition =  field->actorCampo->getGlobalPosition();
+		NxReal FIELD_LENGTH =  field->linesLength;
+		NxReal FIELD_WIDTH =  field->linesWidth;
 		glColor4f(1.f,1.f, 1.f, 1.f);//white
 		glLineWidth(6);
 		glBegin(GL_LINES);
@@ -776,29 +723,28 @@ void SimulationView::RenderCallback()
 		glVertex3f(fposition.x - FIELD_LENGTH/2., fposition.y + FIELD_WIDTH/2., 8);//fposition.z
 		glEnd();
 		glLineWidth(1);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x - FIELD_LENGTH/2., fposition.y - field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x - FIELD_LENGTH/2., fposition.y + field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x + FIELD_LENGTH/2., fposition.y - field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
+		DrawCircle(30, NxMat34(NxMat33(NxVec3(1,0,0), NxVec3(0,1,0), NxVec3(0,0,1)), NxVec3(fposition.x + FIELD_LENGTH/2., fposition.y + field->defense_stretch/2., 0)), NxVec3(1.f,1.f, 1.f),  field->defense_radius, false);
 
 		//Print profile results (if enabled)
 		gPerfRenderer.render(indexRenderScene.value()->scene->readProfileData(true), glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 		if(gTextEnabled) {
-			//NxRobot* robot = simulation->allRobots.getRobotByIdScene(4, 0);
-			//NxVec3 angMomentum = robot->getActor()->getAngularMomentum();
-			//NxVec3 angVelocity = robot->getActor()->getAngularVelocity();
-			//NxVec3 linMomentum = robot->getActor()->getLinearMomentum();
-			//NxVec3 linVelocity = robot->getActor()->getLinearVelocity();
 			ostringstream out;
 			out.precision(4);
+
 			out << "FPS: " << gPerfRenderer.computeFPS() << endl;
 			out << "CENA: " << indexRenderScene.key() << endl;
 			out << Simulation::cout.str();
 			Simulation::cout = ostringstream();
-			//printf("MOMENTO ANGULAR: %f %f %f\n", angMomentum.x, angMomentum.y, angMomentum.z);
-			//printf("VELOCIDADE ANGULAR: %f %f %f\n", angVelocity.x, angVelocity.y, angVelocity.z);
-			//printf("MOMENTO LINEAR: %f %f %f\n", linMomentum.x, linMomentum.y, linMomentum.z);
-			//printf("VELOCIDADE LINEAR: %f %f %f\n", linVelocity.x, linVelocity.y, linVelocity.z);
+
 			GLFontRenderer::setScreenResolution(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 			GLFontRenderer::setColor(0.9f, 1.0f, 0.0f, 1.0f);
 			GLFontRenderer::print(0.01, 0.9, 0.030, out.str().c_str(), false, 11, true);
 		}
+
+		drawTexture(true);
 	}
 
 	///* Draw code where bmBits is filled. 
@@ -833,6 +779,113 @@ void SimulationView::setupCamera()
 	// Setup modelview matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+bool SimulationView::createTexture(const char *filename)
+{
+	BmpLoader bl;
+	if (!bl.loadBmp(filename)) return false;
+
+	glGenTextures(1, &mTexId);
+	if (!mTexId) return false;
+	glBindTexture(GL_TEXTURE_2D, mTexId);
+#ifndef __PPCGEKKO__
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+#endif
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,
+		bl.mWidth, bl.mHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, bl.mRGB);
+
+	return true;
+}
+
+void SimulationView::drawTexture(bool shadows)
+{
+	//static NxU32 numVertices = mNumVertices;
+	//NxU32 numElements = mNumIndices;
+	//numVertices = mNumVertices;
+
+	//// Disable pressure if tearing occurs
+	//if (mTeared && (mCloth->getFlags() & NX_CLF_PRESSURE))
+	//{
+	//	// Disable Pressure
+	//	mCloth->setFlags(mCloth->getFlags() & ~NX_CLF_PRESSURE);
+	//	mCloth->setPressure(0);
+
+	//	// Reduce tearing factor
+	//	NxReal oldTearing = mCloth->getTearFactor();
+	//	oldTearing = (oldTearing - 1) / 3 + 1;
+	//	mCloth->setTearFactor(oldTearing);
+
+	//	// Reduce bending stiffness
+	//	if (mCloth->getBendingStiffness() > 0.9f)
+	//		mCloth->setBendingStiffness(0.2f);
+
+	//	// Apply explosion in the middle of the cloth
+	//	NxBounds3 bounds;
+	//	mCloth->getWorldBounds(bounds);
+	//	NxVec3 center;
+	//	bounds.getCenter(center);
+	//	NxReal radius = bounds.min.distance(bounds.max);
+	//	mCloth->addForceAtPos(center, 7 * NxMath::pow(radius,3), radius, NX_IMPULSE);
+	//	printf("Pressure disabled\n");
+	//}
+
+	//if (mTexId > 0)
+	//{
+	//	updateTextureCoordinates();
+	//}
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+
+	//glVertexPointer(3, GL_FLOAT, sizeof(RenderBufferVertexElement), numVertices, &(mVertexRenderBuffer[0].position.x));
+	//glNormalPointer(GL_FLOAT, sizeof(RenderBufferVertexElement), numVertices, &(mVertexRenderBuffer[0].normal.x));
+
+	if (mTexId) {
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		//glTexCoordPointer(2, GL_FLOAT, sizeof(RenderBufferVertexElement), numVertices, &(mVertexRenderBuffer[0].texCoord[0]));
+
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, mTexId);
+		glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+	}
+
+//#ifdef __CELLOS_LV2__	
+//	glDrawRangeElements(GL_TRIANGLES, 0, numVertices-1, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#else
+//	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#endif
+
+	if (mTexId) {
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		glDisable(GL_TEXTURE_2D);
+	}
+
+//	if (shadows) {
+//		const static float ShadowMat[]={ 1,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,1 };
+//		glPushMatrix();
+//		glMultMatrixf(ShadowMat);
+//		glDisable(GL_LIGHTING);
+//		glColor4f(0.05f, 0.1f, 0.15f,1.0f);
+//
+//#ifdef __CELLOS_LV2__	
+//		glDrawRangeElements(GL_TRIANGLES, 0, numVertices-1, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#else
+//		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, mIndexRenderBuffer);
+//#endif
+//		
+//		glColor4f(1.0f, 1.0f, 1.0f,1.0f);
+//		glEnable(GL_LIGHTING);
+//		glPopMatrix();
+//	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 void SimulationView::changeCamera(){

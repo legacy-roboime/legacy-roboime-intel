@@ -19,6 +19,10 @@ typedef struct SoccerEnvironment{
   float blue_dribble_speed;
   float red_pass_speed;
   float blue_pass_speed;
+  float red_pass_delay;
+  float blue_pass_delay;
+  float red_kick_delay;
+  float blue_kick_delay;
   float red_move_radius;
   float blue_move_radius;
   float red_recv_radius;

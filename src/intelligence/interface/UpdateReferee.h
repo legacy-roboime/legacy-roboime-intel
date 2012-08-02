@@ -16,7 +16,7 @@ namespace LibIntelligence {
 		int time_remaining;			   // seconds remaining for current game stage (network byte order)
 	public:
 		UpdateReferee(char cmd, unsigned char cmd_counter, unsigned char goals_blue, unsigned char goals_yellow, int time_remaining);
-		~UpdateReferee();
+
 		void apply(Updater*);			// go through the updaters list and apply the update
 		std::string to_string();
 	};

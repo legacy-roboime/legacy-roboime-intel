@@ -1,7 +1,7 @@
 #include "GotoOld.h"
 #include "Robot.h"
-#include <QLineF>
 #include "PID.h"
+#include "geomutils.h"
 
 #define M_2PI	6.2831853071795865
 #define M_PI	3.1415926535897932
@@ -17,7 +17,7 @@ void GotoOld::step()
 {
 	static QVector<qreal> speed(2);
 	//diferença entre angulo destino-robo e orientação do robo
-	QLineF robodest(robot()->x(), robot()->y(), x, y);
+	Line robodest(robot()->x(), robot()->y(), x, y);
 	qreal angdif = __q(robodest.angle() * M_PI / 180 - robot()->orientation());
 	//controle PID do angulo
 	static CONTROLLER_S cona(10.0, 0.0, 0.0, 127.0, 10.0);

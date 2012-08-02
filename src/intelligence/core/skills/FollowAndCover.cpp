@@ -5,19 +5,19 @@
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-FollowAndCover::FollowAndCover(QObject *parent, Robot *slave, QPointF *follow, QPointF *cover, qreal followDistance, qreal speed)
+FollowAndCover::FollowAndCover(QObject *parent, Robot *slave, Point *follow, Point *cover, qreal followDistance, qreal speed)
 	: Goto(parent, slave, 0.0, 0.0, 0.0, speed),
 	follow(follow),
 	cover(cover),
 	distance(followDistance)
 {}
 
-void FollowAndCover::setFollow(QPointF *p)
+void FollowAndCover::setFollow(Point *p)
 {
 	follow = p;
 }
 
-void FollowAndCover::setCover(QPointF *p)
+void FollowAndCover::setCover(Point *p)
 {
 	cover = p;
 }
@@ -35,7 +35,7 @@ void FollowAndCover::setSpeed(qreal s)
 void FollowAndCover::step()
 {
 	//connect the dots :)
-	QLineF base(*follow, *cover);
+	Line base(*follow, *cover);
 
 	//when we set the length P1 remains constant, P2 moves so the angle is preserved
 	base.setLength(distance);
@@ -44,7 +44,7 @@ void FollowAndCover::step()
 	//we may also want to orient torwards the followed
 	//keep in mind we use radians and qt uses degrees
 	//TODO: use degrees too, it's easy
-	Goto::setOrientation(base.angle() * M_PI / 180);
+	Goto::setOrientation(DEGTORAD(180 + base.angle()));
 
 	//that's all folks!
 	Goto::step();

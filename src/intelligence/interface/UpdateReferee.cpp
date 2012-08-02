@@ -15,15 +15,13 @@ UpdateReferee::UpdateReferee(char cmd, unsigned char cmd_counter, unsigned char 
 	this->time_remaining = time_remaining;
 }
 
-UpdateReferee::~UpdateReferee(void) {}
-
 void UpdateReferee::apply(Updater* u) {
 	//cout << to_string() << endl;
 	for(size_t k=u->stagesSize(); k>0; k--) {
-		u->stage(k)->setTimeLeft(this->time_remaining);
-		u->stage(k)->setCmdReferee(cmd);
-		u->stage(k)->blueTeam()->setGoals(this->goals_blue);
-		u->stage(k)->yellowTeam()->setGoals(this->goals_yellow);
+		u->stage(k-1)->setTimeLeft(this->time_remaining);
+		u->stage(k-1)->setCmdReferee(cmd);
+		u->stage(k-1)->blueTeam()->setGoals(this->goals_blue);
+		u->stage(k-1)->yellowTeam()->setGoals(this->goals_yellow);
 	}
 }
 

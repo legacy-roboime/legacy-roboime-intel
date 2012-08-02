@@ -10,18 +10,18 @@ namespace LibIntelligence
 		class FollowAndCover : public Goto
 		{
 		public:
-			FollowAndCover(QObject *parent, Robot *slave, QPointF *follow, QPointF *cover, qreal followDistance, qreal speed);
+			FollowAndCover(QObject *parent, Robot *slave, Point *follow, Point *cover, qreal followDistance, qreal speed);
 
-			void setFollow(QPointF *);
-			void setCover(QPointF *);
+			void setFollow(Point *);
+			void setCover(Point *);
 			void setDistance(qreal);
 			void setSpeed(qreal);
 
 			void step();
 
 		private:
-			QPointF *follow;
-			QPointF *cover;
+			Point *follow;
+			Point *cover;
 			qreal distance;
 		};
 	}

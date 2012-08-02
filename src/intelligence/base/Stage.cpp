@@ -8,33 +8,32 @@
 
 using namespace LibIntelligence;
 
-bool Stage::isLeftSideBlueGoal_ = true;
-char Stage::cmdReferee_ = 'H';
-
 Stage::Stage()
-	: QObject()
-{
+	: QObject(),
+	isLeftSideBlueGoal_(false),
+	cmdReferee_('H'),
 	//TODO: make default ball/sizes/...
-	lineWidth_ = 0.0;
-	fieldLength_ = 0.0;
-	fieldWidth_ = 0.0;
-	boundaryWidth_ = 0.0;
-	refereeWidth_ = 0.0;
-	centerCircleRadius_ = 0.0;
-	defenseRadius_ = 0.0;
-	defenseStretch_ = 0.0;
-	freeKickDistance_ = 0.0;
-	penaltySpotDistance_ = 0.0;//from field
-	penaltyLineDistance_ = 0.0;//from spot
-	ball_ = new Ball(21.5);
-	blueGoal_ = new Goal();
-	yellowGoal_ = new Goal();
-	blueTeam_ = new Team(this, BLUE);
-	yellowTeam_ = new Team(this, YELLOW);
-}
+	lineWidth_(0.0),
+	fieldLength_(0.0),
+	fieldWidth_ (0.0),
+	boundaryWidth_(0.0),
+	refereeWidth_(0.0),
+	centerCircleRadius_(0.0),
+	defenseRadius_(0.0),
+	defenseStretch_(0.0),
+	freeKickDistance_(0.0),
+	penaltySpotDistance_(0.0),//from field
+	penaltyLineDistance_(0.0),//from spot
+	ball_(new Ball(21.5)),
+	blueGoal_(new Goal()),
+	yellowGoal_(new Goal()),
+	blueTeam_(new Team(this, BLUE)),
+	yellowTeam_(new Team(this, YELLOW))
+{}
 
 Stage::Stage(const Stage& stage)
-	: QObject()
+	: QObject(),
+	isLeftSideBlueGoal_(stage.isLeftSideBlueGoal_)
 {
 	//TODO: make default ball/sizes/...
 	this->_time_left = stage.getTimeLeft();
@@ -51,6 +50,7 @@ Stage::Stage(const Stage& stage)
 	this->penaltySpotDistance_ = stage.penaltySpotDistance();
 	this->penaltyLineDistance_ = stage.penaltyLineDistance();
 	ball_ = new Ball(*(stage.ball()));
+
 	blueGoal_ = new Goal(*(stage.blueGoal()));
 	yellowGoal_ = new Goal(*(stage.yellowGoal()));
 	blueTeam_ = new Team(this, *(stage.blueTeam()));
@@ -255,7 +255,7 @@ void Stage::setCmdReferee(char cmdReferee){
 	cmdReferee_ = cmdReferee;
 }
 
-char Stage::getCmdReferee(){
+char Stage::getCmdReferee() const{
 	return cmdReferee_;
 }
 
@@ -269,6 +269,10 @@ double Stage::getTimeLeft() const{
 
 bool Stage::isLeftSideBlueGoal(){
 	return isLeftSideBlueGoal_;
+}
+
+void Stage::setIsLeftSideBlueGoal(bool s){
+	isLeftSideBlueGoal_ = s;
 }
 
 Team* Stage::getTeamFromColor(const TeamColor& color)
@@ -372,6 +376,70 @@ Robot* Stage::getClosestPlayerToBallThatCanKick(const Team* team) const
 	}
 
 	return bestFit;
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade da bola
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade da bola
+map<qreal, Robot*> Stage::getClosestPlayersToBall(const Team* team) const
+{
+	return getClosestPlayersToPoint(team, ball_);
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade do ponto
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade do ponto
+map<qreal, Robot*> Stage::getClosestPlayersToPoint(const Team* team, Point* point) const
+{
+	map<qreal, Robot*> robots;
+	for(int i = 0; i < team->count(); i++) {
+
+		qreal dy = team->at(i)->y() - point->y();
+		qreal dx = team->at(i)->x() - point->x();
+
+		qreal d = sqrt(dy * dy + dx * dx);
+
+		robots[d] = team->at(i);
+	}
+
+	return robots;
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade do ponto
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade do ponto
+map<qreal, Robot*> Stage::getClosestPlayersToPointThatCanKick(const Team* team, Point* point) const
+{
+	map<qreal, Robot*> robots;
+	for(int i = 0; i < team->count(); i++) {
+		if(team->at(i)->canKick()){
+			qreal dy = team->at(i)->y() - point->y();
+			qreal dx = team->at(i)->x() - point->x();
+
+			qreal d = sqrt(dy * dy + dx * dx);
+
+			robots[d] = team->at(i);
+		}
+	}
+
+	return robots;
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade da bola
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade da bola
+map<qreal, Robot*> Stage::getClosestPlayersToBallThatCanKick(const Team* team) const
+{
+	return getClosestPlayersToPointThatCanKick(team, (Point*)ball_);
+}
+
+Robot* Stage::getClosestOrderPlayerToBall(const Team* team, int order) const
+{
+	map<qreal, Robot*> m = getClosestPlayersToBall(team);
+	map<qreal, Robot*>::iterator it = m.begin();
+	for(int i=0; i<order; i++)
+		it++;
+	return (*it).second;
 }
 
 Stage& Stage::operator=(const Stage& stage)

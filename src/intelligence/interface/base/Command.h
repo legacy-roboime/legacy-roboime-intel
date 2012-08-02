@@ -18,7 +18,7 @@ namespace LibIntelligence
 	public:
 		Command(const Command&);
 		Command(quint8 id=0, const QVector<qreal>& wheels=QVector<qreal>(4), qreal dribble=0.0, qreal kick=0.0);
-		~Command();
+		virtual ~Command();
 
 		void setId(quint8);
 		int id() const;

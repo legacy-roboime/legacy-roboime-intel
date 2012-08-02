@@ -281,12 +281,6 @@ void Simulation::append(const QString& d)
 
 void Simulation::simulateReal(float dt, int maxStepIter)
 {
-	//QTime time = QTime::currentTime();
-	//static double lTime = 0;
-	//double mSec = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec() - lTime;
-	//printf("SIM %f\n",mSec);
-	//lTime = time.minute() * 60 * 1000 + time.second() * 1000 + time.msec();
-
 	//static int count=0; //coloca para executar o ultimo comando um periodo de tempo assim como o nosso robo real TODO: perguntar pro renault qual é o tempo
 	//static QString& stringO = QString("");
 	//if(!qCommand.isEmpty()) {
@@ -328,7 +322,6 @@ void Simulation::simulate()
 		i.next();
 		if (i.value()->scene && !gPause)
 		{
-			//printf("RODA: %f\n", ((NxWheel2*)(i.value()->allRobots->getRobotByIdByTeam(0, 1)->getWheel(0)))->getWheelShape()->getAxleSpeed());
 			//timestep de 1/60 e 4 intervalos (baseado na tese do stefan zickler
 			i.value()->scene->setTiming(timeStep, 4, NX_TIMESTEP_FIXED);
 			i.value()->scene->simulate(timeStep);
@@ -350,10 +343,8 @@ void Simulation::simulate()
 
 void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 {
-	//parseLegacyString("15 0 1 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0 74.0603 74.0603 -55.8787 -55.8787 0 0\n");
 	// Start simulation
 	// Physics code
-	//if(this->gScenes[indexScene]->ball->ball->getGlobalPosition().x > 3025)
 #ifdef BALL_SPEED_SIM
 	cout << "BOLA SPEED " << this->gScenes[indexScene]->ball->ball->getLinearVelocity().magnitude() << endl;
 #endif
@@ -364,7 +355,7 @@ void Simulation::simulate(int indexScene, float dt, int maxStepIter )
 		 gScenes[indexScene]->scene->flushStream();
 		 gScenes[indexScene]->scene->fetchResults(NX_RIGID_BODY_FINISHED, true);
 	//}
-	//cout << "d " << this->gScenes[indexScene]->allRobots->getRobotByIdByTeam(4,1)->getGlobalPose().t.x << endl;
+
 	// ~Physics code
 }
 
@@ -1539,6 +1530,13 @@ string Simulation::parseLegacyString(string s) {
 	return sendString;
 }
 
+bool Simulation::isInRectangle(NxRobot* robot, NxVec3 p1, NxVec3 p2){
+	NxVec3 pos = robot->getActor()->getGlobalPosition();
+	if(pos.x > p1.x && pos.y > p1.y && pos.x < p2.x && pos.y < p2.y)
+		return true;
+	else false;
+}
+
 SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber, float deltaTime){
 	// Verify that the version of the library that we linked against is
 	// compatible with the version of the headers we compiled against.
@@ -1579,26 +1577,36 @@ SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber, float deltaTime){
 		detectionBall->set_y(ballGlobalPos.y);
 		detectionBall->set_z(1);
 
+		//map<int, int> mapping;
+		//map<int, int>::iterator it = mapping.begin();
+		//mapping[0] = 5;
+		//mapping[0] = 1;
+		//mapping[0] = 2;
+
 		NxArray<NxRobot*> allRobots = scene1->allRobots->getRobots();
 		for(int i=0; i<allRobots.size(); i++)
 		{
 			NxRobot* robot = allRobots[i];
-			NxVec3 robotPos = robot->getPos();
-			SSL_DetectionRobot* detectionRobot;
-			
-			if (robot->getIdTeam()==1)
-				detectionRobot = detectionFrame.add_robots_blue();
-			else //if (robot->getIdTeam()==0)
-				detectionRobot = detectionFrame.add_robots_yellow();
-			
-			detectionRobot->set_confidence(1);
-			detectionRobot->set_height(150);
-			detectionRobot->set_orientation(robot->getAngle2DFromVehicle());
-			detectionRobot->set_pixel_x(0);
-			detectionRobot->set_pixel_y(0);
-			detectionRobot->set_robot_id(robot->getId()/*-1*/); //FOI SUBTRAIDO 1 PQ NO TEAMBOTS OS INDICES DOS ROBOS VAI DE 0 A 4
-			detectionRobot->set_x(robotPos.x);
-			detectionRobot->set_y(robotPos.y);
+			NxVec3 robotPoss = robot->getPos();
+			//std::cout << robotPoss.x << " " << robotPoss.y << endl;
+			//if(isInRectangle(robot, NxVec3(-3250, -2000, 0), NxVec3(+3250, 2000, 0))){
+				NxVec3 robotPos = robot->getPos();
+				SSL_DetectionRobot* detectionRobot;
+
+				if (robot->getIdTeam()==1)
+					detectionRobot = detectionFrame.add_robots_blue();
+				else //if (robot->getIdTeam()==0)
+					detectionRobot = detectionFrame.add_robots_yellow();
+
+				detectionRobot->set_confidence(1);
+				detectionRobot->set_height(150);
+				detectionRobot->set_orientation(robot->getAngle2DFromVehicle());
+				detectionRobot->set_pixel_x(0);
+				detectionRobot->set_pixel_y(0);
+				detectionRobot->set_robot_id(robot->getId()/*-1*/); //FOI SUBTRAIDO 1 PQ NO TEAMBOTS OS INDICES DOS ROBOS VAI DE 0 A 4
+				detectionRobot->set_x(robotPos.x);
+				detectionRobot->set_y(robotPos.y);
+			//}
 		}
 
 		SSL_DetectionFrame * nframe = wrapperPacket.mutable_detection();

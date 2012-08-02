@@ -3,10 +3,12 @@
 #include <cmath>
 #include <QVector>
 #include "PID.h"
+#include "geomutils.h"
 #include "mathutils.h"
+
 #define MAX_RPS_BIWHEEL 4.0
 #define WHEEL_INTERDISTANCE 
-#define REALROBOT
+//#define REALROBOT
 
 using namespace LibIntelligence;
 using namespace Skills;
@@ -14,7 +16,7 @@ using namespace Skills;
 
 qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
 
-#define ROBOTACCEL 3500
+//#define ROBOTACCEL 3500
 
 Move::Move(QObject* p, Robot* r, qreal sx, qreal sy, qreal sa)
 	: Skill(p, r),
@@ -32,6 +34,12 @@ void Move::setAll(qreal sx, qreal sy, qreal sa)
 	speedX = sx;
 	speedY = sy;
 	speedAngular = sa;
+}
+
+void Move::setSpeed(Vector s)
+{
+	speedX = s.x();
+	speedY = s.y();
 }
 
 void Move::setSpeeds(qreal sx, qreal sy)
@@ -53,6 +61,7 @@ bool Move::busy()
 
 void Move::step()
 {
+	//TODO: implementar condução com drible (centro na bola) e sem drible (sem omni)
 	static qreal theta, alpha;
 	static QVector<qreal> speed;//(robot()->wheelsSize());
 	speed.resize(robot()->wheelsSize());

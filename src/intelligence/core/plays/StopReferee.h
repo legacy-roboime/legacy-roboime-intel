@@ -16,7 +16,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			StopReferee(QObject*, Team*,Stage*);
+			StopReferee(QObject*, Team*,Stage*, Robot* gk);
 			~StopReferee();
 			virtual void step();
 		};

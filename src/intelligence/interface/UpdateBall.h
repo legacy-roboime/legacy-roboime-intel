@@ -12,7 +12,7 @@ namespace LibIntelligence
 {
 	class Updater;
 
-	class UpdateBall : public Update, public QPointF
+	class UpdateBall : public Update, public Point
 	{
 	public:
 		UpdateBall(const SSL_DetectionBall&, double t_sent=0.0, double t_capture=0.0, int camera_id=0);
@@ -21,9 +21,9 @@ namespace LibIntelligence
 
 		void apply(Updater*);//go through the updaters list and apply the update
 
-		void setSpeed(const QVector2D &);
+		void setSpeed(const Vector &);
 		void setSpeed(const qreal &sx, const qreal &sy);
-		QVector2D speed() const;
+		Vector speed() const;
 
 	private:
 		struct UpdateBallImpl* pimpl;

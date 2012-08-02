@@ -8,7 +8,7 @@
 #include "Skills.h"
 #include "Loops.h"
 #include <cmath>
-#include <QLineF>
+#include "geomutils.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
@@ -61,21 +61,21 @@ void Attacker::step()
 
 	qreal dist = sqrt(dx*dx + dy*dy);
 
-	QLineF BallGoalLine = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
-	QLineF linePlayer = QLineF(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
-	QLineF PlayerGoalLine = QLineF(GolX , GolY, robot->x(), robot->y());
-	QLineF lineGoal = QLineF( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
+	Line BallGoalLine = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
+	Line linePlayer = Line(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
+	Line PlayerGoalLine = Line(GolX , GolY, robot->x(), robot->y());
+	Line lineGoal = Line( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
 
 	//Nova implementaçao
 
 	qreal goalWidth = robot->enemyGoal()->width();
 
 	//Linha das traves à bola
-	QLineF ballGoalBorderLine1 = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
-	QLineF ballGoalBorderLine2 = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
+	Line ballGoalBorderLine1 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
+	Line ballGoalBorderLine2 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
 
 	//Linha da bola ao robo
-	QLineF playerBallLine = QLineF(robot->x() , robot->y(), ballX, ballY);
+	Line playerBallLine = Line(robot->x() , robot->y(), ballX, ballY);
 
 	qreal xGBL1 =  stage->ball()->x() - GolX;
 	qreal yGBL1 =  stage->ball()->y() - (GolY + goalWidth/2);
@@ -98,9 +98,9 @@ void Attacker::step()
 
 	if( criteria < 0 && condition ) { //esta no cone de chute
 
-		QLineF GoalLine = QLineF(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
+		Line GoalLine = Line(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
 
-		QPointF GoalPos;
+		Point GoalPos;
 
 		GoalLine.intersect(linePlayer, &GoalPos);
 
@@ -180,7 +180,7 @@ void Attacker::step()
 	//			move_->step();
 
 	//			/*
-	//			QLineF BallGoalLine = QLineF(stage->ball()->x(), stage->ball()->y(), GolX, GolY);
+	//			Line BallGoalLine = Line(stage->ball()->x(), stage->ball()->y(), GolX, GolY);
 	//			float PI = std::atan(1.0f) * 4.0f;
 
 	//			qreal AngGraus = BallGoalLine.angle();
@@ -278,10 +278,10 @@ void Attacker::step()
 //
 //	
 //
-//	QLineF BallGoalLine = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
-//	QLineF linePlayer = QLineF(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
-//	QLineF PlayerGoalLine = QLineF(GolX , GolY, robot->x(), robot->y());
-//	QLineF lineGoal = QLineF( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
+//	Line BallGoalLine = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
+//	Line linePlayer = Line(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
+//	Line PlayerGoalLine = Line(GolX , GolY, robot->x(), robot->y());
+//	Line lineGoal = Line( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
 //
 //
 //	//Nova implementaçao
@@ -289,11 +289,11 @@ void Attacker::step()
 //	qreal goalWidth = robot->enemyGoal()->width();
 //
 //	//Linha das traves à bola
-//	QLineF ballGoalBorderLine1 = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
-//	QLineF ballGoalBorderLine2 = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
+//	Line ballGoalBorderLine1 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
+//	Line ballGoalBorderLine2 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
 //
 //	//Linha da bola ao robo
-//	QLineF playerBallLine = QLineF(robot->x() , robot->y(), ballX, ballY);
+//	Line playerBallLine = Line(robot->x() , robot->y(), ballX, ballY);
 //
 //	qreal xGBL1 =  stage->ball()->x() - GolX;
 //	qreal yGBL1 =  stage->ball()->y() - (GolY + goalWidth/2);
@@ -313,9 +313,9 @@ void Attacker::step()
 //	if( criteria < 0 ) { //esta no cone de chute
 //
 //		
-//		QLineF GoalLine = QLineF(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
+//		Line GoalLine = Line(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
 //
-//		QPointF GoalPos;
+//		Point GoalPos;
 //
 //		GoalLine.intersect(linePlayer, &GoalPos);
 //

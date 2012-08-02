@@ -65,8 +65,6 @@ private:
 	//extern NxUserContactReport * robotContactReport;
 	NxArray<NxUserContactReport *> robotContactReport;
 	
-	timeval timeLastSimulate;
-	
 	friend class MyUserNotify;
 	friend class UDPServerSimInt;
 	friend class SimulationView;
@@ -125,7 +123,7 @@ private:
 	void simulateReal(float dt = 1./60., int maxStepIter = 4);
 	void simulate();
 	void sleepComponents();
-	
+	bool isInRectangle(NxRobot* robot, NxVec3 p1, NxVec3 p2);
 public:
 	float sideBlue;
 

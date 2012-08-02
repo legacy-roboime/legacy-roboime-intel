@@ -121,7 +121,27 @@ struct IntelligenceCli : public QThread
 				((Goto *)intel->skill["goto"])->setPoint(x, y);
 				intel->mutex.unlock();
 
-			} else if(command[0] == 's') {
+			}
+			else if(command == "side") {
+				string side;
+				cin >> side;
+				cout << "setSide(" << side << ")" << endl;
+				intel->mutex.lock();
+				if(side.compare("left") == 0){ //left
+					if(intel->team["us"]->color() == BLUE)
+						intel->stage["main"]->setIsLeftSideBlueGoal(true);
+					else
+						intel->stage["main"]->setIsLeftSideBlueGoal(false);
+				}
+				else{
+					if(intel->team["us"]->color() == BLUE)
+						intel->stage["main"]->setIsLeftSideBlueGoal(false);
+					else
+						intel->stage["main"]->setIsLeftSideBlueGoal(true);
+				}
+				intel->mutex.unlock();
+
+			}else if(command[0] == 's') {
 				cin >> s;
 				cout << "setSpeed(" << s << ")" << endl;
 				intel->mutex.lock();
@@ -141,6 +161,7 @@ struct IntelligenceCli : public QThread
 				cout << "controller robot " << i << endl;
 				intel->mutex.lock();
 				intel->tactic["controller"]->setRobot(intel->team["us"]->at(i));
+				intel->tactic["controller1"]->setRobot(intel->team["us"]->at(i));
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'k') {
@@ -150,7 +171,7 @@ struct IntelligenceCli : public QThread
 				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
 				intel->mutex.unlock();
 
-			} else {
+			}else {
 				cout << "Comando nao reconhecido." << endl;
 
 			}
@@ -193,7 +214,7 @@ Intelligence::Intelligence(QObject *parent)
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
         Robot* robot;
-        robot = new Robot(Robots::RobotIME2011(team["us"], i, i, BLUE));
+        robot = new Robot(Robots::RoboIME2012(team["us"], i, i, BLUE));
 		team["us"]->push_back(robot);
 		//real
 		commander["blueTx"]->add(robot);
@@ -203,7 +224,7 @@ Intelligence::Intelligence(QObject *parent)
         commander["blueGrSim"]->add(robot);
 		updater["visionSim"]->add(robot);
 
-        robot = new Robot(Robots::RobotIME2011(team["they"], i, i, YELLOW));
+        robot = new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW));
 		team["they"]->push_back(robot);
 		//real
 		commander["yellowTx"]->add(robot);
@@ -213,36 +234,41 @@ Intelligence::Intelligence(QObject *parent)
         commander["yellowGrSim"]->add(robot);
 		updater["visionSim"]->add(robot);
 	}
-
-#ifdef HAVE_WINDOWS
-	tactic["controller"] = new Controller2(this, team["us"]->at(3), 1, 500); //controle no referencial do campo
-	tactic["controller1"] = new Controller(this, team["us"]->at(3), 1, 1000); //controle no referencial do robo
-#endif
-	//skill["driveto"] = new DriveTo(this, team["us"]->at(1), -3.14/2., QPointF(0,0), 1000.);
-
-	//skill["goto"] = new Goto(this, team["us"]->at(0), 1000, 0, 0, 3000, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
-	skill["goto"] = new Goto(this, team["they"]->at(1), 1000, 0, 0, 3000, true);//SteerToBall(this, team["us"]->at(3), 0, 0);//
+	
+	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
+	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
+	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
+	skill["goto"] = new Goto(this, team["us"]->at(3), 0, 0, 0, 500, true);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
 	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, true);
 	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
 	skill["loop"] = new Loops::Orbit(this, team["us"]->at(1), 0, 0, 1000, 3000, 1.0);
 	skill["fac"] = new FollowAndCover(this, team["us"]->at(1), team["they"]->at(1), team["us"]->goal(), 1000, 3000);
 
-	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
-	tactic["zickler43"] = new Zickler43(this, team["they"]->at(4), 3000, true);
-
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
-	play["retaliate"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], 3000);
-	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
-	//play["bgt"] = new Plays::BGT(this, team["us"], sta);
+	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
+	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 3000);
+#ifdef HAVE_WINDOWS
+	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
+#endif
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
-	//play["freekickem"] = new Plays::FreeKickThem(this, &team["us"], sta);
+	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2));
+	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0));
+	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
-	tactic["gkpr"] = new Goalkeeper(this, team["they"]->at(0),1000);
-	tactic["def"] = new Defender(this, team["they"]->at(1), 0, 1000);
-	tactic["def2"] = new Defender(this, team["they"]->at(2), 0, 1000);
-	tactic["def3"] = new Defender(this, team["they"]->at(3), 0, 1000);
+	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
+#ifdef HAVE_WINDOWS
+	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
+	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
+#endif
+	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
+	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
+	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
+	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
+	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
+	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
 	
 	timer = new QTimer(this);
@@ -261,19 +287,19 @@ void Intelligence::resetPatterns()
 		for(int i = 0; i < team["they"]->size(); i++)
 			team["they"]->at(i)->setPatternId(i);
 	} else {
-		team["us"]->at(0)->setPatternId(2);
-		team["us"]->at(1)->setPatternId(3);
-		//team["us"]->at(2)->setPatternId(1);
-		//team["us"]->at(3)->setPatternId(1);
-		//team["us"]->at(3)->setPatternId(1);
-		//team["they"][0]->setPatternId(4);
+		team["us"]->at(0)->setPatternId(0);
+		team["us"]->at(1)->setPatternId(1);
+		team["us"]->at(2)->setPatternId(2);
+		team["us"]->at(3)->setPatternId(3);
+		team["us"]->at(4)->setPatternId(4);
+		team["us"]->at(5)->setPatternId(5);
 
-		//set the kicker if it is not working
-		//team["us"][0]->kicker().setNotWorking();
-		//team["us"][1]->kicker().setNotWorking();
-		//team["us"][2]->kicker().setNotWorking();
-		//team["us"][3]->kicker().setNotWorking();
-		//team["us"][4]->kicker().setNotWorking();
+		team["they"]->at(0)->setPatternId(0);
+		team["they"]->at(1)->setPatternId(1);
+		team["they"]->at(2)->setPatternId(2);
+		team["they"]->at(3)->setPatternId(3);
+		team["they"]->at(4)->setPatternId(4);
+		team["they"]->at(5)->setPatternId(5);
 	}
 }
 
@@ -303,21 +329,30 @@ void Intelligence::update()
 	case PLAY:
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
+		//play["stoprefT"]->step();
+		//if(!((QThread *)play["minimax2"])->isRunning())
+		//	((QThread *)play["minimax2"])->start();
+		play["refereeU"]->step();
+		//play["refereeT"]->step();
+		//play["stoprefT"]->step();
+		//play["retaliateT"]->step();
 		//play["minimax2"]->step();
-		if(!((QThread *)play["minimax2"])->isRunning())
-			((QThread *)play["minimax2"])->start();
-		play["minimax2"]->step();
-		play["retaliate"]->step();
+		//play["retaliateU"]->step();
+		//tactic["zickler43"]->step();
+		//play["retaliateT"]->step();
 		break;
 
 	case TACTIC:
-		tactic["zickler43"]->step();
-		tactic["attacker"]->step();
+		//tactic["zickler43"]->step();
+		//tactic["gkpr"]->step();
+		tactic["def"]->step();
 		break;
 
 	case SKILL:
-		skill["fac"]->step();
+		//skill["fac"]->step();
 		skill["goto"]->step();
+		//((Goto*)skill["goto"])->setAllowDefenseArea();
+		//skill["drivetoObj"]->step();
 		break;
 
 #ifdef HAVE_WINDOWS
@@ -328,6 +363,8 @@ void Intelligence::update()
 		break;
 	}
 	///END STEPS
+
+
 
 	if(useSimulation) {
 #ifdef CONTROL_BLUE

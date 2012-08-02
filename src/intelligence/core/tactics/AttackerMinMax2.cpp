@@ -4,7 +4,6 @@
 #include "Ball.h"
 #include "Goal.h"
 #include "Sampler.h"
-#include <QLineF>
 #include <iostream>
 #include "mathutils.h"
 #include "soccer.h"
@@ -93,41 +92,36 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	Ball* ball = this->stage()->ball();
 	Goal* enemyGoal = robot->enemyGoal();
 
-	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
-		movePoint.x = enemyGoal->x();
-		movePoint.y = enemyGoal->y();
-#ifdef SOCCER_DEBUG
-		cout << "ERROR: movePoint == ballPoint" << endl;
-#endif
-	}
-
 	if(action_ == pass || action_ == kick_to_goal){
 		kickPoint_->setX(kickPoint.x);
 		kickPoint_->setY(kickPoint.y);
 	}
 
-	if(action == get_ball && QVector2D(*robot - *ball).length() < MIN_DIST){
-		movePoint_->setX(enemyGoal->x());
-		movePoint_->setY(enemyGoal->y());
-	}
-	else{
-		movePoint_->setX(movePoint.x);
-		movePoint_->setY(movePoint.y);
-	}
+	movePoint_->setX(movePoint.x);
+	movePoint_->setY(movePoint.y);
 
-	QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
-	qreal orientation = 2 * M_PI - line.angle() * M_PI / 180.;
+	Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+	qreal orientation = line.angle() * M_PI / 180.;
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
 
-	dribblePoint_->setX(movePoint.x);
-	dribblePoint_->setY(movePoint.y);
+	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
+		dribblePoint_->setX(enemyGoal->x());
+		dribblePoint_->setY(enemyGoal->y());
+#ifdef SOCCER_ACTION
+		cout << "ERROR: movePoint == ballPoint" << endl;
+#endif
+	}
+	else{
+		dribblePoint_->setX(movePoint.x);
+		dribblePoint_->setY(movePoint.y);
+	}
 }
 
 bool GotoToDriveT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return QVector2D(*a->robot() - *a->stage()->ball()).length() < MIN_DIST;
+	return Vector(*a->robot() - *a->stage()->ball()).length() < MIN_DIST;
 }
 
 GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -135,7 +129,7 @@ GotoToDriveT::GotoToDriveT(QObject* parent, State* source, State* target, qreal 
 bool DriveToGotoT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST;
+	return Vector(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST;
 }
 
 DriveToGotoT::DriveToGotoT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -171,7 +165,8 @@ DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* ta
 bool GoalKickToDribbleT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return /*!source_->busy() &&*/ !(a->action() == kick_to_goal); 
+	
+	return /*QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST &&*/ !(a->action() == kick_to_goal); 
 }
 
 GoalKickToDribbleT::GoalKickToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -187,7 +182,7 @@ DribbleToPassT::DribbleToPassT(QObject* parent, State* source, State* target, qr
 bool PassToDribbleT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();
-	return /*!source_->busy() &&*/ !(a->action() == pass);
+	return /*QVector2D(*a->robot() - *a->stage()->ball()).length() >= MIN_DIST &&*/ !(a->action() == pass);
 }
 
 PassToDribbleT::PassToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

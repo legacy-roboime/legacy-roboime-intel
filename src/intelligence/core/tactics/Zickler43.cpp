@@ -4,7 +4,6 @@
 #include "Ball.h"
 #include "Goal.h"
 #include "Sampler.h"
-#include <QLineF>
 #include <iostream>
 #include "mathutils.h"
 
@@ -100,7 +99,7 @@ Zickler43::~Zickler43()
 bool DriveToDribbleT::condition()
 {
 	Zickler43* z = (Zickler43*) this->parent();
-	return QVector2D(*z->robot() - *z->stage()->ball()).length() < MINDIST;//!source_->busy(); //
+	return Vector(*z->robot() - *z->stage()->ball()).length() < MINDIST;//!source_->busy(); //
 }
 
 DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
@@ -115,7 +114,7 @@ bool DribbleToDriveT::condition()
 	//drive->setRefLookPoint(backup);
 	//return busy;
 	Zickler43* z = (Zickler43*) this->parent();
-	return QVector2D(*z->robot() - *z->stage()->ball()).length() >= MINDIST;//!source_->busy(); //
+	return Vector(*z->robot() - *z->stage()->ball()).length() >= MINDIST;//!source_->busy(); //
 }
 
 DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

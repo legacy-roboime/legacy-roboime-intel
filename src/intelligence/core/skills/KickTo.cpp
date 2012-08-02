@@ -3,7 +3,7 @@
 #include "Robot.h"
 #include "Stage.h"
 #include "Ball.h"
-#include <QLineF>
+#include "geomutils.h"
 
 #define M_PI	3.1415926535897932
 
@@ -51,8 +51,8 @@ void KickTo::step()
 	Goto::setOrientation(angle);
 
 	//TODO: find geometry lib (QT) 
-	QLineF lineTo = QLineF(xRobot, yRobot, xRobot + 1., yRobot);
-	QLineF lineToBall = QLineF(xRobot, yRobot, xBall, yBall);
+	Line lineTo = Line(xRobot, yRobot, xRobot + 1., yRobot);
+	Line lineToBall = Line(xRobot, yRobot, xBall, yBall);
 
 	//Verifica alinhamento da bola com a frente do robo (sera substituido pelo sensor da bola)
 	lineTo.setAngle(rOrientation*180./M_PI);

@@ -5,8 +5,10 @@
 #include "Stage.h"
 #include "Goal.h"
 #include "Ball.h"
-#include <QLineF>
+#include "geomutils.h"
 #include "mathutils.h"
+
+#define M_PI	3.1415926535897932
 
 //valor carteado
 #define CART 82.6
@@ -75,21 +77,21 @@ void GetBall::step()
 
 	qreal dist = sqrt(dx*dx + dy*dy);
 
-	QLineF BallGoalLine = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
-	QLineF linePlayer = QLineF(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
-	QLineF PlayerGoalLine = QLineF(GolX , GolY, robot->x(), robot->y());
-	QLineF lineGoal = QLineF( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
+	Line BallGoalLine = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
+	Line linePlayer = Line(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
+	Line PlayerGoalLine = Line(GolX , GolY, robot->x(), robot->y());
+	Line lineGoal = Line( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
 
 	//Nova implementaçao
 
 	qreal goalWidth = robot->enemyGoal()->width();
 
 	//Linha das traves à bola
-	QLineF ballGoalBorderLine1 = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
-	QLineF ballGoalBorderLine2 = QLineF(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
+	Line ballGoalBorderLine1 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
+	Line ballGoalBorderLine2 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
 
 	//Linha da bola ao robo
-	QLineF playerBallLine = QLineF(robot->x() , robot->y(), ballX, ballY);
+	Line playerBallLine = Line(robot->x() , robot->y(), ballX, ballY);
 
 	qreal xGBL1 =  stage->ball()->x() - GolX;
 	qreal yGBL1 =  stage->ball()->y() - (GolY + goalWidth/2);
@@ -112,9 +114,9 @@ void GetBall::step()
 
 	if( criteria < 0 && condition ) { //esta no cone de chute
 
-		QLineF GoalLine = QLineF(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
+		Line GoalLine = Line(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
 
-		QPointF GoalPos;
+		Point GoalPos;
 
 		GoalLine.intersect(linePlayer, &GoalPos);
 
@@ -204,9 +206,9 @@ void GetBall::step()
 	Goto::step();
 
 	//Verifica alinhamento da bola com a frente do robo (sera substituido pelo sensor da bola)
-	//QLineF lineTo = QLineF(rx, ry, rx + 1., ry);
+	//Line lineTo = Line(rx, ry, rx + 1., ry);
 	//lineTo.setAngle(rOrientation*180./M_PI);
-	//QLineF lineToBall = QLineF(rx, ry, bx, by);
+	//Line lineToBall = Line(rx, ry, bx, by);
 	//qreal diffAngle = lineTo.angleTo(lineToBall) * M_PI / 180.;
 	*/
 }

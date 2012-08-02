@@ -8,35 +8,94 @@ using namespace LibIntelligence;
 using namespace Plays;
 using namespace Tactics;
 
-AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, qreal speed)
+AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, Robot* gk, qreal speed)
 	: Play(parent,team,stage)
 {
-	player_[0] = new Goalkeeper(this, team->at(0), speed);
-	player_[1] = new Zickler43(this, team->at(1), speed, true);
-	player_[2] = new Blocker(this, team->at(2), 0, speed);
+	player_[0] = new Goalkeeper(this, gk, speed);
+	//usei team->at(0), mas tanto faz pq a tatica é associada dinamicamente ao robo
+	player_[1] = new Zickler43(this, team->at(0), speed, true);
+	player_[2] = new Blocker(this, team->at(0), 0, speed);
+	//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao enemy
 	for(int i = 3; i < team->size(); i++)
-		player_[i] = new Defender(this, team->at(i), 0, speed);
+		player_[i] = new Defender(this, team->at(0), team->enemyTeam()->at(0), 600, speed);
 }
 
 void AutoRetaliate::step(){
 	Team* team = this->team_;
 	Stage* stage = this->stage_;
-	//Ball* ball = stage->ball();//unused
-	//Goal* myGoal = team->goal();//unused
+	Ball* ball = stage->ball();
+	Goal* myGoal = team->goal();
 
-	Robot* newAtk = stage->getClosestPlayerToBallThatCanKick(team);
-	Robot* oldAtk = player_[1]->robot();
+	map<qreal, Robot*> close = stage->getClosestPlayersToBall(team);
+	map<int, Robot*> ids;
+	map<qreal, Robot*> enemys = stage->getClosestPlayersToPoint(team->enemyTeam(), (Point*)team->goal());
 
-	if(newAtk != player_[0]->robot()) {
-		for(int i = 0; i < team->size(); i++) {
-			if(player_[i]->robot() == newAtk) {
-				player_[i]->setRobot(oldAtk);
-				player_[1]->setRobot(newAtk);
-			}
+	//Attacker e Blocker
+	int i=0;
+	map<qreal, Robot*>::iterator it1 = close.begin();
+	while(i<close.size()-1){
+		if((*it1).second->id() == player_[0]->robot()->id()){
+			it1++;
+			continue;
 		}
+
+		Robot* robot = (*it1).second;
+		if(i == 0)
+			player_[1]->setRobot(robot);
+		else if(i == 1)
+			player_[2]->setRobot(robot);
+		else
+			ids[robot->id()] = robot;
+
+		i++;
+		it1++;
 	}
 
-	for(int i = 0; i < team->size(); i++) {
-		player_[i]->step();
+	//Defenders enemys
+	map<qreal, Robot*>::iterator it3 = enemys.begin(); 
+
+	//Defenders
+	i=0;
+	map<int, Robot*>::iterator it2 = ids.begin();
+	while(i<ids.size()){
+		Robot* robot = (*it2).second;
+		if(i == 0){
+			if((*it3).second != NULL && stage->inField((const Object&)(*(*it3).second))){
+				((Defender*)player_[3])->setEnemy((*it3).second);
+			}
+			else{
+				((Defender*)player_[3])->setEnemy(ball);
+				((Defender*)player_[3])->reset();
+			}
+			player_[3]->setRobot(robot);
+		}
+		else if(i == 1){
+			if((*it3).second != NULL && stage->inField((const Object&)(*(*it3).second))){
+				((Defender*)player_[4])->setEnemy((*it3).second);
+			}
+			else{
+				((Defender*)player_[4])->setEnemy(ball);
+				((Defender*)player_[4])->reset();
+			}
+			player_[4]->setRobot(robot);
+		}
+		else if(i == 2){
+			if((*it3).second != NULL && stage->inField((const Object&)(*(*it3).second))){
+				((Defender*)player_[5])->setEnemy((*it3).second);
+			}
+			else{
+				((Defender*)player_[5])->setEnemy(ball);
+				((Defender*)player_[5])->reset();
+			}
+			player_[5]->setRobot(robot);
+		}
+
+		i++;
+		it2++;
+		it3++;
+	}
+
+	for(int i = 0; i < team->size(); i++){
+		player_[i]->step();	
 	}
 }

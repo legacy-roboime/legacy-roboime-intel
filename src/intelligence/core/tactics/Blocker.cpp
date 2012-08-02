@@ -5,7 +5,6 @@
 #include "Ball.h"
 #include "Goal.h"
 #include <cmath>
-#include <QLineF>
 
 using namespace LibIntelligence;
 using namespace Tactics;
@@ -39,7 +38,7 @@ void Blocker::step()
 	else
 		myGoal = stage->yellowGoal();
 
-	QLineF target = QLineF(ball->x(), ball->y(), myGoal->x(), myGoal->y());
+	Line target = Line(ball->x(), ball->y(), myGoal->x(), myGoal->y());
 	target.setLength(700);
 	qreal angle = target.angle();
 	target.setAngle(angle + (angle_ * 180. / M_PI));
@@ -47,6 +46,6 @@ void Blocker::step()
 	qreal y = target.p2().y();
 	goto_->setPoint(x, y);
 	goto_->setSpeed(speed);
-	goto_->setOrientation(M_PI - target.angle() * M_PI / 180.);
+	goto_->setOrientation(M_PI + target.angle() * M_PI / 180.);
 	goto_->step();
 }

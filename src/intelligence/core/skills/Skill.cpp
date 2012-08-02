@@ -7,24 +7,14 @@ using namespace LibIntelligence::Skills;
 Skill::Skill(QObject* p, Robot* r, bool deterministic)
 	: //QObject(p),
 	State(p, deterministic),
-	robot_(r),
-	stage_(r->stage())
-{
-}
-
-Skill::~Skill(){
-	//delete robot_;
-	//delete stage_;
-}
+	robot_(r)
+{}
 
 Skill::Skill(const Skill& skill) : State(skill)
-{
-
-}
+{}
 
 void Skill::setRobot(Robot* r) {
 	robot_ = r;
-	stage_ = r->stage();
 }
 
 const Robot* Skill::robot() const
@@ -34,7 +24,7 @@ const Robot* Skill::robot() const
 
 const Stage* Skill::stage() const
 {
-	return stage_;
+	return robot_->stage();
 }
 
 Robot* Skill::robot()
@@ -44,7 +34,7 @@ Robot* Skill::robot()
 
 Stage* Skill::stage()
 {
-	return stage_;
+	return robot_->stage();
 }
 
 //bool Skill::busy()

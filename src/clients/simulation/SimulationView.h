@@ -46,12 +46,7 @@ private:
 	UDPServerSimInt* intServer;
 
 	static bool bRightMouseButtonPressed;
-	//static NxReal gMouseDepth;
-	//static NxDistanceJoint* gMouseJoint;
-	//static NxActor* gMouseSphere;
-	//static NxActor* gSelectedActor;
-	//static NxScene* scene;
-	//static NxPhysicsSDK* physicsSDK;
+
 	static ActorPicking* actorPicking;
 	static QMapIterator<int, NxScene1*> indexRenderScene;
 	//static FILE * outputfile;
@@ -71,6 +66,7 @@ private:
 	static bool gDebugVisualization;
 	static PerfRenderer gPerfRenderer;
 	static bool gTextEnabled;
+	static GLuint mTexId;
 	//AVI GENERATOR OPENGL
 	//CAVIGenerator AviGen;	// generator
 	//BYTE* bmBits;	// image buffer
@@ -93,6 +89,8 @@ private:
 	static bool FileExistTestSimple(const char *fname);
 	static void CSL_Scene();
 	static void DrawForce(NxActor* actor, NxVec3& forceVec, const NxVec3& color);
+	static bool createTexture(const char *filename);
+	static void drawTexture(bool shadows);
 
 	friend class NxRobot;
 	friend class Simulation;
@@ -100,9 +98,7 @@ private:
 	friend class ActorPicking;
 	friend class Actors;
 private slots:
-	//void startVisionClicked();
 	void simulate();
-	//void ttt ();
 };
 
 #endif // SIMULATIONVIEW_H

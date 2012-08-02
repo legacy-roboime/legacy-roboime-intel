@@ -4,7 +4,7 @@
 #include "Team.h"
 #include "Ball.h"
 #include <cmath>
-#include "SteerToBall.h"
+#include "SteerToPoint.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;

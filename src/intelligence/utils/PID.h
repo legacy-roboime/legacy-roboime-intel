@@ -10,18 +10,18 @@ struct CONTROLLER_S
     double Ki;             // integral gain
     double Kd;             // derivative gain
     // state variables
-    volatile double erro;          // error (input-feedback)
-    volatile double erro_anterior;     // previous error
-    volatile double erro_integ;    // integral of error
-    volatile double erro_dif;     // derivative of error
+    double erro;          // error (input-feedback)
+    double erro_anterior;     // previous error
+    double erro_integ;    // integral of error
+    double erro_dif;     // derivative of error
     // limits
     double integMax;      // integral wind-up limit
     double saidaMax;      // motor output clamp (limit)
     // input and output
-    volatile double saida;         // motor output
-    volatile double entrada;          // user input
-    volatile double entrada_des;          // user input
-    volatile double realimentacao;       // motor feedback
+    double saida;         // motor output
+    double entrada;          // user input
+    double entrada_des;          // user input
+    double realimentacao;       // motor feedback
 };
 
 void pidService(CONTROLLER_S& Controller);

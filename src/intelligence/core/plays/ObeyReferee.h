@@ -12,7 +12,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			ObeyReferee(QObject *parent, Play *);
+			ObeyReferee(QObject *parent, Play *, Robot* gk);
 			~ObeyReferee();
 
 			void step();
@@ -24,6 +24,9 @@ namespace LibIntelligence
 			Play *play;
 			Play *stopReferee;
 			Play *halt;
+			char cmd;
+			char lastCmd;
+			QPointF lastBall;
 		};
 	}
 }

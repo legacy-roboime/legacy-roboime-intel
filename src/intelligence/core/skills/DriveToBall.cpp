@@ -3,7 +3,6 @@
 #include "Stage.h"
 #include "Goal.h"
 #include "Ball.h"
-#include <QLineF>
 
 //#define CART	90.//110.//82.6//170.//82.6
 
@@ -29,23 +28,23 @@ void DriveToBall::step()
 
 	qreal distance = 4*threshold;
 	qreal t = -distance;
-
+	
 	//Cone maior
 	const Object* lkP = getRefLookPoint();
-	QLineF target = QLineF(ball->x(), ball->y(), lkP->x(), lkP->y());
+	Line target = Line(ball->x(), ball->y(), lkP->x(), lkP->y());
 	qreal angle = 75;
 	target.setLength(t);
 	target.setAngle(target.angle() + angle);
-	QLineF target2 = target;
+	Line target2 = target;
 	target.setAngle(target.angle() - 2*angle);
-	QLineF target3 = QLineF(ball->x(), ball->y(), robot->x(), robot->y());
+	Line target3 = Line(ball->x(), ball->y(), robot->x(), robot->y());
 
 	qreal ang2 = target2.angle(); //angulo do cone maior obtido girando no sentido horario
 	qreal ang3 = target3.angle(); //angulo da linha que liga bola pro robo
 	qreal ang = target.angle(); //angulo do cone maior obtido girando no sentido anti-horario
 
 	//Cone Menor
-	qreal goAng = 20;
+	qreal goAng = 15;
 	target.setAngle(target.angle() + goAng);
 	target2.setAngle(target2.angle() - goAng);
 	qreal ang4 = target.angle(); //angulo do cone menor obtido girando no sentido anti-horario
@@ -68,22 +67,22 @@ void DriveToBall::step()
 	}
 
 	//Posições destino (dentro do cone menor)
-	goAng = 15;
+	goAng = 20;
 	target.setAngle(target.angle() + goAng);
 	target2.setAngle(target2.angle() - goAng);
 
 	if(inCone){ //esta dentro do cone
-		QLineF ret1 = QLineF(lkP->x(), lkP->y(), ball->x(), ball->y());
+		Line ret1 = Line(lkP->x(), lkP->y(), ball->x(), ball->y());
 		ret1.setLength(ret1.length() + distance);
-		QLineF ret2 = ret1;
+		Line ret2 = ret1;
 		ret2.setAngle(ret2.angle() + 90);
 		ret2.translate(robot->x() - ret2.p1().x(), robot->y() - ret2.p1().y());
-		QPointF intersect = QPointF(0, 0);
-		//QLineF::IntersectType interT = ret1.intersect(ret2, &intersect);//XXX: unused variable uncomment if needed;
-		if(QVector2D(*robot - intersect).length() > 50){
+		Point intersect = Point(0, 0);
+		Line::IntersectType interT = ret1.intersect(ret2, &intersect);
+		if(Vector(*robot - intersect).length() > 50){
 			Goto::setPoint(ret1.x2(), ret1.y2());
 			ret1.setLength(-1);
-			Goto::setOrientation(2*M_PI - ret1.angle() * M_PI / 180.); //TODO: arrumar esse angulo para o robo nao fazer a voltinha.
+			Goto::setOrientation(ret1.angle() * M_PI / 180.); //TODO: arrumar esse angulo para o robo nao fazer a voltinha.
 			Goto::step();
 		}
 		else
@@ -92,11 +91,11 @@ void DriveToBall::step()
 	}
 	else{ //nao esta dentro do cone
 
-		QPointF newLKP =
-			QVector2D(*robot - target.p2()).length() < QVector2D(*robot - target2.p2()).length()
+		Point newLKP =
+			Vector(*robot - target.p2()).length() < Vector(*robot - target2.p2()).length()
 			? target.p2() : target2.p2();
 
-		QLineF target1 = QLineF(ball->x(), ball->y(), newLKP.x(), newLKP.y());
+		Line target1 = Line(ball->x(), ball->y(), newLKP.x(), newLKP.y());
 		target1.setLength(t);
 		Object reflp = Object(target1.p2().x(),target1.p2().y());
 		setRefLookPoint(&reflp);

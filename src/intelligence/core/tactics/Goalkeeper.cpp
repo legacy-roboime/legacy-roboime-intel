@@ -6,16 +6,21 @@
 #include "Goal.h"
 #include "Team.h"
 #include <cmath>
-#include <QLineF>
+#include "geomutils.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 
+#define MINBALLSPEED 10
+#define MAXLOOKAHEADTIME 2
+
 Goalkeeper::Goalkeeper(QObject* p, Robot* r, qreal s)
 	: Tactic(p,r),
 	goto_(new Goto(this, r, 0.0, 0.0, 0.0, s, true))//, kickTo_(new KickTo(this, r))//, getBall_(new GetBall(this, r, 1000))
 {
+	((Steer *)goto_)->setLookPoint(stage()->ball());
+	goto_->setPoint(robot()->goal());
 	//goto_->setSpeed(speed);
 	this->pushState(goto_);
 	//skills.append(goto_);//this is important
@@ -47,13 +52,13 @@ void Goalkeeper::step()
 	//This angle is how much inside the goal the goalkeeper must be
 	//when 0 it's completely outside, when 90, it's half inside, when 180 it's completely inside
 	//values greater than 90 don't make much sense
-	const qreal angle(45);//TODO parametrize this
+	const qreal angle(0);//TODO parametrize this
 
 	//Auxiliar lines to translate the goal line ends
-	QLineF l1 = QLineF::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 - angle : angle);
-	QLineF l2 = QLineF::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 + angle : -angle);
+	Line l1 = Line::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 - angle : angle);
+	Line l2 = Line::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 + angle : -angle);
 
-	QLineF homeline(l1.translated(goal.p1()).p2(), l2.translated(goal.p2()).p2());
+	Line homeline(l1.translated(goal.p1()).p2(), l2.translated(goal.p2()).p2());
 
 	/// Findout where in the homeline should we stay
 
@@ -65,14 +70,23 @@ void Goalkeeper::step()
 	//TODO: if self then we should kick/pass the ball
 	//Robot &goodguy = *myTeam.getClosestPlayerToBall();//unused
 
-	/// TODO
+	//if the ball is moving fast* torwards the goal, defend it: THE CATCH
+	//*: define fast
+	Line ballPath(Line(Point(0, 0), ball.speed().toPointF()).translated(ball));
+	ballPath.setLength(ball.speed().length() * MAXLOOKAHEADTIME);
+	Point importantPoint;
+	if(ball.speed().length() >= MINBALLSPEED && ballPath.intersect(homeline, &importantPoint) == Line::BoundedIntersection) {
+		goto_->setPoint(importantPoint);
+		goto_->step();
+		return;
+	}
 
-	/// The backup plan
-	QLineF ballToGoal(ball, goal);//to the center of the goal
-	QPointF target;
-	if(homeline.intersect(ballToGoal, &target) == QLineF::BoundedIntersection)
-		goto_->setPoint(target);
-	else
-		goto_->setPoint(homeline.pointAt(target.y() > 0 ? 1 : 0));
+	//if the badguy has closest  reach to the ball than watch it's orientation
+	//TODO
+
+	//otherwise try to close the largest gap
+	//TODO
+
+	//continue stepping the last strategy
 	goto_->step();
 }

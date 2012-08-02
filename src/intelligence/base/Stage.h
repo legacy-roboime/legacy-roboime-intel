@@ -6,6 +6,7 @@
 #include "Robot.h"
 #include "Team.h"
 #include <QObject>
+#include <map>
 
 namespace LibIntelligence
 {
@@ -78,14 +79,19 @@ namespace LibIntelligence
 		void setPenaltyLineDistance(qreal);
 		qreal penaltyLineDistance() const;
 
-		static void setCmdReferee(char);
-		static char getCmdReferee();
+		void setCmdReferee(char);
+		char getCmdReferee() const;
 
 		void setTimeLeft(double);
 		double getTimeLeft() const;
 
 		Robot* getClosestPlayerToBall(const Team*) const;
 		Robot* getClosestPlayerToBallThatCanKick(const Team*) const;
+		map<qreal, Robot*> getClosestPlayersToBall(const Team* team) const;
+		map<qreal, Robot*> getClosestPlayersToPoint(const Team* team, Point* point) const;
+		map<qreal, Robot*> getClosestPlayersToPointThatCanKick(const Team* team, Point* point) const;
+		map<qreal, Robot*> getClosestPlayersToBallThatCanKick(const Team* team) const;
+		Robot* getClosestOrderPlayerToBall(const Team* team, int order) const;
 		Team* getTeamFromColor(const TeamColor& color);
 		Team* getTeamFromOtherColor(const TeamColor& color);
 		Goal* getGoalFromOtherColor(const TeamColor& color);
@@ -97,7 +103,8 @@ namespace LibIntelligence
 		bool operator==(const Stage& stage);
 		bool operator==(const Stage* stage);
 
-		static bool isLeftSideBlueGoal();
+		bool isLeftSideBlueGoal();
+		void setIsLeftSideBlueGoal(bool);
 	private:
 		qreal lineWidth_;
 		qreal fieldLength_;
@@ -111,7 +118,7 @@ namespace LibIntelligence
 		qreal penaltySpotDistance_;//from field
 		qreal penaltyLineDistance_;//from spot
 
-		static char cmdReferee_;
+		char cmdReferee_;
 		double _time_left;
 		//fields:
 		Ball* ball_;
@@ -119,7 +126,7 @@ namespace LibIntelligence
 		Goal* yellowGoal_;
 		Team* blueTeam_;
 		Team* yellowTeam_;
-		static bool isLeftSideBlueGoal_;
+		bool isLeftSideBlueGoal_;
 	};
 }
 

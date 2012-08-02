@@ -14,7 +14,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			AutoRetaliate(QObject *parent, Team*, Stage*, qreal speed);
+			AutoRetaliate(QObject *parent, Team*, Stage*, Robot* gkeeper, qreal speed);
 			void step();
 		};
 	}

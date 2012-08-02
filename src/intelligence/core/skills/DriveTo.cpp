@@ -3,16 +3,14 @@
 #include "Stage.h"
 #include "Goal.h"
 #include "Ball.h"
-#include <QLineF>
-#include <cmath>
-
-using namespace std;
+#include "geomutils.h"
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
-DriveTo::DriveTo(QObject* parent, Robot* slave, qreal maxErrorD, qreal maxErrorA, qreal bAngle, QPointF point, qreal threshold, qreal tAngle, qreal speed)
-	: Goto(parent, slave)
+DriveTo::DriveTo(QObject* parent, Robot* slave, qreal maxErrorD, qreal maxErrorA, qreal bAngle, Point point, qreal threshold, qreal tAngle, qreal speed)
+	: Goto(parent, slave, (Point*)NULL, (Point*)NULL, speed)
 {
 	this->maxErrorA = maxErrorA;
 	this->maxErrorD = maxErrorD;
@@ -25,17 +23,12 @@ DriveTo::DriveTo(QObject* parent, Robot* slave, qreal maxErrorD, qreal maxErrorA
 	Skill::deterministic_ = true;
 }
 
-
-DriveTo::~DriveTo(void)
-{
-}
-
 //Goto em coordenadas polares
 void DriveTo::step()
 {
-	QLineF target = QLineF(bPoint.x(), bPoint.y(), bPoint.x() + cos(bAngle), bPoint.y() + sin(bAngle));
+	Line target = Line(bPoint.x(), bPoint.y(), bPoint.x() + cos(bAngle), bPoint.y() +sin(bAngle));
 	target.setLength(threshold);
-	QPointF p = target.p2();
+	Point p = target.p2();
 	qreal x = p.x();
 	qreal y = p.y();
 	tPoint = p;
