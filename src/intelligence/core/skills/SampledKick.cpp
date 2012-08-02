@@ -22,8 +22,8 @@ SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool 
 	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15, 50., 5 * M_PI/180.),
 	minPower_(minPower),
 	maxPower_(maxPower),
-	pass_(pass),
-	powerK(KICKPOWERK)
+	powerK(KICKPOWERK),
+	pass_(pass)
 {
 	//this->setObjectName("SampledKick");
 	//threshold = CART;

@@ -1,7 +1,7 @@
 #include "UdpServer.h"
 #include <QtNetwork>
 
-UdpServer::UdpServer(QObject* parent, char* address, quint16 port)
+UdpServer::UdpServer(QObject* parent, const char* address, quint16 port)
 	: QObject(parent),
 	udpSocket(new QUdpSocket(this)),
 	address(new QHostAddress(address)),

@@ -162,9 +162,9 @@ struct IntelligenceCli : public QThread
 
 Intelligence::Intelligence(QObject *parent)
 	: QObject(parent),
-	cli(new IntelligenceCli(this)),
+	mode(NONE),
 	useSimulation(true),
-	mode(NONE)
+	cli(new IntelligenceCli(this))
 {
 	commander["blueSim"] = new CommanderSim(this);
     commander["blueGrSim"] = new CommanderGrSim(this);
@@ -370,5 +370,5 @@ Intelligence::~Intelligence()
 	skill.clear();
 	updater.clear();
 	commander.clear();
-	delete timer, cli;
+	delete timer;//, cli;//why?????
 }

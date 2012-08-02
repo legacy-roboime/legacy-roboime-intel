@@ -79,7 +79,7 @@ void DriveToBall::step()
 		ret2.setAngle(ret2.angle() + 90);
 		ret2.translate(robot->x() - ret2.p1().x(), robot->y() - ret2.p1().y());
 		QPointF intersect = QPointF(0, 0);
-		QLineF::IntersectType interT = ret1.intersect(ret2, &intersect);
+		//QLineF::IntersectType interT = ret1.intersect(ret2, &intersect);//XXX: unused variable uncomment if needed;
 		if(QVector2D(*robot - intersect).length() > 50){
 			Goto::setPoint(ret1.x2(), ret1.y2());
 			ret1.setLength(-1);

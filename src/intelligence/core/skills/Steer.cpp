@@ -8,15 +8,15 @@ using namespace Skills;
 
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal o)
 	: Move(p, r, sx, sy),
-	rate(RATE),
 	orientation(o),
+	rate(RATE),
 	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
 {}
 
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal dx, qreal dy)
 	: Move(p, r, sx, sy),
-	rate(RATE),
 	orientation(atan2(dy,dx)),
+	rate(RATE),
 	controller(1.8, 0.0, 0.0, 12.0, 2.0)//valores carteados 1.8
 {}
 
@@ -27,7 +27,7 @@ void Steer::setRate(qreal r)
 
 void Steer::step()
 {
-	qreal omega;
+	//qreal omega;
 	//P Control
 	//qreal aThreshold = M_PI;
 	//qreal errorP = -2.*pow(omega/aThreshold,3)+3*pow(omega/aThreshold,2);

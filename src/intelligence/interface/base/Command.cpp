@@ -13,8 +13,8 @@ namespace LibIntelligence
 			dribbleSpeed(c->dribbleSpeed),
 			wheelSpeeds(c->wheelSpeeds),
 			old(c->old),
-			forcedDribble(c->forcedDribble),
-			forcedKick(c->forcedKick) {}
+			forcedKick(c->forcedKick),
+            forcedDribble(c->forcedDribble) {}
 
 		CommandImpl(quint8 id, qreal ks, qreal ds, const QVector<qreal>& ws)
 			: timestamp(0.0),
@@ -23,8 +23,8 @@ namespace LibIntelligence
 			dribbleSpeed(ds),
 			wheelSpeeds(ws),
 			old(false),
-			forcedDribble(false),
-			forcedKick(false) {}
+			forcedKick(false),
+			forcedDribble(false) {}
 
 		double timestamp;//TODO: implement timestamping
 		//CommandRobot* command;

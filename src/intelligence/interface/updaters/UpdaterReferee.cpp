@@ -7,7 +7,7 @@
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterReferee::UpdaterReferee(QObject* parent, char* address, int port) : Updater() {
+UpdaterReferee::UpdaterReferee(QObject* parent, const char* address, int port) : Updater() {
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);

@@ -69,7 +69,7 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
 
 SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
 {
- int i;
+// int i;//never used, uncomment if needed
  float k;
  Vector2 p;
  SoccerAction action = saction_blue_make(s);

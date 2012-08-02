@@ -17,8 +17,8 @@ ForceFieldMotion::ForceFieldMotion(QObject* p, Robot* r, qreal x, qreal y, qreal
 	repulsion(re),
 	attraction(a),
 	ignoreBall(false),
-	ignoreFriend(false),
-	ignoreEnemy(false)
+	ignoreEnemy(false),
+	ignoreFriend(false)
 {}
 
 void ForceFieldMotion::setIgnoreBall()

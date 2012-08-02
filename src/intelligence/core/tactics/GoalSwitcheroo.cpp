@@ -10,7 +10,10 @@ using namespace Tactics;
 using namespace Skills;
 
 GoalSwitcheroo::GoalSwitcheroo(QObject *parent, Robot* slave, qreal s)
-	: Tactic(parent, slave), atacando(true), goto_(new Goto(this, slave)), speed(s)
+	: Tactic(parent, slave),
+    goto_(new Goto(this, slave)),
+    speed(s),
+    atacando(true)
 {
 	goto_->setSpeed(10000);
 	qreal bluegoalx = 3000;
@@ -26,7 +29,7 @@ GoalSwitcheroo::~GoalSwitcheroo()
 
 void GoalSwitcheroo::step()
 {
-	Stage* stage = this->stage();
+	//Stage* stage = this->stage();//unused
 	Robot* robot = this->robot();
 
 	//qreal BlueGoalX = -3000;

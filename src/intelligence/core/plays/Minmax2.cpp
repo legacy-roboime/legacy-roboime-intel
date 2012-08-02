@@ -16,10 +16,10 @@ using namespace Tactics;
 Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, int depth, float alpha, float beta, qreal speed)
 	: Play(parent, team,stage),
 	log("C:\\Users\\Bill\\Desktop\\log.dat"),
+	speed_(speed),
 	depth_(depth),
 	alpha_(alpha),
 	beta_(beta),
-	speed_(speed),
 	init(false)
 {
 	//log.open(QIODevice::WriteOnly);

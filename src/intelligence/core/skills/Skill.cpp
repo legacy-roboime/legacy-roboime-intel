@@ -6,9 +6,9 @@ using namespace LibIntelligence::Skills;
 
 Skill::Skill(QObject* p, Robot* r, bool deterministic)
 	: //QObject(p),
+	State(p, deterministic),
 	robot_(r),
-	stage_(r->stage()),
-	State(p, deterministic)
+	stage_(r->stage())
 {
 }
 

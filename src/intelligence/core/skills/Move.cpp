@@ -23,8 +23,8 @@ Move::Move(QObject* p, Robot* r, qreal sx, qreal sy, qreal sa)
 	speedAngular(sa),
 	oldSpeedX(0.0), 
 	oldSpeedY(0.0),
-	oldTime(QTime::currentTime()),
-	oldSpeedAngular(0.0)
+	oldSpeedAngular(0.0),
+	oldTime(QTime::currentTime())
 {}
 
 void Move::setAll(qreal sx, qreal sy, qreal sa)

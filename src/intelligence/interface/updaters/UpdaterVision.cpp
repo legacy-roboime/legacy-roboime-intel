@@ -13,7 +13,7 @@
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterVision::UpdaterVision(QObject* parent, quint16 port, char* address) : Updater() {
+UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address) : Updater() {
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);

@@ -9,8 +9,8 @@ using namespace LibIntelligence::Plays;
 ObeyReferee::ObeyReferee(QObject *q, Play *p)
 	: Play(q, p->team(), p->stage()),
 	play(p),
-	halt(new Halt(this, p->team(), p->stage())),
-	stopReferee(new StopReferee(this, p->team(), p->stage()))
+	stopReferee(new StopReferee(this, p->team(), p->stage())),
+	halt(new Halt(this, p->team(), p->stage()))
 {}
 
 ObeyReferee::~ObeyReferee()

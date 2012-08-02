@@ -8,7 +8,7 @@
 CONTROLLER_S::CONTROLLER_S(double Kp, double Ki, double Kd, double saidaMax, double integMax)
 	: Kp(Kp), Ki(Ki), Kd(Kd),
 	erro(0.0), erro_anterior(0.0), erro_integ(0.0), erro_dif(0.0),
-	saidaMax(saidaMax), integMax(integMax),
+	integMax(integMax), saidaMax(saidaMax),
 	saida(0.0), entrada(0.0), entrada_des(0.0), realimentacao(0.0) {}
 
 void pidService(CONTROLLER_S& Controlador){

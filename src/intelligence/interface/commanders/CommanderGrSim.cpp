@@ -11,7 +11,7 @@
 using namespace std;
 using namespace LibIntelligence;
 
-CommanderGrSim::CommanderGrSim(QObject* parent, char* address, quint16 port)
+CommanderGrSim::CommanderGrSim(QObject* parent, const char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {

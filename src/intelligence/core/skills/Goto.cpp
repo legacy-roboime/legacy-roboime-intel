@@ -74,11 +74,11 @@ Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
 	: Steer(p, r, 0, 0, o),
 	ignoreBrake(false), 
 	allowDefenseArea(a), 
-	targetX(x),
-	targetY(y),
+    controllerSpeedX(2, 0, 0.0, M_INF, LIMERR),//valores carteados
+    controllerSpeedY(2, 0, 0.0, M_INF, LIMERR),//valores carteados
 	speed(s),
-	controllerSpeedX(2, 0, 0.0, M_INF, LIMERR),//valores carteados
-	controllerSpeedY(2, 0, 0.0, M_INF, LIMERR)//valores carteados
+	targetX(x),
+	targetY(y)
 {}
 
 void Goto::setAll(qreal x, qreal y, qreal s)
@@ -140,7 +140,7 @@ void Goto::step()
 	//TODO: valores objetivos devem ser alterados para valor nao deterministico (soma um float a speedx speedy e speedang)
 
 	qreal targetTempX, targetTempY, speedX, speedY, speedTemp, k;
-	speedX = speedY = 0;
+	//speedX = speedY = 0;//unused
 	targetTempX = targetX;
 	targetTempY = targetY;
 
@@ -168,7 +168,7 @@ void Goto::step()
 	//controle speedX
 
 	controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
-	qreal x = robot()->x();
+	//qreal x = robot()->x();//unused
 	controllerSpeedX.realimentacao = robot()->x();
 	pidService(controllerSpeedX);
 	speedX = controllerSpeedX.saida;
@@ -176,7 +176,7 @@ void Goto::step()
 	//controle speedY
 
 	controllerSpeedY.entrada = targetY; //deseja-se que a distância entre o alvo e o robô seja igual a zero
-	qreal y = robot()->y();
+	//qreal y = robot()->y();//unused
 	controllerSpeedY.realimentacao = robot()->y();
 	pidService(controllerSpeedY);
 	speedY = controllerSpeedY.saida;

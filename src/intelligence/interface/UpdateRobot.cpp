@@ -36,8 +36,8 @@ UpdateRobot::~UpdateRobot()
 void UpdateRobot::apply(Updater* u)
 {
 	//cout << to_string() << endl;//test
-	static qreal last_time_capture = 0;
-	qreal time = time_capture();
+	//static qreal last_time_capture = 0;//unused
+	//qreal time = time_capture();//unused
 	for(quint32 k = u->robotsSize(); k > 0; k--) {
 		if(u->robot(k-1)->patternId() == patternId() && u->robot(k-1)->color() == color()) {
 			u->robot(k-1)->updatePosition(*this);

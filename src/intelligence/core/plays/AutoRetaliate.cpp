@@ -21,8 +21,8 @@ AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, qreal sp
 void AutoRetaliate::step(){
 	Team* team = this->team_;
 	Stage* stage = this->stage_;
-	Ball* ball = stage->ball();
-	Goal* myGoal = team->goal();;
+	//Ball* ball = stage->ball();//unused
+	//Goal* myGoal = team->goal();//unused
 
 	Robot* newAtk = stage->getClosestPlayerToBallThatCanKick(team);
 	Robot* oldAtk = player_[1]->robot();

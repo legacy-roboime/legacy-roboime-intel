@@ -7,8 +7,6 @@
 #include <cmath>
 #include <QLineF>
 
-#define M_PI	3.1415926535897932
-
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;

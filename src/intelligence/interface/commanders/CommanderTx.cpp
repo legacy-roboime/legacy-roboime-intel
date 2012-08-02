@@ -10,7 +10,7 @@
 using namespace std;
 using namespace LibIntelligence;
 
-CommanderTx::CommanderTx(QObject* parent, char* address, quint16 port)
+CommanderTx::CommanderTx(QObject* parent, const char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {

@@ -94,8 +94,8 @@ void Defender::step()
 	qreal IniY = Inimigo->y();
 
 	//Coordenadas do goleiro
-	qreal GolieX = robot->team()->at(2)->x();
-	qreal GolieY = robot->team()->at(2)->y();
+	//qreal GolieX = robot->team()->at(2)->x();//unused
+	//qreal GolieY = robot->team()->at(2)->y();//unused
 
 	//Reta entre o inimigo e a bola
 	QLineF IniBallLine = QLineF(ball->x(), ball->y(), IniX, IniY);
