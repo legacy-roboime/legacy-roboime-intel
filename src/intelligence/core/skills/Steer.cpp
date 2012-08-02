@@ -5,7 +5,9 @@
 
 #define RATE	6.2//2.50
 #define M_2PI	6.2831853071795865
+#ifndef M_PI
 #define M_PI	3.1415926535897932
+#endif
 #define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
 //qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
 #define CART1 1.8
@@ -23,16 +25,16 @@ Steer::Steer(QObject* p, Robot* r, Vector s, Point *l)
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal o)
 	: Move(p, r, sx, sy),
 	lookPoint(NULL),
-	rate(RATE),
 	orientation(o),
+	rate(RATE),
 	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
 {}
 
 Steer::Steer(QObject* p, Robot* r, qreal sx, qreal sy, qreal dx, qreal dy)
 	: Move(p, r, sx, sy),
 	lookPoint(NULL),
-	rate(RATE),
 	orientation(atan2(dy,dx)),
+	rate(RATE),
 	controller(CART1, 0.0, 0.0, 12.0, 2.0)//valores carteados CART1
 {}
 

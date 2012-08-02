@@ -10,8 +10,6 @@ using namespace LibIntelligence;
 
 Stage::Stage()
 	: QObject(),
-	isLeftSideBlueGoal_(false),
-	cmdReferee_('H'),
 	//TODO: make default ball/sizes/...
 	lineWidth_(0.0),
 	fieldLength_(0.0),
@@ -24,11 +22,13 @@ Stage::Stage()
 	freeKickDistance_(0.0),
 	penaltySpotDistance_(0.0),//from field
 	penaltyLineDistance_(0.0),//from spot
+    cmdReferee_('H'),
 	ball_(new Ball(21.5)),
 	blueGoal_(new Goal()),
 	yellowGoal_(new Goal()),
 	blueTeam_(new Team(this, BLUE)),
-	yellowTeam_(new Team(this, YELLOW))
+	yellowTeam_(new Team(this, YELLOW)),
+    isLeftSideBlueGoal_(false)
 {}
 
 Stage::Stage(const Stage& stage)

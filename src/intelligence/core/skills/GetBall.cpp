@@ -8,8 +8,6 @@
 #include "geomutils.h"
 #include "mathutils.h"
 
-#define M_PI	3.1415926535897932
-
 //valor carteado
 #define CART 82.6
 

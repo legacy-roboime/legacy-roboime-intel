@@ -29,7 +29,7 @@ void StopReferee::step()
 	Team* team = this->team_;
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
-	Goal* myGoal = team->goal();
+	//Goal* myGoal = team->goal();//unused
 
 	map<int/*qreal*/, Robot*> ids1;// = stage->getClosestPlayersToBall(team);
 	map<int, Robot*> ids;
