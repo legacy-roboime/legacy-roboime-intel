@@ -318,13 +318,13 @@ void Intelligence::update()
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
 		//play["stoprefT"]->step();
-		//if(!((QThread *)play["minimax2"])->isRunning())
-		//	((QThread *)play["minimax2"])->start();
-		play["refereeU"]->step();
+		if(!((QThread *)play["minimax2"])->isRunning())
+			((QThread *)play["minimax2"])->start();
+		//play["refereeU"]->step();
 		//play["refereeT"]->step();
 		//play["stoprefT"]->step();
-		//play["retaliateT"]->step();
-		//play["minimax2"]->step();
+		play["retaliateT"]->step();
+		play["minimax2"]->step();
 		//play["retaliateU"]->step();
 		//tactic["zickler43"]->step();
 		//play["retaliateT"]->step();

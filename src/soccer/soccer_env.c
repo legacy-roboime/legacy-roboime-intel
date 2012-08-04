@@ -16,7 +16,7 @@ void soccer_env_init( void )
  senv.red_kick_delay = 1.;
  senv.blue_kick_delay = 0;
  senv.red_move_radius = 6.;
- senv.blue_move_radius = 3.;
+ senv.blue_move_radius = 6.;
  senv.red_recv_radius = .01;
  senv.blue_recv_radius = .01;
  senv.robot_radius = .09;

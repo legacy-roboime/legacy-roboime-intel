@@ -72,7 +72,7 @@ SoccerAction sstate_red_receive_ball( SoccerState *s, int recv )
 
 SoccerAction sstate_red_kick_to_goal( SoccerState *s )
 {
- float dy = .1;	 
+ float dy = .15;	 
  float k;
  Vector2 p;
  SoccerAction action = saction_red_make(s);
@@ -82,11 +82,10 @@ SoccerAction sstate_red_kick_to_goal( SoccerState *s )
       soccer_env()->max_red_kick_dist) ){
    //action = use_red_move_table(s, s->red_ball_owner );
    s->blue_goal_covering = 1;
-   //k = (DRAND() - .5)*soccer_env()->goal_size;
    for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
         k += dy ){ 
           p = soccer_env()->blue_goal;
-          p.y += ( k + .5*dy*DRAND() );
+          p.y += k;
           is_red_kick_scored(s, p );
           if( s->goal_scored ){
               s->blue_goal_covering -= (soccer_env()->robot_radius/
