@@ -3,17 +3,20 @@
 #include "qmath.h"
 #include "Goal.h"
 
+
 using namespace LibIntelligence;
 using namespace Plays;
 using namespace Tactics;
 
-PenaltyUs::PenaltyUs(QObject* parent, Team* team ,Stage* stage, Robot* pKicker)
+PenaltyUs::PenaltyUs(QObject* parent, Team* team ,Stage* stage, Robot* pKicker, Robot* gk)
 	: Play(parent, team, stage)
 {
-	qreal deltaTeta = (17*3.14)/180.;
-	player_[0] = new Blocker(this, pKicker, deltaTeta, 200, 3000);
-	for(int i = 0; i < team->size() && team->at(i)->id()!=pKicker->id(); i++)
-		gotos.push_back(new Goto(this, team->at(i)));
+	qreal deltaTeta = (23*3.14)/180.;
+	player_[0] = new Blocker(this, pKicker, deltaTeta, 3000, 150);
+	player_[1] = new Goalkeeper(this, gk, 3000);
+	for(int i = 0; i < team->size(); i++)
+		if(team->at(i)->id()!=pKicker->id() && team->at(i)->id()!=gk->id())
+			gotos.push_back(new Goto(this, team->at(i), 0, 0, 0, 3000, false));
 }
 
 PenaltyUs::~PenaltyUs()
@@ -43,18 +46,23 @@ void PenaltyUs::step()
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
 	Goal* myGoal = team->goal();
-	qreal xPenalty = myGoal->penaltyLine();
+	qreal xPenalty = team->enemyGoal()->penaltyLine();
 
 	if(gotos.size()>0)
 		gotos.at(0)->setPoint(xPenalty, 0);
-	for(int i=2; i<gotos.size(); i++){
-		gotos.at(i-1)->setPoint(xPenalty, +i*100);
-		gotos.at(i)->setPoint(xPenalty, -i*100);
+	for(int i=1; i<gotos.size(); i++){
+		gotos.at(i)->setPoint(xPenalty, qPow(-1,i)*i*200);
 	}
 
 	player_[0]->step();	
-	for(int i=0; i<gotos.size(); i++)
+	player_[1]->step();	
+	for(int i=0; i<gotos.size(); i++){
+		if(xPenalty>0)
+			gotos.at(i)->setOrientation(0);
+		else
+			gotos.at(i)->setOrientation(M_PI);
 		gotos.at(i)->step();
+	}
 }
 
 

@@ -11,8 +11,9 @@ PenaltyThem::PenaltyThem(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 	: Play(parent, team, stage)
 {
 	player_[0] = new Goalkeeper(this, gk, 3000);
-	for(int i = 0; i < team->size() && team->at(i)->id()!=gk->id(); i++)
-		gotos.push_back(new Goto(this, team->at(i)));
+	for(int i = 0; i < team->size(); i++)
+		if(team->at(i)->id()!=gk->id())
+			gotos.push_back(new Goto(this, team->at(i), 0, 0, 0, 3000, false));
 }
 
 PenaltyThem::~PenaltyThem()
@@ -46,14 +47,19 @@ void PenaltyThem::step()
 
 	if(gotos.size()>0)
 		gotos.at(0)->setPoint(xPenalty, 0);
-	for(int i=2; i<gotos.size(); i++){
-		gotos.at(i-1)->setPoint(xPenalty, +i*100);
-		gotos.at(i)->setPoint(xPenalty, -i*100);
+	for(int i=2; i<gotos.size(); i+=2){
+		gotos.at(i-1)->setPoint(xPenalty, +(i-1)*200);
+		gotos.at(i)->setPoint(xPenalty, -(i-1)*200);
 	}
 
 	player_[0]->step();	
-	for(int i=0; i<gotos.size(); i++)
+	for(int i=0; i<gotos.size(); i++){
+		if(xPenalty>0)
+			gotos.at(i)->setOrientation(0);
+		else
+			gotos.at(i)->setOrientation(M_PI);
 		gotos.at(i)->step();
+	}
 }
 
 

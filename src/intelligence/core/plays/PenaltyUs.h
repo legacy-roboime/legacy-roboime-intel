@@ -16,7 +16,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			PenaltyUs(QObject*, Team*,Stage*, Robot* penaltyKicker);
+			PenaltyUs(QObject*, Team*,Stage*, Robot* penaltyKicker, Robot* goalkeeper);
 			~PenaltyUs();
 			virtual void step();
 
