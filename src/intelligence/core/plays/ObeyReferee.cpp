@@ -35,15 +35,19 @@ Game Notifications
 #include "Ball.h"
 #include "StopReferee.h"
 #include "Halt.h"
+#include "PenaltyThem.h"
+#include "PenaltyUs.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Plays;
 
-ObeyReferee::ObeyReferee(QObject *q, Play *p, Robot* gk)
+ObeyReferee::ObeyReferee(QObject *q, Play *p, Robot* gk, Robot* pKicker)
 	: Play(q, p->team(), p->stage()),
 	play(p),
 	halt(new Halt(this, p->team(), p->stage())),
 	stopReferee(new StopReferee(this, p->team(), p->stage(), gk)),
+	penaltyUs(new PenaltyUs(this, p->team(), p->stage(), pKicker, gk)),
+	penaltyThem(new PenaltyThem(this, p->team(), p->stage(), gk)),
 	cmd('H'),
 	lastCmd('H')
 {}
@@ -154,13 +158,15 @@ void ObeyReferee::step()
 		play->step();
 	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
-	else if(cmd == 'p' || cmd == 'P')
-		stopReferee->step();
+	else if((cmd == 'p' && usColor == TeamColor::YELLOW) || (cmd == 'P' && usColor == TeamColor::BLUE))
+		penaltyUs->step();
+	else if((cmd == 'P' && usColor == TeamColor::YELLOW) || (cmd == 'p' && usColor == TeamColor::BLUE))
+		penaltyThem->step();
 
 	//Penalty, kickoff, normal start e force start (ordem dos else if importa)
 	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == TeamColor::YELLOW)
 		play->step();
-	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == TeamColor::BLUE){
+	else if(cmd == ' ' && lastCmd == 'k' && usColor == TeamColor::BLUE){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -168,9 +174,25 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == TeamColor::YELLOW){
+	else if(cmd == ' ' && lastCmd == 'p' && usColor == TeamColor::BLUE){
+		if(dist<200 && ball->speed().length() < 200)
+			penaltyThem->step();
+		else{
+			//lastBall = *ball;
+			play->step();
+		}
+	}
+	else if(cmd == ' ' && lastCmd == 'K' && usColor == TeamColor::YELLOW){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
+		else{
+			//lastBall = *ball;
+			play->step();
+		}
+	}
+	else if(cmd == ' ' && lastCmd == 'P' && usColor == TeamColor::YELLOW){
+		if(dist<200 && ball->speed().length() < 200)
+			penaltyThem->step();
 		else{
 			//lastBall = *ball;
 			play->step();
@@ -178,6 +200,7 @@ void ObeyReferee::step()
 	}
 	else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == TeamColor::BLUE)
 		play->step();
+
 	else if(cmd == ' ')
 		play->step();
 	else if(cmd == 's')

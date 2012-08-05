@@ -388,13 +388,32 @@ map<qreal, Robot*> Stage::getClosestPlayersToBall(const Team* team) const
 /// Retorna um map do time escolhido em ordem de proximidade do ponto
 /// team : time do jogador
 /// retorno: map dos robots em ordem de proximidade do ponto
-map<qreal, Robot*> Stage::getClosestPlayersToPoint(const Team* team, Point* point) const
+map<qreal, Robot*> Stage::getClosestPlayersToPoint(const Team* team, const Point* point) const
 {
 	map<qreal, Robot*> robots;
 	for(int i = 0; i < team->count(); i++) {
 
 		qreal dy = team->at(i)->y() - point->y();
 		qreal dx = team->at(i)->x() - point->x();
+
+		qreal d = sqrt(dy * dy + dx * dx);
+
+		robots[d] = team->at(i);
+	}
+
+	return robots;
+}
+
+/// Retorna um map do time escolhido em ordem de proximidade do ponto
+/// team : time do jogador
+/// retorno: map dos robots em ordem de proximidade do ponto
+map<qreal, Robot*> Stage::getClosestPlayersToPoint(const Team* team, qreal x, qreal y) const
+{
+	map<qreal, Robot*> robots;
+	for(int i = 0; i < team->count(); i++) {
+
+		qreal dy = team->at(i)->y() - y;
+		qreal dx = team->at(i)->x() - x;
 
 		qreal d = sqrt(dy * dy + dx * dx);
 
