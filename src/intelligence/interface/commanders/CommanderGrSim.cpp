@@ -17,7 +17,7 @@ CommanderGrSim::CommanderGrSim(QObject* parent, const char* address, quint16 por
 {
 }
 
-#define WFACTOR 10
+#define WFACTOR 7
 
 void CommanderGrSim::step()
 {
@@ -35,6 +35,7 @@ void CommanderGrSim::step()
         grSim_Robot_Command* command = commands->add_robot_commands();
         command->set_id(c.id());
         command->set_kickspeedx(c.kickSpeed());
+        command->set_spinner(c.dribbleSpeed() > 0.0);
         //XXX: we don't use chip kick yet.
         command->set_kickspeedz(0.0);
         //XXX: we don't use tanget/normal/angular speed, we use wheel speeds.
