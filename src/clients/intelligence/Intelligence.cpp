@@ -244,8 +244,8 @@ Intelligence::Intelligence(QObject *parent)
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
-	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2));
-	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0));
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2), team["us"]->at(1));
+	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
@@ -317,23 +317,22 @@ void Intelligence::update()
 	case PLAY:
 		//play["cbr"]->step();
 		//play["cbr2"]->step();
+		//if(!((QThread *)play["minimax2"])->isRunning())
+		//	((QThread *)play["minimax2"])->start();
+		//play["minimax2"]->step();
+		play["refereeU"]->step();
+		play["refereeT"]->step();
 		//play["stoprefT"]->step();
-		if(!((QThread *)play["minimax2"])->isRunning())
-			((QThread *)play["minimax2"])->start();
-		//play["refereeU"]->step();
-		//play["refereeT"]->step();
-		//play["stoprefT"]->step();
-		play["retaliateT"]->step();
-		play["minimax2"]->step();
+		//play["retaliateT"]->step();
 		//play["retaliateU"]->step();
 		//tactic["zickler43"]->step();
 		//play["retaliateT"]->step();
 		break;
 
 	case TACTIC:
-		//tactic["zickler43"]->step();
+		tactic["zickler43"]->step();
 		//tactic["gkpr"]->step();
-		tactic["def"]->step();
+		//tactic["def"]->step();
 		break;
 
 	case SKILL:
