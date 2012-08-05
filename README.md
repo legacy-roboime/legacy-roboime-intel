@@ -15,9 +15,8 @@ it only compiles on windows with visual studio compiler.
 The following are the requirements to compile and develop on this project:
 
 - Qt SDK 4.8.x
-- PhysX SDK 2.8.4 (*)(**)
+- PhysX SDK 2.8.4 (*)
 
 *PhysX SDK dependencies are included on the _include_ thus it will compile
 without PhysX, but it's still needed to run the portions that use Simulation.
-**Note also that this version of PhysX does not compile on linux/osx, however
-the next version 3.x.x does, it is planned to migrating to 3.x.x.
+

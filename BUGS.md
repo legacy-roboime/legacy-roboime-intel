@@ -1,13 +1,9 @@
-> A list of BUGS of RoboIME
+BUGS
+====
 
-[roboime](http://git.roboime.com.br/)
-===================================================
+List of known bugs.
 
-RoboIME
-----------------------------------------------
-
-BUGS list of problems of RoboIME. 
-If you found other BUGS, "Just add".
+If you know a bug that is not here, add it!
 
 Currently Open Bugs
 --------------------
@@ -17,7 +13,9 @@ Currently Open Bugs
 - Zicker43 só chuta no meio do gol.
 - Minmax não chuta no meio do maior buraco.
 - DriveToBall deixa o robô travado por usar estados de cones.
-- Goto demora para atingir a posição final, ficando lento quando está chegando perto (no Goto poderia ser passado a velocidade final desejada).
+- Goto demora para atingir a posição final, ficando lento quando
+  está chegando perto (no Goto poderia ser passado a velocidade final desejada).
 - Controller2 o robô não está mais olhando fixamente para bola.
 - SampledKick::calculatePassPower não funciona para um vFin genérico.
 - Simulador está descasado do campo/robô/bola real.
+
