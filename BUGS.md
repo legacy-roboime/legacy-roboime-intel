@@ -12,6 +12,7 @@ If you found other BUGS, "Just add".
 Currently Open Bugs
 --------------------
 
+- Transmission está com mapeamento errado para os bytes dos robos, deixando o chute do robo mais fraco ainda.
 - Minmax não segue as regras do jogo(comando do juiz e não colidir)
 - UpdaterVision mantém a última posição de um Object eternamente.
 - Zicker43 só chuta no meio do gol.
