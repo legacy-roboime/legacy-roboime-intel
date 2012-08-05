@@ -12,7 +12,7 @@ If you found other BUGS, "Just add".
 Currently Open Bugs
 --------------------
 
-- ObeyReferee não está funcionando segundo as regras.
+- Minmax não segue as regras do jogo(comando do juiz e não colidir)
 - UpdaterVision mantém a última posição de um Object eternamente.
 - Zicker43 só chuta no meio do gol.
 - Minmax não chuta no meio do maior buraco.
