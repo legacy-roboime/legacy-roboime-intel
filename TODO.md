@@ -1,13 +1,10 @@
-> A list of planned features and improvements to RoboIME
+TODO
+====
 
-[roboime](http://git.roboime.com.br/)
-===================================================
+Feel free to add proposed features here.
 
-RoboIME
-----------------------------------------------
+Remember to remove finished features.
 
-TODO list of new features and improvements for RoboIME. 
-If you would like to suggest other wishes/features, "Just add".
 
 Currently Open Tasks
 --------------------
@@ -20,3 +17,4 @@ Currently Open Tasks
 - Concluir implementação do Goalkeeper.
 - Usar o OMPL para implementar Motion Planning.
 - Implementar o GotoAvoid.
+
