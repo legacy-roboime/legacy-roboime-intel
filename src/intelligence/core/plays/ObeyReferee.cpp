@@ -158,15 +158,15 @@ void ObeyReferee::step()
 		play->step();
 	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
-	else if((cmd == 'p' && usColor == TeamColor::YELLOW) || (cmd == 'P' && usColor == TeamColor::BLUE))
+    else if((cmd == 'p' && usColor == YELLOW) || (cmd == 'P' && usColor == BLUE))
 		penaltyUs->step();
-	else if((cmd == 'P' && usColor == TeamColor::YELLOW) || (cmd == 'p' && usColor == TeamColor::BLUE))
+    else if((cmd == 'P' && usColor == YELLOW) || (cmd == 'p' && usColor == BLUE))
 		penaltyThem->step();
 
 	//Penalty, kickoff, normal start e force start (ordem dos else if importa)
 	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == YELLOW)
 		play->step();
-	else if(cmd == ' ' && lastCmd == 'k' && usColor == TeamColor::BLUE){
+    else if(cmd == ' ' && lastCmd == 'k' && usColor == BLUE){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -174,7 +174,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && lastCmd == 'p' && usColor == TeamColor::BLUE){
+    else if(cmd == ' ' && lastCmd == 'p' && usColor == BLUE){
 		if(dist<200 && ball->speed().length() < 200)
 			penaltyThem->step();
 		else{
@@ -182,7 +182,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && lastCmd == 'K' && usColor == TeamColor::YELLOW){
+    else if(cmd == ' ' && lastCmd == 'K' && usColor == YELLOW){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -190,7 +190,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && lastCmd == 'P' && usColor == TeamColor::YELLOW){
+    else if(cmd == ' ' && lastCmd == 'P' && usColor == YELLOW){
 		if(dist<200 && ball->speed().length() < 200)
 			penaltyThem->step();
 		else{
@@ -198,7 +198,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == TeamColor::BLUE)
+    else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == BLUE)
 		play->step();
 
 	else if(cmd == ' ')
