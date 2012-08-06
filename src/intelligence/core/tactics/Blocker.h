@@ -15,7 +15,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			Blocker(QObject* parent, Robot* slave, qreal angle, qreal speed=1000);
+			Blocker(QObject* parent, Robot* slave, qreal angle, qreal speed=3000, qreal dist = 500);
 
 			void step();
 
@@ -23,6 +23,7 @@ namespace LibIntelligence
 			Skills::Goto* goto_;
 			qreal angle_;
 			qreal speed;
+			qreal dist_;
 		};
 	}	
 }

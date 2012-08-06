@@ -10,14 +10,14 @@ using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 
-Blocker::Blocker(QObject* p, Robot* r, qreal angle, qreal speed)
+Blocker::Blocker(QObject* p, Robot* r, qreal angle, qreal speed, qreal dist)
 	: Tactic(p,r),
 	goto_(new Goto(this, r)),
 	angle_(angle),
-	speed(speed)
+	speed(speed),
+	dist_(dist)
 {
 	this->pushState(goto_);
-	//skills.append(goto_);//this is important
 }
 
 //Tatica na qual o robo bloqueia o gol para impedir que o robo oponente possa executar um chute ao gol. 
@@ -27,19 +27,11 @@ void Blocker::step()
 	//Elements
 	Stage* stage = this->stage();
 	Robot* robot = this->robot();
-	Goal* myGoal;
+	Goal* myGoal = robot->goal();
 	Ball* ball = stage->ball();
-	//printf("bolax= %f bolay=%f\n",ball->x(), ball->y());
-	
-	//Get My Goal 
-	//TODO: classe robot deve ter um metodo para pegar o meu gol e o gol oponente
-	if(robot->color() == BLUE)
-		myGoal = stage->blueGoal();
-	else
-		myGoal = stage->yellowGoal();
 
 	Line target = Line(ball->x(), ball->y(), myGoal->x(), myGoal->y());
-	target.setLength(700);
+	target.setLength(dist_);
 	qreal angle = target.angle();
 	target.setAngle(angle + (angle_ * 180. / M_PI));
 	qreal x = target.p2().x();

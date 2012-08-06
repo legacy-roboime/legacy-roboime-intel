@@ -1,6 +1,6 @@
-#include "Intelligence.h"
+#include "GraphicalIntelligence.h"
+#include <QtCore>
 
-#include <QThread>
 #include <QCoreApplication>
 #include <iostream>
 
@@ -13,7 +13,6 @@
 #include "CommanderTx.h"
 #include "CommanderTxOld.h"
 #include "CommanderSim.h"
-#include "CommanderGrSim.h"
 #include "UpdaterVision.h"
 #include "UpdaterReferee.h"
 #include "Ball.h"
@@ -30,8 +29,8 @@ using namespace LibIntelligence::Plays;
 
 struct IntelligenceCli : public QThread
 {
-	Intelligence *intel;
-	IntelligenceCli(Intelligence *intel) : QThread(intel), intel(intel) {}
+	GraphicalIntelligence *intel;
+	IntelligenceCli(GraphicalIntelligence *intel) : QThread(intel), intel(intel) {}
 
 	void run() {
 		qreal x, y, s, kp, ki, kd;
@@ -49,19 +48,19 @@ struct IntelligenceCli : public QThread
 				cin >> sub;
 				intel->mutex.lock();
 				if(sub[0] == 'n') {
-					intel->mode = Intelligence::NONE;
+					intel->mode = GraphicalIntelligence::NONE;
 					cout << "Switching to none." << endl;
 				} else if(sub[0] == 's') {
-					intel->mode = Intelligence::SKILL;
+					intel->mode = GraphicalIntelligence::SKILL;
 					cout << "Switching to skill." << endl;
 				} else if(sub[0] == 't') {
-					intel->mode = Intelligence::TACTIC;
+					intel->mode = GraphicalIntelligence::TACTIC;
 					cout << "Switching to tactic." << endl;
 				} else if(sub[0] == 'p') {
-					intel->mode = Intelligence::PLAY;
+					intel->mode = GraphicalIntelligence::PLAY;
 					cout << "Switching to play." << endl;
 				} else if(sub[0] == 'c') {
-					intel->mode = Intelligence::CONTROLLER;
+					intel->mode = GraphicalIntelligence::CONTROLLER;
 					cout << "Switching to controller." << endl;
 				} else {
 					cout << "Tipo nao reconhecido." << endl;
@@ -181,17 +180,51 @@ struct IntelligenceCli : public QThread
 	}
 };
 
-Intelligence::Intelligence(QObject *parent)
-	: QObject(parent),
-	mode(NONE),
+GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
+	: QMainWindow(parent, flags),
+	cli(new IntelligenceCli(this)),
 	useSimulation(true),
-	cli(new IntelligenceCli(this))
+	mode(NONE)
 {
+	// Popular nomes dos estados do Juiz
+	refereeFull['H'] = tr("Halt");
+	refereeFull['S'] = tr("Stop");
+	refereeFull[' '] = tr("Ready");
+	refereeFull['s'] = tr("Start");
+	refereeFull['1'] = tr("Begin first half");
+	refereeFull['h'] = tr("Begin half time");
+	refereeFull['2'] = tr("Begin second half");
+	refereeFull['o'] = tr("Begin overtime half 1");
+	refereeFull['O'] = tr("Begin overtime half 2");
+	refereeFull['a'] = tr("Begin penalty shootout");
+	refereeFull['k'] = tr("Kick off - Yellow Team");
+	refereeFull['K'] = tr("Kick off - Blue Team");
+	refereeFull['p'] = tr("Penalty - Yellow Team");
+	refereeFull['P'] = tr("Penalty - Blue Team");
+	refereeFull['f'] = tr("Direct Free kick - Yellow Team");
+	refereeFull['F'] = tr("Direct Free kick - Blue Team");
+	refereeFull['i'] = tr("Indirect Free kick - Yellow Team");
+	refereeFull['I'] = tr("Indirect Free kick - Blue Team");
+	refereeFull['t'] = tr("Timeout - Yellow Team");
+	refereeFull['T'] = tr("Timeout - Blue Team");
+	refereeFull['z'] = tr("Timeout end - Yellow Team");
+	refereeFull['Z'] = tr("Timeout end - Blue Team");
+	refereeFull['g'] = tr("Goal scored - Yellow Team");
+	refereeFull['G'] = tr("Goal scored - Blue Team");
+	refereeFull['d'] = tr("decrease Goal score - Yellow Team");
+	refereeFull['D'] = tr("decrease Goal score - Blue Team");
+	refereeFull['y'] = tr("Yellow Card - Yellow Team");
+	refereeFull['Y'] = tr("Yellow Card - Blue Team");
+	refereeFull['r'] = tr("Red Card - Yellow Team");
+	refereeFull['R'] = tr("Red Card - Blue Team");
+	refereeFull['c'] = tr("Cancel");
+	refereeFull['H'] = tr("Halt");
+
+	ui.setupUi(this);
+
 	commander["blueSim"] = new CommanderSim(this);
-    commander["blueGrSim"] = new CommanderGrSim(this);
 	commander["blueTx"] = new CommanderTxOld(this);
 	commander["yellowSim"] = new CommanderSim(this);
-    commander["yellowGrSim"] = new CommanderGrSim(this);
 	commander["yellowTx"] = new CommanderTxOld(this);
 
 	updater["vision"] = new UpdaterVision(this);
@@ -213,34 +246,29 @@ Intelligence::Intelligence(QObject *parent)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-        Robot* robot;
-        robot = new Robot(Robots::RoboIME2012(team["us"], i, i, BLUE));
-		team["us"]->push_back(robot);
+		team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i, BLUE)));
 		//real
-		commander["blueTx"]->add(robot);
-		updater["vision"]->add(robot);
+		commander["blueTx"]->add(team["us"]->last());
+		updater["vision"]->add(team["us"]->last());
 		//simu
-		commander["blueSim"]->add(robot);
-        commander["blueGrSim"]->add(robot);
-		updater["visionSim"]->add(robot);
+		commander["blueSim"]->add(team["us"]->last());
+		updater["visionSim"]->add(team["us"]->last());
 
-        robot = new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW));
-		team["they"]->push_back(robot);
+		team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW)));
 		//real
-		commander["yellowTx"]->add(robot);
-		updater["vision"]->add(robot);
+		commander["yellowTx"]->add(team["they"]->last());
+		updater["vision"]->add(team["they"]->last());
 		//simu
-		commander["yellowSim"]->add(robot);
-        commander["yellowGrSim"]->add(robot);
-		updater["visionSim"]->add(robot);
+		commander["yellowSim"]->add(team["they"]->last());
+		updater["visionSim"]->add(team["they"]->last());
 	}
-	
+
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
 	skill["goto"] = new Goto(this, team["us"]->at(3), 0, 0, 0, 500, true);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
-	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, true);
+	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, false);
 	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
 	skill["loop"] = new Loops::Orbit(this, team["us"]->at(1), 0, 0, 1000, 3000, 1.0);
 	skill["fac"] = new FollowAndCover(this, team["us"]->at(1), team["they"]->at(1), team["us"]->goal(), 1000, 3000);
@@ -249,9 +277,7 @@ Intelligence::Intelligence(QObject *parent)
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 3000);
-#ifdef HAVE_WINDOWS
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
-#endif
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2), team["us"]->at(1));
@@ -259,10 +285,8 @@ Intelligence::Intelligence(QObject *parent)
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
 	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
-#ifdef HAVE_WINDOWS
 	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
-#endif
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
@@ -270,16 +294,30 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
 	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
-	
+
+	ui.stageView->setStage(stage["main"]);
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
-	timer->start(5.);//valor que tá no transmission da trunk para realTransmission //30.);//
-	
+	timer->start(10.);
+
 	resetPatterns();
 	cli->start();
 }
 
-void Intelligence::resetPatterns()
+GraphicalIntelligence::~GraphicalIntelligence()
+{
+	team.clear();
+	robot.clear();
+	stage.clear();
+	play.clear();
+	tactic.clear();
+	skill.clear();
+	updater.clear();
+	commander.clear();
+	delete timer, cli;
+}
+
+void GraphicalIntelligence::resetPatterns()
 {
 	if(useSimulation) {
 		for(int i = 0; i < team["us"]->size(); i++)
@@ -303,108 +341,135 @@ void Intelligence::resetPatterns()
 	}
 }
 
-void Intelligence::update()
+void GraphicalIntelligence::update()
 {
+	if (ui.chkUpdate->isChecked()) {
 #ifdef DEBUG_TIME
-	QTime t;
-	t.start();
+		QTime t;
+		t.start();
 #endif
 
-	mutex.lock();
+		mutex.lock();
 
-	if(useSimulation) {
-		updater["visionSim"]->step();
-		updater["visionSim"]->apply();
-	} else {
-		updater["vision"]->step();
-		updater["vision"]->apply();
-	}
+		if(useSimulation) {
+			updater["visionSim"]->step();
+			updater["visionSim"]->apply();
+		} else {
+			updater["vision"]->step();
+			updater["vision"]->apply();
+		}
 
-	updater["referee"]->step();
-	updater["referee"]->apply();
+		updater["referee"]->step();
+		updater["referee"]->apply();
 
-	///BEGIN STEPS
-	switch(mode) {
+		///BEGIN STEPS
+		switch(mode) {
 
-	case PLAY:
-		//play["cbr"]->step();
-		//play["cbr2"]->step();
-		//if(!((QThread *)play["minimax2"])->isRunning())
-		//	((QThread *)play["minimax2"])->start();
-		//play["minimax2"]->step();
-		play["refereeU"]->step();
-		play["refereeT"]->step();
-		//play["stoprefT"]->step();
-		//play["retaliateT"]->step();
-		//play["retaliateU"]->step();
-		//tactic["zickler43"]->step();
-		//play["retaliateT"]->step();
-		break;
+		case PLAY:
+			//play["cbr"]->step();
+			//play["cbr2"]->step();
+			//if(!((QThread *)play["minimax2"])->isRunning())
+			//	((QThread *)play["minimax2"])->start();
+			//play["minimax2"]->step();
+			play["refereeU"]->step();
+			play["refereeT"]->step();
+			//play["stoprefT"]->step();
+			//play["retaliateT"]->step();
+			//play["retaliateU"]->step();
+			//tactic["zickler43"]->step();
+			//play["retaliateT"]->step();
+			break;
 
-	case TACTIC:
-		tactic["zickler43"]->step();
-		//tactic["gkpr"]->step();
-		//tactic["def"]->step();
-		break;
+		case TACTIC:
+			tactic["zickler43"]->step();
+			//tactic["gkpr"]->step();
+			//tactic["def"]->step();
+			break;
 
-	case SKILL:
-		//skill["fac"]->step();
-		skill["goto"]->step();
-		//((Goto*)skill["goto"])->setAllowDefenseArea();
-		//skill["drivetoObj"]->step();
-		break;
+		case SKILL:
+			//skill["fac"]->step();
+			skill["goto"]->step();
+			skill["samk"]->step();
+			//((Goto*)skill["goto"])->setAllowDefenseArea();
+			//skill["drivetoObj"]->step();
+			break;
 
-#ifdef HAVE_WINDOWS
-	case CONTROLLER:
-		tactic["controller"]->step();
-#endif
-	default:
-		break;
-	}
-	///END STEPS
-
+		case CONTROLLER:
+			tactic["controller"]->step();
+		default:
+			break;
+		}
+		///END STEPS
 
 
-	if(useSimulation) {
+
+		if(useSimulation) {
 #ifdef CONTROL_BLUE
-        commander["blueGrSim"]->step();
-		commander["blueSim"]->step();
-        ((CommanderGrSim*)commander["blueGrSim"])->send();
-		((CommanderSim*)commander["blueSim"])->send();
+			commander["blueSim"]->step();
+			((CommanderSim*)commander["blueSim"])->send();
 #endif
 #ifdef CONTROL_YELLOW
-        commander["yellowGrSim"]->step();
-		commander["yellowSim"]->step();
-        ((CommanderGrSim*)commander["yellowGrSim"])->send();
-		((CommanderSim*)commander["yellowSim"])->send();
+			commander["yellowSim"]->step();
+			((CommanderSim*)commander["yellowSim"])->send();
 #endif
-	} else {
+		} else {
 #ifdef CONTROL_BLUE
-		commander["blueTx"]->step();
-		((CommanderTxOld*)commander["blueTx"])->send();
+			commander["blueTx"]->step();
+			((CommanderTxOld*)commander["blueTx"])->send();
 #endif
 #ifdef CONTROL_YELLOW
-		//commander["yellowTx"]->step();
-		//((CommanderTxOld*)commander["yellowTx"])->send();
+			//commander["yellowTx"]->step();
+			//((CommanderTxOld*)commander["yellowTx"])->send();
+#endif
+		}
+
+		mutex.unlock();
+
+#ifdef DEBUG_TIME
+		cout << "TEMPO: " << t.elapsed() << "ms" << endl;
 #endif
 	}
 
-	mutex.unlock();
-
-#ifdef DEBUG_TIME
-	cout << "TEMPO: " << t.elapsed() << "ms" << endl;
-#endif
+	updateValues();
 }
 
-Intelligence::~Intelligence()
+void GraphicalIntelligence::updateValues()
 {
-	team.clear();
-	robot.clear();
-	stage.clear();
-	play.clear();
-	tactic.clear();
-	skill.clear();
-	updater.clear();
-	commander.clear();
-	delete timer;//, cli;//why?????
+	QString textoJuiz = refereeFull.value(stage["main"]->getCmdReferee());
+	if (textoJuiz.isEmpty())
+		textoJuiz = QString(QChar(stage["main"]->getCmdReferee()));
+	ui.txtJuiz->setText(textoJuiz);
+
+	/// Juiz
+	//ui.txtJuiz->setText(QChar(stage["main"]->getCmdReferee()));
+
+	ui.txtTempoJogo->setText(QString::number(stage["main"]->getTimeLeft()));
+
+	/// Placar
+	//stage["main"]->blueTeam()->goals();
+	//ui.txtPlacarAzul->setText(QString::number(stage["main"]->blueTeam()->goals()));
+	//ui.txtPlacarAmarelo->setText(QString::number(stage["main"]->yellowTeam()->goals()));
+	UpdaterReferee* updR = qobject_cast<UpdaterReferee*>(updater["vision"]);
+
+
+
+	/// Timeouts
+	//ui.txtNrTimeouts->setText(QString::number(stage["main"]->));
+	//ui.txtTempoTimeouts->setText(QString::number(stage["main"]->));
+
+	ui.txtStageLenght->setText(QString::number(stage["main"]->fieldLength()));
+	ui.txtStageWidth->setText(QString::number(stage["main"]->fieldWidth()));
+
+	ui.stageView->redraw();
+}
+
+
+void GraphicalIntelligence::on_btnIntStart_clicked()
+{
+	timer->start();
+}
+
+void GraphicalIntelligence::on_btnIntStop_clicked()
+{
+	timer->stop();
 }

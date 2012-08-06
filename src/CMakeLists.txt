@@ -71,6 +71,7 @@ endif()
 add_subdirectory(soccer)
 add_subdirectory(intelligence)
 add_subdirectory(clients/intelligence)
+add_subdirectory(clients/graphicalintelligence)
 add_subdirectory(clients/soccer)
 # add new projects here
 

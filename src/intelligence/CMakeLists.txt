@@ -51,6 +51,8 @@ set(INT_SRC
     core/plays/StopReferee.cpp
     core/plays/ObeyReferee.cpp
     core/plays/AutoRetaliate.cpp
+	core/plays/PenaltyUs.cpp
+	core/plays/PenaltyThem.cpp
     # add new sources here
 
     core/skills/AttackField.cpp
