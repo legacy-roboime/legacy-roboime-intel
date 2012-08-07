@@ -8,6 +8,7 @@ If you know a bug that is not here, add it!
 Currently Open Bugs
 --------------------
 
+- Robô não deve chutar enquanto o dribble estiver e a bola estiver na inercial do giro do driblador.
 - Transmission está com mapeamento errado para os bytes dos robos, deixando o chute do robo mais fraco ainda.
 - Minmax não segue as regras do jogo(comando do juiz e não colidir)
 - UpdaterVision mantém a última posição de um Object eternamente.
