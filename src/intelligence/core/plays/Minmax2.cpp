@@ -112,7 +112,7 @@ void Minmax2::ballOwner()
 	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
 	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
 	qreal orientation = mRobot->orientation();
-	qreal dist = 70;
+	qreal dist = 0;//70;
 	QPointF mDribbler = QPointF(mRobot->x() + cos(orientation)*dist, mRobot->y() + sin(orientation)*dist);
 	orientation = tRobot->orientation();
 	QPointF tDribbler = QPointF(tRobot->x() + cos(orientation)*dist, tRobot->y() + sin(orientation)*dist);
