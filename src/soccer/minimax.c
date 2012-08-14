@@ -163,9 +163,11 @@ float minimax_getMaxValue(SoccerState s, int depth,
  SoccerAction action;
 
  if( depth == 0 ){
+	  float value;
       saux = s;
       //sstate_red_kick_to_goal(&saux);
-      return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
+	  value =  sstate_evaluate(&saux);
+      return value + fabs(value)*minimax_red_time_weight_func(&s);
  }
  for( i = 0; i < MAX_NPLAYS; i++ ){
      saux = s;
@@ -195,9 +197,11 @@ float minimax_getMinValue(SoccerState s, int depth,
  SoccerAction action;
 
  if( depth == 0 ){
+	 float value; 
      saux = s;
      //sstate_blue_kick_to_goal(&saux); 
-     return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
+	 value =  sstate_evaluate(&saux);
+     return value + fabs(value)*minimax_blue_time_weight_func(&s);
  }
  for( i = 0; i < MIN_NPLAYS; i++ ){
       saux = s;
@@ -220,12 +224,17 @@ float minimax_getMinValue(SoccerState s, int depth,
 
 float minimax_red_time_weight_func( SoccerState *s )
 {
- return 1 + .001*( -s->red_time_stamp + s->blue_time_stamp);
+ if(fabs(-s->red_time_stamp + s->blue_time_stamp) <= 10)
+	return .001*( -s->red_time_stamp + s->blue_time_stamp);
+ else if(-s->red_time_stamp + s->blue_time_stamp > 10)
+	return MAX_FLOAT;
+ else
+	return -MAX_FLOAT;
 }
 
 float minimax_blue_time_weight_func( SoccerState *s )
 {
- return 1 + .001*( -s->red_time_stamp + s->blue_time_stamp);
+ return minimax_red_time_weight_func(s);
 }
  
 
