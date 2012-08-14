@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "Goal.h"
 #include <cmath>
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
