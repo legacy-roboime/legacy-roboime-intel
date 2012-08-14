@@ -1,6 +1,8 @@
 #include "GraphicalIntelligence.h"
-#include <QtCore>
+#include "alterstatevars.h"
 
+#include <QtCore>
+#include <QThread>
 #include <QCoreApplication>
 #include <iostream>
 
@@ -184,8 +186,13 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
 	cli(new IntelligenceCli(this)),
 	useSimulation(true),
-	mode(NONE)
+    mode(PLAY),
+    alterStateVarsWindow(new AlterStateVars(this)),
+    current_play_blue(NULL),
+    current_play_yellow(NULL)
+
 {
+    load_configs();
 	// Popular nomes dos estados do Juiz
 	refereeFull['H'] = tr("Halt");
 	refereeFull['S'] = tr("Stop");
@@ -222,7 +229,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	ui.setupUi(this);
 
-	commander["blueSim"] = new CommanderSim(this);
+    commander["blueSim"] = new CommanderSim(this);
 	commander["blueTx"] = new CommanderTxOld(this);
 	commander["yellowSim"] = new CommanderSim(this);
 	commander["yellowTx"] = new CommanderTxOld(this);
@@ -273,8 +280,8 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	skill["loop"] = new Loops::Orbit(this, team["us"]->at(1), 0, 0, 1000, 3000, 1.0);
 	skill["fac"] = new FollowAndCover(this, team["us"]->at(1), team["they"]->at(1), team["us"]->goal(), 1000, 3000);
 
-	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
-	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
+    play["cbr2"] = new Plays::CBR2011(this, team["they"], stage["main"]);
+    play["cbr"] = new Plays::CBR2011(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 3000);
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
@@ -297,7 +304,25 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	ui.stageView->setStage(stage["main"]);
 	timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+
+    // Fill dynamic dropdowns
+    ui.cmbSelectPlayOurs->addItem("CBR2011","cbr");
+    ui.cmbSelectPlayOurs->addItem("Retaliação","retaliateU");
+    ui.cmbSelectPlayOurs->addItem("Minmax","minimax2");
+    ui.cmbSelectPlayOurs->addItem("Obedecer juiz","refereeU");
+
+    ui.cmbSelectPlayTheirs->addItem("CBR2011","cbr2");
+    ui.cmbSelectPlayTheirs->addItem("Retaliação","retaliateT");
+    //ui.cmbSelectPlayTheirs->addItem("Minmax","minimax2");
+    ui.cmbSelectPlayTheirs->addItem("Obedecer juiz","refereeT");
+
+    //Connect signals to slots
+    connect(timer, SIGNAL(timeout()), this, SLOT(update()));
+    connect(ui.actionEditar_vari_veis_de_estado, SIGNAL(triggered()), alterStateVarsWindow, SLOT(show()));
+    connect(ui.cmbSelectOutput, SIGNAL(currentIndexChanged(int)),this, SLOT(changeIntelligenceOutput()));
+    connect(ui.cmbSelectPlayOurs, SIGNAL(currentIndexChanged(int)),this, SLOT(changePlayUs()));
+    connect(ui.cmbSelectPlayTheirs, SIGNAL(currentIndexChanged(int)),this, SLOT(changePlayThem()));
+    connect(ui.cmbOurTeam, SIGNAL(currentIndexChanged(int)), this, SLOT(setTeamColor()));
 	timer->start(10.);
 
 	resetPatterns();
@@ -366,18 +391,34 @@ void GraphicalIntelligence::update()
 		switch(mode) {
 
 		case PLAY:
-			//play["cbr"]->step();
-			//play["cbr2"]->step();
+            //play["cbr"]->step();
+            //play["cbr2"]->step();
 			//if(!((QThread *)play["minimax2"])->isRunning())
 			//	((QThread *)play["minimax2"])->start();
 			//play["minimax2"]->step();
-			play["refereeU"]->step();
-			play["refereeT"]->step();
+            //play["refereeU"]->step();
+            //play["refereeT"]->step();
 			//play["stoprefT"]->step();
-			//play["retaliateT"]->step();
-			//play["retaliateU"]->step();
+            //play["retaliateT"]->step();
+            //play["retaliateU"]->step();
 			//tactic["zickler43"]->step();
 			//play["retaliateT"]->step();
+            if(current_play_blue != NULL)
+            {
+                if(current_play_blue != play["minmax2"])
+                {
+                    current_play_blue->step();
+                }
+                else
+                {
+                    if(!((QThread *)play["minimax2"])->isRunning())
+                        ((QThread *)play["minimax2"])->start();
+                }
+            }
+            if(current_play_yellow != NULL)
+            {
+                current_play_yellow->step();
+            }
 			break;
 
 		case TACTIC:
@@ -435,7 +476,7 @@ void GraphicalIntelligence::update()
 
 void GraphicalIntelligence::updateValues()
 {
-	QString textoJuiz = refereeFull.value(stage["main"]->getCmdReferee());
+    QString textoJuiz = refereeFull.value(stage["main"]->getCmdReferee());
 	if (textoJuiz.isEmpty())
 		textoJuiz = QString(QChar(stage["main"]->getCmdReferee()));
 	ui.txtJuiz->setText(textoJuiz);
@@ -472,4 +513,61 @@ void GraphicalIntelligence::on_btnIntStart_clicked()
 void GraphicalIntelligence::on_btnIntStop_clicked()
 {
 	timer->stop();
+}
+
+void GraphicalIntelligence::changeIntelligenceOutput()
+{
+    if (this->ui.cmbSelectOutput->currentIndex()==0)
+    {
+        cout << "Using simulation." << endl;
+        mutex.lock();
+        useSimulation = true;
+        resetPatterns();
+        mutex.unlock();
+    }
+    else
+    {
+        cout << "Using real transmission/SSL." << endl;
+        mutex.lock();
+        useSimulation = false;
+        resetPatterns();
+        mutex.unlock();
+    }
+}
+
+void GraphicalIntelligence::changePlayUs()
+{
+    int current_index = ui.cmbSelectPlayOurs->currentIndex();
+    mutex.lock();
+    cout << "Initiating play " << ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString() << " for our team:" << endl;
+    this->current_play_blue = play[ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString()];
+    mutex.unlock();
+
+}
+
+void GraphicalIntelligence::changePlayThem()
+{
+    int current_index = ui.cmbSelectPlayTheirs->currentIndex();
+    mutex.lock();
+    cout << "Initiating play " << ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString() << " for their team:" << endl;
+    this->current_play_yellow = play[ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString()];
+    mutex.unlock();
+}
+
+void GraphicalIntelligence::setTeamColor()
+{
+    bool we_should_be_blue = (ui.cmbOurTeam->currentText() == "Azul");
+
+    LibIntelligence::TeamColor our_colour, their_colour;
+
+    Team* placeholder;
+    placeholder = team["us"];
+
+    resetPatterns();
+}
+
+void GraphicalIntelligence::load_configs()
+{
+    QSettings settings("settings.ini", QSettings::IniFormat, this);
+    //alterStateVarsWindow->ui->cmbVariables->addItem("Brasil!","acimadetudo");
 }

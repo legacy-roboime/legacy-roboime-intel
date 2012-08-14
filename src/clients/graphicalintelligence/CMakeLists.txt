@@ -14,25 +14,27 @@ file(GLOB GINTC_HDR "*.h")
 set(GINTC_SRC
     main.cpp
     GraphicalIntelligence.cpp
-	itemfield.cpp
-	itemrobot.cpp
-	stageview.cpp
+    itemfield.cpp
+    itemrobot.cpp
+    stageview.cpp
+    alterstatevars.cpp
     # add new sources here
 )
 
 SET(GINTC_UIS
     GraphicalIntelligence.ui
+    alterstatevars.ui
 )
 
 qt4_add_resources(GINTC_RC 
-	GraphicalIntelligence.qrc
-	${SHARED_RC}
+    GraphicalIntelligence.qrc
+    ${SHARED_RC}
 )
 
 qt4_wrap_ui(GINTC_UIS_H ${GINTC_UIS})
 
 qt4_wrap_cpp(GINTC_MOC_SRCS
-	GraphicalIntelligence.h
+    GraphicalIntelligence.h
 )
 
 ##############################
@@ -71,9 +73,9 @@ source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 add_executable(graphicalintelligence-client
     ${GINTC_HDR}
     ${GINTC_SRC}
-	${GINTC_UIS_H}
-	${GINTC_RC}
-	#${GINTC_MOC_SRCS}
+    ${GINTC_UIS_H}
+    ${GINTC_RC}
+    #${GINTC_MOC_SRCS}
 )
 
 target_link_libraries(graphicalintelligence-client
@@ -82,3 +84,4 @@ target_link_libraries(graphicalintelligence-client
 )
 
 set_property(TARGET graphicalintelligence-client PROPERTY FOLDER apps)
+

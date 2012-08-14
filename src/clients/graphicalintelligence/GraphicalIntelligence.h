@@ -3,7 +3,9 @@
 
 #include <QtGui/QMainWindow>
 #include "ui_GraphicalIntelligence.h"
+#include "alterstatevars.h"
 
+#include <QSettings>
 #include <QObject>
 #include <QTimer>
 #include <QMutex>
@@ -44,11 +46,19 @@ private slots:
 	void updateValues();
 	void on_btnIntStart_clicked();
 	void on_btnIntStop_clicked();
+    void setTeamColor();
+    void changeIntelligenceOutput();
+    void changePlayUs();
+    void changePlayThem();
+    void load_configs();
 
 private:	
 	Ui::GraphicalIntelligenceClass ui;
+    AlterStateVars* alterStateVarsWindow;
 	QHash<char,QString> refereeFull;
 	int goalsBlue, goalsYellow;
+
+    QSettings settings_manager;
 
 	// Basic objects
 	map<string, Team*> team;
@@ -60,6 +70,11 @@ private:
 	map<string, Updater*> updater;
 	bool useSimulation;
 	void resetPatterns();
+
+    Plays::Play* current_play_blue;
+    Plays::Play* current_play_yellow;
+
+    TeamColor our_colour;
 
 	QTimer* timer;
 	QThread* cli;

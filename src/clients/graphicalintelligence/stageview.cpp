@@ -67,7 +67,7 @@ void StageView::redraw()
 		robot = blueTeam->at(i);
 		if (robot->isActive()) {
 			ItemRobot* grobot = new ItemRobot();
-			grobot->setTeam(TeamBlue);
+            grobot->setTeam(TeamBlue);
 			grobot->setDirection(-robot->orientation()*180/M_PI);
 			scene()->addItem(grobot);
 			grobot->setPos(robot->x(), robot->y());
@@ -77,7 +77,7 @@ void StageView::redraw()
 		robot = yellowTeam->at(i);
 		if (robot->isActive()) {
 			ItemRobot* grobot = new ItemRobot();
-			grobot->setTeam(TeamYellow);
+            grobot->setTeam(TeamYellow);
 			grobot->setDirection(-robot->orientation()*180/M_PI);
 			scene()->addItem(grobot);
 			grobot->setPos(robot->x(), robot->y());

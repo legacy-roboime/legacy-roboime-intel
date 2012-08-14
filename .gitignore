@@ -2,3 +2,7 @@
 build*/*
 bin*/*
 lib*/*
+
+# ignore qt user file
+*.user
+*.autosave
