@@ -44,8 +44,8 @@ using namespace LibIntelligence::Plays;
 ObeyReferee::ObeyReferee(QObject *q, Play *p, Robot* gk, Robot* pKicker)
 	: Play(q, p->team(), p->stage()),
 	play(p),
-	halt(new Halt(this, p->team(), p->stage())),
 	stopReferee(new StopReferee(this, p->team(), p->stage(), gk)),
+	halt(new Halt(this, p->team(), p->stage())),
 	penaltyUs(new PenaltyUs(this, p->team(), p->stage(), pKicker, gk)),
 	penaltyThem(new PenaltyThem(this, p->team(), p->stage(), gk)),
 	cmd('H'),
@@ -116,9 +116,9 @@ void ObeyReferee::step()
 	TeamColor usColor = team()->color();
 
 	//Comportamento muda caso a bola tenha se deslocado
-	if(cmd == 'f' && usColor == TeamColor::YELLOW)
+	if(cmd == 'f' && usColor == YELLOW)
 		play->step();
-	else if(cmd == 'f' && usColor == TeamColor::BLUE){
+	else if(cmd == 'f' && usColor == BLUE){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -126,7 +126,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == 'F' && usColor == TeamColor::YELLOW){
+	else if(cmd == 'F' && usColor == YELLOW){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -134,11 +134,11 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == 'F' && usColor == TeamColor::BLUE)
+	else if(cmd == 'F' && usColor == BLUE)
 		play->step();
-	else if(cmd == 'i' && usColor == TeamColor::YELLOW)
+	else if(cmd == 'i' && usColor == YELLOW)
 		play->step();
-	else if(cmd == 'i' && usColor == TeamColor::BLUE){
+	else if(cmd == 'i' && usColor == BLUE){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -146,7 +146,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == 'I' && usColor == TeamColor::YELLOW){
+	else if(cmd == 'I' && usColor == YELLOW){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -154,19 +154,19 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == 'I' && usColor == TeamColor::BLUE)
+	else if(cmd == 'I' && usColor == BLUE)
 		play->step();
 	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
-	else if((cmd == 'p' && usColor == TeamColor::YELLOW) || (cmd == 'P' && usColor == TeamColor::BLUE))
+    else if((cmd == 'p' && usColor == YELLOW) || (cmd == 'P' && usColor == BLUE))
 		penaltyUs->step();
-	else if((cmd == 'P' && usColor == TeamColor::YELLOW) || (cmd == 'p' && usColor == TeamColor::BLUE))
+    else if((cmd == 'P' && usColor == YELLOW) || (cmd == 'p' && usColor == BLUE))
 		penaltyThem->step();
 
 	//Penalty, kickoff, normal start e force start (ordem dos else if importa)
-	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == TeamColor::YELLOW)
+	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == YELLOW)
 		play->step();
-	else if(cmd == ' ' && lastCmd == 'k' && usColor == TeamColor::BLUE){
+    else if(cmd == ' ' && lastCmd == 'k' && usColor == BLUE){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -174,7 +174,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && lastCmd == 'p' && usColor == TeamColor::BLUE){
+    else if(cmd == ' ' && lastCmd == 'p' && usColor == BLUE){
 		if(dist<200 && ball->speed().length() < 200)
 			penaltyThem->step();
 		else{
@@ -182,7 +182,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && lastCmd == 'K' && usColor == TeamColor::YELLOW){
+    else if(cmd == ' ' && lastCmd == 'K' && usColor == YELLOW){
 		if(dist<200 && ball->speed().length() < 200)
 			stopReferee->step();
 		else{
@@ -190,7 +190,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && lastCmd == 'P' && usColor == TeamColor::YELLOW){
+    else if(cmd == ' ' && lastCmd == 'P' && usColor == YELLOW){
 		if(dist<200 && ball->speed().length() < 200)
 			penaltyThem->step();
 		else{
@@ -198,7 +198,7 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == TeamColor::BLUE)
+    else if(cmd == ' ' && (lastCmd == 'K' || lastCmd == 'P') && usColor == BLUE)
 		play->step();
 
 	else if(cmd == ' ')

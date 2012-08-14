@@ -14,7 +14,7 @@
 using namespace std;
 using namespace LibIntelligence;
 
-CommanderSim::CommanderSim(QObject* parent, char* address, quint16 port)
+CommanderSim::CommanderSim(QObject* parent, const char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {

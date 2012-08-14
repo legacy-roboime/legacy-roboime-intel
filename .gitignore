@@ -2,3 +2,7 @@
 build*/*
 bin*/*
 lib*/*
+
+# ignore Qt Creator .user files
+*.user
+

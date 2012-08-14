@@ -25,3 +25,4 @@ add_executable(soccer-client ${SOCC_SRC})
 target_link_libraries(soccer-client soccer)
 
 set_property(TARGET soccer-client PROPERTY FOLDER apps)
+

@@ -17,8 +17,8 @@ if errorlevel 1 (
 	echo If you have cmake either add it to your path and try again,
 	echo or run it manually and set the following options:
 	echo.
-	echo 	Where is the source code: %cd%\src
-	echo 	Where to build the binaries: %cd%\build
+	echo     Where is the source code: %cd%\src
+	echo     Where to build the binaries: %cd%\build
 	echo.
 	echo It's also recommended to check Grouped and Advanced if you're having trouble
 	echo configuring the dependencies.
@@ -30,3 +30,4 @@ if errorlevel 1 (
 	start cmake-gui ..\src
 	cd ..
 )
+

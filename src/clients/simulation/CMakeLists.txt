@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 2.8.8)
 #
 
 set(SIMC_UI
-	SimulationView.ui
-	# add new uis here
+    SimulationView.ui
+    # add new uis here
 )
 
 ##############################
@@ -14,8 +14,8 @@ set(SIMC_UI
 #
 
 set(SIMC_RES
-	SimulationView.qrc
-	# add new resources here
+    SimulationView.qrc
+    # add new resources here
 )
 
 ##############################
@@ -47,37 +47,9 @@ include_directories(${SIM_INC_DIRS})
 
 
 
-##############################
-# GLUT stuff
-#
-
-find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIR})
-
-
-
-##############################
-# Qt stuff
-#
-
-set(QT_USE_QTNETWORK true)
-set(QT_USE_QTOPENGL true)
-find_package(Qt4 REQUIRED)
-
 qt4_wrap_ui(SIMC_UI_H ${SIMC_UI})
 qt4_add_resources(SIMC_RES_CPP ${SIMC_RES})
-
-include(${QT_USE_FILE})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-
-
-##############################
-# PhysX stuff
-#
-
-find_package(PhysX REQUIRED)
-include_directories(${PHYSX_INCLUDES})
 
 
 
@@ -116,3 +88,4 @@ target_link_libraries(simulation-client
 )
 
 set_property(TARGET simulation-client PROPERTY FOLDER apps)
+

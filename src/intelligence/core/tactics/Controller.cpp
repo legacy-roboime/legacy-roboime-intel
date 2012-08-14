@@ -1,3 +1,4 @@
+#ifdef HAVE_WINDOWS
 #include "Controller.h"
 #include "CXBOXController.h"
 #include "Robot.h"
@@ -121,3 +122,6 @@ void Controller::step() {
 		}
 	}
 }
+
+#endif
+

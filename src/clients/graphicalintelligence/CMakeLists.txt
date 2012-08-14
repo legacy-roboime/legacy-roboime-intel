@@ -14,26 +14,21 @@ file(GLOB GINTC_HDR "*.h")
 set(GINTC_SRC
     main.cpp
     GraphicalIntelligence.cpp
-	itemfield.cpp
-	itemrobot.cpp
-	stageview.cpp
+    itemfield.cpp
+    itemrobot.cpp
+    stageview.cpp
     # add new sources here
 )
 
-SET(GINTC_UIS
+qt4_wrap_ui(GINTC_UIS_H
     GraphicalIntelligence.ui
 )
 
-qt4_add_resources(GINTC_RC 
-	GraphicalIntelligence.qrc
-	${SHARED_RC}
+qt4_add_resources(GINTC_RC
+    GraphicalIntelligence.qrc
+    ${SHARED_RC}
 )
 
-qt4_wrap_ui(GINTC_UIS_H ${GINTC_UIS})
-
-qt4_wrap_cpp(GINTC_MOC_SRCS
-	GraphicalIntelligence.h
-)
 
 ##############################
 # Intra dependencies
@@ -71,9 +66,8 @@ source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 add_executable(graphicalintelligence-client
     ${GINTC_HDR}
     ${GINTC_SRC}
-	${GINTC_UIS_H}
-	${GINTC_RC}
-	#${GINTC_MOC_SRCS}
+    ${GINTC_UIS_H}
+    ${GINTC_RC}
 )
 
 target_link_libraries(graphicalintelligence-client

@@ -9,17 +9,17 @@ using namespace LibIntelligence;
 Robot::Robot(const Robot& r)
 	: Component(r.parent()),
 	Object((Object)r),
-	id_(r.id_),
-	patternId_(r.patternId_),
-	color_(r.color_),
 	dribbler_(r.dribbler_),
 	kicker_(r.kicker_),
 	body_(r.body_),
 	battery_(r.battery_),
 	wheels_(r.wheels_),
-	command_(r.command_),
 	stage_(r.stage_),
-	team_(r.team_)/*,
+	team_(r.team_),
+	id_(r.id_),
+	patternId_(r.patternId_),
+	color_(r.color_),
+	command_(r.command_)/*,
 	enemyTeam_(r.enemyTeam_),
 	goal_(r.goal_),
 	enemyGoal_(r.enemyGoal_)*/
@@ -34,14 +34,14 @@ Robot::Robot(const Robot& r)
 Robot::Robot(QObject* parent, int id, int cc, TeamColor color)
 	: Component(parent),
 	Object(),
-	id_(id),
-	patternId_(cc),
-	color_(color),
 	dribbler_(this),
 	kicker_(this),
 	body_(this),
 	battery_(this),
 	wheels_(0),
+	id_(id),
+	patternId_(cc),
+	color_(color),
 	//body_(this, 150.0, 90.0),
 	//wheels_(4, Wheel(this)),//TODO: think about this
 	command_(id)//1,5707963267948966192313216916398
@@ -79,14 +79,14 @@ Robot::Robot(QObject* parent, int id, int cc, TeamColor color)
 Robot::Robot(const Dribbler& d, const Kicker& k, const Body& b, const Battery& a, const QVector<Wheel>& w)
 	: Component(),
 	Object(),
-	id_(0),
-	patternId_(0),
-	color_(BLUE),
 	dribbler_(d),
 	kicker_(k),
 	body_(b),
 	battery_(a),
 	wheels_(w),
+    id_(0),
+    patternId_(0),
+	color_(BLUE),
 	command_(0) {}
 
 Robot::~Robot() {}

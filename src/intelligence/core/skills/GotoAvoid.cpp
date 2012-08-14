@@ -13,9 +13,9 @@ using namespace LibIntelligence::Skills;
 
 GotoAvoid::GotoAvoid(QObject *parent, Robot *slave, Point *target, Point *avoid, qreal speed)
 	: Goto(parent, slave, target, 0.0, speed),
-	circlePID(KP, KI, KD, DBL_MAX, LIMERR),
 	avoid(avoid),
-	tangPoint(new Point())
+	tangPoint(new Point()),
+	circlePID(KP, KI, KD, DBL_MAX, LIMERR)
 {}
 
 GotoAvoid::~GotoAvoid()

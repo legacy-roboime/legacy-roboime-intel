@@ -5,7 +5,7 @@
 #include "LibIntelligence.h"
 #include <QObject>
 #include <QVector>
-#include <QDatetime>
+#include <QDateTime>
 
 class CommandRobot;
 

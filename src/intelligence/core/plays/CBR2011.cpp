@@ -10,8 +10,8 @@ using namespace Plays;
 using namespace Tactics;
 
 CBR2011::CBR2011(QObject *parent, Team* team ,Stage* stage)
-	: log("C:\\Users\\Bill\\Desktop\\log.dat"),
-	Play(parent,team,stage)
+	: Play(parent,team,stage),
+    log("C:\\Users\\Bill\\Desktop\\log.dat")
 {
 	log.open(QIODevice::WriteOnly);
 
@@ -59,14 +59,14 @@ CBR2011::~CBR2011()
 
 void CBR2011::step(){
 	Team* team = this->team_;
-	Stage* stage = this->stage_;
-	Ball* ball = stage->ball();
-	Goal* myGoal;
+	//Stage* stage = this->stage_;
+	//Ball* ball = stage->ball();
+	//Goal* myGoal;
 
-	if(team->color() == BLUE)
-		myGoal = stage->blueGoal();
-	else
-		myGoal = stage->yellowGoal();
+	//if(team->color() == BLUE)
+	//	myGoal = stage->blueGoal();
+	//else
+	//	myGoal = stage->yellowGoal();
 
 	/*Robot* newAtk = stage->getCloserPlayerToBallThatCanKick(team);
 	Robot* oldAtk = player_[0]->robot();

@@ -14,7 +14,7 @@ namespace LibIntelligence
 		Q_OBJECT
 
 	public:
-		CommanderTxOld(QObject* parent=0, char* address="127.0.0.1", quint16 port=9050);
+		CommanderTxOld(QObject* parent=0, const char* address="127.0.0.1", quint16 port=9050);
 		~CommanderTxOld();
 		
 		void add(Robot*);

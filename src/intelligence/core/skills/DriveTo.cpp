@@ -4,6 +4,7 @@
 #include "Goal.h"
 #include "Ball.h"
 #include "geomutils.h"
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
@@ -22,15 +23,10 @@ DriveTo::DriveTo(QObject* parent, Robot* slave, qreal maxErrorD, qreal maxErrorA
 	Skill::deterministic_ = true;
 }
 
-
-DriveTo::~DriveTo(void)
-{
-}
-
 //Goto em coordenadas polares
 void DriveTo::step()
 {
-	Line target = Line(bPoint.x(), bPoint.y(), bPoint.x() + cos(bAngle), bPoint.y() + sin(bAngle));
+	Line target = Line(bPoint.x(), bPoint.y(), bPoint.x() + cos(bAngle), bPoint.y() +sin(bAngle));
 	target.setLength(threshold);
 	Point p = target.p2();
 	qreal x = p.x();

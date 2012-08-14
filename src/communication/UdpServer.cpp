@@ -1,7 +1,7 @@
 #include "UdpServer.h"
 #include <QtNetwork>
 
-UdpServer::UdpServer(QObject* parent, char* address, quint16 port)
+UdpServer::UdpServer(QObject* parent, const char* address, quint16 port)
 	: QObject(parent),
 	udpSocket(new QUdpSocket(this)),
 	address(new QHostAddress(address)),
@@ -32,12 +32,9 @@ void UdpServer::send()
 	//	udpSocket->writeDatagram(datagram.data(), datagram.size(), *address, port);
 	//}
 
-	static QByteArray& datagram = QByteArray("");
 	if(!queue.isEmpty()){
-		datagram = queue.last();
-		udpSocket->writeDatagram(datagram.data(), datagram.size(), *address, port);
+        QByteArray& datagram(queue.last());
+		udpSocket->writeDatagram(datagram, *address, port);
 		queue.clear();
 	}
-	else if(!datagram.isEmpty())
-		udpSocket->writeDatagram(datagram.data(), datagram.size(), *address, port);
 }

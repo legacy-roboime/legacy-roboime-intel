@@ -1,5 +1,6 @@
 #include "Skills.h"
 #include "Robot.h"
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;

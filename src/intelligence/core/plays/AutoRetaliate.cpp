@@ -24,7 +24,7 @@ void AutoRetaliate::step(){
 	Team* team = this->team_;
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
-	Goal* myGoal = team->goal();
+	//Goal* myGoal = team->goal();//unused
 
 	map<qreal, Robot*> close = stage->getClosestPlayersToBall(team);
 	map<int, Robot*> ids;

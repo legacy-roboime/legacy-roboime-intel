@@ -1,3 +1,4 @@
+#ifdef USE_PHYSX
 #include "BGT.h"
 #include "Goal.h"
 #include "Ball.h"
@@ -498,3 +499,6 @@ StageY* BGT::tacticsDrivenPropagate(const StageY& stage)
 
 	return xL;
 }
+
+#endif
+

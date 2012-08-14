@@ -50,7 +50,7 @@ void DriveToBall::step()
 	qreal ang4 = target.angle(); //angulo do cone menor obtido girando no sentido anti-horario
 	qreal ang5 = target2.angle(); //angulo do cone menor obtido girando no sentido horario
 
-	//Verificando mudança de estado
+	//Verificando mudana de estado
 	if(inCone){
 		if(!( (ang2 > ang && ( ang3 < ang2 && ang3 > ang ) ) || 
 			  (ang2 < ang && ( ang3 < ang2 || ang3 > ang ) ) )){ //n esta dentro do cone maior
@@ -66,7 +66,7 @@ void DriveToBall::step()
 		}
 	}
 
-	//Posições destino (dentro do cone menor)
+	//Posi›es destino (dentro do cone menor)
 	goAng = 20;
 	target.setAngle(target.angle() + goAng);
 	target2.setAngle(target2.angle() - goAng);
@@ -78,7 +78,7 @@ void DriveToBall::step()
 		ret2.setAngle(ret2.angle() + 90);
 		ret2.translate(robot->x() - ret2.p1().x(), robot->y() - ret2.p1().y());
 		Point intersect = Point(0, 0);
-		Line::IntersectType interT = ret1.intersect(ret2, &intersect);
+		ret1.intersect(ret2, &intersect);
 		if(Vector(*robot - intersect).length() > 50){
 			Goto::setPoint(ret1.x2(), ret1.y2());
 			ret1.setLength(-1);
@@ -97,7 +97,8 @@ void DriveToBall::step()
 
 		Line target1 = Line(ball->x(), ball->y(), newLKP.x(), newLKP.y());
 		target1.setLength(t);
-		setRefLookPoint(&Object(target1.p2().x(),target1.p2().y()));
+		Object reflp = Object(target1.p2().x(),target1.p2().y());
+		setRefLookPoint(&reflp);
 
 		qreal backup = threshold;
 		threshold = -t;

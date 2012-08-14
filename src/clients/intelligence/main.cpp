@@ -6,7 +6,7 @@
 using namespace std;
 
 static Intelligence* intel;
-static int winWidth, winHeight;
+//static int winWidth, winHeight;//unused
 static QCoreApplication* app;
 
 #ifdef SOCCER_DEBUG

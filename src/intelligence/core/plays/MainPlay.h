@@ -1,4 +1,5 @@
-#ifndef MAINPLAY_H
+//#ifndef MAINPLAY_H
+#if FALSE
 #define MAINPLAY_H
 
 #include "LibIntelligence.h"

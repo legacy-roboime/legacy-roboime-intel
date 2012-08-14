@@ -41,8 +41,8 @@ void Goalkeeper::step()
 	Stage &stage(*this->stage());
 	Robot &robot(*this->robot());
 	Goal &goal(*robot.goal());
-	Team &myTeam(*robot.team());
-	Team &enemyTeam(*robot.enemyTeam());
+	//Team &myTeam(*robot.team());//unused
+	//Team &enemyTeam(*robot.enemyTeam());//unused
 	Ball &ball(*stage.ball());
 
 	//TODO: if ball is inside area and is slow, kick/pass it far far away
@@ -64,11 +64,11 @@ void Goalkeeper::step()
 
 	//watch the enemy
 	//TODO: get the chain of badguys, (badguy and who can it pass to)
-	Robot &badguy = *enemyTeam.getClosestPlayerToBall();
+	//Robot &badguy = *enemyTeam.getClosestPlayerToBall();//unused
 
 	//watch our attacker
 	//TODO: if self then we should kick/pass the ball
-	Robot &goodguy = *myTeam.getClosestPlayerToBall();
+	//Robot &goodguy = *myTeam.getClosestPlayerToBall();//unused
 
 	//if the ball is moving fast* torwards the goal, defend it: THE CATCH
 	//*: define fast

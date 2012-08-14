@@ -16,10 +16,10 @@ using namespace Tactics;
 Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int depth, float alpha, float beta)
 	: Play(parent, team,stage),
 	log("C:\\Users\\Bill\\Desktop\\log.dat"),
+	speed_(speed),
 	depth_(depth),
 	alpha_(alpha),
 	beta_(beta),
-	speed_(speed),
 	init(false)
 {
 	//log.open(QIODevice::WriteOnly);
@@ -31,9 +31,9 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 	red_action = saction_red_make(s);
 	blue_action = saction_blue_make(s);
 
-	if(team->color() == TeamColor::BLUE && stage->isLeftSideBlueGoal())
+	if(team->color() == BLUE && stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
-	else if (team->color() == TeamColor::YELLOW && !stage->isLeftSideBlueGoal())
+	else if (team->color() == YELLOW && !stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
 	else
 		soccer_env_red_side( RIGHT );
