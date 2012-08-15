@@ -23,3 +23,5 @@ Currently Open Tasks
 - Modelagem do oponente
 - Refatorar simulation
 - Refatorar DriveToBall
+- Melhorar o README para explicar como compilar o projeto
+
