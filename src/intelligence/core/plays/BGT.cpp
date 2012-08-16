@@ -17,8 +17,8 @@ using namespace LibIntelligence::Plays;
 
 BGT::BGT(QObject *parent, Team* myTeam, Stage* stage):
 Play(parent,myTeam,stage),
-	planningLog("C:\\Users\\Bill\\Desktop\\planningLog.dat"),
-	executeLog("C:\\Users\\Bill\\Desktop\\executeLog.dat"),
+	planningLog("..\\planningLog.dat"),
+	executeLog("..\\executeLog.dat"),
 	maxIter(1000),// 50000), //dado retirado do zickler pagina 72
 	mi_(100.), //valor de mi igual ao usado pelo zickler no experimento da pagina 73
 	timer(new QTimer(this)),
