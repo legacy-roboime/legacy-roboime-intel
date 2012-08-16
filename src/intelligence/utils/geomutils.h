@@ -8,6 +8,19 @@ namespace LibIntelligence
 {
 	typedef ::QPointF Point;
 
+	/*class Point : public ::QPointF
+	{
+	public:
+		Point() : QPointF () {}
+		Point( const QPoint & point ) : QPointF ( point ) {}
+		Point( const Point & point ) : QPointF ( point ) {}
+		Point( qreal x, qreal y ) : QPointF ( x, y ) {}
+
+		qreal length() {
+			return sqrt(x()*x()+y()*y());
+		}
+	};*/
+
 	typedef ::QVector2D Vector;
 
 	class Line : public ::QLineF
