@@ -47,7 +47,7 @@ void DriveToBall::step()
 	qreal ang4 = ((int)(btAngle - sAngleCone))%360;
 	qreal ang5 = ((int)(btAngle + sAngleCone))%360;
 
-	//Verificando mudança de estado
+	//Verificando mudana de estado
 	if(inCone){
 		if(!( (ang2 > ang1 && ( ang3 < ang2 && ang3 > ang1 ) ) || 
 			  (ang2 < ang1 && ( ang3 < ang2 || ang3 > ang1 ) ) )){ //n esta dentro do cone maior

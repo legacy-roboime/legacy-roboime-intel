@@ -1,4 +1,6 @@
-#pragma once
+#ifdef USE_PHYSX
+#ifndef MINMAX_H
+#define MINMAX_H
 #include <deque>
 #include <QVector>
 #include <limits>
@@ -39,3 +41,7 @@ namespace LibIntelligence
 		};
 	}
 }
+
+#endif // MINMAX_H
+#endif
+

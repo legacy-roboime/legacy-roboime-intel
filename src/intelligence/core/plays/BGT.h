@@ -1,4 +1,6 @@
-#pragma once
+#ifdef USE_PHYSX
+#ifndef BGT_H
+#define BGT_H
 #include <QQueue>
 #include <limits>
 #include "Tactics.h"
@@ -60,3 +62,7 @@ namespace LibIntelligence
 		};
 	}
 }
+
+#endif // BGT_H
+#endif
+

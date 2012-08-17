@@ -52,7 +52,7 @@ void FreeKickThem::step()
 
 	//9cm is the Robot's radius and 50cm is the distance allowed between the ball and any player
 	//but I used a exeperimental value
-	qreal deltaTeta = (30*M_PI)/180.;
+	//qreal deltaTeta = (30*M_PI)/180.;//unused
 	for( int i = 0; i < team->size(); i++){
 		player_[i]->setRobot( team->at(i) );
 		player_[i]->step();

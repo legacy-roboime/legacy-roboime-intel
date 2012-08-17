@@ -1,6 +1,7 @@
 #include "LinearRegression.h"
 #include <QVector>
 #include "geomutils.h"
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 

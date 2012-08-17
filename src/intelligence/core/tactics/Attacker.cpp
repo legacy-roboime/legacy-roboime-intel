@@ -17,8 +17,8 @@ using namespace Skills;
 Attacker::Attacker(QObject* p, Robot* r, qreal s)
 	: Blocker(p,r,3.14/6,s),
 	goto_(new Goto(this, r)),
-	kickTo_(new KickTo(this, r)),
 	getBall_(new GetBall(this, r, 1000)),
+	kickTo_(new KickTo(this, r)),
 	orbit_(new Loops::Orbit(this,r,0,0,100,1000,1000)),
 	move_(new Move(this,r,0,0,0))
 {
@@ -91,7 +91,7 @@ void Attacker::step()
 	qreal crossProduct2 = xPBL*yGBL2 - xGBL2 * yPBL;
 
 	qreal criteria = crossProduct1 * crossProduct2 ;
-	bool condition = crossProduct1 < 0;
+	bool condition;// = crossProduct1 < 0;//unused
 
 	if(robot->goal()->x() < 0) condition = rx < ballX;
 	else condition = rx > ballX;
@@ -141,7 +141,7 @@ void Attacker::step()
 			qreal radAngle = ballGoalAngle * PI/180;
 			//if(radAngle < 0) radAngle = -1 * radAngle;
 
-			int side = robot->goal()->x() < 0 ? -1 : 1; 
+			//int side = robot->goal()->x() < 0 ? -1 : 1;//unused
 		
 
 			qreal destX = ballX - distance * cos(radAngle);

@@ -1,3 +1,4 @@
+#ifdef HAVE_WINDOWS
 #include "CXBOXController.h"
 
 CXBOXController::CXBOXController(int playerNumber) {
@@ -71,3 +72,6 @@ qreal CXBOXController::TriggerL() {
 bool CXBOXController::ButtonPressed(WORD w) {
 	return (GetState().Gamepad.wButtons & w) != 0;
 }
+
+#endif
+

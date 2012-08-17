@@ -16,10 +16,10 @@ using namespace Tactics;
 Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int depth, float alpha, float beta)
 	: Play(parent, team,stage),
 	log("..\\log.dat"),
+	speed_(speed),
 	depth_(depth),
 	alpha_(alpha),
 	beta_(beta),
-	speed_(speed),
 	init(false)
 {
 	//log.open(QIODevice::WriteOnly);
@@ -31,9 +31,9 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 	red_action = saction_red_make(s);
 	blue_action = saction_blue_make(s);
 
-	if(team->color() == TeamColor::BLUE && stage->isLeftSideBlueGoal())
+	if(team->color() == BLUE && stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
-	else if (team->color() == TeamColor::YELLOW && !stage->isLeftSideBlueGoal())
+	else if (team->color() == YELLOW && !stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
 	else
 		soccer_env_red_side( RIGHT );
@@ -112,7 +112,7 @@ void Minmax2::ballOwner()
 	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
 	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
 	qreal orientation = mRobot->orientation();
-	qreal dist = 70;
+	qreal dist = 0;//70;
 	QPointF mDribbler = QPointF(mRobot->x() + cos(orientation)*dist, mRobot->y() + sin(orientation)*dist);
 	orientation = tRobot->orientation();
 	QPointF tDribbler = QPointF(tRobot->x() + cos(orientation)*dist, tRobot->y() + sin(orientation)*dist);

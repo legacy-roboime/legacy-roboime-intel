@@ -7,8 +7,8 @@ using namespace LibIntelligence;
 
 StateMachine::StateMachine(QObject* parent, bool deterministic) 
 	: QObject(parent),
-	deterministic_(deterministic),
-	states_(QVector<State*>())
+	states_(QVector<State*>()),
+	deterministic_(deterministic)
 {
 }
 

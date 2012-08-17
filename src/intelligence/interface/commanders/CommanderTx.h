@@ -13,7 +13,7 @@ namespace LibIntelligence
 		//Q_OBJECT
 
 	public:
-		CommanderTx(QObject* parent=0, char* address="127.0.0.1", quint16 port=9050);
+		CommanderTx(QObject* parent=0, const char* address="127.0.0.1", quint16 port=9050);
 		~CommanderTx();
 
 		void step();

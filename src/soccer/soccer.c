@@ -1,7 +1,7 @@
 #include "soccer.h"
 
 static float goal_hole_size( SoccerState *s, Vector2 src_point, Vector2 goal );
-static void is_kick_scored( SoccerState *s, 
+static Boolean is_kick_scored( SoccerState *s,
                                 Vector2 src_point, Vector2 goal_point );
 
 static Boolean is_inside_area( SoccerState *s, int robot, Vector2 p, Vector2 goal );
@@ -296,7 +296,7 @@ float goal_hole_size( SoccerState *s, Vector2 src_point, Vector2 goal )
 }
 
 
-static void is_kick_scored( SoccerState *s, Vector2 src_point, Vector2 goal_point )
+static Boolean is_kick_scored( SoccerState *s, Vector2 src_point, Vector2 goal_point )
 {
  int i;
  Boolean goal_scored;

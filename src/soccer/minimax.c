@@ -143,14 +143,12 @@ void adjust_move_tables( void )
 void  minimax_playMax( SoccerState *s, int depth )
 {
  max_is_root = TRUE; 
- minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
 void  minimax_playMin( SoccerState *s, int depth )
 {
  max_is_root = FALSE; 
- minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
@@ -161,13 +159,14 @@ float minimax_getMaxValue(SoccerState s, int depth,
  float aux; 
  SoccerState saux;
  SoccerAction action;
-
+ SoccerAction prev_action = best_red_action;
+ 
  if( depth == 0 ){
 	  float value;
       saux = s;
       //sstate_red_kick_to_goal(&saux);
 	  value =  sstate_evaluate(&saux);
-      return value + fabs(value)*minimax_red_time_weight_func(&s);
+      return value + fabs(value)*( minimax_red_time_weight_func(&s) -.001*minimax_red_dist_weight_func() );
  }
  for( i = 0; i < MAX_NPLAYS; i++ ){
      saux = s;
@@ -201,7 +200,7 @@ float minimax_getMinValue(SoccerState s, int depth,
      saux = s;
      //sstate_blue_kick_to_goal(&saux); 
 	 value =  sstate_evaluate(&saux);
-     return value + fabs(value)*minimax_blue_time_weight_func(&s);
+     return value + fabs(value)*( minimax_blue_time_weight_func(&s) -.001*minimax_red_dist_weight_func() );
  }
  for( i = 0; i < MIN_NPLAYS; i++ ){
       saux = s;
@@ -232,6 +231,16 @@ float minimax_red_time_weight_func( SoccerState *s )
 	return -MAX_FLOAT;
 }
 
+float minimax_red_dist_weight_func( void )
+{
+ int i;
+
+ float sum = 0;
+ for( i = 0; i < NPLAYERS; i++ )
+   sum += v2_norm( v2_sub( get_red_move_table(i), best_red_action.move[i] ) );
+ return sum;
+}
+
 float minimax_blue_time_weight_func( SoccerState *s )
 {
  return minimax_red_time_weight_func(s);
@@ -260,13 +269,13 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
  }  
  if( (i == 14) )
      action = sstate_red_move(s, red_robot, 0 ); 
- if( (i >= 15) &&   (i < 25) )
-	 action = sstate_red_move(s, red_robot, 1. );  
- if( (i >= 25) &&  (i < 30) )
-	 action = sstate_red_move(s, red_robot, .8 );  
- if( (i >= 30) &&  (i < 35) )
-	 action = sstate_red_move(s, red_robot, 1.2 );  
- if( (i >= 35) && (i < (MAX_NPLAYS-2)) ) 
+ //if( (i >= 15) &&   (i < 25) )
+//	 action = sstate_red_move(s, red_robot, 1. );  
+// if( (i >= 25) &&  (i < 30) )
+//	 action = sstate_red_move(s, red_robot, .8 );  
+// if( (i >= 30) &&  (i < 35) )
+//	 action = sstate_red_move(s, red_robot, 1.2 );  
+ if( (i >= 15) && (i < (MAX_NPLAYS-2)) ) 
      action = sstate_red_move(s, red_robot, move_radius );
  if( i ==  (MAX_NPLAYS-2)  ){
 	 s->red[red_robot] = get_red_move_table(red_robot);
@@ -295,24 +304,24 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  if( s->blue_ball_owner >= 0 ){
      if( i== 0 )
         action = sstate_blue_kick_to_goal(s);
-  //   if ( (i >= 2) && (i < 8) )
- //      action = sstate_blue_pass(s, i%NPLAYERS, recv_radius ); 
+     if ( (i >= 2) && (i < 8) )
+       action = sstate_blue_pass(s, i%NPLAYERS, recv_radius ); 
  }
  else{
      if( i == 1 )
        action = sstate_blue_get_ball(s); 
-//     if( (i >=8 ) && (i <14) )
- //      action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
+     if( (i >=8 ) && (i <14) )
+       action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
  }
   if( i == 14 )
 	  action = sstate_blue_move(s, blue_robot, 0 );
- if( (i >= 15) &&  (i < 25) )
-	 action = sstate_blue_move(s, blue_robot, 1. );  
- if( (i >= 25) &&  (i < 30) )
-	 action = sstate_blue_move(s, blue_robot, .8 );  
- if( (i >= 30) &&  (i < 35) )
-	 action = sstate_blue_move(s, blue_robot, 1.2 );  
- if( (i >= 35) &&  i < (MIN_NPLAYS - 2) )
+// if( (i >= 15) &&  (i < 25) )
+//	 action = sstate_blue_move(s, blue_robot, 1. );  
+// if( (i >= 25) &&  (i < 30) )
+//	 action = sstate_blue_move(s, blue_robot, .8 );  
+// if( (i >= 30) &&  (i < 35) )
+//	 action = sstate_blue_move(s, blue_robot, 1.2 );  
+ if( (i >= 15) &&  i < (MIN_NPLAYS - 2) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
  if( i == (MIN_NPLAYS - 2) ){
      s->blue[blue_robot] = get_blue_move_table(blue_robot);

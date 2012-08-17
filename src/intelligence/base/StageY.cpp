@@ -50,7 +50,7 @@ StageY::~StageY(void)
 
 void StageY::pushTactic(Tactic* tactic, TeamColor color)
 {
-	if(color == TeamColor::BLUE)
+	if(color == BLUE)
 		blueTactics.push_back(tactic);
 	else
 		yellowTactics.push_back(tactic);
@@ -59,7 +59,7 @@ void StageY::pushTactic(Tactic* tactic, TeamColor color)
 bool StageY::busy(TeamColor color)
 {
 	bool busy = true;
-	if(color == TeamColor::BLUE){
+	if(color == BLUE){
 		for(int i = 0; i < blueTactics.size(); i++){
 			busy = busy && blueTactics.at(i)->busy();
 		}

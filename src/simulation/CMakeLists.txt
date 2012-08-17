@@ -54,26 +54,6 @@ include_directories(${COMM_INC_DIRS})
 
 
 ##############################
-# Qt stuff
-#
-
-set(QT_DONT_USE_QTGUI true)
-set(QT_USE_QTNETWORK true)
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-
-
-
-##############################
-# PhysX stuff
-#
-
-find_package(PhysX REQUIRED)
-include_directories(${PHYSX_INCLUDES})
-
-
-
-##############################
 # Le finale
 #
 

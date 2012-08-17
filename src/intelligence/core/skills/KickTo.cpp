@@ -68,7 +68,7 @@ void KickTo::step()
 	}
 
 	static long wait =0;
-	if(sqrt(dx * dx + dy * dy) > robot()->body().radius() + 2 * stage()->ball()->radius() || abs(diffAngle) > M_PI / 90. /*|| wait < 200*//*){
+	if(sqrt(dx * dx + dy * dy) > robot()->body().radius() + 2 * stage()->ball()->radius() || abs(diffAngle) > M_PI / 90. //|| wait < 200//){
 		GetBall::step();
 		//printf("GETBALL %d\n",teste);
 		wait++;
