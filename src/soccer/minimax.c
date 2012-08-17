@@ -143,12 +143,14 @@ void adjust_move_tables( void )
 void  minimax_playMax( SoccerState *s, int depth )
 {
  max_is_root = TRUE; 
+ minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
 void  minimax_playMin( SoccerState *s, int depth )
 {
  max_is_root = FALSE; 
+ minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
 }
 
 
