@@ -34,7 +34,6 @@ namespace LibIntelligence
 
 			AttackerMinMax2* attacker;
 			QVector<Goto*> _max_skills;
-			//Goto* goto_;
 			qreal speed_;
 
 			SoccerState *s;
