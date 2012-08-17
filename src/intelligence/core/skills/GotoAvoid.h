@@ -31,7 +31,6 @@ namespace LibIntelligence
 			qreal radiusAvoid;
 			Point *avoid;
 			Point *tangPoint;
-			CONTROLLER_S circlePID;
 		};
 
 		class GotoBall : public GotoAvoid
