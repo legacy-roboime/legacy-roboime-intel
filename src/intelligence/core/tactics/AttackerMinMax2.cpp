@@ -20,32 +20,32 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 	movePoint_ = new Object();
 	kickPoint_ = new Object();
 	dribblePoint_ = new Object();
-	//driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
+	driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., speed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., speed, false);
 	pass_ = new SampledKick(this, r, kickPoint_, true, 0.4, 0.4, speed, true);
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
 	this->speed = speed;
 
-	//this->pushState(driveToBall_); //this is important to destructor
+	this->pushState(driveToBall_); //this is important to destructor
 	this->pushState(goalKick_);
 	this->pushState(dribble_);
 	this->pushState(pass_);
 	this->pushState(goto_);
 
-	//driveToBall_->setObjectName("DriveToBall");
+	driveToBall_->setObjectName("DriveToBall");
 	dribble_->setObjectName("SampledDribble");
 	goalKick_->setObjectName("SampledGoalKick");
 	pass_->setObjectName("SampledPass");
 	goto_->setObjectName("Goto");
 
-	this->pushTransition(goto_, new GotoToDriveT(this, goto_, /*driveToBall_*/dribble_));
-	this->pushTransition(/*driveToBall_*/dribble_, new DriveToGotoT(this, /*driveToBall_*/dribble_, goto_));
-	//this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, dribble_));
-	//this->pushTransition(dribble_, new DribbleToDriveT(this, dribble_, driveToBall_));
+	this->pushTransition(goto_, new GotoToDriveT(this, goto_, driveToBall_));
+	this->pushTransition(driveToBall_, new DriveToGotoT(this, driveToBall_, goto_));
+	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, dribble_));
 	this->pushTransition(dribble_, new DribbleToGoalKickT(this, dribble_, goalKick_));
-	this->pushTransition(goalKick_, new GoalKickToDribbleT(this, goalKick_, dribble_));
 	this->pushTransition(dribble_, new DribbleToPassT(this, dribble_, pass_));
+	this->pushTransition(dribble_, new DribbleToDriveT(this, dribble_, driveToBall_));
+	this->pushTransition(goalKick_, new GoalKickToDribbleT(this, goalKick_, dribble_));
 	this->pushTransition(pass_, new PassToDribbleT(this, pass_, dribble_));
 
 	this->setInitialState(goto_);
@@ -55,7 +55,7 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 
 AttackerMinMax2::~AttackerMinMax2()
 {
-	//delete driveToBall_;
+	delete driveToBall_;
 	delete dribble_;
 	delete goalKick_;
 	delete pass_;
@@ -143,13 +143,13 @@ DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, 
 
 bool DribbleToDriveT::condition()
 {
-	SampledDribble* dribble = (SampledDribble*)source_;
-	DriveToBall* drive = (DriveToBall*)target_;
-	const Object* backup = drive->getRefLookPoint();
-	drive->setRefLookPoint(dribble->getRefLookPoint());
-	bool busy = drive->busy();
-	drive->setRefLookPoint(backup);
-	return busy;
+	//SampledDribble* dribble = (SampledDribble*)source_;
+	//DriveToBall* drive = (DriveToBall*)target_;
+	//const Object* backup = drive->getRefLookPoint();
+	//drive->setRefLookPoint(dribble->getRefLookPoint());
+	//bool busy = drive->busy();
+	//drive->setRefLookPoint(backup);
+	return source_->busy();//busy;
 }
 
 DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

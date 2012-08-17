@@ -31,7 +31,7 @@ namespace LibIntelligence
 			type_actions action();
 
 		protected:
-			//Skills::DriveToBall* driveToBall_;
+			Skills::DriveToBall* driveToBall_;
 			Skills::SampledDribble* dribble_;
 			Skills::SampledKick* goalKick_;
 			Skills::SampledKick* pass_;

@@ -13,17 +13,22 @@ namespace LibIntelligence
 		class GotoAvoid : public Goto
 		{
 		public:
-			GotoAvoid(QObject *parent, Robot *slave, Point *target, Point *avoid, qreal speed);
-			GotoAvoid(QObject *parent, Robot *slave, Point target, Point *avoid, qreal speed);
+			GotoAvoid(QObject *parent, Robot *slave, Point *target, Point *avoid, qreal radiusAvoid, qreal speed);
+			GotoAvoid(QObject *parent, Robot *slave, Point target, Point *avoid, qreal radiusAvoid, qreal speed);
 			~GotoAvoid();
 
+			void setTarget(qreal x, qreal y);
 			void setTarget(Point *);
 			void setAvoid(Point *);
 			void setSpeed(qreal);
+			Point* getAvoid();
+			qreal getRadiusAvoid();
 
 			void step();
+			bool busy(); 
 
 		protected:
+			qreal radiusAvoid;
 			Point *avoid;
 			Point *tangPoint;
 			CONTROLLER_S circlePID;
@@ -32,8 +37,8 @@ namespace LibIntelligence
 		class GotoBall : public GotoAvoid
 		{
 		public:
-			GotoBall(QObject *parent, Robot *slave, Point *lookPoint, qreal speed)
-				: GotoAvoid(parent, slave, Point(), NULL, speed), lookPoint(lookPoint) {
+			GotoBall(QObject *parent, Robot *slave, Point *lookPoint, qreal radiusAvoid, qreal speed)
+				: GotoAvoid(parent, slave, Point(), NULL, radiusAvoid, speed), lookPoint(lookPoint) {
 					setAvoid(stage()->ball());
 			}
 
