@@ -28,5 +28,6 @@ namespace LibIntelligence
 	private:
 		QUdpSocket* udpSocket;
 		QQueue<SSL_WrapperPacket*> packets;
+		unsigned int itr_vision;
 	};
 }
