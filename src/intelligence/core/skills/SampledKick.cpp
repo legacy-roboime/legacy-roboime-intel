@@ -7,8 +7,6 @@
 #include "config.h"
 #include "mathutils.h"
 
-//#define CART	90.//100.//110.//82.6
-
 #ifdef SIMU
 #define KICKPOWERK 8000
 #else
@@ -58,7 +56,7 @@ void SampledKick::step()
 		qreal power;
 		if(pass_) {
 			qreal distReal = Vector(*ball - *getLookPoint()).length();
-			power = Sampler::sampledPowerKick(minPower_, calculatePassPower(distReal));
+			power = calculatePassPower(distReal);
 		} else {
 			if(deterministic_)
 				power = maxPower_;

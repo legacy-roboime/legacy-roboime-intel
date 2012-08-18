@@ -1,4 +1,4 @@
-//#define SIMU
+#define SIMU //calibra parâmetro da força do passe
 
 #ifdef _DEBUG
 #define DEBUG_UDP
