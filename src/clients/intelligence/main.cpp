@@ -6,7 +6,6 @@
 using namespace std;
 
 static Intelligence* intel;
-//static int winWidth, winHeight;//unused
 static QCoreApplication* app;
 
 #ifdef SOCCER_DEBUG
@@ -17,8 +16,6 @@ using namespace LibIntelligence::Plays;
 
 void reshape(int wid, int ht)
 {
-	winWidth = wid;
-	winHeight = ht;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(-soccer_env()->hfield_w, soccer_env()->hfield_w, 
