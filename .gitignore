@@ -5,4 +5,4 @@ lib*/*
 
 # ignore Qt Creator .user files
 *.user
-
+*.dat
