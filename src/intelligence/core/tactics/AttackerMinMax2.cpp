@@ -20,7 +20,7 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 	movePoint_ = new Object();
 	kickPoint_ = new Object();
 	dribblePoint_ = new Object();
-	driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
+	driveToBall_ = new DriveToBall(this, r, dribblePoint_, speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., speed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., speed, false);
 	pass_ = new SampledKick(this, r, kickPoint_, true, 0.4, 0.4, speed, true);
@@ -97,15 +97,21 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 		kickPoint_->setY(kickPoint.y);
 	}
 
-	movePoint_->setX(movePoint.x);
-	movePoint_->setY(movePoint.y);
+	if(action_ == get_ball){
+		movePoint_->setX(ball->x());
+		movePoint_->setY(ball->y());
+	}
+	else{
+		movePoint_->setX(movePoint.x);
+		movePoint_->setY(movePoint.y);
+	}
 
 	Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
 	qreal orientation = line.angle() * M_PI / 180.;
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
 
-	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
+	if(movePoint_->x() == ball->x() && movePoint_->y() == ball->y()){
 		dribblePoint_->setX(enemyGoal->x());
 		dribblePoint_->setY(enemyGoal->y());
 #ifdef SOCCER_ACTION
@@ -113,8 +119,8 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 #endif
 	}
 	else{
-		dribblePoint_->setX(movePoint.x);
-		dribblePoint_->setY(movePoint.y);
+		dribblePoint_->setX(movePoint_->x());
+		dribblePoint_->setY(movePoint_->y());
 	}
 }
 
