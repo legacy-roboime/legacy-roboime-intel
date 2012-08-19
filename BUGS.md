@@ -8,6 +8,7 @@ If you know a bug that is not here, add it!
 Currently Open Bugs
 --------------------
 
+- Finalizar o GotoAvoid.
 - Robô não deve chutar enquanto o dribble estiver e a bola estiver na inercial do giro do driblador.
 - Minmax não segue as regras do jogo(comando do juiz e não colidir)
 - Zicker43 só chuta no meio do gol.
