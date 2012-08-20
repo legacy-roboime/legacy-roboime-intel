@@ -9,7 +9,7 @@ using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 SampledDribble::SampledDribble(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic, qreal minPower, qreal maxPower, qreal speed)
-	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 60., 150., 30 * M_PI/180.),
+	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 60.)
 	minPower_(minPower),
 	maxPower_(maxPower)
 {}

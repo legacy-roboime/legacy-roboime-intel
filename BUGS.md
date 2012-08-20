@@ -8,6 +8,7 @@ If you know a bug that is not here, add it!
 Currently Open Bugs
 --------------------
 
+- Melhorar a arquitetura do LinearCombMotion e DriveToball, pois são skills contendo skills, o que dificulta o uso do setRobot.
 - Finalizar o GotoAvoid.
 - Robô não deve chutar enquanto o dribble estiver e a bola estiver na inercial do giro do driblador.
 - Minmax não segue as regras do jogo(comando do juiz e não colidir)
