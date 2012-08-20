@@ -219,7 +219,7 @@ void Minmax2::drawOpenGL()
 
 	saction_blue_act( sL, &blue_action );
 	saction_red_act( sL, &red_action );
-	glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
+	glViewport(winWidth /2. + 10, 0, winWidth /2., winHeight ); 
 	soccer_redraw( sL ); 
 	glutSwapBuffers();
 

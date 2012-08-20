@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
 #ifdef SOCCER_DEBUG
 	glutInit(&argc, argv);
-	glutInitWindowSize(1200, 400);
+	glutInitWindowSize(1200 + 10, 400);
 	glutInitDisplayMode(GLUT_RGB|GLUT_DEPTH|GLUT_DOUBLE);
 	(void)glutCreateWindow("Soccer");
 	glutReshapeFunc(reshape);
