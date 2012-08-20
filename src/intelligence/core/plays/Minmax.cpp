@@ -16,7 +16,7 @@ Play(parent,team,stage),
 	_depth(depth),
 	_current_state(stage),
 	_best_action(best_action),
-	log("C:\\Users\\Bill\\Desktop\\log.dat"),
+	log("..\\log.dat"),
 	steps_per_turn(18)
 {
 	log.open(QIODevice::WriteOnly);

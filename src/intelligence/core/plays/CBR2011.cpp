@@ -10,8 +10,8 @@ using namespace Plays;
 using namespace Tactics;
 
 CBR2011::CBR2011(QObject *parent, Team* team ,Stage* stage)
-	: Play(parent,team,stage),
-    log("C:\\Users\\Bill\\Desktop\\log.dat")
+	: log("..\\log.dat"),
+	Play(parent,team,stage)
 {
 	log.open(QIODevice::WriteOnly);
 

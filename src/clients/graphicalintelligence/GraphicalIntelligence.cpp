@@ -265,8 +265,10 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
+	skill["drivetoBall"] = new DriveToBall(this, team["us"]->at(1), team["they"]->at(1));
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
 	skill["goto"] = new Goto(this, team["us"]->at(3), 0, 0, 0, 500, true);
+	skill["gotoa"] = new GotoAvoid(this, team["us"]->at(0), new Point(0, 0), stage["main"]->ball(), stage["main"]->ball()->radius() + team["us"]->at(0)->body().cut(), 3000);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
 	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, false);
 	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
@@ -372,11 +374,11 @@ void GraphicalIntelligence::update()
 		case PLAY:
 			//play["cbr"]->step();
 			//play["cbr2"]->step();
-			//if(!((QThread *)play["minimax2"])->isRunning())
-			//	((QThread *)play["minimax2"])->start();
-			//play["minimax2"]->step();
-			play["refereeU"]->step();
-			play["refereeT"]->step();
+			if(!((QThread *)play["minimax2"])->isRunning())
+				((QThread *)play["minimax2"])->start();
+			play["minimax2"]->step();
+			//play["refereeU"]->step();
+			//play["refereeT"]->step();
 			//play["stoprefT"]->step();
 			//play["retaliateT"]->step();
 			//play["retaliateU"]->step();
@@ -392,8 +394,11 @@ void GraphicalIntelligence::update()
 
 		case SKILL:
 			//skill["fac"]->step();
-			skill["goto"]->step();
-			skill["samk"]->step();
+			skill["drivetoBall"]->step();
+			//skill["samd"]->step();
+			//cout << skill["gotoa"]->busy() << endl;
+			//skill["gotoa"]->step();
+			//skill["samk"]->step();
 			//((Goto*)skill["goto"])->setAllowDefenseArea();
 			//skill["drivetoObj"]->step();
 			break;

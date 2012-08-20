@@ -5,24 +5,17 @@
 #include "Ball.h"
 #include "Sampler.h"
 
-//#define CART	90.//110.//82.6
-
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 SampledDribble::SampledDribble(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic, qreal minPower, qreal maxPower, qreal speed)
-	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 60., 50., 5 * M_PI/180.),
+	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 60., 150., 30 * M_PI/180.),
 	minPower_(minPower),
 	maxPower_(maxPower)
-{
-	//this->setObjectName("SampledDribble");
-	//threshold = CART;
-
-}
+{}
 
 SampledDribble::~SampledDribble(void)
-{
-}
+{}
 
 void SampledDribble::step()
 {
@@ -35,10 +28,8 @@ void SampledDribble::step()
 		robot->dribble(maxPower_);
 	}
 
-	//robot->dribble(0);
-
 	qreal backup = threshold;
-	threshold = 50;//82.6; //para que o robô conduza numa direção é feita uma diminuição do threshold
+	threshold = .001; //para que o robô conduza numa direção é feita uma diminuição do threshold
 	DriveToBall::step();
 	threshold = backup;
 }

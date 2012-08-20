@@ -5,6 +5,7 @@
 #include "LibIntelligence.h"
 #include "DriveToObject.h"
 #include "Object.h"
+#include "GotoAvoid.h"
 
 namespace LibIntelligence
 {
@@ -23,6 +24,7 @@ namespace LibIntelligence
 
 		private:
 			bool inCone;
+			GotoAvoid* gotoa;
 		};
 	}
 }

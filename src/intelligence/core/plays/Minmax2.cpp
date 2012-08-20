@@ -15,7 +15,7 @@ using namespace Tactics;
 
 Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int depth, float alpha, float beta)
 	: Play(parent, team,stage),
-	log("C:\\Users\\Bill\\Desktop\\log.dat"),
+	log("..\\log.dat"),
 	speed_(speed),
 	depth_(depth),
 	alpha_(alpha),
@@ -40,11 +40,6 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 
 	envReal = *soccer_env();
 	changeSEnvMeasure(&envReal, 1000.);
-
-	//for(int i=0; i < team->size(); i++)
-	//	_max_skills.push_back( new Goto(this, team->at(i)) );
-
-	//goto_ = new Goto(this, team->at(2));
 
 	for(int i=0; i<NPLAYERS; i++)
 		player_[i] = new GotoTactic((Play *)this, team->at(i)); 
@@ -300,15 +295,7 @@ void Minmax2::act(SoccerAction& action, Team* team)
 			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
 			qreal orientation = line.angle() * PI / 180; //convenção sentido horario para classe QLineF
 
-			//_max_skills.at(i)->setPoint(pos->x, pos->y);
-			//_max_skills.at(i)->setSpeed(envReal.red_speed);
-			//_max_skills.at(i)->setOrientation(orientation);
-			//_max_skills.at(i)->step();
-
-			//cout << pos->x << " " << pos->y << endl;
-			//((GotoTactic*)player_[i])->setRobot(robot);
 			Goto* g = ((GotoTactic*)player_[i])->goto_;
-			//g->setAllowDefenseArea();
 			g->setPoint(pos.x, pos.y);
 			g->setSpeed(speed_);//envReal.red_speed);
 			g->setOrientation(orientation);

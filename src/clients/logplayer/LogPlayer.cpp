@@ -12,7 +12,7 @@ int LogPlayer::mx = 0;
 int LogPlayer::my = 0;
 int LogPlayer::gMainHandle = 0;
 bool LogPlayer::keyDown[256];//={false};
-//FILE * LogPlayer::outputfile = fopen("C:\\Users\\Bill\\Desktop\\testee.txt","w");
+//FILE * LogPlayer::outputfile = fopen("..\\testee.txt","w");
 //bool LogPlayer::gravar = false;
 int LogPlayer::count = 0;
 DebugRenderer LogPlayer::gDebugRenderer = DebugRenderer();
@@ -42,8 +42,8 @@ Simulation* LogPlayer::simulation = new Simulation();
 
 LogPlayer::LogPlayer(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
-	planningLog("C:\\Users\\Bill\\Desktop\\planningLog.dat"),
-	executeLog("C:\\Users\\Bill\\Desktop\\executeLog.dat")
+	planningLog("..\\planningLog.dat"),
+	executeLog("..\\executeLog.dat")
 {
 	planningLog.open(QIODevice::ReadOnly);
 	executeLog.open(QIODevice::ReadOnly);
