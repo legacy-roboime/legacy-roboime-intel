@@ -182,6 +182,15 @@ void Minmax2::run()
 		*sL = *s;
 //#endif
 
+		if(sL->red_ball_owner>0){
+			sL->ball_vel = v2_make(0,0);
+			sL->red[sL->red_ball_owner] = sL->ball;
+		}
+		else if(sL->blue_ball_owner>0){
+			sL->ball_vel = v2_make(0,0);
+			sL->blue[sL->blue_ball_owner] = sL->ball;
+		}
+
 		minimax_play( sL, depth_ );
 
 		mutex.lock();
