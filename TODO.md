@@ -16,6 +16,7 @@ Currently Open Tasks
 - Implementar biblioteca de geometria.
 - Automatizar ciência dos parâmetros do Minmax com Sliders (interface gráfica para intelligence).
 - Implementar um Preditor e Corretor.
+- Levantar o tempo do ciclo da malha fechada  e no update atualizar com o valor estimado
 - Implementar calibrador (automatizar ciência dos parâmetros e casar simulador e mundo real).
 - Implementar casos de teste (teste automático).
 - Usar o OMPL para implementar Motion Planning.
