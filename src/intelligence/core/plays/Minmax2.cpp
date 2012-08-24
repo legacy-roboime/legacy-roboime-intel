@@ -41,19 +41,15 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 	envReal = *soccer_env();
 	changeSEnvMeasure(&envReal, 1000.);
 
-	for(int i=0; i<NPLAYERS; i++)
-		player_[i] = new GotoTactic((Play *)this, team->at(i)); 
+	g = new Goto(this, team->at(0));
 
-	attacker = new AttackerMinMax2(this, team->at(0), speed_, 
+	attacker = new AttackerMinMax2(this, team->at(0), NULL, NULL, NULL, speed_, 
 								   speed_, 
 								   envReal.red_pass_speed); 
 }
 
 Minmax2::~Minmax2()
 {
-	for(int i=0; i<_max_skills.size(); i++)
-		delete _max_skills.at(i);
-
 	delete attacker;
 	//log.close();
 }
@@ -228,7 +224,7 @@ void Minmax2::drawOpenGL()
 
 	saction_blue_act( sL, &blue_action );
 	saction_red_act( sL, &red_action );
-	glViewport(winWidth /2. + 10, 0, winWidth /2., winHeight ); 
+	glViewport(/*winWidth /2. + 10*/0, 0, winWidth /2., winHeight ); 
 	soccer_redraw( sL ); 
 	glutSwapBuffers();
 
@@ -274,7 +270,7 @@ void Minmax2::act(SoccerAction& action, Team* team)
 
 	for(int i=0; i < team->size(); i++){
 		Vector2 pos = v2_make(0, 0); 
-		pos = action.move[i];
+		pos = action.move[i];//v2_make(-3025,0);//
 		Robot* robot = team->at(i);
 
 		if( idClosest == robot->id() ){
@@ -301,14 +297,14 @@ void Minmax2::act(SoccerAction& action, Team* team)
 #endif
 		}
 		else{
-			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
-			qreal orientation = line.angle() * PI / 180; //convenção sentido horario para classe QLineF
+			Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+			qreal orientation = line.angle() * PI / 180;
 
-			Goto* g = ((GotoTactic*)player_[i])->goto_;
+			g->setRobot(robot);
 			g->setPoint(pos.x, pos.y);
 			g->setSpeed(speed_);//envReal.red_speed);
 			g->setOrientation(orientation);
-			player_[i]->step();
+			g->step();
 		}
 	}
 }
