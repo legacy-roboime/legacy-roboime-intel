@@ -179,7 +179,7 @@ float sstate_evaluate( SoccerState *s )
  // }
  
 
- return s0 + s1 + s2 + s3 + s4 + s6 +  s7;/*s0 + s1 + s2 + s4 + s6 +  s7 + s8; //s0 + s1 + s2 + s3 + s4 + s6 + s7; // + s6; //+ s8; //s0 +  s1 + s2 /*+ s3 + s4 + s6 + */ + s7; //  +  s3 + s4 + s5 + s6 + s7;// + s8;// + s3 + s4 + s5 + s6 + s7 + s8;*/
+ return s0 + s1 + s2 + s3 + s4 + s6 +  s7;
 } 
 
 
