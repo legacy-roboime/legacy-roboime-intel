@@ -37,13 +37,13 @@ void DriveToBall::step()
 	Line ball_robot = Line(ball->x(), ball->y(), robot->x(), robot->y());
 
 	//Cone Maior
-	qreal bAngleCone = 75; //angulo de abertura do cone maior
+	qreal bAngleCone = 45; //angulo de abertura do cone maior
 	qreal ang3 = ball_robot.angle(); //angulo da linha que liga bola pro robo
 	qreal ang2 = ((int)(btAngle + bAngleCone))%360;
 	qreal ang1 = ((int)(btAngle - bAngleCone))%360;
 
 	//Cone Menor
-	qreal sAngleCone = 45; //angulo de abertura do cone menor
+	qreal sAngleCone = 15; //angulo de abertura do cone menor
 	qreal ang4 = ((int)(btAngle - sAngleCone))%360;
 	qreal ang5 = ((int)(btAngle + sAngleCone))%360;
 
