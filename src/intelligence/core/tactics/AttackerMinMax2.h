@@ -21,7 +21,7 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			AttackerMinMax2(QObject* parent, Robot* slave, qreal speed = 1000., qreal dribbleSpeed = 500., qreal passSpeed = 800.);
+			AttackerMinMax2(QObject* parent, Robot* slave, Object* kickPoint = NULL, Object* movePoint = NULL, Object* dribblePoint = NULL, qreal speed = 1000., qreal dribbleSpeed = 500., qreal passSpeed = 800.);
 			//AttackerMinMax2(QObject* p, Robot* r, const AttackerMinMax2& zickler);
 			~AttackerMinMax2();
 			Object* kickPoint();

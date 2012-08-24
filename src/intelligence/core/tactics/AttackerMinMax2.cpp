@@ -13,13 +13,24 @@ using namespace Tactics;
 using namespace Skills;
 using namespace AttackerMinMax2T;
 
-AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbleSpeed, qreal passSpeed)
+AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, Object* kickPoint, Object* movePoint, Object* dribblePoint, qreal speed, qreal dribbleSpeed, qreal passSpeed)
 	: Tactic(p, r, true)
 {
 	action_ = null_action;
-	movePoint_ = new Object();
-	kickPoint_ = new Object();
-	dribblePoint_ = new Object();
+
+	if(movePoint == NULL)
+		movePoint_ = new Object();
+	else
+		movePoint_ = movePoint;
+	if(kickPoint == NULL)
+		kickPoint_ = new Object();
+	else
+		kickPoint_ = kickPoint;
+	if(dribblePoint == NULL)
+		dribblePoint_ = new Object();
+	else
+		dribblePoint_ = dribblePoint;
+
 	driveToBall_ = new DriveToBall(this, r, dribblePoint_, speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., speed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., speed, false);
@@ -92,11 +103,26 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	Ball* ball = this->stage()->ball();
 	Goal* enemyGoal = robot->enemyGoal();
 
+	//Passe e Chute
 	if(action_ == pass || action_ == kick_to_goal){
 		kickPoint_->setX(kickPoint.x);
 		kickPoint_->setY(kickPoint.y);
 	}
 
+	//Conduzir
+	Line move_ball = Line(*ball, Point(movePoint.x, movePoint.y));
+	if(action_ == get_ball || move_ball.length() < MIN_DIST){ //segunda condição para remover zona de instabilidade da aleatoriedade do minmax
+		//Mantem conduzindo para o ultimo ponto de dribblePoint_
+#ifdef SOCCER_ACTION
+		cout << "ERROR: movePoint == ballPoint" << endl;
+#endif
+	}
+	else{
+		dribblePoint_->setX(movePoint.x);
+		dribblePoint_->setY(movePoint.y);
+	}
+
+	//Goto
 	if(action_ == get_ball){
 		movePoint_->setX(ball->x());
 		movePoint_->setY(ball->y());
@@ -110,18 +136,6 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	qreal orientation = line.angle() * M_PI / 180.;
 	goto_->setPoint(movePoint_->x(), movePoint_->y());
 	goto_->setOrientation(orientation);
-
-	if(movePoint_->x() == ball->x() && movePoint_->y() == ball->y()){
-		dribblePoint_->setX(enemyGoal->x());
-		dribblePoint_->setY(enemyGoal->y());
-#ifdef SOCCER_ACTION
-		cout << "ERROR: movePoint == ballPoint" << endl;
-#endif
-	}
-	else{
-		dribblePoint_->setX(movePoint_->x());
-		dribblePoint_->setY(movePoint_->y());
-	}
 }
 
 bool GotoToDriveT::condition()
