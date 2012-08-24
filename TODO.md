@@ -9,6 +9,7 @@ Remember to remove finished features.
 Currently Open Tasks
 --------------------
 
+- Colocar passe em alto nivel no mapeamento ao inves do minmax falar o kick_point ele deve passar o id do robo receptor do passe.
 - Concluir implementação do Goalkeeper.
 - Object herdar de Vector ao invés de Point, ou implementar funcionalidades presentes em Vector para Point.
 - Criar um Environment para englobar todas as contantes.
