@@ -21,8 +21,8 @@ void soccer_env_init( void )
  senv.blue_recv_radius = .01;
  senv.robot_radius = .09;
  senv.goal_size = .7;
- senv.max_red_kick_dist = .5;//12.;//
- senv.max_blue_kick_dist = .5;//12.;//
+ senv.max_red_kick_dist = 12.;//.5;//
+ senv.max_blue_kick_dist = 12.;//.5;//
  senv.hfield_w = 3.025;// 1.325;//
  senv.hfield_h = 2.025;// 0.825;//
  senv.red_goal = v2_make( senv.hfield_w, 0 );
