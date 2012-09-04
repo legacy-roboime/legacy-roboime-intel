@@ -288,7 +288,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
-	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
+	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
 #ifdef HAVE_WINDOWS
 	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
@@ -380,21 +380,21 @@ void GraphicalIntelligence::update()
 			//play["refereeU"]->step();
 			//play["refereeT"]->step();
 			//play["stoprefT"]->step();
-			//play["retaliateT"]->step();
+			play["retaliateT"]->step();
 			//play["retaliateU"]->step();
 			//tactic["zickler43"]->step();
 			//play["retaliateT"]->step();
 			break;
 
 		case TACTIC:
-			tactic["zickler43"]->step();
+			tactic["attackerM"]->step();
 			//tactic["gkpr"]->step();
 			//tactic["def"]->step();
 			break;
 
 		case SKILL:
 			//skill["fac"]->step();
-			skill["drivetoBall"]->step();
+			//skill["drivetoBall"]->step();
 			//skill["samd"]->step();
 			//cout << skill["gotoa"]->busy() << endl;
 			//skill["gotoa"]->step();
