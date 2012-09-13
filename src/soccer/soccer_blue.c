@@ -13,8 +13,7 @@ SoccerAction sstate_blue_get_ball( SoccerState *s )
  if( (s->red_ball_owner < 0) && (s->blue_ball_owner < 0) ){
    if( ((t =  sstate_time_to_blue_get_ball( s, &closest_blue )) <
        sstate_time_to_red_get_ball( s, &closest_red )) && ( t > 0 ) ){
-        //action = use_blue_move_table(s, s->blue_ball_owner ); 
-        DEBUG("blue get ball\n");  
+          DEBUG("blue get ball\n");  
         s->ball = v2_add( s->ball, v2_scale( t, s->ball_vel ) );
         s->ball_vel = v2_make(0,0);
         action.move[closest_blue] = s->ball;
@@ -39,7 +38,6 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
  if( (s->red_ball_owner >= 0) || (s->blue_ball_owner >= 0))
      return action;
 
- //action = use_blue_move_table(s, recv );
  time_to_red_block = sstate_time_to_blue_get_ball( s, &closest_red ); 
  time_to_receive = time_to_intersect( s->ball, s->ball_vel, s->blue[recv], 
                                       v2_norm( s->ball_vel ), 
@@ -72,7 +70,6 @@ SoccerAction sstate_blue_receive_ball( SoccerState *s, int recv )
 SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
 {
  int i;
- float dy = .15;
  float k;
  Vector2 p;
  SoccerAction action = saction_blue_make(s);
@@ -80,10 +77,9 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s )
  if( (s->blue_ball_owner >= 0) && (s->red_ball_owner < 0) &&
      (v2_norm( v2_sub( s->ball, soccer_env()->red_goal )) <
        soccer_env()->max_blue_kick_dist) ){
- //  action = use_blue_move_table(s, s->blue_ball_owner );
    s->red_goal_covering = 1;
    for( k = -.5*soccer_env()->goal_size; k < .5*soccer_env()->goal_size;
-        k += .2 ){ 
+        k += soccer_env()->robot_radius ){ 
 	  p = soccer_env()->red_goal;
 	  p.y += k;
           is_blue_kick_scored(s, p ); 
@@ -130,7 +126,6 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
 
  if( (s->blue_ball_owner >= 0) && (s->blue_ball_owner != recv ) &&
      (s->red_ball_owner < 0 )){
-		// action = use_blue_move_table(s, s->blue_ball_owner );
          p = v2_make(recv_radius*DRAND()*cos(2*PI*DRAND()),
                      recv_radius*DRAND()*sin(2*PI*DRAND()) );
          new_recv_pos = v2_add( s->blue[recv], p );
@@ -155,43 +150,13 @@ SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius )
 }
 
 
-SoccerAction sstate_blue_block( SoccerState *s, int robot, Vector2 src_point )
-{
- int maxIter = 10;	 
- int attempt = 0;
- Vector2 goal_point, new_pos;
- SoccerAction action = use_blue_move_table(s, robot);
- 
- do{
-   attempt++;
-   goal_point = v2_add( soccer_env()->blue_goal,
-	                    v2_make(0, (DRAND() - .5)*soccer_env()->goal_size ));
-   new_pos = v2_lerp( DRAND(), goal_point, src_point );
- }
- while( (attempt < maxIter) && (!sstate_is_valid_blue_pos( s, robot, new_pos )) ); 
-
- if( attempt ==  maxIter ){
-	 action.type = move_table;
-	 return action;
- }
- 
- action.type = move;
- action.move[robot] = new_pos;
- s->blue[robot] = new_pos;
- if( robot == s->blue_ball_owner )
-    s->ball = new_pos;
- action.prune = FALSE;
- return action;
-}
-
-
 SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
 {
  int attempt = 0;
  int maxIter = 10;
  float d;
  Vector2 p, new_pos;
- SoccerAction action = use_blue_move_table(s, robot); 
+ SoccerAction action; 
 
  action = use_blue_move_table(s, robot);  
  do{
@@ -205,13 +170,11 @@ SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius )
      new_pos = v2_add( s->blue[robot], p ); 
      action.move[robot] = new_pos; 
      action.prune = FALSE;
- }while( (attempt < maxIter) && (/*(sstate_min_red_dist(s, new_pos) < d )  ||*/
+ }while( (attempt < maxIter) && ((sstate_min_red_dist(s, new_pos) < d )  ||
            (!sstate_is_valid_blue_pos( s, robot, new_pos ) &&
              sstate_is_inside_field( s, s->blue[robot] ))) );
- if( attempt == maxIter ){
-	 action.type = move_table;
+ if( attempt == maxIter )
 	 return action;
- }
  DEBUG5( "blue move %i: (%f,%f) -> (%f,%f)", i,
           s->blue[robot].x, s->blue[robot].y , new_pos.x, new_pos.y ); 
  s->blue[robot] = new_pos;
@@ -236,7 +199,7 @@ static SoccerAction use_blue_move_table( SoccerState *s, int robot )
  for( i=0; i < NPLAYERS; i++ )
    if( i != robot ){
      disp = v2_sub( get_blue_move_table(i), s->blue[i] );
-     if( v2_norm( disp ) > .1*soccer_env()->robot_radius ){
+     if( v2_norm( disp ) > .5*soccer_env()->robot_radius ){
          p =  v2_add( s->blue[i], 
                      v2_scale( MAX(1., NPLAYERS*soccer_env()->sample_period
                                        *soccer_env()->blue_speed ),

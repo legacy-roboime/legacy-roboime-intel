@@ -5,7 +5,7 @@
 extern "C" {
 #endif 
 
-#include "config.h"
+#define NPLAYERS 6
 
 #include "vector.h"
 #include "soccer_env.h" 
@@ -27,7 +27,7 @@ extern "C" {
 #define DEBUG4(s,a,b,c,d)    ;
 #define DEBUG5(s,a,b,c,d,e)  ;
 
-enum actions {get_ball, receive_ball, kick_to_goal, pass, move, null_action, move_table, blocker};
+enum actions {get_ball, receive_ball, kick_to_goal, pass, move, null_action};
 
 typedef enum actions type_actions;
 
@@ -45,8 +45,6 @@ typedef struct SoccerAction{
 
 
 typedef struct SoccerState{
-
-  struct SoccerState *real_state;
 
   float red_time_stamp;
   float blue_time_stamp;
@@ -114,9 +112,6 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s );
 
 SoccerAction sstate_red_pass( SoccerState *s, int recv, float recv_radius );
 SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius );
-
-SoccerAction sstate_red_block( SoccerState *s, int robot, Vector2 src_point );
-SoccerAction sstate_blue_block( SoccerState *s, int robot, Vector2 src_point );
 
 SoccerAction sstate_red_move( SoccerState *s, int robot, float radius );
 SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius );

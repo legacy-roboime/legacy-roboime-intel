@@ -265,13 +265,13 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
-	skill["drivetoBall"] = new DriveToBall(this, team["us"]->at(1), team["they"]->at(1));
+	skill["drivetoBall"] = new DriveToBall(this, team["us"]->at(0), team["they"]->at(0));
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
 	skill["goto"] = new Goto(this, team["us"]->at(3), 0, 0, 0, 500, true);
 	skill["gotoa"] = new GotoAvoid(this, team["us"]->at(0), new Point(0, 0), stage["main"]->ball(), stage["main"]->ball()->radius() + team["us"]->at(0)->body().cut(), 3000);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
-	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, false);
-	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
+	skill["samk"] = new SampledKick(this, team["us"]->at(2), team["us"]->at(2), true, 0, 1, 3000, false);
+	skill["samd"] = new SampledDribble(this, team["us"]->at(1), team["they"]->at(1), true, 1, 1, 3000);
 	skill["loop"] = new Loops::Orbit(this, team["us"]->at(1), 0, 0, 1000, 3000, 1.0);
 	skill["fac"] = new FollowAndCover(this, team["us"]->at(1), team["they"]->at(1), team["us"]->goal(), 1000, 3000);
 
@@ -388,17 +388,18 @@ void GraphicalIntelligence::update()
 
 		case TACTIC:
 			tactic["attackerM"]->step();
+			tactic["zickler43"]->step();
 			//tactic["gkpr"]->step();
 			//tactic["def"]->step();
 			break;
 
 		case SKILL:
 			//skill["fac"]->step();
-			//skill["drivetoBall"]->step();
-			//skill["samd"]->step();
+			skill["drivetoBall"]->step();
+			skill["samd"]->step();
 			//cout << skill["gotoa"]->busy() << endl;
 			//skill["gotoa"]->step();
-			//skill["samk"]->step();
+			skill["samk"]->step();
 			//((Goto*)skill["goto"])->setAllowDefenseArea();
 			//skill["drivetoObj"]->step();
 			break;
