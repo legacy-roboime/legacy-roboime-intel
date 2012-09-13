@@ -20,7 +20,7 @@ A RESPOSTA DESSAS DUAS ACHO Q EH PQ MOVE_TABLE NEM SEMPRE EH FICAR PARADO
 
 - Minmax não segue as regras do jogo(comando do juiz e não colidir)
 
-- DriveToBall ainda está demorando para fazer a voltinha e as vezes ele trava.
+- DriveToBall ainda está demorando para fazer a voltinha e as vezes ele trava (testar no real).
 - Finalizar o GotoAvoid.
 - Zicker43 só chuta no meio do gol.
 - Melhorar a arquitetura do LinearCombMotion e DriveToball, pois são skills contendo skills, o que dificulta o uso do setRobot.
