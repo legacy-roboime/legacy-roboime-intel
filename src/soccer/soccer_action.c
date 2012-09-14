@@ -162,7 +162,7 @@ void saction_simulate_red( SoccerState *s, SoccerAction *red_act,
  if( red_act->type == kick_to_goal ){
      printf( "Red Goal Scored!! goal covering = %f \n", 
               red_act->enemy_goal_covering );
-     if( red_act->enemy_goal_covering < .3 )
+     if( red_act->enemy_goal_covering < .5 )
        sstate_restart_game_pos(s);
      return;
  }
@@ -182,7 +182,7 @@ void saction_simulate_red( SoccerState *s, SoccerAction *red_act,
      else 
         robot_speed = soccer_env()->red_speed;
  
-     if( v2_norm( v2_sub( red_act->move[i], s->red[i] )) > .02 ) /* controller tol */
+     if( v2_norm( v2_sub( red_act->move[i], s->red[i] )) > .01 ) /* controller tol */
        s->red[i] = v2_add( s->red[i], v2_scale( dt*robot_speed,
                    v2_unit( v2_sub( red_act->move[i], s->red[i] ))) );
 
@@ -208,7 +208,7 @@ void saction_simulate_blue( SoccerState *s, SoccerAction *blue_act,
  if( blue_act->type == kick_to_goal  ){
    printf( "Blue Goal Scored!! goal covering = %f \n", 
             blue_act->enemy_goal_covering );
-   if( blue_act->enemy_goal_covering < .3 )
+   if( blue_act->enemy_goal_covering < .5 )
      sstate_restart_game_pos(s);
    return; 
  }
@@ -228,7 +228,7 @@ void saction_simulate_blue( SoccerState *s, SoccerAction *blue_act,
      else 
         robot_speed = soccer_env()->blue_speed;
  
-     if( v2_norm(v2_sub( blue_act->move[i], s->blue[i] )) > .02 )    
+     if( v2_norm(v2_sub( blue_act->move[i], s->blue[i] )) > .01 )    
        s->blue[i] = v2_add( s->blue[i], v2_scale( dt*robot_speed,
                     v2_unit( v2_sub( blue_act->move[i], s->blue[i] ))) );
 

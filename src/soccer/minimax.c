@@ -107,12 +107,21 @@ float minimax_getMaxValue(SoccerState s, int depth,
  SoccerState saux;
  SoccerAction action;
 
+
+ if( (s.red_ball_owner < 0) && (s.blue_ball_owner < 0) )
+     v2_add( s.ball, v2_scale( parent_duration, s.ball_vel ) );
+
  if( depth == 0 ){
+      float value;
       saux = s;
       sstate_red_kick_to_goal(&saux);
       sstate_blue_kick_to_goal(&saux);
-      return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
+      //return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
+      value =  sstate_evaluate(&saux);
+      return value + fabs(value)*(minimax_red_time_weight_func(&s)
+                                  -minimax_red_dist_weight_func()  );
  }
+
  for( i = 0; i < MAX_NPLAYS; i++ ){
      saux = s;
      action = minimax_expandMax( &saux, i, depth );
@@ -140,12 +149,22 @@ float minimax_getMinValue(SoccerState s, int depth,
  SoccerState saux;
  SoccerAction action;
 
+
+ if( (s.red_ball_owner < 0) && (s.blue_ball_owner < 0) )
+     v2_add( s.ball, v2_scale( parent_duration, s.ball_vel ) );
+
+
  if( depth == 0 ){
+     float value;
      saux = s;
      sstate_blue_kick_to_goal(&saux); 
      sstate_red_kick_to_goal(&saux); 
-     return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
+     //return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
+     value =  sstate_evaluate(&saux);
+     return value + fabs(value)*( minimax_blue_time_weight_func(&s)
+                                 -minimax_red_dist_weight_func() ) ;
  }
+
  for( i = 0; i < MIN_NPLAYS; i++ ){
       saux = s;
       action = minimax_expandMin( &saux, i, depth );
@@ -167,12 +186,29 @@ float minimax_getMinValue(SoccerState s, int depth,
 
 float minimax_red_time_weight_func( SoccerState *s )
 {
- return 1 + .0001*( -s->red_time_stamp + s->blue_time_stamp);
+ if(fabs(-s->red_time_stamp + s->blue_time_stamp) <= 10)
+	return .0001*( -s->red_time_stamp + s->blue_time_stamp);
+ else if(-s->red_time_stamp + s->blue_time_stamp > 10)
+	return MAX_FLOAT;
+ else
+	return -MAX_FLOAT;
+}
+
+
+float minimax_red_dist_weight_func( void )
+{
+ int i;
+
+ float sum = 0;
+ for( i = 0; i < NPLAYERS; i++ )
+   sum += v2_norm( v2_sub( get_red_move_table(i), best_red_action.move[i] ) );
+ return .0001*sum;
 }
 
 float minimax_blue_time_weight_func( SoccerState *s )
 {
- return 1 + .0001*( -s->red_time_stamp + s->blue_time_stamp);
+ return minimax_red_time_weight_func(s);
+// return 1 + .0001*( -s->red_time_stamp + s->blue_time_stamp);
 }
  
 
@@ -186,34 +222,25 @@ SoccerAction minimax_expandMax( SoccerState *s, int i, int depth )
  if( s->red_ball_owner >= 0 ){
      if( i== 0 )
         action = sstate_red_kick_to_goal(s);
-     if ( (i >= 2) && (i < 14) )
+     if ( (i >= 2) && (i < 86) )
        action = sstate_red_pass(s, i%NPLAYERS, recv_radius ); 
  }
  else{
      if( i == 1 )
        action = sstate_red_get_ball(s); 
-     if( (i >=14 ) && (i < 26) )
+     if( (i >=2 ) && (i < 86) )
        action = sstate_red_receive_ball( s, i%NPLAYERS ); 
- }
- 
- if( (i >= 26) && (i < 98 ) )
+ } 
+ if( (i >= 86) && (i < 147 ) )
      action = sstate_red_move(s, red_robot, move_radius );
-/* if( (i>= 50) && ( i < 60) )
-     action = sstate_red_move(s, red_robot,(1./2)*move_radius );
- if( (i >= 60) && ( i < 70) )
-     action = sstate_red_move(s, red_robot,(1./4)*move_radius );
- if( (i >= 70) && ( i < 80) )
-     action = sstate_red_move(s, red_robot, (1./8)*move_radius);
- if( (i >= 80) && ( i < 90) )
-     action = sstate_red_move(s, red_robot, (1./16)*move_radius );
- if( (i >= 90) && ( i < 98) )
-     action = sstate_red_move(s, red_robot, (1./32)*move_radius  ); */
- if( i == 99 ){
+ if( i == 147 )
+     action = sstate_red_block(s, red_robot, s->ball); 
+ if( i == 148 ){
      s->red[red_robot] = get_red_move_table(red_robot);
      action.move[red_robot] = get_red_move_table(red_robot);
      action.prune = FALSE;
  }   
- if( i == 100 )
+ if( i == 149 )
    action.prune = FALSE; 
 
  s->red_time_stamp += saction_red_elapsed_time(&action); 
@@ -231,34 +258,25 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  if( s->blue_ball_owner >= 0 ){
      if( i== 0 )
         action = sstate_blue_kick_to_goal(s);
-     if ( (i >= 2) && (i < 14) )
+     if ( (i >= 2) && (i < 86) )
        action = sstate_blue_pass(s, i%NPLAYERS, recv_radius ); 
  }
  else{
      if( i == 1 )
        action = sstate_blue_get_ball(s); 
-     if( (i >=14 ) && (i < 26) )
+     if( (i >=2 ) && (i < 86) )
        action = sstate_blue_receive_ball( s, i%NPLAYERS ); 
  }
-
- if( (i >= 26) && (i < 98 ) )
+ if( (i >= 86) && (i < 147 ) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
-/* if( (i>= 50) && ( i < 60) )
-     action = sstate_blue_move(s, blue_robot,(1./2)*move_radius );
- if( (i >= 60) && ( i < 70) )
-     action = sstate_blue_move(s, blue_robot,(1./4)*move_radius );
- if( (i >= 70) && ( i < 80) )
-     action = sstate_blue_move(s, blue_robot, (1./8)*move_radius);
- if( (i >= 80) && ( i < 90) )
-     action = sstate_blue_move(s, blue_robot, (1./16)*move_radius );
- if( (i >= 90) && ( i < 98) )
-     action = sstate_blue_move(s, blue_robot, (1./32)*move_radius  ); */
- if( i == 99 ){
+ if( i == 147 )
+     action = sstate_blue_block(s, blue_robot, s->ball);
+ if( i == 148 ){
      s->blue[blue_robot] = get_blue_move_table(blue_robot);
      action.move[blue_robot] = get_blue_move_table(blue_robot);
      action.prune = FALSE;
  }   
- if( i == 100 )
+ if( i == 149 )
    action.prune = FALSE; 
  
  s->blue_time_stamp += saction_blue_elapsed_time(&action); 

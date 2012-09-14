@@ -113,6 +113,9 @@ SoccerAction sstate_blue_kick_to_goal( SoccerState *s );
 SoccerAction sstate_red_pass( SoccerState *s, int recv, float recv_radius );
 SoccerAction sstate_blue_pass( SoccerState *s, int recv, float recv_radius );
 
+SoccerAction sstate_red_block( SoccerState *s, int robot, Vector2 src_point );
+SoccerAction sstate_blue_block( SoccerState *s, int robot, Vector2 src_point );
+
 SoccerAction sstate_red_move( SoccerState *s, int robot, float radius );
 SoccerAction sstate_blue_move( SoccerState *s, int robot, float radius );
 
