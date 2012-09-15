@@ -156,9 +156,9 @@ void Minmax2::update_soccer_state()
 void Minmax2::run()
 {
 	while(true) {
-#ifdef MINMAX2_DELAY
+
 		QTime time1 = QTime::currentTime();
-#endif
+
 #ifdef SOCCER_DEBUG
 		statemutex.lock();
 #endif
@@ -188,6 +188,12 @@ void Minmax2::run()
 		}
 
 		minimax_play( sL, depth_ );
+
+		double total_time = 1000;
+		QTime time3 = QTime::currentTime();
+		double wait_time = (time3.minute() * 60 * 1000 + time3.second() * 1000 + time3.msec()) - (time1.minute() * 60 * 1000 + time1.second() * 1000 + time1.msec());
+		if(wait_time < total_time)
+			QThread::msleep(total_time-wait_time);
 
 		mutex.lock();
 		red_action = *minimax_get_best_red_action();

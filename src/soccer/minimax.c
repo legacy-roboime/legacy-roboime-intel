@@ -119,7 +119,7 @@ float minimax_getMaxValue(SoccerState s, int depth,
       //return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
       value =  sstate_evaluate(&saux);
       return value + fabs(value)*(minimax_red_time_weight_func(&s)
-                                  -minimax_red_dist_weight_func()  );
+                                  /*-minimax_red_dist_weight_func()*/  );
  }
 
  for( i = 0; i < MAX_NPLAYS; i++ ){
@@ -162,7 +162,7 @@ float minimax_getMinValue(SoccerState s, int depth,
      //return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
      value =  sstate_evaluate(&saux);
      return value + fabs(value)*( minimax_blue_time_weight_func(&s)
-                                 -minimax_red_dist_weight_func() ) ;
+                                 /*-minimax_red_dist_weight_func()*/ ) ;
  }
 
  for( i = 0; i < MIN_NPLAYS; i++ ){
