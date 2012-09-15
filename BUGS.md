@@ -20,6 +20,7 @@ A RESPOSTA DESSAS DUAS ACHO Q EH PQ MOVE_TABLE NEM SEMPRE EH FICAR PARADO
 
 - Minmax não segue as regras do jogo(comando do juiz e não colidir)
 - Minmax tem q receber qual eh o goleiro para soh ele poder querer entrar na area.
+- Minmax conduz a bola acima do permitido.
 
 - DriveToBall ainda está demorando para fazer a voltinha e as vezes ele trava (testar no real).
 - Finalizar o GotoAvoid.
