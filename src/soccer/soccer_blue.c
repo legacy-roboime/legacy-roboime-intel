@@ -172,7 +172,7 @@ SoccerAction sstate_blue_block( SoccerState *s, int robot, Vector2 src_point )
  if( attempt ==  maxIter )
      return action;
  
- action.type = move;
+ action.type = blocker;
  action.move[robot] = new_pos;
  s->blue[robot] = new_pos;
  if( robot == s->blue_ball_owner )
@@ -240,6 +240,7 @@ static SoccerAction use_blue_move_table( SoccerState *s, int robot )
           s->blue[i] = p;
      }
      action.move[i] = s->blue[i];
+	 action.type = move_table;
    } 
 
  return action;
