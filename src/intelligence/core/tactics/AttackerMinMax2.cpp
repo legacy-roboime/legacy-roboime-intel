@@ -107,6 +107,12 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	if(action_ == pass || action_ == kick_to_goal){
 		kickPoint_->setX(kickPoint.x);
 		kickPoint_->setY(kickPoint.y);
+
+		//forcei transicao na maquina de estado para simplificar, evitar colocar mais MachineTransition
+		if(action_ == pass)
+			this->setCurrentState(pass_);
+		else if(action_ == kick_to_goal)
+			this->setCurrentState(goalKick_);
 	}
 
 	//Conduzir
