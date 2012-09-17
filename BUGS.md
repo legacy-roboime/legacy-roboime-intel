@@ -8,6 +8,8 @@ If you know a bug that is not here, add it!
 Currently Open Bugs
 --------------------
 
+- move_table é incompleta, pois não tenho todas as informações necessárias para executar a action anterior (só tem posicao)
+
 A RESPOSTA DESSAS DUAS ACHO Q EH PQ MOVE_TABLE NEM SEMPRE EH FICAR PARADO
 - Mesmo com o oponente apenas com a opcao de move_table (ficar parado) a best_action do minmax define uma posicao que não é a dele (ficar parado).
 - Quando jogo todos os oponentes para fora, embora na visao (entrada pro minmax) os oponentes estejam fora o move do ultimo a ser removido cai dentro do campo, pq?
