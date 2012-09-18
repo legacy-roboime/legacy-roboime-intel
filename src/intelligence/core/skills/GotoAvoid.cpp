@@ -75,7 +75,7 @@ void GotoAvoid::step()
 		// Then we can go straight to the point
 		Goto::setNotIgnoreBrake();
 		Goto::step();
-	} else if(!(robot_avoid.length() > radiusAvoid)){ 
+	} else if(!(robot_avoid.length() > radiusAvoid + 500)){ 
 		int dec = 20;
 		int i;
 		qreal delta = avoid_target.angleTo(avoid_robot);
