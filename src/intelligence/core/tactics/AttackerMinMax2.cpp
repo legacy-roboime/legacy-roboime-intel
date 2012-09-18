@@ -95,6 +95,7 @@ type_actions AttackerMinMax2::action()
 	return action_;
 }
 
+//atualiza maquina (tatica) que controla o owner
 void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint, Vector2 movePoint)
 {
 	action_ = action;
@@ -103,45 +104,74 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	Ball* ball = this->stage()->ball();
 	Goal* enemyGoal = robot->enemyGoal();
 
-	//Passe e Chute
-	if(action_ == pass || action_ == kick_to_goal){
+	Line move_ball = Line(*ball, Point(movePoint.x, movePoint.y));
+
+	//forcei transicao na maquina de estado para simplificar, evitar colocar mais MachineTransition
+	if(action == get_ball){//owner pegando a bola
+		//adicionei a heuristica do look point, pois o soccer nao define
+		dribblePoint_->setX(enemyGoal->x());
+		dribblePoint_->setY(enemyGoal->y());
+
+		this->setCurrentState(driveToBall_);
+	}
+	else if(action == kick_to_goal){//owner chutando ao gol
 		kickPoint_->setX(kickPoint.x);
 		kickPoint_->setY(kickPoint.y);
 
-		//forcei transicao na maquina de estado para simplificar, evitar colocar mais MachineTransition
-		if(action_ == pass)
-			this->setCurrentState(pass_);
-		else if(action_ == kick_to_goal)
-			this->setCurrentState(goalKick_);
+		this->setCurrentState(goalKick_);
 	}
+	else if(action == pass){//owner passando
+		kickPoint_->setX(kickPoint.x);
+		kickPoint_->setY(kickPoint.y);
 
-	//Conduzir
-	Line move_ball = Line(*ball, Point(movePoint.x, movePoint.y));
-	if(action_ == get_ball || move_ball.length() < MIN_DIST){ //segunda condição para remover zona de instabilidade da aleatoriedade do minmax
-		//Mantem conduzindo para o ultimo ponto de dribblePoint_
-#ifdef SOCCER_ACTION
-		cout << "ERROR: movePoint == ballPoint" << endl;
-#endif
+		this->setCurrentState(pass_);
 	}
-	else{
+	else if(action == actions::move && move_ball.length() > MIN_DIST){//owner conduzindo bola ate movePoint
+		//TODO: colocar uma condição para ele parar de conduzir quando chegar no movePoint
+
+		//adicionei a heuristica do look point, pois o soccer nao define
 		dribblePoint_->setX(movePoint.x);
 		dribblePoint_->setY(movePoint.y);
-	}
 
-	//Goto
-	if(action_ == get_ball){
-		movePoint_->setX(ball->x());
-		movePoint_->setY(ball->y());
+		this->setCurrentState(dribble_);
 	}
-	else{
-		movePoint_->setX(movePoint.x);
-		movePoint_->setY(movePoint.y);
-	}
+	else if(action == actions::move){
+		//Mantem conduzindo para o ultimo ponto de dribblePoint_
 
-	Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
-	qreal orientation = line.angle() * M_PI / 180.;
-	goto_->setPoint(movePoint_->x(), movePoint_->y());
-	goto_->setOrientation(orientation);
+		this->setCurrentState(dribble_);
+	}
+	else if(action == blocker){//owner vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
+	else if(action == move_table){//owner vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
+	else if(action == receive_ball){//owner fazendo move_table, vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
+	else if(action == null_action){//owner vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
 }
 
 bool GotoToDriveT::condition()

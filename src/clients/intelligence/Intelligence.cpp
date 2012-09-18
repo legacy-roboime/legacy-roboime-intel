@@ -337,7 +337,7 @@ void Intelligence::update()
 			//play["refereeU"]->step();
 			//play["refereeT"]->step();
 			//play["stoprefT"]->step();
-			play["retaliateT"]->step();
+			//play["retaliateT"]->step();
 			//play["retaliateU"]->step();
 			//tactic["zickler43"]->step();
 			//play["retaliateT"]->step();

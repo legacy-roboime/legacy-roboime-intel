@@ -17,6 +17,8 @@ void minimax_init( SoccerState *s )
  int i;
  best_red_action.prune = TRUE;
  best_blue_action.prune = TRUE; 
+ best_red_action.type = null_action;
+ best_blue_action.type = null_action;
 
  for( i = 0; i < NPLAYERS; i++ ){
    best_red_action.move[i] = s->red[i];
@@ -255,7 +257,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  move_radius = soccer_env()->blue_move_radius;
  recv_radius = soccer_env()->blue_recv_radius; 
  
- if( s->blue_ball_owner >= 0 ){
+ /*if( s->blue_ball_owner >= 0 ){
      if( i== 0 )
         action = sstate_blue_kick_to_goal(s);
      if ( (i >= 2) && (i < 86) )
@@ -270,7 +272,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  if( (i >= 86) && (i < 147 ) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
  if( i == 147 )
-     action = sstate_blue_block(s, blue_robot, s->ball);
+     action = sstate_blue_block(s, blue_robot, s->ball);*/
  if( i == 148 ){
      s->blue[blue_robot] = get_blue_move_table(blue_robot);
      action.move[blue_robot] = get_blue_move_table(blue_robot);
