@@ -62,11 +62,11 @@ void  minimax_play( SoccerState *s, int depth )
  minimax_use_next_red_robot();
  blue_robot = (int)(DRAND()*NPLAYERS);
 
- if(  sstate_min_red_dist(s, s->ball ) < 
-      sstate_min_blue_dist(s, s->ball ))
+ //if(  sstate_min_red_dist(s, s->ball ) < 
+ //     sstate_min_blue_dist(s, s->ball ))
    minimax_playMax( s, depth );
- else
-   minimax_playMin( s, depth );
+ //else
+ //  minimax_playMin( s, depth );
 
  adjust_move_tables();
 }
@@ -257,7 +257,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  move_radius = soccer_env()->blue_move_radius;
  recv_radius = soccer_env()->blue_recv_radius; 
  
- /*if( s->blue_ball_owner >= 0 ){
+ if( s->blue_ball_owner >= 0 ){
      if( i== 0 )
         action = sstate_blue_kick_to_goal(s);
      if ( (i >= 2) && (i < 86) )
@@ -272,7 +272,7 @@ SoccerAction minimax_expandMin( SoccerState *s, int i, int depth )
  if( (i >= 86) && (i < 147 ) )
      action = sstate_blue_move(s, blue_robot, move_radius ); 
  if( i == 147 )
-     action = sstate_blue_block(s, blue_robot, s->ball);*/
+     action = sstate_blue_block(s, blue_robot, s->ball);
  if( i == 148 ){
      s->blue[blue_robot] = get_blue_move_table(blue_robot);
      action.move[blue_robot] = get_blue_move_table(blue_robot);

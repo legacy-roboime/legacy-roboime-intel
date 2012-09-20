@@ -190,7 +190,7 @@ void Minmax2::run()
 
 		minimax_play( sL, depth_ );
 
-		/*double total_time = 1000;
+		/*double total_time = 5000;
 		QTime time3 = QTime::currentTime();
 		double wait_time = (time3.minute() * 60 * 1000 + time3.second() * 1000 + time3.msec()) - (time1.minute() * 60 * 1000 + time1.second() * 1000 + time1.msec());
 		if(wait_time < total_time)
