@@ -34,9 +34,9 @@ find_package(OpenGL REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIR} ${GLUT_INCLUDE_DIR})
 
 if(WIN32)
-    set(SOC_LIBS ${GLUT_LIBRARY} ${OPENGL_LIBRARY})
+    set(SOC_LIBS ${GLUT_LIBRARIES} ${OPENGL_LIBRARY})
 else()
-    set(SOC_LIBS ${GLUT_LIBRARY} ${OPENGL_LIBRARY} m)
+    set(SOC_LIBS ${GLUT_LIBRARIEs} ${OPENGL_LIBRARY} m)
 endif()
 
 
@@ -66,3 +66,4 @@ target_link_libraries(soccer
 )
 
 set_property(TARGET soccer PROPERTY FOLDER modules)
+
