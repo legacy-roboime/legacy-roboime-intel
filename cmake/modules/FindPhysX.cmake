@@ -124,18 +124,28 @@ find_path(PHYSX_LOADER_INCLUDE_DIR NAMES PhysXLoader.h PATH_SUFFIXES PhysXLoader
   DOC "The SDKs directory should contain PhysX PhysXLoader library includes"
 )
 
-set(PHYSX_INCLUDES ${PHYSX_LOADER_INCLUDE_DIR} ${PHYSX_PHYSICS_INCLUDE_DIR} 
-   ${PHYSX_CHARACTER_INCLUDE_DIR} ${PHYSX_FOUNDATION_INCLUDE_DIR} ${PHYSX_LOADER_INCLUDE_DIR}  
+set(PHYSX_INCLUDES ${PHYSX_LOADER_INCLUDE_DIR} ${PHYSX_PHYSICS_INCLUDE_DIR}
+   ${PHYSX_CHARACTER_INCLUDE_DIR} ${PHYSX_FOUNDATION_INCLUDE_DIR} ${PHYSX_LOADER_INCLUDE_DIR}
    ${PHYSX_COOKING_INCLUDE_DIR})
 
 set(PHYSX_LIB_DIR_SEARCH $ENV{PHYSX_LIB})
 
 set(PHYSX_LIB_DIR_SEARCH
-   ${PHYSX_LIB_DIR_SEARCH}
-   ${DELTA_DIR}/ext/lib
-   /usr/lib/PhysX
-   ${PHYSX_DIR}/SDKS/lib/Win32
+    ${PHYSX_LIB_DIR_SEARCH}
+    ${DELTA_DIR}/ext/lib
+    /usr/lib/PhysX
 )
+if(CMAKE_CL_64)
+    set(PHYSX_LIB_DIR_SEARCH
+        ${PHYSX_LIB_DIR_SEARCH}
+        ${PHYSX_DIR}/SDKS/lib/win64
+    )
+else()
+    set(PHYSX_LIB_DIR_SEARCH
+        ${PHYSX_LIB_DIR_SEARCH}
+        ${PHYSX_DIR}/SDKS/lib/win32
+    )
+endif()
 
 if(NOT WIN32)
     FIND_FILE(PHYSX_LIBRARY_DIR NAMES ${VERSION_SUFFIX_FOR_PATH} PATHS
@@ -145,15 +155,19 @@ if(NOT WIN32)
         # Help the user find it if we cannot.
         DOC "Set PHYSX_LIB_DIR_SEARCH to set the base path to search for PhysX versions."
     )
-else(NOT WIN32)
+else()
    set(PHYSX_LIBRARY_DIR ${PHYSX_LIB_DIR_SEARCH})
-endif(NOT WIN32)
+endif()
 
 
 macro(find_physx_library MYLIBRARY MYLIBRARYNAME)
-
-    FIND_LIBRARY(${MYLIBRARY}
-        NAMES ${MYLIBRARYNAME}
+    if(CMAKE_CL_64)
+        set(MYLIBNAME "${MYLIBRARYNAME}64")
+    else()
+        set(MYLIBNAME "${MYLIBRARYNAME}")
+    endif()
+    find_library(${MYLIBRARY}
+        NAMES ${MYLIBNAME}
         PATHS
         ${PHYSX_LIBRARY_DIR}
         ~/Library/Frameworks
@@ -166,7 +180,6 @@ macro(find_physx_library MYLIBRARY MYLIBRARYNAME)
         /opt/lib
         /usr/freeware/lib64
     )
-    
 endmacro()
 
 set(PHYSX_LIBCHARACTER_LIST NxCharacter)
@@ -191,3 +204,4 @@ set(PHYSX_FOUND "NO")
 if(PHYSX_INCLUDES AND PHYSX_LIBRARIES)
    set(PHYSX_FOUND "YES")
 endif(PHYSX_INCLUDES AND PHYSX_LIBRARIES)
+
