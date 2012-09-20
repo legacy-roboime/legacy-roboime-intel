@@ -54,16 +54,13 @@ Real v2_norm( Vector2 v )
  return sqrt( v2_sqrnorm( v ) );
 }
 
-//TODO: take a look at this:
-const Vector2 v2_unit_default = {1.0, 0.0};
 
 Vector2 v2_unit( Vector2 v )
 {
   Real  length = v2_norm(v);
-  if(fabs(length) < EPS) {
+  if(fabs(length) < EPS)
     printf("(v2_unit) zero norm\n");
-    return v2_unit_default;
-  } else
+  else
     return v2_scale(1.0/length, v);
 }
 

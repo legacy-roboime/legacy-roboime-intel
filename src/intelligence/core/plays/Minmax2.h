@@ -37,6 +37,7 @@ namespace LibIntelligence
 			qreal speed_;
 
 			SoccerState *s;
+			SoccerState *state_action;
 			SoccerState *sL;
 			int depth_;
 			float alpha_;

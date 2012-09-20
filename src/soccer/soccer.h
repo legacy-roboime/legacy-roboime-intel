@@ -5,7 +5,7 @@
 extern "C" {
 #endif 
 
-#include "config.h"
+#define NPLAYERS 6
 
 #include "vector.h"
 #include "soccer_env.h" 
@@ -45,8 +45,6 @@ typedef struct SoccerAction{
 
 
 typedef struct SoccerState{
-
-  struct SoccerState *real_state;
 
   float red_time_stamp;
   float blue_time_stamp;

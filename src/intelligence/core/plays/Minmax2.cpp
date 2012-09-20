@@ -26,6 +26,7 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 
 	soccer_env_init();
 	s = sstate_alloc();
+	state_action = sstate_alloc();
 	sL = sstate_alloc();
 
 	red_action = saction_red_make(s);
@@ -156,9 +157,9 @@ void Minmax2::update_soccer_state()
 void Minmax2::run()
 {
 	while(true) {
-#ifdef MINMAX2_DELAY
+
 		QTime time1 = QTime::currentTime();
-#endif
+
 #ifdef SOCCER_DEBUG
 		statemutex.lock();
 #endif
@@ -189,16 +190,24 @@ void Minmax2::run()
 
 		minimax_play( sL, depth_ );
 
+		/*double total_time = 5000;
+		QTime time3 = QTime::currentTime();
+		double wait_time = (time3.minute() * 60 * 1000 + time3.second() * 1000 + time3.msec()) - (time1.minute() * 60 * 1000 + time1.second() * 1000 + time1.msec());
+		if(wait_time < total_time)
+			QThread::msleep(total_time-wait_time);*/
+
 		mutex.lock();
 		red_action = *minimax_get_best_red_action();
 		blue_action = *minimax_get_best_blue_action();
 
 		changeSActionMeasure(&red_action, 1000.);
 		changeSActionMeasure(&blue_action, 1000.);
+
+		changeSStateMeasure(s, 1000.);
+		state_action = s;
 		mutex.unlock();
 
 #ifdef SOCCER_DEBUG
-		changeSStateMeasure(s, 1000.);
 		statemutex.unlock();
 #endif
 #ifdef MINMAX2_DELAY
@@ -245,7 +254,7 @@ void Minmax2::step()
 void Minmax2::act(SoccerAction& action, Team* team)
 {
 	Ball* ball = stage_->ball();
-	int idClosest = stage_->getClosestPlayerToBall(team)->id();
+	int id = state_action->red_ball_owner;
 
 #ifdef SOCCER_ACTION
 	if(action.type == kick_to_goal)
@@ -273,9 +282,9 @@ void Minmax2::act(SoccerAction& action, Team* team)
 		pos = action.move[i];//v2_make(-3025,0);//
 		Robot* robot = team->at(i);
 
-		if( idClosest == robot->id() ){
+		if( id == robot->id() ){
 #ifdef SKILL_OWNER
-			cout << "SKILL DO ROBO MAIS PERTO DA BOLA: " << attacker->getCurrentState()->objectName().toStdString() << endl;
+			cout << "SKILL DO OWNER: " << attacker->getCurrentState()->objectName().toStdString() << endl;
 #endif
 #ifdef DELTA_POS_OWNER
 			static Vector2 lastPos = *pos;

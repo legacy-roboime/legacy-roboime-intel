@@ -120,10 +120,8 @@ extern "C" {
 /* booleans  */
 /************/
 
-#if !defined(TRUE) || !defined(FALSE)
 #define TRUE		1
 #define FALSE		0
-#endif
 #define ON		1
 #define OFF 		0
 #define UNDEFINED      -1
