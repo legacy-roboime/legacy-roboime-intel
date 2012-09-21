@@ -43,6 +43,7 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 	changeSEnvMeasure(&envReal, 1000.);
 
 	g = new Goto(this, team->at(0));
+	g->setAllowDefenseArea();
 
 	attacker = new AttackerMinMax2(this, team->at(0), NULL, NULL, NULL, speed_, 
 								   speed_, 
