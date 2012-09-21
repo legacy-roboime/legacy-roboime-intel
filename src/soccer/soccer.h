@@ -5,7 +5,7 @@
 extern "C" {
 #endif 
 
-#define NPLAYERS 6
+#include "config.h"
 
 #include "vector.h"
 #include "soccer_env.h" 
