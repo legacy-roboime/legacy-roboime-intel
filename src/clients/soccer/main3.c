@@ -54,6 +54,8 @@ void redraw( void ){
    glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
    soccer_redraw( &saux ); 
    sleep(100);
+   if(red_action.type == null_action)
+	   printf("NULL ACTION\n");
    saction_simulate( s, &red_action, &blue_action, 
                      soccer_env()->sample_period );
    glViewport(0, 0, winWidth/2., winHeight );   
