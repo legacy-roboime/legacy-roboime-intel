@@ -16,10 +16,11 @@ using namespace Zickler43T;
 
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
-	driveToBall_(new DriveToBall(this, r, r->enemyGoal(), speed, true)),
-	sampledDribble_(new SampledDribble(this, r, r->enemyGoal(), deterministic, 0., 1., speed)),
-	sampledGoalKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0.9, 1., speed, false)),
-	sampledMiniKick_(new SampledKick(this, r, r->enemyGoal(), deterministic, 0., 0.3, speed, false)),
+	lookPoint(new Object()),
+	driveToBall_(new DriveToBall(this, r, lookPoint, speed, true)),
+	sampledDribble_(new SampledDribble(this, r, lookPoint, deterministic, 0., 1., speed)),
+	sampledGoalKick_(new SampledKick(this, r, lookPoint, deterministic, 0.9, 1., speed, false)),
+	sampledMiniKick_(new SampledKick(this, r, lookPoint, deterministic, 0., 0.3, speed, false)),
 	wait_(new Wait(p, r)),
 	speed(speed)
 {
@@ -47,6 +48,11 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	this->setInitialState(driveToBall_);
 
 	this->reset();
+
+	driveToBall_->setRefLookPoint(lookPoint);
+	sampledDribble_->setRefLookPoint(lookPoint);
+	sampledGoalKick_->setRefLookPoint(lookPoint);
+	sampledMiniKick_->setRefLookPoint(lookPoint);
 }
 
 //Zickler43::Zickler43(QObject* p, Robot* r, const Zickler43& zickler) : Tactic(p, r, zickler)
@@ -86,15 +92,86 @@ Zickler43::~Zickler43()
 	delete sampledGoalKick_;
 	delete sampledMiniKick_;
 	delete wait_;
+	delete lookPoint;
 }
 
-//void Zickler43::step()
-//{
-//	Skill* current = (Skill*)this->getCurrentState();
-//	this->execute();
-//	current->step();
-//	//cout << current->objectName().toStdString() << endl;
-//}
+void Zickler43::step()
+{
+	Skill* current = (Skill*)this->getCurrentState();
+	updateLookPoint();
+	current->step();
+	this->execute();
+}
+
+void Zickler43::updateLookPoint()
+{
+	Point p = pointToKick();
+	lookPoint->setX(p.x());
+	lookPoint->setY(p.y());
+}
+
+Point Zickler43::pointToKick() //chuta no meio do maior buraco
+{
+	Goal* enemyGoal = this->robot()->enemyGoal();
+	qreal hwidth = enemyGoal->width()/2;
+
+	qreal initial = enemyGoal->y()-hwidth;
+
+	Point p(enemyGoal->x(), initial);
+	qreal holeSize = 0;
+
+	Point centerMax;
+	centerMax.setX(enemyGoal->x());
+	qreal maxHoleSize = -1;
+
+	qreal delta = hwidth/5;
+
+	for(qreal t = initial; t < enemyGoal->y()+hwidth; t+=delta){ //10 pontos
+		if( isKickScored( Point(enemyGoal->x(),t) ) ){
+			holeSize+=delta;
+		}
+		else{
+			if(holeSize>maxHoleSize){
+				maxHoleSize = holeSize;
+				centerMax.setY(p.y() + holeSize/2);
+			}
+			holeSize = 0;
+			p.setY(t+delta);
+		}
+	}
+	if(holeSize>=maxHoleSize){
+		maxHoleSize = holeSize;
+		centerMax.setY(p.y() + holeSize/2);
+	}
+	return centerMax;
+}
+
+bool Zickler43::isKickScored( Point kickPoint )
+{
+	Ball* ball = this->stage()->ball();
+	Line ball_kickpoint = Line(*ball, kickPoint);
+	Team* team = this->robot()->team();
+	for(int i=0; i<team->size(); i++){
+		Robot* obst = team->at(i);
+			Point obstP(obst->x(), obst->y());
+			Line ball_obst = Line(*ball, obstP);
+			qreal dist = ball_kickpoint.distanceTo(obstP);
+			qreal dotproduct = ball_kickpoint.dx()*ball_obst.dx() + ball_kickpoint.dy()*ball_obst.dy();
+			if(dist<obst->body().radius() && dotproduct>0)
+				return false;
+	}
+	team = this->robot()->enemyTeam();
+	for(int i=0; i<team->size(); i++){
+		Robot* obst = team->at(i);
+			Point obstP(obst->x(), obst->y());
+			Line ball_obst = Line(*ball, obstP);
+			qreal dist = ball_kickpoint.distanceTo(obstP);
+			qreal dotproduct = ball_kickpoint.dx()*ball_obst.dx() + ball_kickpoint.dy()*ball_obst.dy();
+			if(dist<obst->body().radius() && dotproduct>0)
+				return false;
+	}
+	return true;
+}
 
 bool DriveToDribbleT::condition()
 {
