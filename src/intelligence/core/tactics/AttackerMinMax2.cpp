@@ -132,7 +132,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 
 		this->setCurrentState(pass_);
 	}
-	else if(action == move && move_ball.length() > MIN_DIST){//owner conduzindo bola ate movePoint
+	else if(action == ::move && move_ball.length() > MIN_DIST){//owner conduzindo bola ate movePoint
 		//TODO: colocar uma condição para ele parar de conduzir quando chegar no movePoint
 
 		dribblePoint_->setX(movePoint.x);
@@ -140,7 +140,7 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 
 		this->setCurrentState(dribble_);
 	}
-	else if(action == move){
+	else if(action == ::move){
 		//Mantem conduzindo para o ultimo ponto de dribblePoint_
 
 		this->setCurrentState(dribble_);
