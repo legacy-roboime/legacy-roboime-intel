@@ -7,6 +7,8 @@ If you know a bug that is not here, add it!
 
 Currently Open Bugs
 --------------------
+- no gotoavoid para evitar ficar travando na hora de fazer a volta, a melhor solucao seria usar dois circulos concetricos para definir o estado de transicao.
+- move_table é incompleta, pois não tenho todas as informações necessárias para executar a action anterior (só tem posicao)
 
 A RESPOSTA DESSAS DUAS ACHO Q EH PQ MOVE_TABLE NEM SEMPRE EH FICAR PARADO
 - Mesmo com o oponente apenas com a opcao de move_table (ficar parado) a best_action do minmax define uma posicao que não é a dele (ficar parado).

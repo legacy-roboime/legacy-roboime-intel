@@ -120,11 +120,20 @@ extern "C" {
 /* booleans  */
 /************/
 
-#define TRUE		1
-#define FALSE		0
-#define ON		1
-#define OFF 		0
-#define UNDEFINED      -1
+//SA: redefinition od TRUE and FALSE, this is annoying
+//    redefine properly:
+#ifdef TRUE
+#undef TRUE
+#endif
+#ifdef FALSE
+#undef FALSE
+#endif
+
+#define TRUE        1
+#define FALSE       0
+#define ON          1
+#define OFF         0
+#define UNDEFINED  -1
 
 typedef unsigned int Boolean;			/* boolean data type */
 typedef Boolean Flag;			/* flag data type */

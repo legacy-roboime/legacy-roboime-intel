@@ -331,9 +331,9 @@ void Intelligence::update()
 		case PLAY:
 			//play["cbr"]->step();
 			//play["cbr2"]->step();
-			if(!((QThread *)play["minimax2"])->isRunning())
-				((QThread *)play["minimax2"])->start();
-			play["minimax2"]->step();
+			//if(!((QThread *)play["minimax2"])->isRunning())
+			//	((QThread *)play["minimax2"])->start();
+			//play["minimax2"]->step();
 			//play["refereeU"]->step();
 			//play["refereeT"]->step();
 			//play["stoprefT"]->step();
