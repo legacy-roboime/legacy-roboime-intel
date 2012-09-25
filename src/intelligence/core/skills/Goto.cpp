@@ -191,7 +191,7 @@ void Goto::step(Point *optionalPoint)
 
 	Robot* robot = this->robot();
 	//qreal targetTempX, targetTempY//unused
-    qreal speedX, speedY, speedTemp, k;
+    qreal speedX, speedY, speedTemp;//, k;//SA: unused
 	qreal targetX, targetY;
 	if(optionalPoint) {
 		targetX = optionalPoint->x();
@@ -203,9 +203,6 @@ void Goto::step(Point *optionalPoint)
 		targetX = target.x();
 		targetY = target.y();
 	}
-	//speedX = speedY = 0;//value never read
-	//targetTempX = targetX;//value never read
-	//targetTempY = targetY;//value never read
 
 	//limitar dentro do campo
 	qreal limit = robot->body().radius() + stage()->ball()->radius();
@@ -287,7 +284,7 @@ void Goto::step(Point *optionalPoint)
 	qreal a = 5*t0;
 	qreal b = speed;
 	qreal error = sqrt(errorX*errorX + errorY*errorY); 
-	qreal speedAux = speed;
+	//qreal speedAux = speed;//SA: Dead store and unused variable
 	
 	if(error > t1)
 		speedTemp = speed;

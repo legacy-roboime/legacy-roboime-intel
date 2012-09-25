@@ -16,13 +16,13 @@ using namespace Zickler43T;
 
 Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	: Tactic(p,r, deterministic),
-	lookPoint(new Object()),
 	driveToBall_(new DriveToBall(this, r, lookPoint, speed, true)),
-	sampledDribble_(new SampledDribble(this, r, lookPoint, deterministic, 0., 1., speed)),
-	sampledGoalKick_(new SampledKick(this, r, lookPoint, deterministic, 0.9, 1., speed, false)),
-	sampledMiniKick_(new SampledKick(this, r, lookPoint, deterministic, 0., 0.3, speed, false)),
-	wait_(new Wait(p, r)),
-	speed(speed)
+    sampledDribble_(new SampledDribble(this, r, lookPoint, deterministic, 0., 1., speed)),
+    sampledGoalKick_(new SampledKick(this, r, lookPoint, deterministic, 0.9, 1., speed, false)),
+    sampledMiniKick_(new SampledKick(this, r, lookPoint, deterministic, 0., 0.3, speed, false)),
+    wait_(new Wait(p, r)),
+    speed(speed),
+	lookPoint(new Object())
 {
 	this->pushState(driveToBall_);//this is important to destructor
 	this->pushState(sampledGoalKick_);
@@ -140,7 +140,7 @@ Point Zickler43::pointToKick() //chuta no meio do maior buraco
 		}
 	}
 	if(holeSize>=maxHoleSize){
-		maxHoleSize = holeSize;
+		//maxHoleSize = holeSize;//SA: Dead store
 		centerMax.setY(p.y() + holeSize/2);
 	}
 	return centerMax;
@@ -175,7 +175,7 @@ bool Zickler43::isKickScored( Point kickPoint )
 
 bool DriveToDribbleT::condition()
 {
-	Zickler43* z = (Zickler43*) this->parent();
+	//Zickler43* z = (Zickler43*) this->parent();//SA: Dead store
 	return !source_->busy(); //Vector(*z->robot() - *z->stage()->ball()).length() < MINDIST;//
 }
 
@@ -190,7 +190,7 @@ bool DribbleToDriveT::condition()
 	//bool busy = drive->busy();
 	//drive->setRefLookPoint(backup);
 	//return busy;
-	Zickler43* z = (Zickler43*) this->parent();
+	//Zickler43* z = (Zickler43*) this->parent();//SA: Dead store
 	return source_->busy();//Vector(*z->robot() - *z->stage()->ball()).length() >= MINDIST;//!source_->busy(); //
 }
 

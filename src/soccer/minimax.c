@@ -89,10 +89,10 @@ void adjust_move_tables( void )
 
 void  minimax_playMax( SoccerState *s, int depth )
 {
- float evaluate = 0;
+ //float evaluate = 0;//SA: Unused, due to dead store bellow
  float debug[3] = {0, 0, 0};
  max_is_root = TRUE; 
- evaluate = minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT, debug );
+ /*evaluate = //SA: Dead store*/minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT, debug );
 
 #ifdef EVALUATE_BEST_RED_ACTION
  printf("RED evaluate=%f \nred_time_weight=%f \nred_dist_weight=%f\n\n", debug[0], debug[1], debug[2]);
@@ -102,10 +102,10 @@ void  minimax_playMax( SoccerState *s, int depth )
 
 void  minimax_playMin( SoccerState *s, int depth )
 {
- float evaluate = 0;
+ //float evaluate = 0;//SA: Unused, due to dead store bellow
  float debug[3] = {0, 0, 0};
  max_is_root = FALSE; 
- evaluate = minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT, debug );
+ /*evaluate = //SA: Dead store*/minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT, debug );
 
 #ifdef EVALUATE_BEST_BLUE_ACTION
  printf("BLUE evaluate=%f \nred_time_weight=%f \nred_dist_weight=%f\n\n", debug[0], debug[1], debug[2]);
@@ -132,8 +132,9 @@ float minimax_getMaxValue(SoccerState s, int depth,
       sstate_blue_kick_to_goal(&saux);
       //return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
       value =  sstate_evaluate(&saux);
-#ifdef EVALUATE_BEST_RED_ACTION || EVALUATE_BEST_BLUE_ACTION
-	  debug[0] = value;
+//SA: this syntax is wrong: #ifdef EVALUATE_BEST_RED_ACTION || EVALUATE_BEST_BLUE_ACTION
+#if defined(EVALUATE_BEST_RED_ACTION) || defined(EVALUATE_BEST_BLUE_ACTION)
+     debug[0] = value;
 	  debug[1] = fabs(value)*(minimax_red_time_weight_func(&s));
 	  debug[2] = fabs(value)*(-minimax_red_dist_weight_func());
       return debug[0] + debug[1] + debug[2];
@@ -181,7 +182,8 @@ float minimax_getMinValue(SoccerState s, int depth,
      sstate_red_kick_to_goal(&saux); 
      //return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
      value =  sstate_evaluate(&saux);
-#ifdef EVALUATE_BEST_RED_ACTION || EVALUATE_BEST_BLUE_ACTION
+//SA: this syntax is wrong: #ifdef EVALUATE_BEST_RED_ACTION || EVALUATE_BEST_BLUE_ACTION
+#if defined(EVALUATE_BEST_RED_ACTION) || defined(EVALUATE_BEST_BLUE_ACTION)
 	  debug[0] = value;
 	  debug[1] = fabs(value)*(minimax_red_time_weight_func(&s));
 	  debug[2] = fabs(value)*(-minimax_red_dist_weight_func());

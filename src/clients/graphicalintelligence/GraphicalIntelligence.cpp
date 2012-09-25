@@ -182,9 +182,9 @@ struct IntelligenceCli : public QThread
 
 GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
-	cli(new IntelligenceCli(this)),
+    mode(NONE),
 	useSimulation(true),
-	mode(NONE)
+    cli(new IntelligenceCli(this))
 {
 	// Popular nomes dos estados do Juiz
 	refereeFull['H'] = tr("Halt");
@@ -320,7 +320,8 @@ GraphicalIntelligence::~GraphicalIntelligence()
 	skill.clear();
 	updater.clear();
 	commander.clear();
-	delete timer, cli;
+	delete timer;
+    delete cli;
 }
 
 void GraphicalIntelligence::resetPatterns()
@@ -459,7 +460,7 @@ void GraphicalIntelligence::updateValues()
 	//stage["main"]->blueTeam()->goals();
 	//ui.txtPlacarAzul->setText(QString::number(stage["main"]->blueTeam()->goals()));
 	//ui.txtPlacarAmarelo->setText(QString::number(stage["main"]->yellowTeam()->goals()));
-	UpdaterReferee* updR = qobject_cast<UpdaterReferee*>(updater["vision"]);
+	//UpdaterReferee* updR = qobject_cast<UpdaterReferee*>(updater["vision"]);//SA: Dead store, possible BUG
 
 
 

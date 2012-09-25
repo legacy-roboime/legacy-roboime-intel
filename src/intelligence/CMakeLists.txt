@@ -55,7 +55,6 @@ set(INT_SRC
 	core/plays/PenaltyThem.cpp
     # add new sources here
 
-    core/skills/AttackField.cpp
     core/skills/Wait.cpp
     core/skills/DriveTo.cpp
     core/skills/SteerToPoint.cpp
