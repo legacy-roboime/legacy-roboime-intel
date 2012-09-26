@@ -45,8 +45,8 @@ void BGT::populateTactics(const StageY* source, StageY* target)
 		Team* enemyT;
 		myT = target->getTeamFromColor(this->team()->color());
 		enemyT = target->getTeamFromOtherColor(this->team()->color());
-		QQueue<Tactic*>* myTactics = myT->color() == TeamColor::BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
-		QQueue<Tactic*>* enemyTactics = enemyT->color() == TeamColor::BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
+		QQueue<Tactic*>* myTactics = myT->color() == BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
+		QQueue<Tactic*>* enemyTactics = enemyT->color() == BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
 
 		for(int i=0; i<myT->size(); i++) {
 			Zickler43* z = new Zickler43(this, myT->at(i));
