@@ -5,6 +5,7 @@
 #include "GotoTactic.h"
 #include "config.h"
 #include <QTime>
+#include <QtCore/QCoreApplication>
 
 #define LOGGING
 
@@ -159,26 +160,22 @@ void Minmax2::run()
 {
 	while(true) {
 
-		QTime time1 = QTime::currentTime();
+		//QTime time1 = QTime::currentTime();
 
 #ifdef SOCCER_DEBUG
 		statemutex.lock();
 #endif
+		QCoreApplication::processEvents();
 		update_soccer_state();
-
-		//minimax_use_next_red_robot();
-		//minimax_use_next_blue_robot();
-
-		changeSStateMeasure(s, 0.001);
 
 		if(!init){
 			minimax_init(s);
 			init = true;
 		}
 
-//#ifdef SOCCER_DEBUG
 		*sL = *s;
-//#endif
+
+		changeSStateMeasure(sL, 0.001);
 
 		if(sL->red_ball_owner>-1){
 			sL->ball_vel = v2_make(0,0);
@@ -204,7 +201,6 @@ void Minmax2::run()
 		changeSActionMeasure(&red_action, 1000.);
 		changeSActionMeasure(&blue_action, 1000.);
 
-		changeSStateMeasure(s, 1000.);
 		state_action = s;
 		mutex.unlock();
 
