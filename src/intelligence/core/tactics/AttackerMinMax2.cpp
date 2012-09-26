@@ -38,6 +38,12 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, Object* kickPoint, Object
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
 	this->speed = speed;
 
+	driveToBall_->setAllowDefenseArea();
+	dribble_->setAllowDefenseArea();
+	goalKick_->setAllowDefenseArea();
+	pass_->setAllowDefenseArea();
+	goto_->setAllowDefenseArea();
+
 	this->pushState(driveToBall_); //this is important to destructor
 	this->pushState(goalKick_);
 	this->pushState(dribble_);
@@ -126,16 +132,15 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 
 		this->setCurrentState(pass_);
 	}
-	else if(action == actions::move && move_ball.length() > MIN_DIST){//owner conduzindo bola ate movePoint
+	else if(action == ::move && move_ball.length() > MIN_DIST){//owner conduzindo bola ate movePoint
 		//TODO: colocar uma condição para ele parar de conduzir quando chegar no movePoint
 
-		//adicionei a heuristica do look point, pois o soccer nao define
 		dribblePoint_->setX(movePoint.x);
 		dribblePoint_->setY(movePoint.y);
 
 		this->setCurrentState(dribble_);
 	}
-	else if(action == actions::move){
+	else if(action == ::move){
 		//Mantem conduzindo para o ultimo ponto de dribblePoint_
 
 		this->setCurrentState(dribble_);

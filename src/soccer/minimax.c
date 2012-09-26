@@ -89,20 +89,32 @@ void adjust_move_tables( void )
 
 void  minimax_playMax( SoccerState *s, int depth )
 {
+ //float evaluate = 0;//SA: Unused, due to dead store bellow
+ float debug[3] = {0, 0, 0};
  max_is_root = TRUE; 
- minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
+ /*evaluate = //SA: Dead store*/minimax_getMaxValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT, debug );
+
+#ifdef EVALUATE_BEST_RED_ACTION
+ printf("RED evaluate=%f \nred_time_weight=%f \nred_dist_weight=%f\n\n", debug[0], debug[1], debug[2]);
+#endif
 }
 
 
 void  minimax_playMin( SoccerState *s, int depth )
 {
+ //float evaluate = 0;//SA: Unused, due to dead store bellow
+ float debug[3] = {0, 0, 0};
  max_is_root = FALSE; 
- minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT );
+ /*evaluate = //SA: Dead store*/minimax_getMinValue( *s, MINIMAX_MAX_LEVEL, MAX_FLOAT, -MAX_FLOAT, MAX_FLOAT, debug );
+
+#ifdef EVALUATE_BEST_BLUE_ACTION
+ printf("BLUE evaluate=%f \nred_time_weight=%f \nred_dist_weight=%f\n\n", debug[0], debug[1], debug[2]);
+#endif
 }
 
 
 float minimax_getMaxValue(SoccerState s, int depth,
-                          float parent_duration, float alpha, float beta )
+                          float parent_duration, float alpha, float beta, float* debug )
 {
  int i;
  float aux; 
@@ -120,6 +132,13 @@ float minimax_getMaxValue(SoccerState s, int depth,
       sstate_blue_kick_to_goal(&saux);
       //return sstate_evaluate(&saux)*minimax_red_time_weight_func(&s);
       value =  sstate_evaluate(&saux);
+//SA: this syntax is wrong: #ifdef EVALUATE_BEST_RED_ACTION || EVALUATE_BEST_BLUE_ACTION
+#if defined(EVALUATE_BEST_RED_ACTION) || defined(EVALUATE_BEST_BLUE_ACTION)
+     debug[0] = value;
+	  debug[1] = fabs(value)*(minimax_red_time_weight_func(&s));
+	  debug[2] = fabs(value)*(-minimax_red_dist_weight_func());
+      return debug[0] + debug[1] + debug[2];
+#endif
       return value + fabs(value)*(minimax_red_time_weight_func(&s)
                                   /*-minimax_red_dist_weight_func()*/  );
  }
@@ -129,7 +148,7 @@ float minimax_getMaxValue(SoccerState s, int depth,
      action = minimax_expandMax( &saux, i, depth );
      if( !action.prune ){
        if( alpha < (aux = minimax_getMinValue( saux, depth-1, 
-                    saction_red_elapsed_time( &action ), alpha, beta )) ){
+                    saction_red_elapsed_time( &action ), alpha, beta, debug )) ){
            alpha = aux;
            if( depth == ( max_is_root ? MINIMAX_MAX_LEVEL :
                           MINIMAX_MAX_LEVEL-1 ) )
@@ -144,7 +163,7 @@ float minimax_getMaxValue(SoccerState s, int depth,
 
 
 float minimax_getMinValue(SoccerState s, int depth, 
-                          float parent_duration, float alpha, float beta )
+                          float parent_duration, float alpha, float beta, float* debug )
 {
  int i;
  float aux;
@@ -163,6 +182,13 @@ float minimax_getMinValue(SoccerState s, int depth,
      sstate_red_kick_to_goal(&saux); 
      //return sstate_evaluate(&saux)*minimax_blue_time_weight_func(&s);
      value =  sstate_evaluate(&saux);
+//SA: this syntax is wrong: #ifdef EVALUATE_BEST_RED_ACTION || EVALUATE_BEST_BLUE_ACTION
+#if defined(EVALUATE_BEST_RED_ACTION) || defined(EVALUATE_BEST_BLUE_ACTION)
+	  debug[0] = value;
+	  debug[1] = fabs(value)*(minimax_red_time_weight_func(&s));
+	  debug[2] = fabs(value)*(-minimax_red_dist_weight_func());
+      return debug[0] + debug[1] + debug[2];
+#endif
      return value + fabs(value)*( minimax_blue_time_weight_func(&s)
                                  /*-minimax_red_dist_weight_func()*/ ) ;
  }
@@ -172,7 +198,7 @@ float minimax_getMinValue(SoccerState s, int depth,
       action = minimax_expandMin( &saux, i, depth );
       if( !action.prune ){
           if( beta > (aux = minimax_getMaxValue( saux, depth-1, 
-                      saction_blue_elapsed_time( &action ), alpha, beta )) ){
+                      saction_blue_elapsed_time( &action ), alpha, beta, debug )) ){
               beta = aux;
               if( depth == ( max_is_root ? MINIMAX_MAX_LEVEL - 1:
                              MINIMAX_MAX_LEVEL ))
@@ -199,12 +225,32 @@ float minimax_red_time_weight_func( SoccerState *s )
 
 float minimax_red_dist_weight_func( void )
 {
- int i;
+ float sum = 0, m1, m2;
 
- float sum = 0;
- for( i = 0; i < NPLAYERS; i++ )
-   sum += v2_norm( v2_sub( get_red_move_table(i), best_red_action.move[i] ) );
- return .0001*sum;
+ if(best_red_action.ball_owner > -1){
+	 Vector2 robot_move_table = v2_sub( best_red_action.pos[best_red_action.ball_owner], 
+										get_red_move_table(best_red_action.ball_owner) );
+	 Vector2 robot_move = v2_sub( best_red_action.pos[best_red_action.ball_owner], 
+								  best_red_action.move[best_red_action.ball_owner] );
+	 sum = v2_dot( robot_move_table, robot_move );
+	 m1 = v2_norm( robot_move_table );
+	 m2 = v2_norm( robot_move );
+	 if(m1>0 && m2>0){
+		sum /= m1;
+		sum /= m2;
+		if(sum>1)
+			sum = 1;
+		sum = acos(sum);
+		sum /= PI;
+	 }
+	 else
+		sum = 0;
+ }
+
+ if(sum < MAX_FLOAT)
+	return sum;
+ else
+	 return MAX_FLOAT;
 }
 
 float minimax_blue_time_weight_func( SoccerState *s )

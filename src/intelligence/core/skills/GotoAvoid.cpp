@@ -15,9 +15,9 @@ using namespace LibIntelligence::Skills;
 
 GotoAvoid::GotoAvoid(QObject *parent, Robot *slave, Point *target, Point *avoid, qreal radiusAvoid, qreal speed)
 	: Goto(parent, slave, target, 0.0, speed),
+	radiusAvoid(radiusAvoid),
 	avoid(avoid),
-	tangPoint(new Point()),
-	radiusAvoid(radiusAvoid)
+    tangPoint(new Point())
 {}
 
 GotoAvoid::~GotoAvoid()
@@ -77,7 +77,7 @@ void GotoAvoid::step()
 		Goto::step();
 	} else if(!(robot_avoid.length() > radiusAvoid + 500)){ 
 		int dec = 20;
-		int i;
+		//int i;//SA: Unused variable
 		qreal delta = avoid_target.angleTo(avoid_robot);
 		if(delta>10 && delta<350){ //margem de estabilidade
 			if(delta<180)

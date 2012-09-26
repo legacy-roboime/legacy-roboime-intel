@@ -6,3 +6,7 @@ lib*/*
 # ignore Qt Creator .user files
 *.user
 *.dat
+
+# ignore mac files
+.DS_STORE
+

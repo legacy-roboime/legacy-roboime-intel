@@ -43,6 +43,7 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 	changeSEnvMeasure(&envReal, 1000.);
 
 	g = new Goto(this, team->at(0));
+	g->setAllowDefenseArea();
 
 	attacker = new AttackerMinMax2(this, team->at(0), NULL, NULL, NULL, speed_, 
 								   speed_, 
@@ -179,11 +180,11 @@ void Minmax2::run()
 		*sL = *s;
 //#endif
 
-		if(sL->red_ball_owner>0){
+		if(sL->red_ball_owner>-1){
 			sL->ball_vel = v2_make(0,0);
 			sL->red[sL->red_ball_owner] = sL->ball;
 		}
-		else if(sL->blue_ball_owner>0){
+		else if(sL->blue_ball_owner>-1){
 			sL->ball_vel = v2_make(0,0);
 			sL->blue[sL->blue_ball_owner] = sL->ball;
 		}

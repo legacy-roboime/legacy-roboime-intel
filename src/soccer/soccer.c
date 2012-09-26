@@ -1,13 +1,13 @@
 #include "soccer.h"
 
 
-static float goal_covering( SoccerState *s );
-static float goal_distance( SoccerState *s );
+//static float goal_covering( SoccerState *s );//SA: Unused function
+//static float goal_distance( SoccerState *s );//SA: Unused function
 
 
 SoccerState* sstate_alloc( void )
 {
- int i;
+ //int i;//SA: Unused variable
  SoccerState *s = NEWSTRUCT(SoccerState);
  srand ( time(NULL) );
  sstate_restart_game_pos(s); 
@@ -55,10 +55,10 @@ float sstate_evaluate( SoccerState *s )
 {
  int i, closest_red, closest_blue;
  float t, s0 = 0, s1 = 0, s2 = 0, s3 = 0, s4 = 0, s5 = 0, s6 = 0;
- float min_red_dist_to_ball, min_red_dist_to_blue_goal,
+ float min_red_dist_to_ball, //min_red_dist_to_blue_goal,//SA: Unused, due to dead store bellow
        min_red_dist_to_red_goal;
- float min_blue_dist_to_ball,  min_blue_dist_to_blue_goal, 
-       min_blue_dist_to_red_goal;
+ float min_blue_dist_to_ball,  min_blue_dist_to_blue_goal;//,
+       //min_blue_dist_to_red_goal;//SA: Unused, due to dead store bellow
  float ball_dist_to_red_goal, ball_dist_to_blue_goal;
  Vector2 blue_goal, red_goal;
 
@@ -66,12 +66,12 @@ float sstate_evaluate( SoccerState *s )
  red_goal = soccer_env()->red_goal;
   
  min_red_dist_to_ball = sstate_min_red_dist( s, s->ball );
- min_red_dist_to_blue_goal = sstate_min_red_dist( s, blue_goal );
+ //min_red_dist_to_blue_goal = sstate_min_red_dist( s, blue_goal );//SA: Dead store, possible BUG
  min_red_dist_to_red_goal = sstate_min_red_dist( s, red_goal );
 
  min_blue_dist_to_ball = sstate_min_blue_dist( s, s->ball );
  min_blue_dist_to_blue_goal = sstate_min_blue_dist( s, blue_goal ); 
- min_blue_dist_to_red_goal = sstate_min_blue_dist( s, red_goal );
+ //min_blue_dist_to_red_goal = sstate_min_blue_dist( s, red_goal );//SA: Dead store, possible BUG
 
  ball_dist_to_red_goal = v2_norm( v2_sub( s->ball, red_goal ) );
  ball_dist_to_blue_goal = v2_norm( v2_sub( s->ball, blue_goal ) );
@@ -108,10 +108,11 @@ float sstate_evaluate( SoccerState *s )
          s4 -= 1000; 
 
 
- if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
-    s5 = 300*MAX(min_blue_dist_to_ball,3);
- else
-    s5 = 900;
+ //SA: Dead store on s5, may be a BUG
+ //if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
+ //   s5 = 300*MAX(min_blue_dist_to_ball,3);
+ //else
+ //   s5 = 900;
 
  if( (s->ball.x > -2.5) && (s->ball.x < 2.5 ) )
     s5 = -300*MAX(min_red_dist_to_ball,3);

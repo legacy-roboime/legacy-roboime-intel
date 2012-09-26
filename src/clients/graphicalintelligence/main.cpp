@@ -7,7 +7,7 @@
 using namespace std;
 
 static GraphicalIntelligence* w;
-static int winWidth, winHeight;
+//static int winWidth, winHeight;//SA: Unused variables
 
 #ifdef SOCCER_DEBUG
 #include "minimax.h"

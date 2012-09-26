@@ -11,8 +11,8 @@ using namespace LibIntelligence::Skills;
 
 DriveToBall::DriveToBall(QObject* parent, Robot* slave, const Object* refLookPoint, qreal speed, bool deterministic, qreal maxAngVar, qreal maxErrorD, qreal maxErrorA)
 	: DriveToObject(parent, slave, slave->stage()->ball(), slave->stage()->ball()->radius(), refLookPoint, maxErrorD, maxErrorA, speed, deterministic, maxAngVar),
-	gotoa(new GotoAvoid(this, slave, new Point(0,0), slave->stage()->ball(), 2*threshold, speed)),
-	inCone(false)
+	inCone(false),
+    gotoa(new GotoAvoid(this, slave, new Point(0,0), slave->stage()->ball(), 2*threshold, speed))
 {}
 
 DriveToBall::~DriveToBall(void)

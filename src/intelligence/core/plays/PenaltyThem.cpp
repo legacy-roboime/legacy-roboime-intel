@@ -40,8 +40,8 @@ behind a line parallel to the goal line and 400 mm behind the penalty mark*/
 void PenaltyThem::step()
 {
 	Team* team = this->team_;
-	Stage* stage = this->stage_;
-	Ball* ball = stage->ball();
+	//Stage* stage = this->stage_;//SA: Unused variable
+	//Ball* ball = stage->ball();//SA: Dead store and unused
 	Goal* myGoal = team->goal();
 	qreal xPenalty = myGoal->penaltyLine();
 
