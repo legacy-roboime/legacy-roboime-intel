@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include "messages_robocup_ssl_geometry.pb.h"
+#include "config.h"
 
 namespace LibIntelligence
 {
@@ -115,6 +116,13 @@ void UpdateStageGeometry::apply(Updater* u)
 		stage->setFreeKickDistance(freeKickDistance());
 		stage->setPenaltySpotDistance(penaltySpotDistance());
 		stage->setPenaltyLineDistance(penaltyLineDistance());
+
+#ifdef TRANSFORMADA_CAMPO
+		float A = stage->fieldLength();
+		float B = stage->fieldWidth();
+		stage->setFieldLength(B);
+		stage->setFieldWidth(A/2.);
+#endif
 	}
 }
 

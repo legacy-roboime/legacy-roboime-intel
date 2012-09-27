@@ -14,6 +14,7 @@
 //#define OVER_SPEED_LIMIT
 //#define EVALUATE_BEST_RED_ACTION
 //#define EVALUATE_BEST_BLUE_ACTION
+//#define TRANSFORMADA_CAMPO
 #endif
 
 #define NPLAYERS 6

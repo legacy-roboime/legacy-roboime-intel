@@ -14,6 +14,11 @@ using namespace std;
 
 namespace LibIntelligence
 {
+	struct Campo{
+		float length;
+		float width;
+	};
+
 	class Updater;
 
 	struct UpdateStageGeometryImpl;

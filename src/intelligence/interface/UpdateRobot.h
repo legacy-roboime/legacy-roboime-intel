@@ -10,6 +10,12 @@ class SSL_DetectionRobot;
 
 namespace LibIntelligence
 {
+	struct Robo{
+		float x;
+		float y;
+		float ang;
+	};
+
 	class Updater;
 
 	struct UpdateRobotImpl;
