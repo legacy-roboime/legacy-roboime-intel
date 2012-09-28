@@ -10,11 +10,6 @@ class SSL_DetectionBall;
 
 namespace LibIntelligence
 {
-	struct Bola{
-		float x;
-		float y;
-	};
-
 	class Updater;
 
 	class UpdateBall : public Update, public Point
