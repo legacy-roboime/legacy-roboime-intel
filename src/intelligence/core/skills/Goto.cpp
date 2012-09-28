@@ -185,10 +185,9 @@ void Goto::printPIDk()
 {
 	cout << controllerSpeedX.Kp << " " << controllerSpeedX.Ki << " " << controllerSpeedX.Kd << endl;
 }
+
 void Goto::step(Point *optionalPoint)
 {
-	//TODO: valores objetivos devem ser alterados para valor nao deterministico (soma um float a speedx speedy e speedang)
-
 	Robot* robot = this->robot();
 	//qreal targetTempX, targetTempY//unused
     qreal speedX, speedY, speedTemp;//, k;//SA: unused
@@ -210,11 +209,10 @@ void Goto::step(Point *optionalPoint)
 	qreal minX = -maxX;
 	qreal maxY = stage()->fieldWidth() / 2 + limit;
 	qreal minY = -maxY;
-
 	targetX = targetX < minX ? minX : targetX > maxX ? maxX : targetX;
 	targetY = targetY < minY ? minY : targetY > maxY ? maxY : targetY;
 
-	//limitar fora da area
+	//limitar fora da area de defesa
 	if(!allowDefenseArea) {
 		if(isInDefenseArea(targetCopy(), robot, robot->team()->goal()))
 		{
@@ -239,13 +237,11 @@ void Goto::step(Point *optionalPoint)
 	controllerSpeedX.realimentacao = robot->x();
 	pidService(controllerSpeedX);
 	speedX = controllerSpeedX.saida;
-
 	//controle speedY
 	controllerSpeedY.entrada = targetY; //deseja-se que a distância entre o alvo e o robô seja igual a zero
 	controllerSpeedY.realimentacao = robot->y();
 	pidService(controllerSpeedY);
 	speedY = controllerSpeedY.saida;
-
 	//calculo speed linear
 	speedTemp = sqrt(speedX*speedX + speedY*speedY);
 	if(speedTemp > speed || ignoreBrake)
@@ -254,7 +250,6 @@ void Goto::step(Point *optionalPoint)
 		speedX *= k;
 		speedY *= k;
 	}
-
 	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot, *lookAt).angle()));*/
 
 	/*//Teste - Controle Explicito 1
@@ -271,10 +266,7 @@ void Goto::step(Point *optionalPoint)
 		speedTemp = speedAux;
 	else{
 		speedTemp = (-2*pow(error/cte2,3) + 3*pow(error/cte2,2))*speedAux;
-	}
-
-	speedX = speedTemp*(errorX/error);
-	speedY = speedTemp*(errorY/error);*/
+	}*/
 
 	//Teste - Controle Explicito 2
 	qreal errorX = (targetX - robot->x());
@@ -285,7 +277,6 @@ void Goto::step(Point *optionalPoint)
 	qreal b = speed;
 	qreal error = sqrt(errorX*errorX + errorY*errorY); 
 	//qreal speedAux = speed;//SA: Dead store and unused variable
-	
 	if(error > t1)
 		speedTemp = speed;
 	else if(error > t0)
@@ -293,12 +284,10 @@ void Goto::step(Point *optionalPoint)
 	else{
 		speedTemp = 5*error;
 	}
-
 	speedTemp*=0.7;
 
 	speedX = speedTemp*(errorX/error);
 	speedY = speedTemp*(errorY/error);
-	
 	Steer::setSpeeds(speedX, speedY);
 	Steer::step();
 }
