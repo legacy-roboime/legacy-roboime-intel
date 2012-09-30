@@ -8,7 +8,7 @@
 #include "mathutils.h"
 
 #ifdef SIMU
-#define KICKPOWERK 8000
+#define KICKPOWERK 5000
 #else
 #define KICKPOWERK 1000
 #endif
@@ -69,7 +69,10 @@ void SampledKick::step()
 
 	//robot->dribble(0.5); //pegar bola
 
+	qreal backup = threshold;
+	threshold = 70; //para que o robô conduza numa direção é feita uma diminuição do threshold
 	DriveToBall::step();
+	threshold = backup;
 }
 
 bool SampledKick::busy()
