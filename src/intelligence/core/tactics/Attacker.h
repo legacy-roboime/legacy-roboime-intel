@@ -14,7 +14,7 @@ namespace LibIntelligence
 {
 	namespace Tactics
 	{
-		class Attacker : public Blocker
+		class Attacker : public Blocker //OBSOLETE CODE
 		{
 			Q_OBJECT
 
