@@ -147,7 +147,6 @@ void Move::step()
 					 + speedAngular * robot()->wheels()[i].distance();
 			//NOTE:
 			speed[i] /= robot()->wheels()[i].radius();//this is so the speed is angular
-			speed[i] /= M_2PI;
 		}
 	} else {//biwheel
 		alpha = atan2(speed[1],speed[0]);
@@ -178,20 +177,12 @@ void Move::step()
 	}
 
 	qreal biggestValue = abs(speed[0]);
-
 	for(int i = 1; i < speed.size(); i++)
 		biggestValue = biggestValue > abs(speed[i]) ? biggestValue : abs(speed[i]);
-
-	qreal maxSpeed = 12.0;//TODO: limit is hardcoded, unhardcode it
-	if(biggestValue > 0.001) {
-		if(biggestValue > maxSpeed) {
-			for(int i = 0; i < speed.size(); i++) {
-				speed[i] = speed[i] * maxSpeed / biggestValue;
-			}
-		}
-	} else {
+	//XXX: se trocar o if else por um unico if da problema. why god?
+	if(biggestValue > 0.001); 
+	else
 		for(int i = 0; i < speed.size(); i++) speed[i] = 0.0;
-	}
 	robot()->setCommandWheels(speed);
 
 #ifdef REALROBOT
