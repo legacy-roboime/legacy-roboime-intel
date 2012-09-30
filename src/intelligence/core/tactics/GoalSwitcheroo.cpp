@@ -12,19 +12,23 @@ using namespace Skills;
 GoalSwitcheroo::GoalSwitcheroo(QObject *parent, Robot* slave, qreal s)
 	: Tactic(parent, slave),
     goto_(new Goto(this, slave)),
-    speed(s),
     atacando(true)
 {
 	goto_->setSpeed(10000);
 	qreal bluegoalx = 3000;
 	qreal bluegoaly = 0;
-	goto_->setAll(bluegoalx, bluegoaly, speed);
+	goto_->setAll(bluegoalx, bluegoaly, s);
 	this->pushState(goto_);
 	//skills.append(goto_);
 }
 
 GoalSwitcheroo::~GoalSwitcheroo()
 {
+}
+
+void GoalSwitcheroo::setSpeed(qreal speed)
+{
+	this->goto_->setSpeed(speed);
 }
 
 void GoalSwitcheroo::step()

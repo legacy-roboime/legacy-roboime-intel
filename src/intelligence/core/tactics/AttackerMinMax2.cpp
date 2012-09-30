@@ -36,7 +36,6 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, Object* kickPoint, Object
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., speed, false);
 	pass_ = new SampledKick(this, r, kickPoint_, true, 0.4, 0.4, speed, true);
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
-	this->speed = speed;
 
 	driveToBall_->setAllowDefenseArea();
 	dribble_->setAllowDefenseArea();
@@ -177,6 +176,15 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 
 		this->setCurrentState(goto_);
 	}
+}
+
+void AttackerMinMax2::setSpeed(qreal speed)
+{
+	this->driveToBall_->setSpeed(speed);
+	this->dribble_->setSpeed(speed);
+	this->goalKick_->setSpeed(speed);
+	this->pass_->setSpeed(speed);
+	this->goto_->setSpeed(speed);
 }
 
 bool GotoToDriveT::condition()

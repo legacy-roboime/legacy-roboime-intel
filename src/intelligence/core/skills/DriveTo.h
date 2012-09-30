@@ -22,10 +22,7 @@ namespace LibIntelligence
 			bool busy();
 			void step();
 
-			qreal getSpeed();
-
 		protected:
-			qreal speed;
 			qreal bAngle; //base angle
 			Point bPoint; //base point
 			qreal threshold;

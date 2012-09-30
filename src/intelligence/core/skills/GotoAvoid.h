@@ -20,7 +20,6 @@ namespace LibIntelligence
 			void setTarget(qreal x, qreal y);
 			void setTarget(Point *);
 			void setAvoid(Point *);
-			void setSpeed(qreal);
 			Point* getAvoid();
 			qreal getRadiusAvoid();
 
