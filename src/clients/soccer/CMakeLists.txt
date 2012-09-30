@@ -22,7 +22,10 @@ include_directories(${SOC_INC_DIRS})
 directory_source_group(src . *.cpp)
 
 add_executable(soccer-client ${SOCC_SRC})
-target_link_libraries(soccer-client soccer)
+target_link_libraries(soccer-client
+    soccer
+    ${GLUT_LIBRARIES}
+)
 
 set_property(TARGET soccer-client PROPERTY FOLDER apps)
 

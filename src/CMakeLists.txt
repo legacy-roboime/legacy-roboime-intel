@@ -7,6 +7,7 @@ include(${PROJECT_SOURCE_DIR}/../cmake/Utils.cmake)
 
 standard_config()
 standard_paths(${PROJECT_SOURCE_DIR}/.. bin lib)
+message(STATUS "Project src dir: ${PROJECT_SOURCE_DIR}")
 
 include_directories(.)
 

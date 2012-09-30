@@ -72,6 +72,7 @@ add_executable(graphicalintelligence-client
 
 target_link_libraries(graphicalintelligence-client
     intelligence
+    ${GLUT_LIBRARIES}
     ${QT_LIBRARIES}
 )
 
