@@ -21,7 +21,6 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
     sampledGoalKick_(new SampledKick(this, r, lookPoint, deterministic, 0.9, 1., speed, false)),
     sampledMiniKick_(new SampledKick(this, r, lookPoint, deterministic, 0., 0.3, speed, false)),
     wait_(new Wait(p, r)),
-    speed(speed),
 	lookPoint(new Object())
 {
 	this->pushState(driveToBall_);//this is important to destructor
@@ -171,6 +170,14 @@ bool Zickler43::isKickScored( Point kickPoint )
 				return false;
 	}
 	return true;
+}
+
+void Zickler43::setSpeed(qreal speed)
+{
+	this->driveToBall_->setSpeed(speed);
+	this->sampledDribble_->setSpeed(speed);
+	this->sampledGoalKick_->setSpeed(speed);
+	this->sampledMiniKick_->setSpeed(speed);
 }
 
 bool DriveToDribbleT::condition()

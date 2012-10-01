@@ -55,10 +55,10 @@ void CommanderSim::step()
 				break;
 			}
 
-			out << c.wheelSpeedAt(0) * M_2PI << " "
-				<< c.wheelSpeedAt(1) * M_2PI << " "
-				<< c.wheelSpeedAt(2) * M_2PI << " "
-				<< c.wheelSpeedAt(3) * M_2PI << " "
+			out << c.wheelSpeedAt(0) << " "
+				<< c.wheelSpeedAt(1) << " "
+				<< c.wheelSpeedAt(2) << " "
+				<< c.wheelSpeedAt(3) << " "
 				<< c.dribbleSpeed()  << " "
 				<< c.kickSpeed()     << " ";
 

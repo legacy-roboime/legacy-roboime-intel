@@ -66,6 +66,7 @@ void DriveToBall::step()
 	if(!inCone){
 		Point p = ball_target.p2();
 		gotoa->setTarget(p.x(), p.y());
+		gotoa->setSpeed(speed);
 		gotoa->setRobot(robot);
 		gotoa->step();
 	}

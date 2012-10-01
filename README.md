@@ -1,22 +1,32 @@
-RoboIME SSL Computational Project
-=================================
+RoboIME Artificial Intelligence
+===============================
 
-Introduction
-------------
-This solution aims to provide a set of software to take full control of the
+
+This project aims to provide a set of software to take full control of the
 robots on an autonomous match, and to aid its development by providing
 facilities such as a Simulation environment.
 
+There is a proposal to strip the simulator out of the project and make it either
+standalone or merge it with grSim.
 
-System Requirements
--------------------
-We plan to support compilation on linux/osx on the future. But currently
-it only compiles on windows with visual studio compiler.
-The following are the requirements to compile and develop on this project:
 
+Requirements
+------------
+
+- Git
+- CMake
 - Qt SDK 4.8.x
-- PhysX SDK 2.8.4 (*)
+- OpenGL
+- Glut
+- Protobuf
+- PhysX SDK 2.8.4 (Required only to build the simulator)
 
-*PhysX SDK dependencies are included on the _include_ thus it will compile
-without PhysX, but it's still needed to run the portions that use Simulation.
+On Ubuntu 12.04 the following should suffice:
+
+    apt-get install git cmake qt libgl1-mesa-dev freeglut3-dev protobuf-compiler libprotobuf-dev libxmu-dev libxi-dev
+
+You're recommended to use QtCreator, but not mandatory, use your preferred IDE,
+or no IDE at all, plain vim, make and gdb will do just fine.
+
+TODO: add packages for other distros
 

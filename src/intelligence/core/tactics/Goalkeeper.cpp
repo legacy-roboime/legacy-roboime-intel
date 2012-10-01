@@ -17,21 +17,22 @@ using namespace Skills;
 
 Goalkeeper::Goalkeeper(QObject* p, Robot* r, qreal s)
 	: Tactic(p,r),
-	goto_(new Goto(this, r, 0.0, 0.0, 0.0, s, true))//, kickTo_(new KickTo(this, r))//, getBall_(new GetBall(this, r, 1000))
+	goto_(new Goto(this, r, 0.0, 0.0, 0.0, s, true))
 {
 	((Steer *)goto_)->setLookPoint(stage()->ball());
 	goto_->setPoint(robot()->goal());
-	//goto_->setSpeed(speed);
-	this->pushState(goto_);
-	//skills.append(goto_);//this is important
+	this->pushState(goto_);//this is important
 	//goto_->setIgnoreBrake();
-	//skills.append(kickTo_);
-	//skills.append(getBall_);
 }
 
 bool Goalkeeper::busy()
 {
 	return true;
+}
+
+void Goalkeeper::setSpeed(qreal speed)
+{
+	this->goto_->setSpeed(speed);
 }
 
 void Goalkeeper::step()

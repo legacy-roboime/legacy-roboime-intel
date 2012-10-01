@@ -22,6 +22,7 @@ namespace LibIntelligence
 			//Zickler43(QObject* p, Robot* r, const Zickler43& zickler);
 			~Zickler43();
 			void step();
+			void setSpeed(qreal speed);
 
 		protected:
 			Skills::DriveToBall* driveToBall_; //pegar a bola de forma a preparar o chute pro gol
@@ -29,8 +30,6 @@ namespace LibIntelligence
 			Skills::SampledKick* sampledGoalKick_; //chutar a bola pro gol com potencia proxima da maxima
 			Skills::SampledKick* sampledMiniKick_; //chutar a bola com potencia proxima da minima e na direcao do gol adversario com um pequeno erro na direcao
 			Skills::Wait* wait_;
-
-			qreal speed;
 
 		private:
 			Object* lookPoint;

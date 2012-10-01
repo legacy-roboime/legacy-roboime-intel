@@ -21,11 +21,10 @@ namespace LibIntelligence
 			Goalkeeper(QObject* parent, Robot* slave, qreal speed);
 			bool busy();
 			void step();
+			void setSpeed(qreal speed);
 
 		protected:
 			Skills::Goto* goto_;
-			Skills::GetBall* getBall_;
-			Skills::KickTo* kickTo_;
 		};
 	}	
 }

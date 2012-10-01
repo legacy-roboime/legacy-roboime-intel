@@ -29,6 +29,7 @@ namespace LibIntelligence
 			void updateSoccerAction(type_actions action, Vector2 kickPoint, Vector2 movePoint);
 			Skills::SampledDribble* dribble();
 			type_actions action();
+			void setSpeed(qreal speed);
 
 		protected:
 			Skills::DriveToBall* driveToBall_;
@@ -36,8 +37,6 @@ namespace LibIntelligence
 			Skills::SampledKick* goalKick_;
 			Skills::SampledKick* pass_;
 			Skills::Goto* goto_;
-
-			qreal speed;
 
 		private:
 			type_actions action_;

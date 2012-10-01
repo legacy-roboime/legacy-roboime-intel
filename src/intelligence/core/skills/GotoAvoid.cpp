@@ -50,11 +50,6 @@ void GotoAvoid::setAvoid(Point *p)
 	avoid = p;
 }
 
-void GotoAvoid::setSpeed(qreal s)
-{
-	Goto::setSpeed(s);
-}
-
 void GotoAvoid::step()
 {
 	//TODO: implementar para um ponto generico, nao obrigatoriamente para um ponto proximo da bola.
