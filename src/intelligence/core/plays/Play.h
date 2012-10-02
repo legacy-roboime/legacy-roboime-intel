@@ -35,7 +35,8 @@ namespace LibIntelligence
 
 			Stage* stage_;
 			Team* team_;
-			Tactics::Tactic* player_[5];
+      //FIXME: This is WRONG, size should be dynamic or at least configurable.
+			Tactics::Tactic* player_[6];
 		};
 	}
 }
