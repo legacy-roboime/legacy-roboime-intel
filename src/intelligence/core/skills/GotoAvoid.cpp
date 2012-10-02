@@ -70,21 +70,7 @@ void GotoAvoid::step()
 		// Then we can go straight to the point
 		Goto::setNotIgnoreBrake();
 		Goto::step();
-	} else if(!(robot_avoid.length() > radiusAvoid + 500)){ 
-		int dec = 20;
-		//int i;//SA: Unused variable
-		qreal delta = avoid_target.angleTo(avoid_robot);
-		if(delta>10 && delta<350){ //margem de estabilidade
-			if(delta<180)
-				avoid_target.setAngle(avoid_robot.angle() - dec);
-			else
-				avoid_target.setAngle(avoid_robot.angle() + dec);
-		}
-		Point p = avoid_target.p2();
-		Goto::setPoint(p.x(), p.y());
-		Goto::step();
-	}
-	else { 
+	} else { 
 		//Go to the tangent point
 		qreal sinTheta(avoid_target.length() / robot_avoid.length());
 		qreal theta(RADTODEG(asinf(sinTheta)));
@@ -92,7 +78,22 @@ void GotoAvoid::step()
 		Point tangPoint1(Line::fromPolar(dist, robot_avoid.angle() + theta).translated(*robot).p2());
 		Point tangPoint2(Line::fromPolar(dist, robot_avoid.angle() - theta).translated(*robot).p2());
 		*tangPoint = Line(tangPoint1, targetCopy()).length() < Line(tangPoint2, targetCopy()).length() ? tangPoint1 : tangPoint2;
-		Goto::step(tangPoint);
+
+		if(Line(*tangPoint, *robot).length() > 100)
+			Goto::step(tangPoint);
+		else{ 
+			int dec = 60;
+			qreal delta = avoid_target.angleTo(avoid_robot);
+			if(delta>10 && delta<350){ //margem de estabilidade
+				if(delta<180)
+					avoid_target.setAngle(avoid_robot.angle() - dec);
+				else
+					avoid_target.setAngle(avoid_robot.angle() + dec);
+			}
+			Point p = avoid_target.p2();
+			Goto::setPoint(p.x(), p.y());
+			Goto::step();
+		}
 	}
 }
 
