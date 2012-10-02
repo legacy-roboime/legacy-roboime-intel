@@ -29,6 +29,7 @@ namespace LibIntelligence
 			~Tactic();
 
 			virtual void step();
+			void setSpeed(qreal);
 
 			void setStage(Stage*);
 			void setRobot(Robot*);

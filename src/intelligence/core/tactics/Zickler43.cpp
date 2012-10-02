@@ -172,14 +172,6 @@ bool Zickler43::isKickScored( Point kickPoint )
 	return true;
 }
 
-void Zickler43::setSpeed(qreal speed)
-{
-	this->driveToBall_->setSpeed(speed);
-	this->sampledDribble_->setSpeed(speed);
-	this->sampledGoalKick_->setSpeed(speed);
-	this->sampledMiniKick_->setSpeed(speed);
-}
-
 bool DriveToDribbleT::condition()
 {
 	//Zickler43* z = (Zickler43*) this->parent();//SA: Dead store

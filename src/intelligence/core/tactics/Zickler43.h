@@ -22,7 +22,6 @@ namespace LibIntelligence
 			//Zickler43(QObject* p, Robot* r, const Zickler43& zickler);
 			~Zickler43();
 			void step();
-			void setSpeed(qreal speed);
 
 		protected:
 			Skills::DriveToBall* driveToBall_; //pegar a bola de forma a preparar o chute pro gol

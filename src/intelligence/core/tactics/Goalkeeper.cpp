@@ -30,11 +30,6 @@ bool Goalkeeper::busy()
 	return true;
 }
 
-void Goalkeeper::setSpeed(qreal speed)
-{
-	this->goto_->setSpeed(speed);
-}
-
 void Goalkeeper::step()
 {
 	//shortcuts:

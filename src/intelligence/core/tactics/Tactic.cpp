@@ -70,3 +70,10 @@ void Tactic::step()
 	//cout << r->id() << endl;
 	//cout << "SKILL: " << current->objectName().toStdString() << endl;
 }
+
+void Tactic::setSpeed(qreal speed)
+{
+	for(int i = 0; i < states_.size(); i++) {
+		((Skills::Skill*)(states_.at(i)))->setSpeed(speed);
+	}
+}
