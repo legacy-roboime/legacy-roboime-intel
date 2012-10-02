@@ -16,7 +16,6 @@ namespace LibIntelligence
 
 		public:
 			Blocker(QObject* parent, Robot* slave, qreal angle, qreal speed=3000, qreal dist = 500);
-			void setSpeed(qreal speed);
 			void step();
 
 		protected:
