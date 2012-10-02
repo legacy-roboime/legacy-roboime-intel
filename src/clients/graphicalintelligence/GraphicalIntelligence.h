@@ -71,8 +71,8 @@ private:
 	bool useSimulation;
 	void resetPatterns();
 
-    Plays::Play* current_play_blue;
-    Plays::Play* current_play_yellow;
+    Plays::Play* current_play_us;
+    Plays::Play* current_play_them;
 
     TeamColor our_colour;
 

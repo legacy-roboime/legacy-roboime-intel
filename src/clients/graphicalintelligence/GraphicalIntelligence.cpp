@@ -188,8 +188,8 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	useSimulation(true),
     mode(PLAY),
     alterStateVarsWindow(new AlterStateVars(this)),
-    current_play_blue(NULL),
-    current_play_yellow(NULL)
+    current_play_us(NULL),
+    current_play_them(NULL)
 
 {
     load_configs();
@@ -403,11 +403,11 @@ void GraphicalIntelligence::update()
             //play["retaliateU"]->step();
 			//tactic["zickler43"]->step();
 			//play["retaliateT"]->step();
-            if(current_play_blue != NULL)
+            if(current_play_us != NULL)
             {
-                if(current_play_blue != play["minmax2"])
+                if(current_play_us != play["minmax2"])
                 {
-                    current_play_blue->step();
+                    current_play_us->step();
                 }
                 else
                 {
@@ -415,9 +415,9 @@ void GraphicalIntelligence::update()
                         ((QThread *)play["minimax2"])->start();
                 }
             }
-            if(current_play_yellow != NULL)
+            if(current_play_them != NULL)
             {
-                current_play_yellow->step();
+                current_play_them->step();
             }
 			break;
 
@@ -540,7 +540,7 @@ void GraphicalIntelligence::changePlayUs()
     int current_index = ui.cmbSelectPlayOurs->currentIndex();
     mutex.lock();
     cout << "Initiating play " << ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString() << " for our team:" << endl;
-    this->current_play_blue = play[ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString()];
+    this->current_play_us = play[ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString()];
     mutex.unlock();
 
 }
@@ -550,7 +550,7 @@ void GraphicalIntelligence::changePlayThem()
     int current_index = ui.cmbSelectPlayTheirs->currentIndex();
     mutex.lock();
     cout << "Initiating play " << ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString() << " for their team:" << endl;
-    this->current_play_yellow = play[ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString()];
+    this->current_play_them = play[ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString()];
     mutex.unlock();
 }
 
@@ -558,11 +558,37 @@ void GraphicalIntelligence::setTeamColor()
 {
     bool we_should_be_blue = (ui.cmbOurTeam->currentText() == "Azul");
 
+    cout << "Devemos ser azul?" << we_should_be_blue << endl;
+
+    if((we_should_be_blue && team["us"]->last()->color()==BLUE)|| (!we_should_be_blue && team["us"]->last()->color()==YELLOW))
+    {
+        return;
+    }
+
     LibIntelligence::TeamColor our_colour, their_colour;
 
-    Team* placeholder;
-    placeholder = team["us"];
-
+    if(we_should_be_blue)
+    {
+        team["us"].setColor(BLUE);
+        team["them"].setColor(YELLOW);
+        our_colour = BLUE; their_colour=YELLOW;
+    }
+    else
+    {
+        team["us"].setColor(YELLOW);
+        team["them"].setColor(BLUE);
+        our_colour = YELLOW; their_colour=BLUE;
+    }
+    for(int i=0; i<team["us"]->count(); i++)
+    {
+        team["us"]->at(i)->setColor(our_colour);
+        cout << "robo "<< i<< " nosso: " << team["us"]->at(i)->color() << endl;
+    }
+    for(int i=0; i<team["they"]->count(); i++)
+    {
+        team["they"]->at(i)->setColor(their_colour);
+        cout << "robo "<< i<< " deles: " << team["us"]->at(i)->color() << endl;
+    }
     resetPatterns();
 }
 
