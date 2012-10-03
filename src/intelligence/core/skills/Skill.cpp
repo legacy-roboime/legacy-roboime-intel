@@ -6,8 +6,8 @@ using namespace LibIntelligence::Skills;
 
 Skill::Skill(QObject* p, Robot* r, bool deterministic)
 	: //QObject(p),
-	robot_(r),
-	State(p, deterministic)
+	State(p, deterministic),
+	robot_(r)
 {}
 
 Skill::Skill(const Skill& skill) : State(skill)

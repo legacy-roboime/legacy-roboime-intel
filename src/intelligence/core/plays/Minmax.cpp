@@ -1,3 +1,4 @@
+#ifdef USE_PHYSX
 #include "Minmax.h"
 #include "Goal.h"
 #include "Ball.h"
@@ -15,7 +16,7 @@ Play(parent,team,stage),
 	_depth(depth),
 	_current_state(stage),
 	_best_action(best_action),
-	log("C:\\Users\\Bill\\Desktop\\log.dat"),
+	log("..\\log.dat"),
 	steps_per_turn(18)
 {
 	log.open(QIODevice::WriteOnly);
@@ -334,3 +335,6 @@ void Minmax::expandMax( StageX *s, int action )
 	//_max_plays[action]->setTeam(s->getTeamFromColor(this->team()->color()));
 	_max_plays[action]->step();
 }
+
+#endif
+

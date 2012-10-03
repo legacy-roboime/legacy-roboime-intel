@@ -60,50 +60,50 @@ bool isInDefenseArea(const Point &point, const Robot *r, const Point *g)
 
 Goto::Goto(QObject* p, Robot* r, Point *t, qreal o, qreal s, bool a)
 	: Steer(p, r, 0, 0, o),
-	ignoreBrake(false),
-	lookAt(NULL),
-	allowDefenseArea(a),
 	pTarget(t),
-	speed(s),
 	old(0.0, 0.0),
+	lookAt(NULL),
+	ignoreBrake(false),
+	allowDefenseArea(a),
+	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
 	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
 
 Goto::Goto(QObject* p, Robot* r, Point t, Point *l, qreal s, bool a)
 	: Steer(p, r, 0, 0, 0),
-	ignoreBrake(false),
-	lookAt(l),
-	allowDefenseArea(a),
-	target(t),
 	pTarget(NULL),
-	speed(s),
+	target(t),
 	old(0.0, 0.0),
+	lookAt(l),
+	ignoreBrake(false),
+	allowDefenseArea(a),
+	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
 	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
 
 Goto::Goto(QObject* p, Robot* r, Point *t, Point *l, qreal s, bool a)
 	: Steer(p, r, 0, 0, 0),
-	ignoreBrake(false),
-	lookAt(l),
-	allowDefenseArea(a),
 	pTarget(t),
-	speed(s),
 	old(0.0, 0.0),
+	lookAt(l),
+	ignoreBrake(false),
+	allowDefenseArea(a),
+	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
 	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
 
 Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
 	: Steer(p, r, 0, 0, o),
-	ignoreBrake(false), 
-	lookAt(NULL),
-	allowDefenseArea(a), 
-	target(0, 0),
 	pTarget(NULL),
-	speed(s),
+	target(0, 0),
 	old(0.0, 0.0),
+	lookAt(NULL),
+	ignoreBrake(false), 
+	allowDefenseArea(a), 
+	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
 	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
 {}
@@ -185,12 +185,12 @@ void Goto::printPIDk()
 {
 	cout << controllerSpeedX.Kp << " " << controllerSpeedX.Ki << " " << controllerSpeedX.Kd << endl;
 }
+
 void Goto::step(Point *optionalPoint)
 {
-	//TODO: valores objetivos devem ser alterados para valor nao deterministico (soma um float a speedx speedy e speedang)
-
 	Robot* robot = this->robot();
-	qreal targetTempX, targetTempY, speedX, speedY, speedTemp, k;
+	//qreal targetTempX, targetTempY//unused
+    qreal speedX, speedY, speedTemp, k;
 	qreal targetX, targetY;
 	if(optionalPoint) {
 		targetX = optionalPoint->x();
@@ -202,9 +202,6 @@ void Goto::step(Point *optionalPoint)
 		targetX = target.x();
 		targetY = target.y();
 	}
-	speedX = speedY = 0;
-	targetTempX = targetX;
-	targetTempY = targetY;
 
 	//limitar dentro do campo
 	qreal limit = robot->body().radius() + stage()->ball()->radius();
@@ -212,11 +209,10 @@ void Goto::step(Point *optionalPoint)
 	qreal minX = -maxX;
 	qreal maxY = stage()->fieldWidth() / 2 + limit;
 	qreal minY = -maxY;
-
 	targetX = targetX < minX ? minX : targetX > maxX ? maxX : targetX;
 	targetY = targetY < minY ? minY : targetY > maxY ? maxY : targetY;
 
-	//limitar fora da area
+	//limitar fora da area de defesa
 	if(!allowDefenseArea) {
 		if(isInDefenseArea(targetCopy(), robot, robot->team()->goal()))
 		{
@@ -236,20 +232,18 @@ void Goto::step(Point *optionalPoint)
 		}
 	}
 
-	//controle speedX
+	/*
+	//Controle utilizado no méxico 2012
+	//controle speedX 
 	controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
 	controllerSpeedX.realimentacao = robot->x();
 	pidService(controllerSpeedX);
 	speedX = controllerSpeedX.saida;
-
 	//controle speedY
 	controllerSpeedY.entrada = targetY; //deseja-se que a distância entre o alvo e o robô seja igual a zero
 	controllerSpeedY.realimentacao = robot->y();
 	pidService(controllerSpeedY);
 	speedY = controllerSpeedY.saida;
-
-	qreal a = Line(0, 0, 1, 1).angle();
-
 	//calculo speed linear
 	speedTemp = sqrt(speedX*speedX + speedY*speedY);
 	if(speedTemp > speed || ignoreBrake)
@@ -257,11 +251,10 @@ void Goto::step(Point *optionalPoint)
 		k = speed/speedTemp;
 		speedX *= k;
 		speedY *= k;
-	}
+	}*/
+	
 
-	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot, *lookAt).angle()));
-
-	/*//Teste - Controle Explicito
+	/*//Controle Explicito 1
 	qreal errorX = (targetX - robot->x());
 	qreal errorY = (targetY - robot->y());
 	qreal cte1 = 1000;
@@ -276,10 +269,44 @@ void Goto::step(Point *optionalPoint)
 	else{
 		speedTemp = (-2*pow(error/cte2,3) + 3*pow(error/cte2,2))*speedAux;
 	}
+	speedX = speedTemp*(errorX/error);
+	speedY = speedTemp*(errorY/error);
+	*/
 
+	//Controle Explicito 2
+	/*qreal errorX = (targetX - robot->x());
+	qreal errorY = (targetY - robot->y());
+	qreal t0 = 100;
+	qreal t1 = 3000;
+	qreal a = 5*t0;
+	qreal b = speed;
+	qreal error = sqrt(errorX*errorX + errorY*errorY); 
+	//qreal speedAux = speed;//SA: Dead store and unused variable
+	if(error > t1)
+		speedTemp = speed;
+	else if(error > t0)
+		speedTemp = ((error-t0)/(t1-t0))*b + ((error-t1)/(t0-t1))*a;
+	else{
+		speedTemp = 5*error;
+	}
+	speedTemp*=0.7;
 	speedX = speedTemp*(errorX/error);
 	speedY = speedTemp*(errorY/error);*/
-	
+
+	//Controle Explicito 3
+	qreal errorX = (targetX - robot->x());
+	qreal errorY = (targetY - robot->y());
+	qreal error = sqrt(errorX*errorX + errorY*errorY); 
+	qreal g = 9.80665 * 1000;
+	qreal mi = 0.4;
+	qreal aMax = mi*g;
+	qreal vMax = speed;
+	qreal cte = 4*(aMax/(vMax*vMax));
+	speedTemp = vMax * ( 1 - exp(-cte*error) );
+	speedX = speedTemp*(errorX/error);
+	speedY = speedTemp*(errorY/error);
+
+	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot, *lookAt).angle()));
 	Steer::setSpeeds(speedX, speedY);
 	Steer::step();
 }

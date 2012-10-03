@@ -11,7 +11,7 @@
 using namespace std;
 using namespace LibIntelligence;
 
-CommanderTxOld::CommanderTxOld(QObject* parent, char* address, quint16 port)
+CommanderTxOld::CommanderTxOld(QObject* parent, const char* address, quint16 port)
 	: UdpServer(parent, address, port),
 	Commander()
 {

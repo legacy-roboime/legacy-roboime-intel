@@ -8,14 +8,20 @@ Object::Object(qreal x, qreal y, qreal sx, qreal sy, qreal t, qreal o)
 	: Point(x, y),
 	speed_(sx, sy),
 	theta_(t),
-	omega_(o)
+    omega_(o),
+    timeOld_(0),
+    thetaOld_(0),
+    posOld_(0, 0)
 {}
 
 Object::Object(const Object& object)
 	: Point((Point) object),
 	speed_(object.speed_),
 	theta_(object.theta_),
-	omega_(object.omega_)
+    omega_(object.omega_),
+    timeOld_(object.timeOld_),
+    thetaOld_(object.thetaOld_),
+    posOld_(object.posOld_)
 {}
 
 void Object::updatePosition(const Point &p)
@@ -32,7 +38,7 @@ void Object::updateSpeed(double time)
 		speed_.setX((x() - posOld_.x())/deltaTime);
 		speed_.setY((y() - posOld_.y())/deltaTime);
 
-		if(abs(this->orientation() - thetaOld_) <  1){		//TODO: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
+		if(abs((long)(this->orientation() - thetaOld_)) <  1){		//TODO: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
 			omega_ =  (this->orientation() - thetaOld_)/deltaTime;
 		}
 

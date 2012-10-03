@@ -58,4 +58,4 @@ private:
 	unsigned char MAX_SIZE_POINTS;
 };
 
-#endif LINEARREGRESSION_H
+#endif // LINEARREGRESSION_H

@@ -15,7 +15,7 @@ namespace LibIntelligence
 		Q_OBJECT
 
 	public:
-		UpdaterVision(QObject* parent=0, quint16 port=10002, char* address="224.5.23.2");
+		UpdaterVision(QObject* parent=0, quint16 port=10002, const char* address="224.5.23.2");
 		~UpdaterVision();
 		//methods:
 		void prepare();
@@ -28,5 +28,6 @@ namespace LibIntelligence
 	private:
 		QUdpSocket* udpSocket;
 		QQueue<SSL_WrapperPacket*> packets;
+		unsigned int itr_vision;
 	};
 }

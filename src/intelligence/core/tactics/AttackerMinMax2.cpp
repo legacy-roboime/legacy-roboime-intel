@@ -5,47 +5,63 @@
 #include "Goal.h"
 #include "Sampler.h"
 #include <iostream>
-
-#define M_PI	3.1415926535897932
+#include "mathutils.h"
+#include "soccer.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 using namespace AttackerMinMax2T;
 
-AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbleSpeed, qreal passSpeed)
+AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, Object* kickPoint, Object* movePoint, Object* dribblePoint, qreal speed, qreal dribbleSpeed, qreal passSpeed)
 	: Tactic(p, r, true)
 {
-	action_ = type_actions::null_action;
-	movePoint_ = new Object();
-	kickPoint_ = new Object();
-	dribblePoint_ = new Object();
-	//driveToBall_ = new DriveToBall(this, r, r->enemyGoal(), speed, true);
+	action_ = null_action;
+
+	if(movePoint == NULL)
+		movePoint_ = new Object();
+	else
+		movePoint_ = movePoint;
+	if(kickPoint == NULL)
+		kickPoint_ = new Object();
+	else
+		kickPoint_ = kickPoint;
+	if(dribblePoint == NULL)
+		dribblePoint_ = new Object();
+	else
+		dribblePoint_ = dribblePoint;
+
+	driveToBall_ = new DriveToBall(this, r, dribblePoint_, speed, true);
 	dribble_ = new SampledDribble(this, r, dribblePoint_, true, 1., 1., speed);
 	goalKick_ = new SampledKick(this, r, kickPoint_, true, 1., 1., speed, false);
 	pass_ = new SampledKick(this, r, kickPoint_, true, 0.4, 0.4, speed, true);
 	goto_ = new Goto(this, r, movePoint_->x(), movePoint_->y(), 0, speed, false);
-	this->speed = speed;
 
-	//this->pushState(driveToBall_); //this is important to destructor
+	driveToBall_->setAllowDefenseArea();
+	dribble_->setAllowDefenseArea();
+	goalKick_->setAllowDefenseArea();
+	pass_->setAllowDefenseArea();
+	goto_->setAllowDefenseArea();
+
+	this->pushState(driveToBall_); //this is important to destructor
 	this->pushState(goalKick_);
 	this->pushState(dribble_);
 	this->pushState(pass_);
 	this->pushState(goto_);
 
-	//driveToBall_->setObjectName("DriveToBall");
+	driveToBall_->setObjectName("DriveToBall");
 	dribble_->setObjectName("SampledDribble");
 	goalKick_->setObjectName("SampledGoalKick");
 	pass_->setObjectName("SampledPass");
 	goto_->setObjectName("Goto");
 
-	this->pushTransition(goto_, new GotoToDriveT(this, goto_, /*driveToBall_*/dribble_));
-	this->pushTransition(/*driveToBall_*/dribble_, new DriveToGotoT(this, /*driveToBall_*/dribble_, goto_));
-	//this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, dribble_));
-	//this->pushTransition(dribble_, new DribbleToDriveT(this, dribble_, driveToBall_));
+	this->pushTransition(goto_, new GotoToDriveT(this, goto_, driveToBall_));
+	this->pushTransition(driveToBall_, new DriveToGotoT(this, driveToBall_, goto_));
+	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, dribble_));
 	this->pushTransition(dribble_, new DribbleToGoalKickT(this, dribble_, goalKick_));
-	this->pushTransition(goalKick_, new GoalKickToDribbleT(this, goalKick_, dribble_));
 	this->pushTransition(dribble_, new DribbleToPassT(this, dribble_, pass_));
+	this->pushTransition(dribble_, new DribbleToDriveT(this, dribble_, driveToBall_));
+	this->pushTransition(goalKick_, new GoalKickToDribbleT(this, goalKick_, dribble_));
 	this->pushTransition(pass_, new PassToDribbleT(this, pass_, dribble_));
 
 	this->setInitialState(goto_);
@@ -55,7 +71,7 @@ AttackerMinMax2::AttackerMinMax2(QObject* p, Robot* r, qreal speed, qreal dribbl
 
 AttackerMinMax2::~AttackerMinMax2()
 {
-	//delete driveToBall_;
+	delete driveToBall_;
 	delete dribble_;
 	delete goalKick_;
 	delete pass_;
@@ -84,6 +100,7 @@ type_actions AttackerMinMax2::action()
 	return action_;
 }
 
+//atualiza maquina (tatica) que controla o owner
 void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint, Vector2 movePoint)
 {
 	action_ = action;
@@ -92,30 +109,82 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	Ball* ball = this->stage()->ball();
 	Goal* enemyGoal = robot->enemyGoal();
 
-	if(action_ == pass || action_ == kick_to_goal){
-		kickPoint_->setX(kickPoint.x);
-		kickPoint_->setY(kickPoint.y);
-	}
+	Line move_ball = Line(*ball, Point(movePoint.x, movePoint.y));
 
-	movePoint_->setX(movePoint.x);
-	movePoint_->setY(movePoint.y);
-
-	Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
-	qreal orientation = line.angle() * M_PI / 180.;
-	goto_->setPoint(movePoint_->x(), movePoint_->y());
-	goto_->setOrientation(orientation);
-
-	if(movePoint.x == ball->x() && movePoint.y == ball->y()){
+	//forcei transicao na maquina de estado para simplificar, evitar colocar mais MachineTransition
+	if(action == get_ball){//owner pegando a bola
+		//adicionei a heuristica do look point, pois o soccer nao define
 		dribblePoint_->setX(enemyGoal->x());
 		dribblePoint_->setY(enemyGoal->y());
-#ifdef SOCCER_ACTION
-		cout << "ERROR: movePoint == ballPoint" << endl;
-#endif
+
+		this->setCurrentState(driveToBall_);
 	}
-	else{
+	else if(action == kick_to_goal){//owner chutando ao gol
+		kickPoint_->setX(kickPoint.x);
+		kickPoint_->setY(kickPoint.y);
+
+		this->setCurrentState(goalKick_);
+	}
+	else if(action == pass){//owner passando
+		kickPoint_->setX(kickPoint.x);
+		kickPoint_->setY(kickPoint.y);
+
+		this->setCurrentState(pass_);
+	}
+	else if(action == ::move && move_ball.length() > MIN_DIST){//owner conduzindo bola ate movePoint
+		//TODO: colocar uma condição para ele parar de conduzir quando chegar no movePoint
+
 		dribblePoint_->setX(movePoint.x);
 		dribblePoint_->setY(movePoint.y);
+
+		this->setCurrentState(dribble_);
 	}
+	else if(action == ::move){
+		//Mantem conduzindo para o ultimo ponto de dribblePoint_
+
+		this->setCurrentState(dribble_);
+	}
+	else if(action == blocker){//owner vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
+	else if(action == move_table){//owner vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
+	else if(action == receive_ball){//owner fazendo move_table, vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
+	else if(action == null_action){//owner vai para movePoint
+		Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+		qreal orientation = line.angle() * M_PI / 180.;
+		goto_->setPoint(movePoint.x, movePoint.y);
+		goto_->setOrientation(orientation);
+
+		this->setCurrentState(goto_);
+	}
+}
+
+void AttackerMinMax2::setSpeed(qreal speed)
+{
+	this->driveToBall_->setSpeed(speed);
+	this->dribble_->setSpeed(speed);
+	this->goalKick_->setSpeed(speed);
+	this->pass_->setSpeed(speed);
+	this->goto_->setSpeed(speed);
 }
 
 bool GotoToDriveT::condition()
@@ -143,13 +212,13 @@ DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, 
 
 bool DribbleToDriveT::condition()
 {
-	SampledDribble* dribble = (SampledDribble*)source_;
-	DriveToBall* drive = (DriveToBall*)target_;
-	const Object* backup = drive->getRefLookPoint();
-	drive->setRefLookPoint(dribble->getRefLookPoint());
-	bool busy = drive->busy();
-	drive->setRefLookPoint(backup);
-	return busy;
+	//SampledDribble* dribble = (SampledDribble*)source_;
+	//DriveToBall* drive = (DriveToBall*)target_;
+	//const Object* backup = drive->getRefLookPoint();
+	//drive->setRefLookPoint(dribble->getRefLookPoint());
+	//bool busy = drive->busy();
+	//drive->setRefLookPoint(backup);
+	return source_->busy();//busy;
 }
 
 DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

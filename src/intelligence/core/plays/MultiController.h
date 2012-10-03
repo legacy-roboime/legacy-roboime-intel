@@ -1,3 +1,4 @@
+#ifdef HAVE_WINDOWS
 #ifndef MULTICONTROLLER_H
 #define MULTICONTROLLER_H
 
@@ -22,3 +23,5 @@ namespace LibIntelligence
 }
 
 #endif // MULTICONTROLLER_H
+#endif
+

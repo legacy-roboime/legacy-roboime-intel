@@ -5,6 +5,7 @@
 #include "Ball.h"
 #include "Skill.h"
 #include "Move.h"
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;

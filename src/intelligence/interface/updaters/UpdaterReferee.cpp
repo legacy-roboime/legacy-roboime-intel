@@ -7,7 +7,7 @@
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterReferee::UpdaterReferee(QObject* parent, char* address, int port) 
+UpdaterReferee::UpdaterReferee(QObject* parent, const char* address, int port)
 	: Updater(),
 	cmd_counter_tmp(-1),
 	packets(new QQueue<RefData>())

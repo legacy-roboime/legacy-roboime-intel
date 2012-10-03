@@ -3,19 +3,21 @@
 #include "Robot.h"
 #include "Skills.h"
 #include "Goal.h"
-#include "goalswitcheroo.h"
+#include "GoalSwitcheroo.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 
 GoalSwitcheroo::GoalSwitcheroo(QObject *parent, Robot* slave, qreal s)
-	: Tactic(parent, slave), atacando(true), goto_(new Goto(this, slave)), speed(s)
+	: Tactic(parent, slave),
+    goto_(new Goto(this, slave)),
+    atacando(true)
 {
 	goto_->setSpeed(10000);
 	qreal bluegoalx = 3000;
 	qreal bluegoaly = 0;
-	goto_->setAll(bluegoalx, bluegoaly, speed);
+	goto_->setAll(bluegoalx, bluegoaly, s);
 	this->pushState(goto_);
 	//skills.append(goto_);
 }
@@ -24,9 +26,14 @@ GoalSwitcheroo::~GoalSwitcheroo()
 {
 }
 
+void GoalSwitcheroo::setSpeed(qreal speed)
+{
+	this->goto_->setSpeed(speed);
+}
+
 void GoalSwitcheroo::step()
 {
-	Stage* stage = this->stage();
+	//Stage* stage = this->stage();//unused
 	Robot* robot = this->robot();
 
 	//qreal BlueGoalX = -3000;

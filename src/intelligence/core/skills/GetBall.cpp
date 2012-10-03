@@ -6,11 +6,10 @@
 #include "Goal.h"
 #include "Ball.h"
 #include "geomutils.h"
-
-#define M_PI	3.1415926535897932
+#include "mathutils.h"
 
 //valor carteado
-#define CART	82.6
+#define CART 82.6
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
@@ -28,7 +27,7 @@ qreal GetBall::getSpeed()
 }
 
 bool GetBall::hasBall() {
-	static qreal dx, dy, d, x, y, bx, by;
+	static qreal dx, dy, /*d, x, y,*/ bx, by;
 	//82.6
 	qreal rx, ry, distance;
 
@@ -106,7 +105,7 @@ void GetBall::step()
 	qreal crossProduct2 = xPBL*yGBL2 - xGBL2 * yPBL;
 
 	qreal criteria = crossProduct1 * crossProduct2 ;
-	bool condition = crossProduct1 < 0;
+	bool condition;// = crossProduct1 < 0;//unused value
 
 	if(robot->goal()->x() < 0) condition = rx < ballX;
 	else condition = rx > ballX;
@@ -136,15 +135,15 @@ void GetBall::step()
 	}
 	else { //nao esta no cone de chute, move-se para dentro
 		
-		if(!condition) {
+		//if(!condition) {
 			//Blocker::step();
-		}
-		else {
+		//} else {
+        if(condition) {
 			qreal ballGoalAngle = BallGoalLine.angle();
 			qreal radAngle = ballGoalAngle * PI/180;
 			//if(radAngle < 0) radAngle = -1 * radAngle;
 
-			int side = robot->goal()->x() < 0 ? -1 : 1; 
+			//int side = robot->goal()->x() < 0 ? -1 : 1;//unused
 		
 
 			qreal destX = ballX - distance * cos(radAngle);
@@ -202,7 +201,7 @@ void GetBall::step()
 	//	Goto::step();
 	//}
 
-	/*Goto::step();
+	Goto::step();
 
 	//Verifica alinhamento da bola com a frente do robo (sera substituido pelo sensor da bola)
 	//Line lineTo = Line(rx, ry, rx + 1., ry);

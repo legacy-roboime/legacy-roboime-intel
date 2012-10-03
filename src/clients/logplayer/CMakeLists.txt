@@ -1,12 +1,12 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8)
 
 ##############################
 # Qt Form files (.ui)
 #
 
 set(LOGP_UI
-	LogPlayer.ui
-	# add new uis here
+    LogPlayer.ui
+    # add new uis here
 )
 
 ##############################
@@ -14,8 +14,8 @@ set(LOGP_UI
 #
 
 set(LOGP_RES
-	LogPlayer.qrc
-	# add new resources here
+    LogPlayer.qrc
+    # add new resources here
 )
 
 ##############################
@@ -46,28 +46,9 @@ include_directories(${SIM_INC_DIRS})
 
 
 
-##############################
-# Qt stuff
-#
-
-set(QT_USE_QTNETWORK true)
-set(QT_USE_QTOPENGL true)
-find_package(Qt4 REQUIRED)
-
 qt4_wrap_ui(LOGP_UI_H ${LOGP_UI})
 qt4_add_resources(LOGP_RES_CPP ${LOGP_RES})
-
-include(${QT_USE_FILE})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-
-
-
-##############################
-# PhysX stuff
-#
-
-find_package(PhysX REQUIRED)
-include_directories(${PHYSX_INCLUDES})
 
 
 
@@ -104,3 +85,4 @@ target_link_libraries(logplayer
 )
 
 set_property(TARGET logplayer PROPERTY FOLDER apps)
+

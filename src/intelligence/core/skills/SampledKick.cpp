@@ -5,11 +5,10 @@
 #include "Ball.h"
 #include "Sampler.h"
 #include "config.h"
-
-//#define CART	90.//100.//110.//82.6
+#include "mathutils.h"
 
 #ifdef SIMU
-#define KICKPOWERK 8000
+#define KICKPOWERK 5000
 #else
 #define KICKPOWERK 1000
 #endif
@@ -18,11 +17,11 @@ using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic, qreal minPower, qreal maxPower, qreal speed, bool pass)
-	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15, /*5 * */50., /*20 * */5 * M_PI/180.),
+	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15, 5 * 50., 20 * 5 * M_PI/180.),
 	minPower_(minPower),
 	maxPower_(maxPower),
-	pass_(pass),
-	powerK(KICKPOWERK)
+	powerK(KICKPOWERK),
+	pass_(pass)
 {
 	//this->setObjectName("SampledKick");
 	//threshold = CART;
@@ -57,7 +56,7 @@ void SampledKick::step()
 		qreal power;
 		if(pass_) {
 			qreal distReal = Vector(*ball - *getLookPoint()).length();
-			power = Sampler::sampledPowerKick(minPower_, calculatePassPower(distReal));
+			power = calculatePassPower(distReal);
 		} else {
 			if(deterministic_)
 				power = maxPower_;
@@ -70,7 +69,10 @@ void SampledKick::step()
 
 	//robot->dribble(0.5); //pegar bola
 
+	qreal backup = threshold;
+	threshold = 50; //para que o robô conduza numa direção é feita uma diminuição do threshold
 	DriveToBall::step();
+	threshold = backup;
 }
 
 bool SampledKick::busy()

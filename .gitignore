@@ -3,6 +3,11 @@ build*/*
 bin*/*
 lib*/*
 
-# ignore qt user file
+# ignore Qt Creator .user files
 *.user
 *.autosave
+*.dat
+
+# ignore mac files
+.DS_STORE
+

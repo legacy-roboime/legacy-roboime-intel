@@ -15,9 +15,9 @@ namespace LibIntelligence
 
 		public:
 			SampledDribble(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic = true, qreal minPower = 0., qreal maxPower = 1., qreal speed = 3000.);
-			SampledDribble::~SampledDribble(void); 
+			~SampledDribble(void);
 			void step();
-			bool busy(); 
+			bool busy();
 
 		protected:
 

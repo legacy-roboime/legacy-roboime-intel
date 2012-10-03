@@ -184,7 +184,6 @@ struct IntelligenceCli : public QThread
 
 GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
-	cli(new IntelligenceCli(this)),
 	useSimulation(true),
     mode(PLAY),
     alterStateVarsWindow(new AlterStateVars(this)),
@@ -272,11 +271,13 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
+	skill["drivetoBall"] = new DriveToBall(this, team["us"]->at(0), team["they"]->at(0));
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
 	skill["goto"] = new Goto(this, team["us"]->at(3), 0, 0, 0, 500, true);
+	skill["gotoa"] = new GotoAvoid(this, team["us"]->at(0), new Point(0, 0), stage["main"]->ball(), stage["main"]->ball()->radius() + team["us"]->at(0)->body().cut(), 3000);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
-	skill["samk"] = new SampledKick(this, team["us"]->at(1), team["us"]->at(0), true, 0, 1, 3000, false);
-	skill["samd"] = new SampledDribble(this, team["us"]->at(0), team["they"]->at(1), true, 1, 1, 1000);
+	skill["samk"] = new SampledKick(this, team["us"]->at(2), team["us"]->at(2), true, 0, 1, 3000, false);
+	skill["samd"] = new SampledDribble(this, team["us"]->at(1), team["they"]->at(1), true, 1, 1, 3000);
 	skill["loop"] = new Loops::Orbit(this, team["us"]->at(1), 0, 0, 1000, 3000, 1.0);
 	skill["fac"] = new FollowAndCover(this, team["us"]->at(1), team["they"]->at(1), team["us"]->goal(), 1000, 3000);
 
@@ -284,16 +285,20 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     play["cbr"] = new Plays::CBR2011(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 3000);
+#ifdef HAVE_WINDOWS
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
+#endif
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2), team["us"]->at(1));
 	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
-	tactic["attacker"] =  new AttackerMinMax2(this, team["us"]->at(1), 3000);
+	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
+#ifdef HAVE_WINDOWS
 	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
+#endif
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
@@ -339,7 +344,8 @@ GraphicalIntelligence::~GraphicalIntelligence()
 	skill.clear();
 	updater.clear();
 	commander.clear();
-	delete timer, cli;
+	delete timer;
+    delete cli;
 }
 
 void GraphicalIntelligence::resetPatterns()
@@ -422,6 +428,7 @@ void GraphicalIntelligence::update()
 			break;
 
 		case TACTIC:
+			tactic["attackerM"]->step();
 			tactic["zickler43"]->step();
 			//tactic["gkpr"]->step();
 			//tactic["def"]->step();
@@ -430,6 +437,10 @@ void GraphicalIntelligence::update()
 		case SKILL:
 			//skill["fac"]->step();
 			skill["goto"]->step();
+			skill["drivetoBall"]->step();
+			skill["samd"]->step();
+			//cout << skill["gotoa"]->busy() << endl;
+			//skill["gotoa"]->step();
 			skill["samk"]->step();
 			//((Goto*)skill["goto"])->setAllowDefenseArea();
 			//skill["drivetoObj"]->step();
@@ -490,7 +501,7 @@ void GraphicalIntelligence::updateValues()
 	//stage["main"]->blueTeam()->goals();
 	//ui.txtPlacarAzul->setText(QString::number(stage["main"]->blueTeam()->goals()));
 	//ui.txtPlacarAmarelo->setText(QString::number(stage["main"]->yellowTeam()->goals()));
-	UpdaterReferee* updR = qobject_cast<UpdaterReferee*>(updater["vision"]);
+	//UpdaterReferee* updR = qobject_cast<UpdaterReferee*>(updater["vision"]);//SA: Dead store, possible BUG
 
 
 

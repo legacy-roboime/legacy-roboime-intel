@@ -5,9 +5,9 @@ using namespace LibIntelligence;
 
 MachineTransition::MachineTransition(QObject* parent, State* source, State* target, qreal probability) 
 	: QObject(parent),
-	probability_(probability),
 	source_(source),
-	target_(target)
+	target_(target),
+	probability_(probability)
 {
 }
 

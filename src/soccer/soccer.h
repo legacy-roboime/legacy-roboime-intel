@@ -46,8 +46,6 @@ typedef struct SoccerAction{
 
 typedef struct SoccerState{
 
-  struct SoccerState *real_state;
-
   float red_time_stamp;
   float blue_time_stamp;
 

@@ -9,21 +9,21 @@
 #include "messages_robocup_ssl_detection.pb.h"
 #include "messages_robocup_ssl_geometry.pb.h"
 #include "messages_robocup_ssl_wrapper.pb.h"
+#define MAX_NB_PATTERNS 12
 
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterVision::UpdaterVision(QObject* parent, quint16 port, char* address) : Updater() {
+UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address) : Updater() {
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);
 	udpSocket->bind(port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 	udpSocket->joinMulticastGroup(groupAddress);
-	//udpSocket->bind(
 
 	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(receiveData()));
-	//udpSocket->open(
-	//udpSocket->open(
+	
+	itr_vision = 0;
 }
 
 UpdaterVision::~UpdaterVision() {}
@@ -68,6 +68,23 @@ void UpdaterVision::prepare() {
 				//if(detection.camera_id() == 0)
 					enqueue(new UpdateBall(detection.balls(i), t_sent, t_capture, detection.camera_id()));
 			}
+
+			//REFRESH VISION
+			if(itr_vision>50){
+				itr_vision=0;
+
+				SSL_DetectionRobot null_robot = SSL_DetectionRobot();
+				null_robot.set_x(-10000.0);
+				null_robot.set_y(-10000.0);
+				null_robot.set_orientation(0);
+
+				for(int i=0; i<MAX_NB_PATTERNS; i++){
+					null_robot.set_robot_id(i);
+					enqueue(new UpdateRobot(BLUE, null_robot, t_sent, t_capture, detection.camera_id()));
+					enqueue(new UpdateRobot(YELLOW, null_robot, t_sent, t_capture, detection.camera_id()));
+				}
+			}
+			itr_vision++;
 
 			for (int i = 0; i < detection.robots_blue_size(); i++)
 				enqueue(new UpdateRobot(BLUE, detection.robots_blue(i), t_sent, t_capture, detection.camera_id()));

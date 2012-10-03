@@ -1,4 +1,4 @@
-//#define SIMU
+#define SIMU //calibra parâmetro da força do passe
 
 #ifdef _DEBUG
 #define DEBUG_UDP
@@ -12,6 +12,9 @@
 //#define REFERRE_CMD
 //#define SKILL_OWNER
 //#define OVER_SPEED_LIMIT
+//#define EVALUATE_BEST_RED_ACTION
+//#define EVALUATE_BEST_BLUE_ACTION
+//#define TRANSFORMADA_CAMPO
 #endif
 
 #define NPLAYERS 6

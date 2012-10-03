@@ -21,7 +21,7 @@ namespace LibIntelligence
 
 	    private:
 			qreal coefs_[15];
-			SteerToBall  move_;
+			SteerToBall  move_; //ARQUITETURA NAO BOA, POIS AO DAR SETROBOT EM LINEARCOMBMOTION TERA QUE DAR SET ROBOT NESSA SKILL
 			Object *obj_array_[13];
 	  };		 
 

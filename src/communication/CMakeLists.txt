@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8)
 
 ##############################
 # Include all headers
@@ -20,36 +20,22 @@ set(COMM_SRC
 
 ##############################
 # Protobuf files
+#
+
 set(COMM_PROTO
     messages_internal_command.proto
     messages_robocup_ssl_detection.proto
     messages_robocup_ssl_geometry.proto
     messages_robocup_ssl_refbox_log.proto
     messages_robocup_ssl_wrapper.proto
+    grSim_Commands.proto
+    grSim_Replacement.proto
+    grSim_Packet.proto
     # add new protos here
 )
 
-
-
-##############################
-# Qt stuff
-#
-
-set(QT_DONT_USE_QTGUI true)
-set(QT_USE_QTNETWORK true)
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-
-
-
-##############################
-# Protobuf stuff
-#
-
-find_package(Protobuf REQUIRED)
 protobuf_generate_cpp(COMM_PROTO_SRC COMM_PROTO_HDR ${COMM_PROTO})
-
-include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
 
@@ -88,3 +74,4 @@ target_link_libraries(communication
 )
 
 set_property(TARGET communication PROPERTY FOLDER modules)
+

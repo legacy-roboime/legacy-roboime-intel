@@ -6,9 +6,11 @@
 #include "Halt.h"
 #include "CBR2011.h"
 #include "FreeKickThem.h"
+#ifdef USE_PHYSX
 #include "Minmax.h"
-#include "Minmax2.h"
 #include "BGT.h"
+#endif
+#include "Minmax2.h"
 #include "LinearCombPlay.h"
 #include "ObeyReferee.h"
 #include "AutoRetaliate.h"
