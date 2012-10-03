@@ -569,15 +569,24 @@ void GraphicalIntelligence::setTeamColor()
 
     if(we_should_be_blue)
     {
-        team["us"].setColor(BLUE);
-        team["them"].setColor(YELLOW);
+        Team* t_us = team["us"];
+		t_us->setColor(BLUE);
+        Team* t_them = team["they"];
+		t_them->setColor(YELLOW);
         our_colour = BLUE; their_colour=YELLOW;
+		
+		//stage["main"]->setBlueTeam(t_us);
+		//stage["main"]->setYellowTeam(t_them);
     }
     else
     {
-        team["us"].setColor(YELLOW);
-        team["them"].setColor(BLUE);
+        Team* t_us = team["us"];
+		t_us->setColor(YELLOW);
+        Team* t_them = team["they"];
+		t_them->setColor(BLUE);
         our_colour = YELLOW; their_colour=BLUE;
+		//stage["main"]->setYellowTeam(t_us);
+		//stage["main"]->setBlueTeam(t_them);
     }
     for(int i=0; i<team["us"]->count(); i++)
     {
