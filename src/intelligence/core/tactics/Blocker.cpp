@@ -40,8 +40,3 @@ void Blocker::step()
 	goto_->setOrientation(M_PI + angle * M_PI / 180.);
 	goto_->step();
 }
-
-void Blocker::setSpeed(qreal speed)
-{
-	this->goto_->setSpeed(speed);
-}

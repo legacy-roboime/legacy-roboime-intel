@@ -17,7 +17,6 @@ CommanderGrSim::CommanderGrSim(QObject* parent, const char* address, quint16 por
 {
 }
 
-#define WFACTOR 7
 #define KFACTOR 7
 
 void CommanderGrSim::step()
@@ -44,10 +43,10 @@ void CommanderGrSim::step()
         command->set_velnormal(0.0);
         command->set_velangular(0.0);
         command->set_wheelsspeed(true);
-        command->set_wheel1(WFACTOR * c.wheelSpeedAt(1));
-        command->set_wheel2(WFACTOR * c.wheelSpeedAt(2));
-        command->set_wheel3(WFACTOR * c.wheelSpeedAt(3));
-        command->set_wheel4(WFACTOR * c.wheelSpeedAt(0));
+        command->set_wheel1(c.wheelSpeedAt(1));
+        command->set_wheel2(c.wheelSpeedAt(2));
+        command->set_wheel3(c.wheelSpeedAt(3));
+        command->set_wheel4(c.wheelSpeedAt(0));
     }
 
     QByteArray datagram;

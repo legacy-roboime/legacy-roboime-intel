@@ -50,14 +50,24 @@ void Steer::setLookPoint(Point *p)
 
 void Steer::step()
 {
-	//qreal omega;
-	//P Control
-	//qreal aThreshold = M_PI;
-	//qreal errorP = -2.*pow(omega/aThreshold,3)+3*pow(omega/aThreshold,2);
-	controller.entrada = __q((lookPoint ? DEGTORAD(Line(*robot(), *lookPoint).angle()) : orientation) - robot()->orientation());
+	qreal angleF = RADTODEG(lookPoint ? DEGTORAD(Line(*robot(), *lookPoint).angle()) : orientation);
+	int angleI = ( (int)angleF ) % 360;
+	qreal frac = angleF - (int)angleF; //manter precisão do double
+	angleF = DEGTORAD(angleI + frac);
+
+	controller.entrada = __q( angleF - robot()->orientation() );
 	controller.realimentacao = 0.0;
 	pidService(controller);
 	Move::setSpeedAngular(controller.saida);
+
+	/*qreal error = __q( angleF - robot()->orientation() );
+	qreal g = 9.80665 * 1000;
+	qreal mi = 0.4;
+	qreal aMax = 8*mi*g/(robot()->body().radius());
+	qreal vMax = 7.;//*robot()->body().radius();
+	qreal k = 4*(aMax/(vMax*vMax));
+	Move::setSpeedAngular( vMax * ( 1 - exp(-k*error) ) );*/
+
 	Move::step();
 }
 

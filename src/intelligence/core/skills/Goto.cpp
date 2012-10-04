@@ -232,7 +232,9 @@ void Goto::step(Point *optionalPoint)
 		}
 	}
 
-	//controle speedX
+	/*
+	//Controle utilizado no méxico 2012
+	//controle speedX 
 	controllerSpeedX.entrada = targetX; //deseja-se que a distância entre o alvo e o robô seja igual a zero
 	controllerSpeedX.realimentacao = robot->x();
 	pidService(controllerSpeedX);
@@ -249,10 +251,10 @@ void Goto::step(Point *optionalPoint)
 		k = speed/speedTemp;
 		speedX *= k;
 		speedY *= k;
-	}
+	}*/
 	
 
-	/*//Teste - Controle Explicito 1
+	/*//Controle Explicito 1
 	qreal errorX = (targetX - robot->x());
 	qreal errorY = (targetY - robot->y());
 	qreal cte1 = 1000;
@@ -271,8 +273,8 @@ void Goto::step(Point *optionalPoint)
 	speedY = speedTemp*(errorY/error);
 	*/
 
-	/*//Teste - Controle Explicito 2
-	qreal errorX = (targetX - robot->x());
+	//Controle Explicito 2
+	/*qreal errorX = (targetX - robot->x());
 	qreal errorY = (targetY - robot->y());
 	qreal t0 = 100;
 	qreal t1 = 3000;
@@ -290,6 +292,19 @@ void Goto::step(Point *optionalPoint)
 	speedTemp*=0.7;
 	speedX = speedTemp*(errorX/error);
 	speedY = speedTemp*(errorY/error);*/
+
+	//Controle Explicito 3
+	qreal errorX = (targetX - robot->x());
+	qreal errorY = (targetY - robot->y());
+	qreal error = sqrt(errorX*errorX + errorY*errorY); 
+	qreal g = 9.80665 * 1000;
+	qreal mi = 0.4;
+	qreal aMax = mi*g;
+	qreal vMax = speed;
+	qreal cte = 4*(aMax/(vMax*vMax));
+	speedTemp = vMax * ( 1 - exp(-cte*error) );
+	speedX = speedTemp*(errorX/error);
+	speedY = speedTemp*(errorY/error);
 
 	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot, *lookAt).angle()));
 	Steer::setSpeeds(speedX, speedY);
