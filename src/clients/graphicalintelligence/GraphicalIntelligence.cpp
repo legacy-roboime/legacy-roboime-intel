@@ -330,7 +330,6 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	timer->start(10.);
 
 	resetPatterns();
-	cli->start();
 }
 
 GraphicalIntelligence::~GraphicalIntelligence()
@@ -514,7 +513,7 @@ void GraphicalIntelligence::updateValues()
 }
 
 
-void GraphicalIntelligence::on_btnIntStart_clicked()
+/*void GraphicalIntelligence::on_btnIntStart_clicked()
 {
 	timer->start();
 }
@@ -522,7 +521,7 @@ void GraphicalIntelligence::on_btnIntStart_clicked()
 void GraphicalIntelligence::on_btnIntStop_clicked()
 {
 	timer->stop();
-}
+}*/
 
 void GraphicalIntelligence::changeIntelligenceOutput()
 {

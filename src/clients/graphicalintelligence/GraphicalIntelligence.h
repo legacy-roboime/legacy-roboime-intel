@@ -44,8 +44,8 @@ public slots:
 
 private slots:
 	void updateValues();
-	void on_btnIntStart_clicked();
-	void on_btnIntStop_clicked();
+    //void on_btnIntStart_clicked();
+    //void on_btnIntStop_clicked();
     void setTeamColor();
     void changeIntelligenceOutput();
     void changePlayUs();

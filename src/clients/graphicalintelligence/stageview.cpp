@@ -60,7 +60,6 @@ void StageView::redraw()
 	
 	LibIntelligence::Team* blueTeam = stage->blueTeam();
 	LibIntelligence::Team* yellowTeam = stage->yellowTeam();
-	qDebug() << blueTeam;
 	LibIntelligence::Robot* robot;
 	blueTeam->size();
 	for(int i=0; i<blueTeam->size(); i++) {
