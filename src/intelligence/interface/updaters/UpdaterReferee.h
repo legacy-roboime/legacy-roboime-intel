@@ -24,7 +24,7 @@ namespace LibIntelligence
 		Q_OBJECT
 
 	public:
-		UpdaterReferee(QObject* parent, char* address="224.5.23.1", int port=10001);
+		UpdaterReferee(QObject* parent, const char* address="224.5.23.1", int port=10001);
 		~UpdaterReferee();
 		//methods:
 		void prepare();

@@ -5,8 +5,7 @@
 #include "Ball.h"
 #include "Sampler.h"
 #include "config.h"
-
-//#define CART	90.//100.//110.//82.6
+#include "mathutils.h"
 
 #ifdef SIMU
 #define KICKPOWERK 8000
@@ -21,8 +20,8 @@ SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool 
 	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15, /*5 * */50., /*20 * */5 * M_PI/180.),
 	minPower_(minPower),
 	maxPower_(maxPower),
-	pass_(pass),
-	powerK(KICKPOWERK)
+	powerK(KICKPOWERK),
+	pass_(pass)
 {
 	//this->setObjectName("SampledKick");
 	//threshold = CART;
@@ -57,7 +56,7 @@ void SampledKick::step()
 		qreal power;
 		if(pass_) {
 			qreal distReal = Vector(*ball - *getLookPoint()).length();
-			power = Sampler::sampledPowerKick(minPower_, calculatePassPower(distReal));
+			power = calculatePassPower(distReal);
 		} else {
 			if(deterministic_)
 				power = maxPower_;

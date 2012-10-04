@@ -57,11 +57,16 @@ Real v2_norm( Vector2 v )
 
 Vector2 v2_unit( Vector2 v )
 {
-  Real  length = v2_norm(v);
-  if(fabs(length) < EPS)
+  Real length = v2_norm(v);
+  if(fabs(length) < EPS) {
+	Vector2 n = {0, 0};
     printf("(v2_unit) zero norm\n");
-  else
+    //SA: this path wasn't returning, possible BUG
+    //returning {0, 0} to indicate error
+    return n;
+  } else {
     return v2_scale(1.0/length, v);
+  }
 }
 
 

@@ -5,6 +5,7 @@
 #include "GotoTactic.h"
 #include "config.h"
 #include <QTime>
+#include <QtCore/QCoreApplication>
 
 #define LOGGING
 
@@ -15,25 +16,26 @@ using namespace Tactics;
 
 Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int depth, float alpha, float beta)
 	: Play(parent, team,stage),
-	log("C:\\Users\\Bill\\Desktop\\log.dat"),
+	log("..\\log.dat"),
+	speed_(speed),
 	depth_(depth),
 	alpha_(alpha),
 	beta_(beta),
-	speed_(speed),
 	init(false)
 {
 	//log.open(QIODevice::WriteOnly);
 
 	soccer_env_init();
 	s = sstate_alloc();
+	state_action = sstate_alloc();
 	sL = sstate_alloc();
 
 	red_action = saction_red_make(s);
 	blue_action = saction_blue_make(s);
 
-	if(team->color() == TeamColor::BLUE && stage->isLeftSideBlueGoal())
+	if(team->color() == BLUE && stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
-	else if (team->color() == TeamColor::YELLOW && !stage->isLeftSideBlueGoal())
+	else if (team->color() == YELLOW && !stage->isLeftSideBlueGoal())
 		soccer_env_red_side( LEFT );
 	else
 		soccer_env_red_side( RIGHT );
@@ -41,24 +43,16 @@ Minmax2::Minmax2(QObject *parent, Team* team ,Stage* stage, qreal speed, int dep
 	envReal = *soccer_env();
 	changeSEnvMeasure(&envReal, 1000.);
 
-	//for(int i=0; i < team->size(); i++)
-	//	_max_skills.push_back( new Goto(this, team->at(i)) );
+	g = new Goto(this, team->at(0));
+	g->setAllowDefenseArea();
 
-	//goto_ = new Goto(this, team->at(2));
-
-	for(int i=0; i<NPLAYERS; i++)
-		player_[i] = new GotoTactic((Play *)this, team->at(i)); 
-
-	attacker = new AttackerMinMax2(this, team->at(0), speed_, 
+	attacker = new AttackerMinMax2(this, team->at(0), NULL, NULL, NULL, speed_, 
 								   speed_, 
 								   envReal.red_pass_speed); 
 }
 
 Minmax2::~Minmax2()
 {
-	for(int i=0; i<_max_skills.size(); i++)
-		delete _max_skills.at(i);
-
 	delete attacker;
 	//log.close();
 }
@@ -112,7 +106,7 @@ void Minmax2::ballOwner()
 	Robot* mRobot = stage_->getClosestPlayerToBall(team_);
 	Robot* tRobot = stage_->getClosestPlayerToBall(team_->enemyTeam());
 	qreal orientation = mRobot->orientation();
-	qreal dist = 70;
+	qreal dist = 0;//70;
 	QPointF mDribbler = QPointF(mRobot->x() + cos(orientation)*dist, mRobot->y() + sin(orientation)*dist);
 	orientation = tRobot->orientation();
 	QPointF tDribbler = QPointF(tRobot->x() + cos(orientation)*dist, tRobot->y() + sin(orientation)*dist);
@@ -165,29 +159,40 @@ void Minmax2::update_soccer_state()
 void Minmax2::run()
 {
 	while(true) {
-#ifdef MINMAX2_DELAY
-		QTime time1 = QTime::currentTime();
-#endif
+
+		//QTime time1 = QTime::currentTime();
+
 #ifdef SOCCER_DEBUG
 		statemutex.lock();
 #endif
+		QCoreApplication::processEvents();
 		update_soccer_state();
-
-		//minimax_use_next_red_robot();
-		//minimax_use_next_blue_robot();
-
-		changeSStateMeasure(s, 0.001);
 
 		if(!init){
 			minimax_init(s);
 			init = true;
 		}
 
-//#ifdef SOCCER_DEBUG
 		*sL = *s;
-//#endif
+
+		changeSStateMeasure(sL, 0.001);
+
+		if(sL->red_ball_owner>-1){
+			sL->ball_vel = v2_make(0,0);
+			sL->red[sL->red_ball_owner] = sL->ball;
+		}
+		else if(sL->blue_ball_owner>-1){
+			sL->ball_vel = v2_make(0,0);
+			sL->blue[sL->blue_ball_owner] = sL->ball;
+		}
 
 		minimax_play( sL, depth_ );
+
+		/*double total_time = 5000;
+		QTime time3 = QTime::currentTime();
+		double wait_time = (time3.minute() * 60 * 1000 + time3.second() * 1000 + time3.msec()) - (time1.minute() * 60 * 1000 + time1.second() * 1000 + time1.msec());
+		if(wait_time < total_time)
+			QThread::msleep(total_time-wait_time);*/
 
 		mutex.lock();
 		red_action = *minimax_get_best_red_action();
@@ -195,10 +200,11 @@ void Minmax2::run()
 
 		changeSActionMeasure(&red_action, 1000.);
 		changeSActionMeasure(&blue_action, 1000.);
+
+		state_action = s;
 		mutex.unlock();
 
 #ifdef SOCCER_DEBUG
-		changeSStateMeasure(s, 1000.);
 		statemutex.unlock();
 #endif
 #ifdef MINMAX2_DELAY
@@ -224,7 +230,7 @@ void Minmax2::drawOpenGL()
 
 	saction_blue_act( sL, &blue_action );
 	saction_red_act( sL, &red_action );
-	glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
+	glViewport(/*winWidth /2. + 10*/0, 0, winWidth /2., winHeight ); 
 	soccer_redraw( sL ); 
 	glutSwapBuffers();
 
@@ -245,7 +251,7 @@ void Minmax2::step()
 void Minmax2::act(SoccerAction& action, Team* team)
 {
 	Ball* ball = stage_->ball();
-	int idClosest = stage_->getClosestPlayerToBall(team)->id();
+	int id = state_action->red_ball_owner;
 
 #ifdef SOCCER_ACTION
 	if(action.type == kick_to_goal)
@@ -270,12 +276,12 @@ void Minmax2::act(SoccerAction& action, Team* team)
 
 	for(int i=0; i < team->size(); i++){
 		Vector2 pos = v2_make(0, 0); 
-		pos = action.move[i];
+		pos = action.move[i];//v2_make(-3025,0);//
 		Robot* robot = team->at(i);
 
-		if( idClosest == robot->id() ){
+		if( id == robot->id() ){
 #ifdef SKILL_OWNER
-			cout << "SKILL DO ROBO MAIS PERTO DA BOLA: " << attacker->getCurrentState()->objectName().toStdString() << endl;
+			cout << "SKILL DO OWNER: " << attacker->getCurrentState()->objectName().toStdString() << endl;
 #endif
 #ifdef DELTA_POS_OWNER
 			static Vector2 lastPos = *pos;
@@ -297,22 +303,14 @@ void Minmax2::act(SoccerAction& action, Team* team)
 #endif
 		}
 		else{
-			QLineF line = QLineF(robot->x(), robot->y(), ball->x(), ball->y());
-			qreal orientation = line.angle() * PI / 180; //convenção sentido horario para classe QLineF
+			Line line = Line(robot->x(), robot->y(), ball->x(), ball->y());
+			qreal orientation = line.angle() * PI / 180;
 
-			//_max_skills.at(i)->setPoint(pos->x, pos->y);
-			//_max_skills.at(i)->setSpeed(envReal.red_speed);
-			//_max_skills.at(i)->setOrientation(orientation);
-			//_max_skills.at(i)->step();
-
-			//cout << pos->x << " " << pos->y << endl;
-			//((GotoTactic*)player_[i])->setRobot(robot);
-			Goto* g = ((GotoTactic*)player_[i])->goto_;
-			//g->setAllowDefenseArea();
+			g->setRobot(robot);
 			g->setPoint(pos.x, pos.y);
 			g->setSpeed(speed_);//envReal.red_speed);
 			g->setOrientation(orientation);
-			player_[i]->step();
+			g->step();
 		}
 	}
 }

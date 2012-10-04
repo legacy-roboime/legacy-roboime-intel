@@ -1,3 +1,4 @@
+#ifdef HAVE_WINDOWS
 #include "Controller.h"
 #include "CXBOXController.h"
 #include "Robot.h"
@@ -16,13 +17,31 @@ Controller::Controller(QObject* p, Robot* r, int i, qreal s)
 	speed(s)
 {
 	steer = new SteerToBall(this, r, s, s);
-	bl = new Blocker(this, robot(), 0, speed);
-	gs = new GoalSwitcheroo(this, robot(), speed);
-	zk = new Zickler43(this, robot(), speed, true);
+	bl = new Blocker(this, robot(), 0, s);
+	gs = new GoalSwitcheroo(this, robot(), s);
+	zk = new Zickler43(this, robot(), s, true);
 	mv = new Move(this, robot(), 0.0, 0.0, 0.0);
-	gt = new Goto(this, robot(), 0.0, 0.0);
-	gk = new Goalkeeper(this, robot(), speed);
+	gk = new Goalkeeper(this, robot(), s);
 	controller = new CXBOXController(id);
+	pushState(steer);
+	pushState(mv);
+}
+
+void Controller::setSpeed(qreal speed)
+{
+	this->speed = speed;
+	bl->setSpeed(speed);
+	gs->setSpeed(speed);
+	zk->setSpeed(speed);
+	gk->setSpeed(speed);
+}
+
+void Controller::setRobot(Robot* r)
+{
+	setRobot(r);
+	bl->setRobot(r);
+	gs->setRobot(r);
+	gk->setRobot(r);
 }
 
 void Controller::step() {
@@ -58,7 +77,7 @@ void Controller::step() {
 			sBoost = 1.0;
 		}
 		steer->setAll(sx * sBoost * speed, sy * sBoost * speed, dx, dy);
-		//if(controller->ButtonPressed(XINPUT_
+		steer->step();
 
 		//dribbler
 		robot()->dribble(dribSign * controller->TriggerL());
@@ -69,15 +88,11 @@ void Controller::step() {
 		} else {
 			robot()->kick(0.0);
 		}
-		steer->step();
 
 		//blocker
-		
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_A)) {
 			bl->step();
 		}
-
-		//goto
 		
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_B)) {
 			gs->step();
@@ -91,14 +106,6 @@ void Controller::step() {
 		//zickler
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
 			zk->step();
-			robot()->dribble(0);
-		}
-
-		//goto
-		gt->setAll(0.0, 0.0, speed);
-		gt->setOrientation(dx, dy);
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_LEFT_SHOULDER)) {
-			gt->step();
 		}
 
 		//direcionais
@@ -121,3 +128,6 @@ void Controller::step() {
 		}
 	}
 }
+
+#endif
+

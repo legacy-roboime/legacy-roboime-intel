@@ -2,6 +2,8 @@
 #include "Updater.h"
 #include "Ball.h"
 #include "messages_robocup_ssl_detection.pb.h"
+#include "config.h"
+#include "Stage.h"
 
 namespace LibIntelligence
 {
@@ -35,8 +37,17 @@ void UpdateBall::apply(Updater* u) {
 	for(size_t k=u->ballsSize(); k>0; k--) {
 		//TODO: identify which ball is which
 		//if(u->ball(k-1)->i()==_i) {
-			u->ball(k-1)->updatePosition(*this);
-			u->ball(k-1)->updateSpeed(time_capture());
+			Ball* ball = u->ball(k-1);
+			ball->updatePosition(*this);
+			ball->updateSpeed(time_capture());
+
+#ifdef TRANSFORMADA_CAMPO
+			float A = 2*u->stage(0)->fieldWidth();
+			float x = ball->x();
+			float y = ball->y();
+			ball->setX(y);
+			ball->setY((-1.)*x + A/4.);
+#endif
 		//}
 	}
 }

@@ -1,19 +1,11 @@
 cmake_minimum_required(VERSION 2.8)
 
-
 # Include all headers
 include_directories(.)
 file(GLOB NXU_HDR "*.h")
 
 aux_source_directory(. NXU_SRC)
 
-
-##############################
-# PhysX stuff
-#
-
-find_package(PhysX REQUIRED)
-include_directories(${PHYSX_INCLUDES})
 
 
 ##############################
@@ -40,3 +32,4 @@ target_link_libraries(nxustream2
 )
 
 set_property(TARGET nxustream2 PROPERTY FOLDER 3rdparty)
+

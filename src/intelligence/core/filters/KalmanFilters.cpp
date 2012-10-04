@@ -48,7 +48,8 @@ void KalmanFilters::step()
 		}
 		else if(ur!=NULL)
 		{
-			for(int i=0; i<filters.length(); i++)
+            //XXX: Disabled due to enum-comparison warning and was not being user anyway...
+            /*for(int i=0; i<filters.length(); i++)
 			{	
 				if(((ur->color() == BLUE && filters[i]->type() == BLUE) || (ur->color() == YELLOW && filters[i]->type() == YELLOW)) && ur->patternId() == filters[i]->id() )
 				{
@@ -63,7 +64,7 @@ void KalmanFilters::step()
 				if(ur->color() == BLUE)
 					filters.append(new KalmanFilter(BLUE, ur->patternId()));
 				else
-					filters.append(new KalmanFilter(YELLOW, ur->patternId()));
+                    filters.append(new KalmanFilter(YELLOW, ur->patternId()));*/
 		}
 		else
 			updates_.enqueue(u);

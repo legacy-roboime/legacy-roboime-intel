@@ -35,7 +35,7 @@ void StopReferee::step()
 	Team* team = this->team_;
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
-	Goal* myGoal = team->goal();
+    Goal* myGoal = team->goal();
 
 	map<qreal, Robot*> nearTeam = stage->getClosestPlayersToPoint(team, (Point*)ball); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
 	map<int, Robot*> blockers;

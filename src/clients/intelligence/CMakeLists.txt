@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8)
 
 ##############################
 # Include all headers
@@ -29,17 +29,6 @@ include_directories(${INT_INC_DIRS})
 
 
 ##############################
-# Qt stuff
-#
-
-set(QT_USE_QTNETWORK true)
-set(QT_USE_QTOPENGL true)
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
-
-
-
-##############################
 # Le finale
 #
 
@@ -55,7 +44,9 @@ add_executable(intelligence-client
 
 target_link_libraries(intelligence-client
     intelligence
+    ${GLUT_LIBRARIES}
     ${QT_LIBRARIES}
 )
 
 set_property(TARGET intelligence-client PROPERTY FOLDER apps)
+

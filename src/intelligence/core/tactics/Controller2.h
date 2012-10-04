@@ -1,9 +1,15 @@
-#pragma once
+#ifdef HAVE_WINDOWS
 #ifndef CONTROLLER2_H
 #define CONTROLLER2_H
 
 #include "LibIntelligence.h"
 #include "Tactic.h"
+#include "SteerToPoint.h"
+#include "Blocker.h"
+#include "GoalSwitcheroo.h"
+#include "Goalkeeper.h"
+#include "Zickler43.h"
+#include "Goto.h"
 #include "Move.h"
 
 namespace LibIntelligence
@@ -14,15 +20,23 @@ namespace LibIntelligence
 		{
 		public:
 			Controller2(QObject* parent, Robot* slave, int controllerId, qreal speed);
-
+			void setSpeed(qreal speed);
 			void step();
+			void setRobot(Robot* r);
 
 		protected:
 			int id;
 			qreal speed;
+			Skills::SteerToBall* steer;
+			Tactics::Blocker* bl;
+			Tactics::GoalSwitcheroo* gs;
+			Tactics::Goalkeeper* gk;
+			Tactics::Zickler43 *zk;
 			Skills::Move* move;
 		};
 	}	
 }
 
 #endif // CONTROLLER_H
+#endif
+

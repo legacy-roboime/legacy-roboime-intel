@@ -1,3 +1,4 @@
+#ifdef HAVE_WINDOWS
 #include "Controller2.h"
 #include "CXBOXController.h"
 #include "Move.h"
@@ -17,14 +18,36 @@ Controller2::Controller2(QObject* p, Robot* r, int i, qreal s)
 	speed(s),
 	move(new Move(this, r))
 {
-	this->pushState(move);
-	//skills.append(move);//this is important
+	steer = new SteerToBall(this, r, s, s);
+	bl = new Blocker(this, robot(), 0, s);
+	gs = new GoalSwitcheroo(this, robot(), s);
+	zk = new Zickler43(this, robot(), s, true);
+	gk = new Goalkeeper(this, robot(), s);
+	pushState(steer);
+	this->pushState(move);//this is important
+}
+
+void Controller2::setSpeed(qreal speed)
+{
+	this->speed = speed;
+	bl->setSpeed(speed);
+	gs->setSpeed(speed);
+	zk->setSpeed(speed);
+	gk->setSpeed(speed);
+}
+
+void Controller2::setRobot(Robot* r)
+{
+	setRobot(r);
+	bl->setRobot(r);
+	gs->setRobot(r);
+	gk->setRobot(r);
 }
 
 void Controller2::step() {
-	static CXBOXController* controller = new CXBOXController(id);
-	static qreal sx = 0.0, sy = 0.0, dx = 0.0, dy = 0.0, sBoost = 1.0, aBoostAng = 1.0;
-	static qint32 dribSign = 1;
+	CXBOXController* controller = new CXBOXController(id);
+	qreal sx = 0.0, sy = 0.0, dx = 0.0, dy = 0.0, sBoost = 1.0, aBoostAng = 1.0;
+	qint32 dribSign = 1;
 
 	if(controller->IsConnected()){
 		//rotation
@@ -99,38 +122,28 @@ void Controller2::step() {
 		}
 		//steer->step();
 
-		//getBall
-		static GetBall gb(this, robot(), speed);
-		gb.setSpeed(speed);
+		//blocker
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_A)) {
-			gb.step();
+			bl->step();
 		}
-
-		//goto
-		static GoalSwitcheroo gs(this, robot(), speed);
+		
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_B)) {
-			gs.step();
+			gs->step();
 		}
 
 		//goalkeeper
-		static Goalkeeper gk(this, robot(), speed);
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_X)) {
-			gk.step();
+			gk->step();
 		}
 
-		//goalkeeper
-		static Attacker atk(this, robot(),1000);
+		//zickler
 		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
-			atk.step();
-		}
-
-		//goto 0.0 0.0
-		static Goto gt(this, robot(), 0.0, 0.0, 0.0, speed);
-		gt.setOrientation(dx, dy);
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_LEFT_SHOULDER)) {
-			gt.step();
+			zk->step();
 		}
 
 		move->step();
 	}
 }
+
+#endif
+

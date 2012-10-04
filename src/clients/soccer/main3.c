@@ -1,6 +1,13 @@
 #include "minimax.h"
 #include "soccer_draw.h"
+#ifdef HAVE_WINDOWS
 #include <windows.h>
+void sleep(unsigned int msec) {
+    Sleep(msec);
+}
+#else
+#include <unistd.h>
+#endif
 
 static int winWidth, winHeight;
 static SoccerState *s, saux;
@@ -8,7 +15,7 @@ static char *image;
 
 static void redraw( void );
 static void reshape(int wid, int ht);
-static void img_ppm_write( char *img, char *fname );
+//static void img_ppm_write( char *img, char *fname );//SA: Unused function
 
 #define WIDTH 900
 #define HEIGHT 300
@@ -33,8 +40,8 @@ int main( int argc, char **argv )
 }
 
 void redraw( void ){
-   static int count = 0;
-   char fname[50];
+   //static int count = 0;//SA: unused variable
+   //char fname[50];//SA: unused variable
    SoccerAction red_action, blue_action;
 
    saux = *s;
@@ -46,7 +53,9 @@ void redraw( void ){
    saction_red_act( &saux, &red_action );
    glViewport(winWidth /2., 0, winWidth /2., winHeight ); 
    soccer_redraw( &saux ); 
-   Sleep(100);
+   sleep(100);
+   if(red_action.type == null_action)
+	   printf("NULL ACTION\n");
    saction_simulate( s, &red_action, &blue_action, 
                      soccer_env()->sample_period );
    glViewport(0, 0, winWidth/2., winHeight );   
@@ -73,7 +82,8 @@ void reshape(int wid, int ht)
 }
 
 
-void img_ppm_write( char *img, char *fname )
+//SA: Unused function
+/*void img_ppm_write( char *img, char *fname )
 {
  int i;
 
@@ -86,4 +96,4 @@ void img_ppm_write( char *img, char *fname )
     fputc( img[i], fout ); 
 
  fclose( fout );
-}
+}*/

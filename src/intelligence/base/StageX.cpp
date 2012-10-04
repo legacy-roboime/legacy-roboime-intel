@@ -1,3 +1,4 @@
+#ifdef USE_PHYSX
 #include "StageX.h"
 #include "Simulation.h"
 #include "Ball.h"
@@ -146,7 +147,8 @@ void StageX::build()
 	for(int i=0; i<robotsA.size(); i++){
 		NxRobot* robot = robotsA[i];
 		int idTeam = robot->getIdTeam();
-		const Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
+		//XXX: comparando idTeam com um ENUM
+		const Robot* r = idTeam == YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
 		NxMat34 initPose = robot->getInitialPose();
 		//XXX: ignorando posição z
 		robot->setGlobalPosition(NxVec3(r->x(), r->y(), initPose.t.z));//));
@@ -199,7 +201,8 @@ void StageX::simulate(const qreal t)
 	for(int n = 0; n < robotsA.size(); n++) {
 		NxRobot* robot = robotsA[n];
 		int idTeam = robot->getIdTeam();
-		Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
+		//XXX: comparando idTeam com um ENUM
+		Robot* r = idTeam == YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
 		Command& c = r->command();
 		//TODO: implement logging
 		//QVector<qreal> w = c.wheelsSpeed();
@@ -226,7 +229,8 @@ void StageX::simulate(const qreal t)
 	for(int n = 0; n < robotsA.size(); n++) {
 		NxRobot* robot = robotsA[n];
 		int idTeam = robot->getIdTeam();
-		Robot* r = idTeam == TeamColor::YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
+		//XXX: comparando idTeam com um ENUM
+		Robot* r = idTeam == YELLOW ? yellowTeam->at(robot->getId()) : blueTeam->at(robot->getId());
 		NxActor* actor = robot->getActor();
 		NxVec3 rSpeed = actor->getLinearVelocity();
 		// atualizar velocidades que poderiam ser calculadas pelos dados da visao
@@ -255,3 +259,6 @@ uint StageX::getSceneNumber()
 {
 	return sceneNumber;
 }
+
+#endif
+

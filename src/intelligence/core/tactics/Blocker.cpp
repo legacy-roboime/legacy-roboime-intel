@@ -5,8 +5,7 @@
 #include "Ball.h"
 #include "Goal.h"
 #include <cmath>
-
-#define M_PI	3.1415926535897932
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
@@ -14,9 +13,8 @@ using namespace Skills;
 
 Blocker::Blocker(QObject* p, Robot* r, qreal angle, qreal speed, qreal dist)
 	: Tactic(p,r),
-	goto_(new Goto(this, r)),
+	goto_(new Goto(this, r, 0, 0, 0, speed)),
 	angle_(angle),
-	speed(speed),
 	dist_(dist)
 {
 	this->pushState(goto_);
@@ -39,7 +37,11 @@ void Blocker::step()
 	qreal x = target.p2().x();
 	qreal y = target.p2().y();
 	goto_->setPoint(x, y);
-	goto_->setSpeed(speed);
-	goto_->setOrientation(M_PI + target.angle() * M_PI / 180.);
+	goto_->setOrientation(M_PI + angle * M_PI / 180.);
 	goto_->step();
+}
+
+void Blocker::setSpeed(qreal speed)
+{
+	this->goto_->setSpeed(speed);
 }

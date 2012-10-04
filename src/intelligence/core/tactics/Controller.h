@@ -1,4 +1,4 @@
-#pragma once
+#ifdef HAVE_WINDOWS
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
@@ -22,8 +22,9 @@ namespace LibIntelligence
 
 		public:
 			Controller(QObject* parent, Robot* slave, int controllerId, qreal speed);
-
+			void setSpeed(qreal speed);
 			void step();
+			void setRobot(Robot* r);
 
 		protected:
 			int id;
@@ -33,7 +34,6 @@ namespace LibIntelligence
 			Tactics::GoalSwitcheroo* gs;
 			Tactics::Goalkeeper* gk;
 			Tactics::Zickler43 *zk;
-			Skills::Goto* gt;
 			Skills::Move* mv;
 			CXBOXController* controller;
 		};
@@ -41,3 +41,5 @@ namespace LibIntelligence
 }
 
 #endif // CONTROLLER_H
+#endif
+

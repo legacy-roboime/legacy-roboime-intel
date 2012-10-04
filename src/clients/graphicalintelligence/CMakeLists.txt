@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.8)
+cmake_minimum_required(VERSION 2.8)
 
 ##############################
 # Include all headers
@@ -21,17 +21,15 @@ set(GINTC_SRC
     # add new sources here
 )
 
-SET(GINTC_UIS
+qt4_wrap_ui(GINTC_UIS_H
     GraphicalIntelligence.ui
     alterstatevars.ui
 )
 
-qt4_add_resources(GINTC_RC 
+qt4_add_resources(GINTC_RC
     GraphicalIntelligence.qrc
     ${SHARED_RC}
 )
-
-qt4_wrap_ui(GINTC_UIS_H ${GINTC_UIS})
 
 qt4_wrap_cpp(GINTC_MOC_SRCS
     GraphicalIntelligence.h
@@ -80,6 +78,7 @@ add_executable(graphicalintelligence-client
 
 target_link_libraries(graphicalintelligence-client
     intelligence
+    ${GLUT_LIBRARIES}
     ${QT_LIBRARIES}
 )
 

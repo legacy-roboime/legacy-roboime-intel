@@ -33,11 +33,11 @@ namespace LibIntelligence
 			QMutex statemutex;
 
 			AttackerMinMax2* attacker;
-			QVector<Goto*> _max_skills;
-			//Goto* goto_;
+			Goto* g;
 			qreal speed_;
 
 			SoccerState *s;
+			SoccerState *state_action;
 			SoccerState *sL;
 			int depth_;
 			float alpha_;

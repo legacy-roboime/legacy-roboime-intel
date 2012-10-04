@@ -335,7 +335,7 @@ void Simulation::simulate()
 		if (i.value()->scene && !gPause)
 		{
 			i.value()->scene->flushStream();
-			i.value()->scene->fetchResults(NxSimulationStatus::NX_RIGID_BODY_FINISHED, true);
+			i.value()->scene->fetchResults(NX_RIGID_BODY_FINISHED, true);
 		}
 	}
 	// ~Physics code
@@ -568,12 +568,13 @@ NxActor* Simulation::cloneActor(NxActor* actorSource, int indexDestScene)
 	for(int i=0; i<actorSource->getNbShapes(); i++)
 	{
 		NxShapeType type = (actorSource->getShapes())[i]->getType();
-		if(type==NxShapeType::NX_SHAPE_BOX){
+		switch(type) {
+		case NX_SHAPE_BOX: {
 			NxBoxShapeDesc* boxDesc = new NxBoxShapeDesc();
 			(actorSource->getShapes())[i]->isBox()->saveToDesc(*boxDesc);
 			actorDesc.shapes.push_back(boxDesc);
-		}
-		else if(type==NxShapeType::NX_SHAPE_CONVEX){
+			} break;
+		case NX_SHAPE_CONVEX: {
 			NxConvexShapeDesc* convexShapeDesc = new NxConvexShapeDesc();
 			//static NxConvexMeshDesc convexMeshDesc;
 			(actorSource->getShapes())[i]->isConvexMesh()->saveToDesc(*convexShapeDesc);
@@ -600,29 +601,30 @@ NxActor* Simulation::cloneActor(NxActor* actorSource, int indexDestScene)
 
 			}
 			}*/
-		}
-		else if(type==NxShapeType::NX_SHAPE_SPHERE){
+			} break;
+		case NX_SHAPE_SPHERE: {
 			NxSphereShapeDesc* shapeDesc = new NxSphereShapeDesc();
 			(actorSource->getShapes())[i]->isSphere()->saveToDesc(*shapeDesc);	
 			actorDesc.shapes.push_back(shapeDesc);
-		}
-		else if(type==NxShapeType::NX_SHAPE_WHEEL){ //Tirei pra num clonar 2 vezes as shapes das rodas na rotina cloneRobot 
+			} break;
+		case NX_SHAPE_WHEEL: {//Tirei pra num clonar 2 vezes as shapes das rodas na rotina cloneRobot 
 			//NxWheelShapeDesc* shapeDesc = new NxWheelShapeDesc();
 			//(actorSource->getShapes())[i]->isWheel()->saveToDesc(*shapeDesc);	
 			//actorDesc.shapes.push_back(shapeDesc);
-		}
-		else if(type==NxShapeType::NX_SHAPE_PLANE){
+			} break;
+		case NX_SHAPE_PLANE: {
 			NxPlaneShapeDesc* shapeDesc = new NxPlaneShapeDesc();
 			(actorSource->getShapes())[i]->isPlane()->saveToDesc(*shapeDesc);	
 			actorDesc.shapes.push_back(shapeDesc);
-		}
-		else if(type==NxShapeType::NX_SHAPE_CAPSULE){
+			} break;
+		case NX_SHAPE_CAPSULE: {
 			NxCapsuleShapeDesc* shapeDesc = new NxCapsuleShapeDesc();
 			(actorSource->getShapes())[i]->isCapsule()->saveToDesc(*shapeDesc);	
 			actorDesc.shapes.push_back(shapeDesc);
-		}
-		else{
+			} break;
+		default:
 			printf("SHAPE NAO CLONADA\n");
+			break;
 		}
 	}
 	return gScenes[indexDestScene]->scene->createActor(actorDesc);
@@ -630,13 +632,14 @@ NxActor* Simulation::cloneActor(NxActor* actorSource, int indexDestScene)
 
 NxShapeDesc* Simulation::copyShapeDesc(NxShape* shapeSource){
 	NxShapeType type = shapeSource->getType();
-	if(type==NxShapeType::NX_SHAPE_BOX){
+	switch(type) {
+	case NX_SHAPE_BOX: {
 		NxBoxShapeDesc* boxDesc = new NxBoxShapeDesc();
 		NxBoxShape* boxShape = shapeSource->isBox();
 		boxShape->saveToDesc(*boxDesc);
 		return boxDesc;
 	}
-	else if(type==NxShapeType::NX_SHAPE_CONVEX){
+	case NX_SHAPE_CONVEX: {
 		NxConvexShapeDesc* convexShapeDesc = new NxConvexShapeDesc();
 		//static NxConvexMeshDesc convexMeshDesc;
 		shapeSource->isConvexMesh()->saveToDesc(*convexShapeDesc);
@@ -664,28 +667,29 @@ NxShapeDesc* Simulation::copyShapeDesc(NxShape* shapeSource){
 		}
 		}*/
 	}
-	else if(type==NxShapeType::NX_SHAPE_SPHERE){
+	case NX_SHAPE_SPHERE: {
 		NxSphereShapeDesc* shapeDesc = new NxSphereShapeDesc();
 		shapeSource->isSphere()->saveToDesc(*shapeDesc);	
 		return shapeDesc;
 	}
-	else if(type==NxShapeType::NX_SHAPE_WHEEL){
+	case NX_SHAPE_WHEEL: {
 		NxWheelShapeDesc* shapeDesc = new NxWheelShapeDesc();
 		shapeSource->isWheel()->saveToDesc(*shapeDesc);	
 		return shapeDesc;		
 	}
-	else if(type==NxShapeType::NX_SHAPE_PLANE){
+	case NX_SHAPE_PLANE: {
 		NxPlaneShapeDesc* shapeDesc = new NxPlaneShapeDesc();
 		shapeSource->isPlane()->saveToDesc(*shapeDesc);	
 		return shapeDesc;
 	}
-	else if(type==NxShapeType::NX_SHAPE_CAPSULE){
+	case NX_SHAPE_CAPSULE: {
 		NxCapsuleShapeDesc* shapeDesc = new NxCapsuleShapeDesc();
 		shapeSource->isCapsule()->saveToDesc(*shapeDesc);	
 		return shapeDesc;
 	}
-	else
+	default:
 		return NULL;
+	}
 }
 
 void Simulation::cloneScene(int indexSceneSource, int indexCloneScene){
@@ -1532,9 +1536,7 @@ string Simulation::parseLegacyString(string s) {
 
 bool Simulation::isInRectangle(NxRobot* robot, NxVec3 p1, NxVec3 p2){
 	NxVec3 pos = robot->getActor()->getGlobalPosition();
-	if(pos.x > p1.x && pos.y > p1.y && pos.x < p2.x && pos.y < p2.y)
-		return true;
-	else false;
+	return pos.x > p1.x && pos.y > p1.y && pos.x < p2.x && pos.y < p2.y;
 }
 
 SSL_WrapperPacket Simulation::getSSLWrapper(int sceneNumber, float deltaTime){

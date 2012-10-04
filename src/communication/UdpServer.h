@@ -13,7 +13,7 @@ class UdpServer : public QObject
 	Q_OBJECT
 
 public:
-	UdpServer(QObject* parent=0, char* address="127.0.0.1", quint16 port=9050);
+	UdpServer(QObject* parent=0, const char* address="127.0.0.1", quint16 port=9050);
 	~UdpServer();
 
 	void append(const QByteArray& data);

@@ -4,6 +4,7 @@
 #include <QVector>
 #include "PID.h"
 #include "geomutils.h"
+#include "mathutils.h"
 
 #define MAX_RPS_BIWHEEL 4.0
 #define WHEEL_INTERDISTANCE 
@@ -12,11 +13,7 @@
 using namespace LibIntelligence;
 using namespace Skills;
 
-#define MIN(x,y) (x < y ? x : y)
-#define MAX(x,y) (x > y ? x : y)
-#define M_2PI	6.2831853071795865
-#define M_PI	3.1415926535897932
-#define __q(x)	((x) > M_PI ? (x) - M_2PI : -(x) > M_PI ? (x) + M_2PI : (x))
+
 qreal __n(qreal ang) {return ang > M_PI ? __n(ang - M_2PI) : -ang > M_PI ? __n(ang + M_2PI) : ang;}
 
 //#define ROBOTACCEL 3500
@@ -28,8 +25,8 @@ Move::Move(QObject* p, Robot* r, qreal sx, qreal sy, qreal sa)
 	speedAngular(sa),
 	oldSpeedX(0.0), 
 	oldSpeedY(0.0),
-	oldTime(QTime::currentTime()),
-	oldSpeedAngular(0.0)
+	oldSpeedAngular(0.0),
+	oldTime(QTime::currentTime())
 {}
 
 void Move::setAll(qreal sx, qreal sy, qreal sa)

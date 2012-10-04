@@ -1,3 +1,4 @@
+#ifdef USE_PHYSX
 #include "BGT.h"
 #include "Goal.h"
 #include "Ball.h"
@@ -17,8 +18,8 @@ using namespace LibIntelligence::Plays;
 
 BGT::BGT(QObject *parent, Team* myTeam, Stage* stage):
 Play(parent,myTeam,stage),
-	planningLog("C:\\Users\\Bill\\Desktop\\planningLog.dat"),
-	executeLog("C:\\Users\\Bill\\Desktop\\executeLog.dat"),
+	planningLog("..\\planningLog.dat"),
+	executeLog("..\\executeLog.dat"),
 	maxIter(1000),// 50000), //dado retirado do zickler pagina 72
 	mi_(100.), //valor de mi igual ao usado pelo zickler no experimento da pagina 73
 	timer(new QTimer(this)),
@@ -44,8 +45,8 @@ void BGT::populateTactics(const StageY* source, StageY* target)
 		Team* enemyT;
 		myT = target->getTeamFromColor(this->team()->color());
 		enemyT = target->getTeamFromOtherColor(this->team()->color());
-		QQueue<Tactic*>* myTactics = myT->color() == TeamColor::BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
-		QQueue<Tactic*>* enemyTactics = enemyT->color() == TeamColor::BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
+		QQueue<Tactic*>* myTactics = myT->color() == BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
+		QQueue<Tactic*>* enemyTactics = enemyT->color() == BLUE ? ((StageY*)source)->getBlueTactics() : ((StageY*)source)->getYellowTactics();
 
 		for(int i=0; i<myT->size(); i++) {
 			Zickler43* z = new Zickler43(this, myT->at(i));
@@ -498,3 +499,6 @@ StageY* BGT::tacticsDrivenPropagate(const StageY& stage)
 
 	return xL;
 }
+
+#endif
+
