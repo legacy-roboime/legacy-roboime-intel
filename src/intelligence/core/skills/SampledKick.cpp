@@ -67,7 +67,7 @@ void SampledKick::step()
 		robot->kick(power);
 	}
 
-	//robot->dribble(0.5); //pegar bola
+	robot->dribble(0.5); //pegar bola
 
 	qreal backup = threshold;
 	threshold = 50; //para que o robô conduza numa direção é feita uma diminuição do threshold

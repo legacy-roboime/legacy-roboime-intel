@@ -35,7 +35,7 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	sampledMiniKick_->setObjectName("SampledMiniKick");
 	wait_->setObjectName("Wait");
 
-	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledGoalKick_/*sampledDribble_*/, 1.));
+	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledDribble_, 1.));
 	this->pushTransition(sampledDribble_, new DribbleToDriveT(this, sampledDribble_, driveToBall_, 1.));
 	this->pushTransition(sampledDribble_, new DribbleToGoalKickT(this, sampledDribble_, sampledGoalKick_, .1));
 	this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
@@ -100,6 +100,7 @@ void Zickler43::step()
 	updateLookPoint();
 	current->step();
 	this->execute();
+	//cout << "SKILL: " << current->objectName().toStdString() << endl;
 }
 
 void Zickler43::updateLookPoint()
