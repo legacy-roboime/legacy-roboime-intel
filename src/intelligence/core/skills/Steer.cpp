@@ -55,18 +55,18 @@ void Steer::step()
 	qreal frac = angleF - (int)angleF; //manter precisão do double
 	angleF = DEGTORAD(angleI + frac);
 
-	controller.entrada = __q( angleF - robot()->orientation() );
+	/*controller.entrada = __q( angleF - robot()->orientation() );
 	controller.realimentacao = 0.0;
 	pidService(controller);
-	Move::setSpeedAngular(controller.saida);
-
-	/*qreal error = __q( angleF - robot()->orientation() );
+	Move::setSpeedAngular(controller.saida);*/
+	
+	qreal error = __q( angleF - robot()->orientation() );
 	qreal g = 9.80665 * 1000;
 	qreal mi = 0.4;
 	qreal aMax = 8*mi*g/(robot()->body().radius());
-	qreal vMax = 7.;//*robot()->body().radius();
+	qreal vMax = 250; //Valor carteado, mas na forma analitica deveria ser (velocidade linear maxima)/(raio do robo), velocidade linear maxima eh a speed do Goto
 	qreal k = 4*(aMax/(vMax*vMax));
-	Move::setSpeedAngular( vMax * ( 1 - exp(-k*error) ) );*/
+	Move::setSpeedAngular( vMax * ( 1 - exp(-k*error) ) );
 
 	Move::step();
 }
