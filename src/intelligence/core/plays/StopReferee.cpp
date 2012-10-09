@@ -13,12 +13,11 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 	qreal deltaTeta = (23*3.14)/180.;
 	player_[0] = new Goalkeeper(this, gk, 3000);
 	//usei team->at(0), mas tanto faz pq a tatica é associada dinamicamente ao robo
-	player_[1] = new Blocker(this, team->at(0), -deltaTeta);
-	player_[2] = new Blocker(this, team->at(0), 0);
+	player_[1] = new Blocker(this, team->at(0), 0);
+	player_[2] = new Blocker(this, team->at(0), -deltaTeta);
 	player_[3] = new Blocker(this, team->at(0), deltaTeta);
-	//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
-	for(int i = 4; i < team->size(); i++)
-		player_[i] = new Defender(this, team->at(0), team->enemyTeam()->at(0), 600, 3000);
+
+	init = false;
 }
 
 StopReferee::~StopReferee()
@@ -33,9 +32,27 @@ StopReferee::~StopReferee()
 void StopReferee::step()
 {
 	Team* team = this->team_;
+	Goal* myGoal = team->goal();
+
+	if(!init && myGoal->width()>0){
+		cover1 = new Point(myGoal->x(), myGoal->y() + myGoal->width()/4);
+		cover2 = new Point(myGoal->x(), myGoal->y() - myGoal->width()/4);
+		//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
+		for(int i = 4; i < this->team()->size(); i++){
+			Point* p;
+			if(i==4)
+				p = cover1;
+			else
+				p = cover2;
+			player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), p, 600, 3000);
+		}
+
+		init = true;
+	}
+
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
-    Goal* myGoal = team->goal();
+    
 
 	map<qreal, Robot*> nearTeam = stage->getClosestPlayersToPoint(team, (Point*)ball); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
 	map<int, Robot*> blockers;
@@ -71,22 +88,31 @@ void StopReferee::step()
 	map<int, Robot*>::iterator it1 = blockers.begin();
 	for(int i=1; i<4 && it1!=blockers.end(); i++){
 		player_[i]->setRobot((*it1).second);
+		player_[i]->step();
 		it1++;
 	}
+
 	//2 defenders
 	it1 = defenders.begin();
 	it = nearEnemy.begin();
-	for(int i=4; i<6 && it1!=defenders.end() && it!=nearEnemy.end(); i++){
+	for(int i=4; i<6 && it1!=defenders.end(); i++){
 		player_[i]->setRobot((*it1).second);
-		((Defender*)player_[i])->setEnemy((*it).second);
-		((Defender*)player_[i])->reset();
+
+		if( it!=nearEnemy.end() ){
+			((Defender*)player_[i])->setEnemy((*it).second);
+			it++;
+		}
+		else
+			((Defender*)player_[i])->setEnemy(ball);
+
+		((Defender*)player_[i])->reset();	
+		((Defender*)player_[i])->step();
 		it1++;
-		it++;
 	}
 
-	for(int i = 0; i < team->size(); i++){
-		player_[i]->step();	
-	}
+	//Goleiro
+	if(player_[0]->robot())
+		player_[0]->step();
 }
 
 

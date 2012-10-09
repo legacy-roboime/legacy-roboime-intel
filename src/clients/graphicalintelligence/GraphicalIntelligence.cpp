@@ -145,6 +145,9 @@ struct IntelligenceCli : public QThread
 				cout << "setSpeed(" << s << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setSpeed(s);
+				intel->tactic["zickler43"]->setSpeed(s);
+				intel->tactic["controller"]->setSpeed(s);
+				intel->tactic["controller1"]->setSpeed(s);
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'o') {
@@ -161,6 +164,8 @@ struct IntelligenceCli : public QThread
 				intel->mutex.lock();
 				intel->tactic["controller"]->setRobot(intel->team["us"]->at(i));
 				intel->tactic["controller1"]->setRobot(intel->team["us"]->at(i));
+				intel->tactic["zickler43"]->setRobot(intel->team["us"]->at(i));
+				intel->skill["goto"]->setRobot(intel->team["us"]->at(i));
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'k') {
@@ -183,7 +188,7 @@ struct IntelligenceCli : public QThread
 GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
     mode(NONE),
-	useSimulation(true),
+	useSimulation(false),
     cli(new IntelligenceCli(this))
 {
 	// Popular nomes dos estados do Juiz
@@ -296,9 +301,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
-	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
-	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
-	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
+	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), team["us"]->goal(), 500, 3000);
+	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), team["us"]->goal(), 500, 1000);
+	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), team["us"]->goal(), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
 
 	ui.stageView->setStage(stage["main"]);
@@ -396,11 +401,11 @@ void GraphicalIntelligence::update()
 
 		case SKILL:
 			//skill["fac"]->step();
-			skill["drivetoBall"]->step();
-			skill["samd"]->step();
+			//skill["drivetoBall"]->step();
+			//skill["samd"]->step();
 			//cout << skill["gotoa"]->busy() << endl;
-			//skill["gotoa"]->step();
-			skill["samk"]->step();
+			skill["goto"]->step();
+			//skill["samk"]->step();
 			//((Goto*)skill["goto"])->setAllowDefenseArea();
 			//skill["drivetoObj"]->step();
 			break;

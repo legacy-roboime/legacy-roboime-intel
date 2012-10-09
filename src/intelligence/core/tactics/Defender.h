@@ -16,10 +16,12 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			Defender(QObject* parent, Robot* slave, Object* enemy, qreal dist, qreal speed);
+			Defender(QObject* parent, Robot* slave, Object* enemy, Point* cover, qreal dist, qreal speed);
 			
 			void setEnemy(Object* enemy);
 			Object* enemy();
+
+			void follow();
 
 		protected:
 			Object* enemy_;

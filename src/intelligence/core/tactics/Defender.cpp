@@ -14,11 +14,11 @@ using namespace Tactics;
 using namespace Skills;
 using namespace DefenderT;
 
-Defender::Defender(QObject* p, Robot* r, Object* enemy, qreal dist, qreal speed)
+Defender::Defender(QObject* p, Robot* r, Object* enemy, Point* cover, qreal dist, qreal speed)
 	: Tactic(p,r),
 	enemy_(enemy),
-	driveToObj(new DriveToObject(this, r, r->goal(), -(dist + r->body().cut()), enemy_, 100, 0.1745329251, speed, true)),
-	fac(new FollowAndCover(this, r, (Point*) enemy_, r->goal(), 300, speed))
+	driveToObj(new DriveToObject(this, r, (const Object*) cover, -(dist + r->body().cut()), enemy_, 100, 0.1745329251, speed, true)),
+	fac(new FollowAndCover(this, r, (Point*) enemy_, cover, 300, speed))
 {
 	this->pushState(driveToObj);
 	this->pushState(fac);
@@ -39,6 +39,11 @@ void Defender::setEnemy(Object* enemy)
 	enemy_ = enemy;
 	driveToObj->setRefLookPoint(enemy);
 	fac->setFollow(enemy);
+}
+
+void Defender::follow()
+{
+	this->setCurrentState(fac);
 }
 
 Object* Defender::enemy()

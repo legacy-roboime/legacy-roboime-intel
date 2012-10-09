@@ -28,7 +28,7 @@ Stage::Stage()
 	yellowGoal_(new Goal()),
 	blueTeam_(new Team(this, BLUE)),
 	yellowTeam_(new Team(this, YELLOW)),
-    isLeftSideBlueGoal_(false)
+    isLeftSideBlueGoal_(true)
 {}
 
 Stage::Stage(const Stage& stage)
@@ -363,15 +363,16 @@ Robot* Stage::getClosestPlayerToBallThatCanKick(const Team* team) const
 
 	qreal MinDistance = 999999;
 	for(int i = 0; i < team->count(); i++) {
+		if(team->at(i)->isActive()){
+			qreal dy = team->at(i)->y() - this->ball()->y();
+			qreal dx = team->at(i)->x() - this->ball()->x();
 
-		qreal dy = team->at(i)->y() - this->ball()->y();
-		qreal dx = team->at(i)->x() - this->ball()->x();
+			qreal Distance = sqrt(dy * dy + dx * dx);
 
-		qreal Distance = sqrt(dy * dy + dx * dx);
-
-		if(Distance < MinDistance && team->at(i)->canKick()){
-			MinDistance = Distance;
-			bestFit = team->at(i);
+			if(Distance < MinDistance && team->at(i)->canKick()){
+				MinDistance = Distance;
+				bestFit = team->at(i);
+			}
 		}
 	}
 
@@ -393,13 +394,14 @@ map<qreal, Robot*> Stage::getClosestPlayersToPoint(const Team* team, const Point
 {
 	map<qreal, Robot*> robots;
 	for(int i = 0; i < team->count(); i++) {
+		if(team->at(i)->isActive()){
+			qreal dy = team->at(i)->y() - point->y();
+			qreal dx = team->at(i)->x() - point->x();
 
-		qreal dy = team->at(i)->y() - point->y();
-		qreal dx = team->at(i)->x() - point->x();
+			qreal d = sqrt(dy * dy + dx * dx);
 
-		qreal d = sqrt(dy * dy + dx * dx);
-
-		robots[d] = team->at(i);
+			robots[d] = team->at(i);
+		}
 	}
 
 	return robots;
@@ -412,13 +414,14 @@ map<qreal, Robot*> Stage::getClosestPlayersToPoint(const Team* team, qreal x, qr
 {
 	map<qreal, Robot*> robots;
 	for(int i = 0; i < team->count(); i++) {
+		if(team->at(i)->isActive()){
+			qreal dy = team->at(i)->y() - y;
+			qreal dx = team->at(i)->x() - x;
 
-		qreal dy = team->at(i)->y() - y;
-		qreal dx = team->at(i)->x() - x;
+			qreal d = sqrt(dy * dy + dx * dx);
 
-		qreal d = sqrt(dy * dy + dx * dx);
-
-		robots[d] = team->at(i);
+			robots[d] = team->at(i);
+		}
 	}
 
 	return robots;
@@ -431,7 +434,7 @@ map<qreal, Robot*> Stage::getClosestPlayersToPointThatCanKick(const Team* team, 
 {
 	map<qreal, Robot*> robots;
 	for(int i = 0; i < team->count(); i++) {
-		if(team->at(i)->canKick()){
+		if(team->at(i)->canKick() && team->at(i)->isActive()){
 			qreal dy = team->at(i)->y() - point->y();
 			qreal dx = team->at(i)->x() - point->x();
 
