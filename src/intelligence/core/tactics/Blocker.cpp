@@ -31,7 +31,7 @@ void Blocker::step()
 	Ball* ball = stage->ball();
 
 	Line target = Line(ball->x(), ball->y(), myGoal->x(), myGoal->y());
-	target.setLength(dist_);
+	target.setLength(dist_ + robot->body().radius());
 	qreal angle = target.angle();
 	target.setAngle(angle + (angle_ * 180. / M_PI));
 	qreal x = target.p2().x();
