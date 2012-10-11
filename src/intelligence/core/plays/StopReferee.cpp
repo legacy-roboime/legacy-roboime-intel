@@ -49,70 +49,71 @@ void StopReferee::step()
 
 		init = true;
 	}
+	else if(init){
+		Stage* stage = this->stage_;
+		Ball* ball = stage->ball();
 
-	Stage* stage = this->stage_;
-	Ball* ball = stage->ball();
-    
 
-	map<qreal, Robot*> nearTeam = stage->getClosestPlayersToPoint(team, (Point*)ball); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
-	map<int, Robot*> blockers;
-	map<int, Robot*> defenders;
-	map<qreal, Robot*> nearEnemy = stage->getClosestPlayersToPoint(team->enemyTeam(), myGoal->x(), myGoal->y()); //oponentes ordenados por proximidade do nosso gol
+		map<qreal, Robot*> nearTeam = stage->getClosestPlayersToPoint(team, (Point*)ball); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
+		map<int, Robot*> blockers;
+		map<int, Robot*> defenders;
+		map<qreal, Robot*> nearEnemy = stage->getClosestPlayersToPoint(team->enemyTeam(), myGoal->x(), myGoal->y()); //oponentes ordenados por proximidade do nosso gol
 
-	//Tirando o Goleiro
-	map<qreal, Robot*>::iterator it = nearTeam.begin();
-	for(int i=0; i<nearTeam.size(); i++){
-		Robot* r = (*it).second;
-		if(r->id() == player_[0]->robot()->id()){
-			nearTeam.erase(it);
-			break;
+		//Tirando o Goleiro
+		map<qreal, Robot*>::iterator it = nearTeam.begin();
+		for(int i=0; i<nearTeam.size(); i++){
+			Robot* r = (*it).second;
+			if(r->id() == player_[0]->robot()->id()){
+				nearTeam.erase(it);
+				break;
+			}
+			it++;	
 		}
-		it++;	
-	}
 
-	//3 blockers ordenados por id
-	it = nearTeam.begin();
-	for(int i=0; i<3 && it!=nearTeam.end(); i++){
-		Robot* r = (*it).second;
-		blockers[r->id()]=r;
-		it++;
-	}
-	//2 defenders ordenados por id
-	for(int i=0; i<2 && it!=nearTeam.end(); i++){
-		Robot* r = (*it).second;
-		defenders[r->id()]=r;
-		it++;
-	}
-
-	//3 blockers
-	map<int, Robot*>::iterator it1 = blockers.begin();
-	for(int i=1; i<4 && it1!=blockers.end(); i++){
-		player_[i]->setRobot((*it1).second);
-		player_[i]->step();
-		it1++;
-	}
-
-	//2 defenders
-	it1 = defenders.begin();
-	it = nearEnemy.begin();
-	for(int i=4; i<6 && it1!=defenders.end(); i++){
-		player_[i]->setRobot((*it1).second);
-
-		if( it!=nearEnemy.end() ){
-			((Defender*)player_[i])->setEnemy((*it).second);
+		//3 blockers ordenados por id
+		it = nearTeam.begin();
+		for(int i=0; i<3 && it!=nearTeam.end(); i++){
+			Robot* r = (*it).second;
+			blockers[r->id()]=r;
 			it++;
 		}
-		else
-			((Defender*)player_[i])->setEnemy(ball);
+		//2 defenders ordenados por id
+		for(int i=0; i<2 && it!=nearTeam.end(); i++){
+			Robot* r = (*it).second;
+			defenders[r->id()]=r;
+			it++;
+		}
 
-		((Defender*)player_[i])->reset();	
-		((Defender*)player_[i])->step();
-		it1++;
+		//3 blockers
+		map<int, Robot*>::iterator it1 = blockers.begin();
+		for(int i=1; i<4 && it1!=blockers.end(); i++){
+			player_[i]->setRobot((*it1).second);
+			player_[i]->step();
+			it1++;
+		}
+
+		//2 defenders
+		it1 = defenders.begin();
+		it = nearEnemy.begin();
+		for(int i=4; i<6 && it1!=defenders.end(); i++){
+			player_[i]->setRobot((*it1).second);
+
+			if( it!=nearEnemy.end() ){
+				((Defender*)player_[i])->setEnemy((*it).second);
+				it++;
+			}
+			else
+				((Defender*)player_[i])->setEnemy(ball);
+
+			((Defender*)player_[i])->reset();	
+			((Defender*)player_[i])->step();
+			it1++;
+		}
+
+		//Goleiro
+		if(player_[0]->robot())
+			player_[0]->step();
 	}
-
-	//Goleiro
-	if(player_[0]->robot())
-		player_[0]->step();
 }
 
 

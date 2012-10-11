@@ -44,62 +44,63 @@ void AutoRetaliate::step(){
 
 		init = true;
 	}
+	else if(init){
+		Stage* stage = this->stage_;
+		Ball* ball = stage->ball();
 
-	Stage* stage = this->stage_;
-	Ball* ball = stage->ball();
+		map<qreal, Robot*> close = stage->getClosestPlayersToBall(team);
+		map<int, Robot*> ids;
+		map<qreal, Robot*> enemys = stage->getClosestPlayersToPoint(team->enemyTeam(), (Point*)team->goal());
 
-	map<qreal, Robot*> close = stage->getClosestPlayersToBall(team);
-	map<int, Robot*> ids;
-	map<qreal, Robot*> enemys = stage->getClosestPlayersToPoint(team->enemyTeam(), (Point*)team->goal());
+		//Attacker e Blocker
+		int i=0;
+		map<qreal, Robot*>::iterator it1 = close.begin();
+		for(int j=0; j<close.size(); j++){
+			if((*it1).second->id() == player_[0]->robot()->id()){
+				it1++;
+				continue;
+			}
 
-	//Attacker e Blocker
-	int i=0;
-	map<qreal, Robot*>::iterator it1 = close.begin();
-	for(int j=0; j<close.size(); j++){
-		if((*it1).second->id() == player_[0]->robot()->id()){
+			Robot* robot = (*it1).second;
+			if(i == 0){
+				player_[1]->setRobot(robot);
+				player_[1]->step();
+			}
+			else if(i == 1){
+				player_[2]->setRobot(robot);
+				player_[2]->step();
+			}
+			else
+				ids[robot->id()] = robot;
+
+			i++;
 			it1++;
-			continue;
 		}
 
-		Robot* robot = (*it1).second;
-		if(i == 0){
-			player_[1]->setRobot(robot);
-			player_[1]->step();
-		}
-		else if(i == 1){
-			player_[2]->setRobot(robot);
-			player_[2]->step();
-		}
-		else
-			ids[robot->id()] = robot;
+		//Defenders enemys
+		map<qreal, Robot*>::iterator it3 = enemys.begin(); 
 
-		i++;
-		it1++;
+		//Defenders
+		map<int, Robot*>::iterator it2 = ids.begin();
+		for(int i=3; i<team->size() && it2!=ids.end(); i++){
+			player_[i]->setRobot((*it2).second);
+
+			if(it3!=enemys.end() && (*it3).second != NULL){
+				((Defender*)player_[i])->setEnemy((*it3).second);
+				it3++;
+			}
+			else{
+				((Defender*)player_[i])->setEnemy(ball);
+				((Defender*)player_[i])->reset();
+			}
+
+			player_[i]->step();
+
+			it2++;
+		}
+
+		//Goleiro
+		if(player_[0]->robot())
+			player_[0]->step();
 	}
-
-	//Defenders enemys
-	map<qreal, Robot*>::iterator it3 = enemys.begin(); 
-
-	//Defenders
-	map<int, Robot*>::iterator it2 = ids.begin();
-	for(int i=3; i<team->size() && it2!=ids.end(); i++){
-		player_[i]->setRobot((*it2).second);
-
-		if(it3!=enemys.end() && (*it3).second != NULL){
-			((Defender*)player_[i])->setEnemy((*it3).second);
-			it3++;
-		}
-		else{
-			((Defender*)player_[i])->setEnemy(ball);
-			((Defender*)player_[i])->reset();
-		}
-		
-		player_[i]->step();
-
-		it2++;
-	}
-
-	//Goleiro
-	if(player_[0]->robot())
-		player_[0]->step();
 }
