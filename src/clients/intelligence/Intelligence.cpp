@@ -176,7 +176,20 @@ struct IntelligenceCli : public QThread
 				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
 				intel->mutex.unlock();
 
-			}else {
+            } else if(command[0] == 'g') {
+                int i;
+                cin >> i;
+                if(i>=intel->team["us"]->size())
+                    cout << "ID INVALIDO" << endl;
+                else{
+                    cout << "Goalkeeper(" << i << ")" << endl;
+                    intel->mutex.lock();
+                    ((ObeyReferee *)intel->play["refereeU"])->setGoalkeeper( intel->team["us"]->at(i) );
+                    intel->mutex.unlock();
+                }
+
+            }
+            else {
 				cout << "Comando nao reconhecido." << endl;
 
 			}
@@ -341,11 +354,11 @@ void Intelligence::update()
 			//	((QThread *)play["minimax2"])->sntart();
 			//play["minimax2"]->step();
 			//play["bgt"]->step();
-			play["refereeU"]->step();
-			play["refereeT"]->step();
+            play["refereeU"]->step();
+            play["refereeT"]->step();
 			//play["stoprefT"]->step();
-			//play["retaliateT"]->step();
-			//play["retaliateU"]->step();
+            //play["retaliateT"]->step();
+            //play["retaliateU"]->step();
 			//tactic["zickler43"]->step();
 			//play["retaliateT"]->step();
 		}

@@ -24,6 +24,11 @@ StopReferee::~StopReferee()
 {
 }
 
+void StopReferee::setGoalkeeper(Robot* gk)
+{
+    player_[0]->setRobot(gk);
+}
+
 //Play que controla os robos quando o juiz indica Stop
 //Os robos são associados as suas táticas dinamicamente
 //O robo goleiro não é dinamico por regra, sendo o robo passado no construtor

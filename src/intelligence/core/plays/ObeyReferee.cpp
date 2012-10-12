@@ -87,6 +87,13 @@ void ObeyReferee::setStage(Stage *s)
 	}
 }
 
+void ObeyReferee::setGoalkeeper(Robot* gk)
+{
+    ((StopReferee*)stopReferee)->setGoalkeeper(gk);
+    ((PenaltyUs*)penaltyUs)->setGoalkeeper(gk);
+    ((PenaltyThem*)penaltyThem)->setGoalkeeper(gk);
+}
+
 void ObeyReferee::step()
 {
 	Stage *sta = this->stage();

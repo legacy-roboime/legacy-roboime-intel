@@ -21,6 +21,11 @@ AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, Robot* g
 	this->speed = speed;
 }
 
+void AutoRetaliate::setGoalkeeper(Robot* gk)
+{
+    player_[0]->setRobot(gk);
+}
+
 void AutoRetaliate::step(){
 	Team* team = this->team_;
 	Goal* myGoal = team->goal();

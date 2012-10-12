@@ -16,6 +16,7 @@ namespace LibIntelligence
 		public:
 			AutoRetaliate(QObject *parent, Team*, Stage*, Robot* gkeeper, qreal speed);
 			void step();
+            void setGoalkeeper(Robot* gk);
 
 		private:
 			Point* cover1;
