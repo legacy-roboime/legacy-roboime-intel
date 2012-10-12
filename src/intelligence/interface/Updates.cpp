@@ -8,6 +8,6 @@ void Updates::apply(Updater* u)
 	while(!empty()){
 		Update* update = dequeue();
 		update->apply(u);
-		//delete update;//XXX: why shouldn't this be called?
+		delete update;
 	}
 }

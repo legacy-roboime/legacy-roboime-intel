@@ -30,7 +30,10 @@ UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address)
 	cTimeout = 0;
 }
 
-UpdaterVision::~UpdaterVision() {}
+UpdaterVision::~UpdaterVision() 
+{
+	delete udpSocket;
+}
 
 void UpdaterVision::step() {
 	prepare();

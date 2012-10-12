@@ -53,5 +53,6 @@ void CommanderGrSim::step()
     datagram.resize(packet->ByteSize());
     packet->SerializeToArray(datagram.data(), datagram.size());
     append(datagram);
+	delete packet;
 }
 
