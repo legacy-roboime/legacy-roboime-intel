@@ -15,13 +15,14 @@ namespace LibIntelligence
 	{
 		class Zickler43 : public Tactic
 		{
-			Q_OBJECT
+			Q_OBJECT 
 
 		public:
 			Zickler43(QObject* parent, Robot* slave, qreal speed=3000, bool deterministic = false);
 			//Zickler43(QObject* p, Robot* r, const Zickler43& zickler);
 			~Zickler43();
 			void step();
+            qreal holeSize();
 
 		protected:
 			Skills::DriveToBall* driveToBall_; //pegar a bola de forma a preparar o chute pro gol
@@ -35,6 +36,7 @@ namespace LibIntelligence
 			void updateLookPoint();
 			Point pointToKick();
 			bool isKickScored( Point p );
+            qreal maxHoleSize;
 		};
 	}	
 
