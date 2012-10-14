@@ -65,6 +65,27 @@ void UpdateStageGeometry::apply(Updater* u)
 	//cout << to_string() << endl;//test
 	for(quint32 k = u->stagesSize(); k > 0; k--) {
 		Stage* stage = u->stage(k-1);
+
+		stage->setFieldLength(fieldLength());
+		stage->setFieldWidth(fieldWidth());
+
+#ifdef TRANSFORMADA_CAMPO
+		float A = stage->fieldLength();
+		float B = stage->fieldWidth();
+		stage->setFieldLength(B);
+		stage->setFieldWidth(A/2.);
+#endif
+
+		stage->setLineWidth(lineWidth());
+		stage->setBoundaryWidth(boundaryWidth());
+		stage->setRefereeWidth(refereeWidth());
+		stage->setCenterCircleRadius(centerCircleRadius());
+		stage->setDefenseRadius(defenseRadius());
+		stage->setDefenseStretch(defenseStretch());
+		stage->setFreeKickDistance(freeKickDistance());
+		stage->setPenaltySpotDistance(penaltySpotDistance());
+		stage->setPenaltyLineDistance(penaltyLineDistance());
+
 		Goal* blueGoal = stage->blueGoal();
 		Goal* yellowGoal = stage->yellowGoal();
 		if(stage->isLeftSideBlueGoal()){
@@ -104,25 +125,6 @@ void UpdateStageGeometry::apply(Updater* u)
 
 		stage->setBlueGoal(blueGoal);
 		stage->setYellowGoal(yellowGoal);
-
-		stage->setLineWidth(lineWidth());
-		stage->setFieldLength(fieldLength());
-		stage->setFieldWidth(fieldWidth());
-		stage->setBoundaryWidth(boundaryWidth());
-		stage->setRefereeWidth(refereeWidth());
-		stage->setCenterCircleRadius(centerCircleRadius());
-		stage->setDefenseRadius(defenseRadius());
-		stage->setDefenseStretch(defenseStretch());
-		stage->setFreeKickDistance(freeKickDistance());
-		stage->setPenaltySpotDistance(penaltySpotDistance());
-		stage->setPenaltyLineDistance(penaltyLineDistance());
-
-#ifdef TRANSFORMADA_CAMPO
-		float A = stage->fieldLength();
-		float B = stage->fieldWidth();
-		stage->setFieldLength(B);
-		stage->setFieldWidth(A/2.);
-#endif
 	}
 }
 

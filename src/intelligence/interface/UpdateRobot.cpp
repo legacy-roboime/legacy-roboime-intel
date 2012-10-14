@@ -48,11 +48,6 @@ void UpdateRobot::apply(Updater* u)
 		if(robot->patternId() == patternId() && robot->color() == color()) {
 			robot->updatePosition(*this);
 			robot->setOrientation(theta());
-			robot->updateSpeed(time_capture());
-			if(active())
-				robot->setActive();
-			else
-				robot->setNotActive();
 
 #ifdef TRANSFORMADA_CAMPO
 			float A = 2*u->stage(0)->fieldWidth(); //length antigo
@@ -66,6 +61,12 @@ void UpdateRobot::apply(Updater* u)
 			else if(robot->orientation()<-PI) 
 				robot->setOrientation(robot->orientation() + 2.*PI);
 #endif
+
+			robot->updateSpeed(time_capture());
+			if(active())
+				robot->setActive();
+			else
+				robot->setNotActive();
 		}
 	}
 }
