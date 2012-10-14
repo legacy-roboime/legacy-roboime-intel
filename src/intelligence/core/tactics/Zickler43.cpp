@@ -213,7 +213,7 @@ DribbleToDribbleT::DribbleToDribbleT(QObject* parent, State* source, State* targ
 bool DribbleToGoalKickT::condition()
 {
     Zickler43* z = (Zickler43*) this->parent();
-    return !source_->busy() && z->holeSize()>0;
+    return !source_->busy();// && z->holeSize()>0;
 }
 
 DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
