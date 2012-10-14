@@ -15,6 +15,14 @@ AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, Robot* g
 	//usei team->at(0), mas tanto faz pq a tatica é associada dinamicamente ao robo
 	player_[1] = new Zickler43(this, team->at(0), speed, true);
 	player_[2] = new Blocker(this, team->at(0), 0, speed);
+	//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
+	for(int i = 3; i < this->team()->size(); i++){
+		player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), team->goal(), 600, speed);
+	}
+
+	cover1 = new Point(0, 0);
+	cover2 = new Point(0, 0);
+	cover3 = new Point(0, 0);
 
 	init = false;
 
@@ -30,11 +38,14 @@ void AutoRetaliate::step(){
 	Team* team = this->team_;
 	Goal* myGoal = team->goal();
 
-	if(!init && myGoal->width()>0){
+	if(myGoal->width()>0){
 		Goal* goal = this->team()->goal();
-		cover1 = new Point(goal->x(), goal->y() + goal->width()/3);
-		cover2 = new Point(goal->x(), goal->y() - goal->width()/3);
-		cover3 = new Point(goal->x(), goal->y());
+		cover1->setX(goal->x());
+		cover1->setY(goal->y() + goal->width()/3);
+		cover2->setX(goal->x());
+		cover2->setY(goal->y() - goal->width()/3);
+		cover3->setX(goal->x());
+		cover3->setY(goal->y());
 		//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
 		for(int i = 3; i < this->team()->size(); i++){
 			Point* p;
@@ -44,18 +55,19 @@ void AutoRetaliate::step(){
 				p = cover2;
 			else
 				p = cover3;
-			player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), p, 600, speed);
+			((Defender*)player_[i])->setCover(p);
 		}
 
 		init = true;
 	}
-	else if(init){
+	
+	if(init){
 		Stage* stage = this->stage_;
 		Ball* ball = stage->ball();
 
-		map<qreal, Robot*> close = stage->getClosestPlayersToBall(team);
+		map<qreal, Robot*> close = stage->getClosestPlayersToBallThatCanKick(team);
 		map<int, Robot*> ids;
-		map<qreal, Robot*> enemys = stage->getClosestPlayersToPoint(team->enemyTeam(), (Point*)team->goal());
+		map<qreal, Robot*> enemys = stage->getClosestPlayersToPointThatCanKick(team->enemyTeam(), (Point*)team->goal());
 
 		//Attacker e Blocker
 		int i=0;

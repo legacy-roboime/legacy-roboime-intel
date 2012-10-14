@@ -16,6 +16,13 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 	player_[1] = new Blocker(this, team->at(0), 0);
 	player_[2] = new Blocker(this, team->at(0), -deltaTeta);
 	player_[3] = new Blocker(this, team->at(0), deltaTeta);
+	//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
+	for(int i = 4; i < this->team()->size(); i++){
+		player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), team->goal(), 600, 3000);
+	}
+
+	cover1 = new Point(0, 0);
+	cover2 = new Point(0, 0);
 
 	init = false;
 }
@@ -39,27 +46,29 @@ void StopReferee::step()
 	Team* team = this->team_;
 	Goal* myGoal = team->goal();
 
-	if(!init && myGoal->width()>0){
-		cover1 = new Point(myGoal->x(), myGoal->y() + myGoal->width()/4);
-		cover2 = new Point(myGoal->x(), myGoal->y() - myGoal->width()/4);
-		//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
+	if(myGoal->width()>0){
+		cover1->setX(myGoal->x());
+		cover1->setY(myGoal->y() + myGoal->width()/4);
+		cover2->setX(myGoal->x());
+		cover2->setY(myGoal->y() - myGoal->width()/4);
 		for(int i = 4; i < this->team()->size(); i++){
 			Point* p;
 			if(i==4)
 				p = cover1;
 			else
 				p = cover2;
-			player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), p, 600, 3000);
+			((Defender*)player_[i])->setCover(p);
 		}
 
 		init = true;
 	}
-	else if(init){
+
+	if(init){
 		Stage* stage = this->stage_;
 		Ball* ball = stage->ball();
 
 
-		map<qreal, Robot*> nearTeam = stage->getClosestPlayersToPoint(team, (Point*)ball); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
+		map<qreal, Robot*> nearTeam = stage->getClosestPlayersToBallThatCanKick(team); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
 		map<int, Robot*> blockers;
 		map<int, Robot*> defenders;
 		map<qreal, Robot*> nearEnemy = stage->getClosestPlayersToPoint(team->enemyTeam(), myGoal->x(), myGoal->y()); //oponentes ordenados por proximidade do nosso gol

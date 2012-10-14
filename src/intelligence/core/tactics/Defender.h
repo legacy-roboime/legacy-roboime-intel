@@ -20,7 +20,8 @@ namespace LibIntelligence
 			
 			void setEnemy(Object* enemy);
 			Object* enemy();
-
+			
+			void setCover(Point* cover);
 			void follow();
 
 		protected:

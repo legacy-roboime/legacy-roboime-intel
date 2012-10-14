@@ -41,6 +41,12 @@ void Defender::setEnemy(Object* enemy)
 	fac->setFollow(enemy);
 }
 
+void Defender::setCover(Point* cover)
+{
+	fac->setCover(cover);
+	driveToObj->setObject((const Object*)cover);
+}
+
 void Defender::follow()
 {
 	this->setCurrentState(fac);

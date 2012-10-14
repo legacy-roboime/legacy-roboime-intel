@@ -72,6 +72,11 @@ const Object* DriveToObject::getLookPoint() const
 //	//	tAngle -= 2*M_PI;
 //}
 
+void DriveToObject::setObject(const Object* object)
+{
+	this->object = object;
+}
+
 bool DriveToObject::busy()
 {
 	//Line target = Line(lookPoint->x(), lookPoint->y(), object->x(), object->y()); //posicao oposta ao lookPoint

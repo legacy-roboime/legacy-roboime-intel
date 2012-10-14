@@ -434,11 +434,16 @@ map<qreal, Robot*> Stage::getClosestPlayersToPointThatCanKick(const Team* team, 
 {
 	map<qreal, Robot*> robots;
 	for(int i = 0; i < team->count(); i++) {
-		if(team->at(i)->canKick() && team->at(i)->isActive()){
+		if(team->at(i)->isActive()){
 			qreal dy = team->at(i)->y() - point->y();
 			qreal dx = team->at(i)->x() - point->x();
 
 			qreal d = sqrt(dy * dy + dx * dx);
+			qreal working = team->at(i)->kicker().isWorking();
+			if(working<=0)
+				d *= 99999;
+			else
+				d *= 1 - working/2.;
 
 			robots[d] = team->at(i);
 		}

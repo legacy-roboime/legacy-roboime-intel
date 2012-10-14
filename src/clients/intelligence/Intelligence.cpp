@@ -68,7 +68,34 @@ struct IntelligenceCli : public QThread
 				}
 				intel->mutex.unlock();
 
-			} else if(command == "kick") {
+			} else if(command == "kicker") {
+				int i;
+				float working;
+				cin >> i >> working;
+				if(i>=intel->team["us"]->size())
+					cout << "ID INVALIDO" << endl;
+				else{
+					cout << "SetWorkingKicker(" << working << ")" << endl;
+					intel->mutex.lock();
+					intel->team["us"]->at(i)->kicker().setWorking(working);
+					intel->mutex.unlock();
+				}
+
+			} else if(command == "dribbler") {
+				int i;
+				float working;
+				cin >> i >> working;
+				if(i>=intel->team["us"]->size())
+					cout << "ID INVALIDO" << endl;
+				else{
+					cout << "SetWorkingDribbler(" << working << ")" << endl;
+					intel->mutex.lock();
+					intel->team["us"]->at(i)->dribbler().setWorking(working);
+					intel->mutex.unlock();
+				}
+
+			} 
+			else if(command == "kick") {
 				int i;
 				cin >> i;
 				cout << "Kick once" << endl;
@@ -185,11 +212,12 @@ struct IntelligenceCli : public QThread
                     cout << "Goalkeeper(" << i << ")" << endl;
                     intel->mutex.lock();
                     ((ObeyReferee *)intel->play["refereeU"])->setGoalkeeper( intel->team["us"]->at(i) );
+					((AutoRetaliate *)intel->play["retaliateU"])->setGoalkeeper( intel->team["us"]->at(i) );
                     intel->mutex.unlock();
                 }
 
-            }
-            else {
+			}
+			else {
 				cout << "Comando nao reconhecido." << endl;
 
 			}
@@ -274,7 +302,7 @@ Intelligence::Intelligence(QObject *parent)
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 6000);
-	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2), team["us"]->at(1));
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(3), team["us"]->at(1));
 	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
