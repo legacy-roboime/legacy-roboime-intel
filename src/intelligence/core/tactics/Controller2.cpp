@@ -20,7 +20,6 @@ Controller2::Controller2(QObject* p, Robot* r, int i, qreal s)
 {
 	steer = new SteerToBall(this, r, s, s);
 	bl = new Blocker(this, robot(), 0, s);
-	gs = new GoalSwitcheroo(this, robot(), s);
 	zk = new Zickler43(this, robot(), s, true);
 	gk = new Goalkeeper(this, robot(), s);
 	pushState(steer);
@@ -31,17 +30,16 @@ void Controller2::setSpeed(qreal speed)
 {
 	this->speed = speed;
 	bl->setSpeed(speed);
-	gs->setSpeed(speed);
 	zk->setSpeed(speed);
 	gk->setSpeed(speed);
 }
 
 void Controller2::setRobot(Robot* r)
 {
-	setRobot(r);
+	Tactic::setRobot(r);
 	bl->setRobot(r);
-	gs->setRobot(r);
 	gk->setRobot(r);
+	zk->setRobot(r);
 }
 
 void Controller2::step() {
@@ -127,21 +125,26 @@ void Controller2::step() {
 			bl->step();
 		}
 		
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_B)) {
-			gs->step();
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_B)) {
+			Team* team = robot()->team();
+			int id = robot()->id();
+			id++;
+			id%=team->size();
+			this->setRobot(team->at(id));
 		}
 
 		//goalkeeper
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_X)) {
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_X)) {
 			gk->step();
 		}
 
 		//zickler
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
 			zk->step();
 		}
 
-		move->step();
+		else 
+			move->step();
 	}
 }
 
