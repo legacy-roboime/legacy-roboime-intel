@@ -280,6 +280,11 @@ Intelligence::Intelligence(QObject *parent)
         commander["yellowGrSim"]->add(robot);
 		updater["visionSim"]->add(robot);
 	}
+
+	Robot* gkUs = team["us"]->at(3);
+	Robot* gkThem = team["they"]->at(0);
+	Robot* pKickerUs = team["us"]->at(1);
+	Robot* pKickerThem = team["they"]->at(1);
 	
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
@@ -300,10 +305,10 @@ Intelligence::Intelligence(QObject *parent)
 #endif
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"], 6000);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
-	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
-	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 6000);
-	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(3), team["us"]->at(1));
-	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
+	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], gkUs, 3000);
+	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], gkThem, 6000);
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, gkUs, pKickerUs);
+	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], gkThem, pKickerThem);
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
 	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
