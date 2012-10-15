@@ -378,46 +378,40 @@ void Intelligence::update()
 	updater["referee"]->apply();
 
 	///BEGIN STEPS
-	switch(mode) {
+	if(!((UpdaterVision*)updater["vision"])->timeout()) switch(mode) {
 	case PLAY:
-		if(!((UpdaterVision*)updater["vision"])->timeout()){
-			//play["cbr"]->step();
-			//play["cbr2"]->step();
-			//if(!((QThread *)play["minimax2"])->isRunning())
-			//	((QThread *)play["minimax2"])->sntart();
-			//play["minimax2"]->step();
-			//play["bgt"]->step();
-            play["refereeU"]->step();
-            play["refereeT"]->step();
-			//play["stoprefT"]->step();
-            //play["retaliateT"]->step();
-            //play["retaliateU"]->step();
-			//tactic["zickler43"]->step();
-			//play["retaliateT"]->step();
-		}
+		//play["cbr"]->step();
+		//play["cbr2"]->step();
+		//if(!((QThread *)play["minimax2"])->isRunning())
+		//	((QThread *)play["minimax2"])->sntart();
+		//play["minimax2"]->step();
+		//play["bgt"]->step();
+		play["refereeU"]->step();
+		play["refereeT"]->step();
+		//play["stoprefT"]->step();
+		//play["retaliateT"]->step();
+		//play["retaliateU"]->step();
+		//tactic["zickler43"]->step();
+		//play["retaliateT"]->step();
 		break;
 
 	case TACTIC:
-		if(!((UpdaterVision*)updater["vision"])->timeout()){
-			//tactic["attackerM"]->step();
-			tactic["zickler43"]->step();
-			//tactic["bl"]->step();
-			//tactic["gkpr"]->step();
-			//tactic["def"]->step();
-		}
+		//tactic["attackerM"]->step();
+		tactic["zickler43"]->step();
+		//tactic["bl"]->step();
+		//tactic["gkpr"]->step();
+		//tactic["def"]->step();
 		break;
 
 	case SKILL:
-		if(!((UpdaterVision*)updater["vision"])->timeout()){
-			//skill["fac"]->step();
-			//skill["drivetoBall"]->step();
-			//skill["samd"]->step();
-			//cout << skill["gotoa"]->busy() << endl;
-			skill["goto"]->step();
-			//skill["samk"]->step();
-			//((Goto*)skill["goto"])->setAllowDefenseArea();
-			//skill["drivetoObj"]->step();
-		}
+		//skill["fac"]->step();
+		//skill["drivetoBall"]->step();
+		//skill["samd"]->step();
+		//cout << skill["gotoa"]->busy() << endl;
+		skill["goto"]->step();
+		//skill["samk"]->step();
+		//((Goto*)skill["goto"])->setAllowDefenseArea();
+		//skill["drivetoObj"]->step();
 		break;
 
 #ifdef HAVE_WINDOWS
