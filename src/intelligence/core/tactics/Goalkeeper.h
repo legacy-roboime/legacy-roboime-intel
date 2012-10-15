@@ -5,8 +5,9 @@
 #include "LibIntelligence.h"
 #include "Tactic.h"
 #include "Goto.h"
-#include "GetBall.h"
-#include "KickTo.h"
+//#include "GetBall.h"
+//#include "KickTo.h"
+#include "SampledKick.h"
 
 
 namespace LibIntelligence
@@ -24,7 +25,8 @@ namespace LibIntelligence
             qreal holeSize();
 
 		protected:
-			Skills::Goto* goto_;
+            Skills::Goto *goto_;
+            Skills::SampledKick *kick;
             Point pointToKeep();
             bool isKickScored(Point kickPoint);
             qreal maxHoleSize;

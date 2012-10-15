@@ -333,6 +333,44 @@ bool Stage::inField(const Object& obj)
 		return false;
 }
 
+Robot* Stage::getClosestPlayerToBallThatCanKick() const
+{
+    qreal MinDistance = 999999;
+
+    Team* team = blueTeam_;
+    Robot* bestFit = team->at(0);
+    for(int i = 0; i < team->count(); i++) {
+        if(team->at(i)->isActive()){
+            qreal dy = team->at(i)->y() - this->ball()->y();
+            qreal dx = team->at(i)->x() - this->ball()->x();
+
+            qreal Distance = sqrt(dy * dy + dx * dx);
+
+            if(Distance < MinDistance && team->at(i)->canKick()){
+                MinDistance = Distance;
+                bestFit = team->at(i);
+            }
+        }
+    }
+
+    team = yellowTeam_;
+    for(int i = 0; i < team->count(); i++) {
+        if(team->at(i)->isActive()){
+            qreal dy = team->at(i)->y() - this->ball()->y();
+            qreal dx = team->at(i)->x() - this->ball()->x();
+
+            qreal Distance = sqrt(dy * dy + dx * dx);
+
+            if(Distance < MinDistance && team->at(i)->canKick()){
+                MinDistance = Distance;
+                bestFit = team->at(i);
+            }
+        }
+    }
+
+    return bestFit;
+}
+
 /// Retorna o jogador do time escolhido mais próximo à bola
 /// team : time do jogador
 /// retorno: jogador mais próximo
