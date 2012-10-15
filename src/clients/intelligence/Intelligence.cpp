@@ -317,7 +317,8 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
 #endif
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
-	tactic["zickler43"] = new Zickler43(this, team["us"]->at(2), 3000, true);
+	tactic["zickler43U"] = new Zickler43(this, team["us"]->at(2), 3000, true);
+	tactic["goalkeeperT"] = new Goalkeeper(this, team["they"]->at(0),3000);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
 	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), team["us"]->goal(), 500, 3000);
 	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), team["us"]->goal(), 500, 1000);
@@ -397,7 +398,8 @@ void Intelligence::update()
 
 	case TACTIC:
 		//tactic["attackerM"]->step();
-		tactic["zickler43"]->step();
+		tactic["zickler43U"]->step();
+		tactic["goalkeeperT"]->step();
 		//tactic["bl"]->step();
 		//tactic["gkpr"]->step();
 		//tactic["def"]->step();
