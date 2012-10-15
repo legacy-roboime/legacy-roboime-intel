@@ -21,9 +21,13 @@ namespace LibIntelligence
 			Goalkeeper(QObject* parent, Robot* slave, qreal speed);
 			bool busy();
 			void step();
+            qreal holeSize();
 
 		protected:
 			Skills::Goto* goto_;
+            Point pointToKeep();
+            bool isKickScored(Point kickPoint);
+            qreal maxHoleSize;
 		};
 	}	
 }

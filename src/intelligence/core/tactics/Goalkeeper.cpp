@@ -12,7 +12,7 @@ using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
 
-#define MINBALLSPEED 10
+#define MINBALLSPEED 100
 #define MAXLOOKAHEADTIME 2
 
 Goalkeeper::Goalkeeper(QObject* p, Robot* r, qreal s)
@@ -30,6 +30,76 @@ bool Goalkeeper::busy()
 	return true;
 }
 
+Point Goalkeeper::pointToKeep()// defende o meio do maior buraco
+{
+    //TODO: this point should lay on the homeline
+    Goal* goal = this->robot()->goal();
+    qreal hwidth = goal->width() / 2;
+
+    qreal initial = goal->y()-hwidth;
+
+    Point p(goal->x(), initial);
+    qreal holeSize = 0;
+
+    Point centerMax;
+    centerMax.setX(goal->x());
+    --maxHoleSize;
+
+    qreal delta = hwidth / 5;
+
+    for (qreal t = initial; t < goal->y()+hwidth; t+=delta) {// 10 pontos
+        if (isKickScored(Point(goal->x(), t))) {
+            holeSize += delta;
+        } else {
+            if (holeSize > maxHoleSize) {
+                maxHoleSize = holeSize;
+                centerMax.setY(p.y() + holeSize / 2);
+            }
+            holeSize = 0;
+            p.setY(t + delta);
+        }
+    }
+    if (holeSize >= maxHoleSize) {
+        maxHoleSize = holeSize;
+        centerMax.setY(p.y() + holeSize / 2);
+    }
+    return centerMax;
+}
+
+bool Goalkeeper::isKickScored(Point kickPoint)
+{
+    Ball* ball = this->stage()->ball();
+    Line ball_kickpoint = Line(*ball, kickPoint);
+    Team* team = this->robot()->team();
+    for (int i = 0; i < team->size(); i++) {
+        Robot* obst = team->at(i);
+        // Ignore itself so we don't start looping
+        if (obst == robot()) continue;
+        Point obstP(obst->x(), obst->y());
+        Line ball_obst = Line(*ball, obstP);
+        qreal dist = ball_kickpoint.distanceTo(obstP);
+        qreal dotproduct = ball_kickpoint.dx() * ball_obst.dx() + ball_kickpoint.dy() * ball_obst.dy();
+        if (dist < obst->body().radius() && dotproduct > 0)
+            return false;
+    }
+    team = this->robot()->enemyTeam();
+    for (int i = 0; i < team->size(); i++) {
+        Robot* obst = team->at(i);
+        Point obstP(obst->x(), obst->y());
+        Line ball_obst = Line(*ball, obstP);
+        qreal dist = ball_kickpoint.distanceTo(obstP);
+        qreal dotproduct = ball_kickpoint.dx() * ball_obst.dx() + ball_kickpoint.dy() * ball_obst.dy();
+        if (dist < obst->body().radius() && dotproduct > 0)
+            return false;
+    }
+    return true;
+}
+
+qreal Goalkeeper::holeSize()
+{
+    return maxHoleSize;
+}
+
 void Goalkeeper::step()
 {
 	//shortcuts:
@@ -43,7 +113,7 @@ void Goalkeeper::step()
 
 	//TODO: if ball is inside area and is slow, kick/pass it far far away
 
-	/// Build the home line
+    /// Build the home line
 
 	//This angle is how much inside the goal the goalkeeper must be
 	//when 0 it's completely outside, when 90, it's half inside, when 180 it's completely inside
@@ -78,11 +148,12 @@ void Goalkeeper::step()
 		return;
 	}
 
-	//if the badguy has closest  reach to the ball than watch it's orientation
+    //if the badguy has closest reach to the ball then watch it's orientation
 	//TODO
 
 	//otherwise try to close the largest gap
-	//TODO
+    //TODO pointToKeep shoul lay on the homeline
+    goto_->setPoint(pointToKeep());
 
 	//continue stepping the last strategy
 	goto_->step();
