@@ -5,16 +5,14 @@ BUILDDIR=build
 BUILDTYPE=Release
 #BUILDTYPE=Debug
 
-all: compile
+all: cmake
+	$(MAKE) -C $(BUILDDIR)
 
 mkbuilddir:
 	[ -d $(BUILDDIR) ] || mkdir $(BUILDDIR)
 
 cmake: mkbuilddir CMakeLists.txt
 	cd $(BUILDDIR) && cmake -DCMAKE_BUILD_TYPE=$(BUILDTYPE) ..
-
-compile: cmake
-	$(MAKE) -C $(BUILDDIR)
 
 debdeps:
 	apt-get install cmake libprotobuf-dev protobuf-compiler libqt4-dev freeglut3-dev libxi-dev libxmu-dev
