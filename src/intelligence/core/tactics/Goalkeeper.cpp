@@ -68,6 +68,7 @@ void Goalkeeper::step()
 
 	//if the ball is moving fast* torwards the goal, defend it: THE CATCH
 	//*: define fast
+	goto_->setPoint(goal);
 	Line ballPath(Line(Point(0, 0), ball.speed().toPointF()).translated(ball));
 	ballPath.setLength(ball.speed().length() * MAXLOOKAHEADTIME);
 	Point importantPoint;
