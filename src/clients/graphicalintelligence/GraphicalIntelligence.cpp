@@ -15,6 +15,7 @@
 #include "CommanderTx.h"
 #include "CommanderTxOld.h"
 #include "CommanderSim.h"
+#include "CommanderGrSim.h"
 #include "UpdaterVision.h"
 #include "UpdaterReferee.h"
 #include "Ball.h"
@@ -78,8 +79,10 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	ui.setupUi(this);
 
     commander["blueSim"] = new CommanderSim(this);
+    commander["blueGrSim"] = new CommanderGrSim(this);
 	commander["blueTx"] = new CommanderTxOld(this);
-	commander["yellowSim"] = new CommanderSim(this);
+    commander["yellowSim"] = new CommanderSim(this);
+    commander["yellowGrSim"] = new CommanderGrSim(this);
 	commander["yellowTx"] = new CommanderTxOld(this);
 
 	updater["vision"] = new UpdaterVision(this);
@@ -107,6 +110,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 		updater["vision"]->add(team["us"]->last());
 		//simu
 		commander["blueSim"]->add(team["us"]->last());
+        commander["blueGrSim"]->add(team["us"]->last());
 		updater["visionSim"]->add(team["us"]->last());
 
         team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW)));
@@ -115,6 +119,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 		updater["vision"]->add(team["they"]->last());
 		//simu
 		commander["yellowSim"]->add(team["they"]->last());
+        commander["yellowGrSim"]->add(team["they"]->last());
 		updater["visionSim"]->add(team["they"]->last());
 	}
 
@@ -176,9 +181,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
-	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
-	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
-	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
+    //tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
+    //tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
+    //tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
 
 	ui.stageView->setStage(stage["main"]);
@@ -363,11 +368,17 @@ void GraphicalIntelligence::update()
 		if(useSimulation) {
 #ifdef CONTROL_BLUE
 			commander["blueSim"]->step();
-			((CommanderSim*)commander["blueSim"])->send();
+            commander["blueGrSim"]->step();
+
+            ((CommanderSim*)commander["blueSim"])->send();
+            ((CommanderGrSim*)commander["blueGrSim"])->send();
 #endif
 #ifdef CONTROL_YELLOW
 			commander["yellowSim"]->step();
-			((CommanderSim*)commander["yellowSim"])->send();
+            commander["yellowGrSim"]->step();
+
+            ((CommanderSim*)commander["yellowSim"])->send();
+            ((CommanderGrSim*)commander["yellowGrSim"])->send();
 #endif
 		} else {
 #ifdef CONTROL_BLUE
