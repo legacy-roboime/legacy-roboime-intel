@@ -305,7 +305,8 @@ void GraphicalIntelligence::update()
             //play["retaliateU"]->step();
 			//tactic["zickler43"]->step();
 			//play["retaliateT"]->step();
-            if(current_play_us != NULL)
+            
+			if(current_play_us != NULL)
             {
                 if(current_play_us != play["minmax2"])
                 {
@@ -363,18 +364,21 @@ void GraphicalIntelligence::update()
 
 		if(useSimulation) {
 #ifdef CONTROL_BLUE
-			commander["blueSim"]->step();
-            commander["blueGrSim"]->step();
+			// WARNING: CommanderSim resets the robots' command, while CommanderGrSim doesn't. As such, when using both, always dispatch GrSim commands first!
+			commander["blueGrSim"]->step();
+			((CommanderGrSim*)commander["blueGrSim"])->send();
 
+			commander["blueSim"]->step();
             ((CommanderSim*)commander["blueSim"])->send();
-            ((CommanderGrSim*)commander["blueGrSim"])->send();
+            
 #endif
 #ifdef CONTROL_YELLOW
-			commander["yellowSim"]->step();
-            commander["yellowGrSim"]->step();
+			// WARNING: CommanderSim resets the robots' command, while CommanderGrSim doesn't. As such, when using both, always dispatch GrSim commands first!
+			commander["yellowGrSim"]->step();
+			((CommanderGrSim*)commander["yellowGrSim"])->send();
 
+			commander["yellowSim"]->step();
             ((CommanderSim*)commander["yellowSim"])->send();
-            ((CommanderGrSim*)commander["yellowGrSim"])->send();
 #endif
 		} else {
 #ifdef CONTROL_BLUE

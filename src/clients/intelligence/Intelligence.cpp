@@ -387,11 +387,11 @@ void Intelligence::update()
 		//	((QThread *)play["minimax2"])->sntart();
 		//play["minimax2"]->step();
 		//play["bgt"]->step();
-		play["refereeU"]->step();
-		play["refereeT"]->step();
+		//play["refereeU"]->step();
+		//play["refereeT"]->step();
 		//play["stoprefT"]->step();
-		//play["retaliateT"]->step();
-		//play["retaliateU"]->step();
+		play["retaliateT"]->step();
+		play["retaliateU"]->step();
 		//tactic["zickler43"]->step();
 		//play["retaliateT"]->step();
 		break;
@@ -429,12 +429,14 @@ void Intelligence::update()
 
 	if(useSimulation) {
 #ifdef CONTROL_BLUE
+		// WARNING: CommanderSim resets the robots' command, while CommanderGrSim doesn't. As such, when using both, always dispatch GrSim commands first!
 		commander["blueGrSim"]->step();
 		commander["blueSim"]->step();
 		((CommanderGrSim*)commander["blueGrSim"])->send();
 		((CommanderSim*)commander["blueSim"])->send();
 #endif
 #ifdef CONTROL_YELLOW
+		// WARNING: CommanderSim resets the robots' command, while CommanderGrSim doesn't. As such, when using both, always dispatch GrSim commands first!
 		commander["yellowGrSim"]->step();
 		commander["yellowSim"]->step();
 		((CommanderGrSim*)commander["yellowGrSim"])->send();

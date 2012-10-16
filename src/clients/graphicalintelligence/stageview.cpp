@@ -44,12 +44,19 @@ void StageView::redraw()
     field->setPos(-stage->fieldLength()/2,-stage->fieldWidth()/2);
     //field->setPos(0,0);
 	// Desenho da bola
-    QGraphicsEllipseItem* bola = new QGraphicsEllipseItem(
-                field->pos().x() + (stage->ball()->x() - BALL_RADIUS/2),
-                field->pos().y() + (stage->ball()->y()-BALL_RADIUS),
-                BALL_RADIUS,BALL_RADIUS,NULL,scene());
-	bola->setBrush(QBrush(orange));
-	bola->setPen(QPen(orange));
+	if(			stage->ball()->x() > -stage->fieldLength()/2 - BORDER &&
+                stage->ball()->x() < stage->fieldLength()/2 + BORDER &&
+                stage->ball()->y() > -stage->fieldWidth()/2 - BORDER &&
+                stage->ball()->y() < stage->fieldWidth()/2 + BORDER)
+	{
+		QGraphicsEllipseItem* bola = new QGraphicsEllipseItem(
+					field->pos().x() + (stage->ball()->x() - BALL_RADIUS/2),
+					field->pos().y() + (stage->ball()->y() - BALL_RADIUS),
+					BALL_RADIUS,BALL_RADIUS,NULL,scene());
+
+		bola->setBrush(QBrush(orange));
+		bola->setPen(QPen(orange));
+	}
 
 	// Ajuste do Viewport
 	//setSceneRect(-sta->fieldWidth()/2, -sta->fieldLength()/2, sta->fieldWidth(), sta->fieldLength());
