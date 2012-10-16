@@ -176,9 +176,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
-	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
-	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
-	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
+	//tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
+	//tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
+	//tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
 
 	ui.stageView->setStage(stage["main"]);
