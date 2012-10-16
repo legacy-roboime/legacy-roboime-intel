@@ -5,7 +5,7 @@ using namespace LibIntelligence;
 Component::Component(const Component& c)
 	: QObject(c.parent()), active(c.active), working(c.working) {}
 
-Component::Component(QObject* p, bool a, bool w)
+Component::Component(QObject* p, bool a, qreal w)
 	: QObject(p),
 	active(a),
 	working(w) {}
@@ -18,26 +18,21 @@ Component& Component::operator=(const Component& o)
 	return *this;
 }
 
-bool Component::isWorking() const
+qreal Component::isWorking() const
 {
 	return working;
 }
 
-bool Component::isNotWorking() const
+void Component::setWorking(qreal w)
 {
-	return !working;
-}
-
-void Component::setWorking()
-{
-	if(!working) emit startedWorking();
-	working = true;
+	if(working<=0) emit startedWorking(w);
+	working = w;
 }
 
 void Component::setNotWorking()
 {
-	if(working) emit stoppedWorking();
-	working = false;
+	if(working>0) emit stoppedWorking();
+	working = 0;
 }
 
 bool Component::isActive() const

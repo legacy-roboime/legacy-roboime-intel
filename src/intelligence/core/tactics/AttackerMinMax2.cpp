@@ -178,15 +178,6 @@ void AttackerMinMax2::updateSoccerAction(type_actions action, Vector2 kickPoint,
 	}
 }
 
-void AttackerMinMax2::setSpeed(qreal speed)
-{
-	this->driveToBall_->setSpeed(speed);
-	this->dribble_->setSpeed(speed);
-	this->goalKick_->setSpeed(speed);
-	this->pass_->setSpeed(speed);
-	this->goto_->setSpeed(speed);
-}
-
 bool GotoToDriveT::condition()
 {
 	AttackerMinMax2* a = (AttackerMinMax2*)this->parent();

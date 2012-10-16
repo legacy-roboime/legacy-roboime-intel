@@ -29,7 +29,6 @@ namespace LibIntelligence
 			void updateSoccerAction(type_actions action, Vector2 kickPoint, Vector2 movePoint);
 			Skills::SampledDribble* dribble();
 			type_actions action();
-			void setSpeed(qreal speed);
 
 		protected:
 			Skills::DriveToBall* driveToBall_;

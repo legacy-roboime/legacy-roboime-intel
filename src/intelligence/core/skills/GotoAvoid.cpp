@@ -82,7 +82,7 @@ void GotoAvoid::step()
 		if(Line(*tangPoint, *robot).length() > 100)
 			Goto::step(tangPoint);
 		else{ 
-			int dec = 60;
+			int dec = 40;
 			qreal delta = avoid_target.angleTo(avoid_robot);
 			if(delta>10 && delta<350){ //margem de estabilidade
 				if(delta<180)

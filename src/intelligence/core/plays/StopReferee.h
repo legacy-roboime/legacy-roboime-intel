@@ -19,6 +19,13 @@ namespace LibIntelligence
 			StopReferee(QObject*, Team*,Stage*, Robot* gk);
 			~StopReferee();
 			virtual void step();
+            void setGoalkeeper(Robot* gk);
+
+		private:
+			Point* cover1;
+			Point* cover2;
+
+			bool init;
 		};
 	}
 }

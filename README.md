@@ -23,7 +23,7 @@ Requirements
 
 On Ubuntu 12.04 the following should suffice:
 
-    apt-get install git cmake qt libgl1-mesa-dev freeglut3-dev protobuf-compiler libprotobuf-dev libxmu-dev libxi-dev
+    apt-get install git cmake libqt4-dev protobuf-compiler libprotobuf-dev freeglut3-dev libxmu-dev libxi-dev
 
 You're recommended to use QtCreator, but not mandatory, use your preferred IDE,
 or no IDE at all, plain vim, make and gdb will do just fine.

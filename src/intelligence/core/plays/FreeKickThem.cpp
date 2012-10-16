@@ -25,7 +25,7 @@ FreeKickThem::FreeKickThem(QObject* parent, Team* team ,Stage* stage)
 				player_[i] = new Blocker(this, team->at(i), -deltaTeta, 1000);
 				break;
 			case 3:
-				player_[i] = new Defender(this,team->at(i), team->enemyTeam()->at(i), 600, 1000);
+				player_[i] = new Defender(this,team->at(i), team->enemyTeam()->at(i), (Point*)team->goal(), 600, 1000);
 				break;
 			case 4:
 				player_[i] = new Blocker(this,team->at(i), deltaTeta, 1000);

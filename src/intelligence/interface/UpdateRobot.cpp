@@ -9,27 +9,28 @@
 
 struct LibIntelligence::UpdateRobotImpl
 {
-	UpdateRobotImpl(TeamColor tc, quint8 i, qreal o)
-		: teamColor(tc), pId(i), theta(o) {}
+	UpdateRobotImpl(TeamColor tc, quint8 i, qreal o, bool a)
+		: teamColor(tc), pId(i), theta(o), active(a) {}
 
 	TeamColor teamColor;
 	quint8 pId;
 	qreal theta;
+	bool active;
 };
 
 using namespace LibIntelligence;
 
-UpdateRobot::UpdateRobot(TeamColor tc, const SSL_DetectionRobot& p, double t1, double t2, int camId)
+UpdateRobot::UpdateRobot(TeamColor tc, const SSL_DetectionRobot& p, double t1, double t2, int camId, bool a)
 	: Update(t1, t2, camId),
 	Point(p.x(), p.y()),
-	pimpl(new UpdateRobotImpl(tc, p.robot_id(), p.orientation())),
+	pimpl(new UpdateRobotImpl(tc, p.robot_id(), p.orientation(), a)),
 	last_time_capture(0)
 {}
 
-UpdateRobot::UpdateRobot(TeamColor tc, quint8 i, qreal x, qreal y, qreal theta, double t1, double t2, int camId)
+UpdateRobot::UpdateRobot(TeamColor tc, quint8 i, qreal x, qreal y, qreal theta, double t1, double t2, int camId, bool a)
 	: Update(t1,t2,camId),
 	Point(x, y),
-	pimpl(new UpdateRobotImpl(tc, i, theta)),
+	pimpl(new UpdateRobotImpl(tc, i, theta, a)),
 	last_time_capture(0)
 {}
 
@@ -47,7 +48,6 @@ void UpdateRobot::apply(Updater* u)
 		if(robot->patternId() == patternId() && robot->color() == color()) {
 			robot->updatePosition(*this);
 			robot->setOrientation(theta());
-			robot->updateSpeed(time_capture());
 
 #ifdef TRANSFORMADA_CAMPO
 			float A = 2*u->stage(0)->fieldWidth(); //length antigo
@@ -61,8 +61,19 @@ void UpdateRobot::apply(Updater* u)
 			else if(robot->orientation()<-PI) 
 				robot->setOrientation(robot->orientation() + 2.*PI);
 #endif
+
+			robot->updateSpeed(time_capture());
+			if(active())
+				robot->setActive();
+			else
+				robot->setNotActive();
 		}
 	}
+}
+
+bool UpdateRobot::active() const
+{
+	return pimpl->active;
 }
 
 TeamColor UpdateRobot::color() const

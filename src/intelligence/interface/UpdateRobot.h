@@ -17,8 +17,8 @@ namespace LibIntelligence
 	class UpdateRobot : public Update, public Point
 	{
 	public:
-		UpdateRobot(TeamColor, const SSL_DetectionRobot&, double t_sent=0.0, double t_capture=0.0, int camera_id=0);
-		UpdateRobot(TeamColor, quint8 patternId, qreal x, qreal y, qreal theta, double t_sent=0.0, double t_capture=0.0, int camera_id=0);
+		UpdateRobot(TeamColor, const SSL_DetectionRobot&, double t_sent=0.0, double t_capture=0.0, int camera_id=0, bool active=false);
+		UpdateRobot(TeamColor, quint8 patternId, qreal x, qreal y, qreal theta, double t_sent=0.0, double t_capture=0.0, int camera_id=0, bool active=true);
 		~UpdateRobot();
 
 		void apply(Updater*);//go through the updaters list and apply the update
@@ -36,6 +36,9 @@ namespace LibIntelligence
 
 		void setSpeedTheta();
 		qreal speedTheta() const;
+
+		void setActive(bool active);
+		bool active() const;
 
 	private:
 		UpdateRobotImpl* pimpl;

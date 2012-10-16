@@ -24,6 +24,7 @@ namespace LibIntelligence
 
 			virtual void step() = 0;
 			virtual bool busy() = 0;
+			virtual void setSpeed(qreal){};
 
 			void setRobot(Robot*);
 			const Robot* robot() const;

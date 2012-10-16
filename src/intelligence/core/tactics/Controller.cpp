@@ -18,7 +18,6 @@ Controller::Controller(QObject* p, Robot* r, int i, qreal s)
 {
 	steer = new SteerToBall(this, r, s, s);
 	bl = new Blocker(this, robot(), 0, s);
-	gs = new GoalSwitcheroo(this, robot(), s);
 	zk = new Zickler43(this, robot(), s, true);
 	mv = new Move(this, robot(), 0.0, 0.0, 0.0);
 	gk = new Goalkeeper(this, robot(), s);
@@ -31,16 +30,15 @@ void Controller::setSpeed(qreal speed)
 {
 	this->speed = speed;
 	bl->setSpeed(speed);
-	gs->setSpeed(speed);
 	zk->setSpeed(speed);
 	gk->setSpeed(speed);
 }
 
 void Controller::setRobot(Robot* r)
 {
-	setRobot(r);
+	Tactic::setRobot(r);
 	bl->setRobot(r);
-	gs->setRobot(r);
+	zk->setRobot(r);
 	gk->setRobot(r);
 }
 
@@ -94,37 +92,43 @@ void Controller::step() {
 			bl->step();
 		}
 		
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_B)) {
-			gs->step();
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_B)) {
+			Team* team = robot()->team();
+			int id = robot()->id();
+			id++;
+			id%=team->size();
+			this->setRobot(team->at(id));
 		}
 
 		//goalkeeper
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_X)) {
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_X)) {
 			gk->step();
 		}
 
 		//zickler
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
 			zk->step();
 		}
 
-		//direcionais
-		Move mv(this, robot(), 0.0, 0.0, 0.0);
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
-			mv.setAll(0.0, -speed, 0.0);
-			mv.step();
-		}
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_UP)) {
-			mv.setAll(0.0, speed, 0.0);
-			mv.step();
-		}
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_LEFT)) {
-			mv.setAll(-speed, 0.0, 0.0);
-			mv.step();
-		}
-		if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) {
-			mv.setAll(speed, 0.0, 0.0);
-			mv.step();
+		else{
+			//direcionais
+			Move mv(this, robot(), 0.0, 0.0, 0.0);
+			if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_DOWN)) {
+				mv.setAll(0.0, -speed, 0.0);
+				mv.step();
+			}
+			if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_UP)) {
+				mv.setAll(0.0, speed, 0.0);
+				mv.step();
+			}
+			if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_LEFT)) {
+				mv.setAll(-speed, 0.0, 0.0);
+				mv.step();
+			}
+			if(controller->ButtonPressed(XINPUT_GAMEPAD_DPAD_RIGHT)) {
+				mv.setAll(speed, 0.0, 0.0);
+				mv.step();
+			}
 		}
 	}
 }

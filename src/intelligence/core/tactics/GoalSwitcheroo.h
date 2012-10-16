@@ -16,7 +16,6 @@ namespace LibIntelligence
 		public:
 			GoalSwitcheroo(QObject *parent, Robot* slave, qreal speed);
 			~GoalSwitcheroo();
-			void setSpeed(qreal speed);
 			void step();
 		protected:
 			Skills::Goto* goto_;

@@ -235,17 +235,17 @@ bool Robot::isWorking() const
 bool Robot::isNotWorking() const
 {
 	bool w = false;
-	for(int i = 0; i < wheelsSize(); i++) w = w || wheels_[i].isNotWorking();
-	return !working || dribbler_.isNotWorking() || kicker_.isNotWorking() || body_.isNotWorking() || w;
+	for(int i = 0; i < wheelsSize(); i++) w = w || wheels_[i].isWorking();
+	return !working || dribbler_.isWorking() || kicker_.isWorking() || body_.isWorking() || w;
 }
 
 void Robot::setAllWorking()
 {
-	dribbler_.setWorking();
-	kicker_.setWorking();
-	for(int i = 0; i < wheelsSize(); i++) wheels_[i].setWorking();
-	body_.setWorking();
-	setWorking();
+	dribbler_.setWorking(1.);
+	kicker_.setWorking(1.);
+	for(int i = 0; i < wheelsSize(); i++) wheels_[i].setWorking(1.);
+	body_.setWorking(1.);
+	setWorking(1.);
 }
 
 void Robot::setAllNotWorking()

@@ -27,6 +27,8 @@ namespace LibIntelligence
 			const Object* getLookPoint() const;
 			//void setLookPoint(Object* lookPoint);
 
+			void setObject(const Object* object);
+
 		private:
 			const Object* refLookPoint_;//can not modif
 			Object* lookPoint; //can modif
