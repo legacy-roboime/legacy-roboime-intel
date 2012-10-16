@@ -227,11 +227,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     connect(ui.btnChangeSides, SIGNAL(clicked()), this, SLOT(changeSides()));
     timer->start(10.);
 
-    resetPatterns();
-
-    ///
-
-    ///
+	resetPatterns();
 }
 
 GraphicalIntelligence::~GraphicalIntelligence()
@@ -432,7 +428,7 @@ void GraphicalIntelligence::updateValues()
 }
 
 
-void GraphicalIntelligence::on_btnIntStart_clicked()
+/*void GraphicalIntelligence::on_btnIntStart_clicked()
 {
 	timer->start();
 }
@@ -440,7 +436,7 @@ void GraphicalIntelligence::on_btnIntStart_clicked()
 void GraphicalIntelligence::on_btnIntStop_clicked()
 {
 	timer->stop();
-}
+}*/
 
 void GraphicalIntelligence::changeIntelligenceOutput()
 {
