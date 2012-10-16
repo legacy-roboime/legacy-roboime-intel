@@ -31,7 +31,6 @@ qt4_add_resources(GINTC_RC
     ${SHARED_RC}
 )
 
-
 qt4_wrap_cpp(GINTC_MOC_SRCS
     GraphicalIntelligence.h
 )
@@ -75,8 +74,6 @@ add_executable(graphicalintelligence-client
     ${GINTC_UIS_H}
     ${GINTC_RC}
     #${GINTC_MOC_SRCS}
-    ${GINTC_UIS_H}
-    ${GINTC_RC}
 )
 
 target_link_libraries(graphicalintelligence-client
