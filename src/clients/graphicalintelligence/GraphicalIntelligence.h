@@ -48,8 +48,12 @@ private slots:
 	void on_btnIntStop_clicked();
     void setTeamColor();
     void changeIntelligenceOutput();
+    void changeMode();
     void changePlayUs();
     void changePlayThem();
+    void changeTacticUs();
+    void changeTacticThem();
+    void changeSides();
     void load_configs();
 
 private:	
@@ -74,10 +78,13 @@ private:
     Plays::Play* current_play_us;
     Plays::Play* current_play_them;
 
+    Tactics::Tactic* current_tactic_us;
+    Tactics::Tactic* current_tactic_them;
+
     TeamColor our_colour;
 
 	QTimer* timer;
-	QThread* cli;
+	//QThread* cli;
 	QMutex mutex;
 };
 

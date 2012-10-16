@@ -29,166 +29,15 @@ using namespace LibIntelligence::Plays;
 
 #include "config.h"
 
-struct IntelligenceCli : public QThread
-{
-	GraphicalIntelligence *intel;
-	IntelligenceCli(GraphicalIntelligence *intel) : QThread(intel), intel(intel) {}
-
-	void run() {
-		qreal x, y, s, kp, ki, kd;
-		string command, sub;
-		while(true) {
-			cout << "> ";
-			cin >> command;
-
-			if(command == "quit" || command == "exit") {
-				cout << "Bye!" << endl;
-				intel->timer->stop();
-				break;
-
-			} else if(command[0] == 'z') {
-				cin >> sub;
-				intel->mutex.lock();
-				if(sub[0] == 'n') {
-					intel->mode = GraphicalIntelligence::NONE;
-					cout << "Switching to none." << endl;
-				} else if(sub[0] == 's') {
-					intel->mode = GraphicalIntelligence::SKILL;
-					cout << "Switching to skill." << endl;
-				} else if(sub[0] == 't') {
-					intel->mode = GraphicalIntelligence::TACTIC;
-					cout << "Switching to tactic." << endl;
-				} else if(sub[0] == 'p') {
-					intel->mode = GraphicalIntelligence::PLAY;
-					cout << "Switching to play." << endl;
-				} else if(sub[0] == 'c') {
-					intel->mode = GraphicalIntelligence::CONTROLLER;
-					cout << "Switching to controller." << endl;
-				} else {
-					cout << "Tipo nao reconhecido." << endl;
-				}
-				intel->mutex.unlock();
-
-			} else if(command == "kick") {
-				int i;
-				cin >> i;
-				cout << "Kick once" << endl;
-				intel->mutex.lock();
-				intel->team["us"]->at(i)->kick();
-				intel->mutex.unlock();
-
-			} else if(command == "dribble") {
-				int i;
-				cin >> i;
-				cout << "Dribble once" << endl;
-				intel->mutex.lock();
-				intel->team["us"]->at(i)->dribble(1.0);
-				intel->mutex.unlock();
-
-			} else if(command == "sim") {
-				cout << "Using simulation." << endl;
-				intel->mutex.lock();
-				intel->useSimulation = true;
-				intel->resetPatterns();
-				intel->mutex.unlock();
-
-			} else if(command == "real") {
-				cout << "Using real transmission/SSL." << endl;
-				intel->mutex.lock();
-				intel->useSimulation = false;
-				intel->resetPatterns();
-				intel->mutex.unlock();
-
-			} else if(command == "sk") {
-				cin >> s;
-				cout << "setPowerK(" << s << ")" << endl;
-				intel->mutex.lock();
-				((SampledKick *)intel->skill["samk"])->setPowerK(s);
-				intel->mutex.unlock();
-
-			} else if(command[0] == 'm') {
-				cin >> x >> y >> s;
-				cout << "setSpeeds(" << x << "," << y << ")" << endl;
-				cout << "setSpeedAngular(" << s << ")" << endl;
-				intel->mutex.lock();
-				((Move *)intel->skill["move"])->setSpeeds(x, y);
-				((Move *)intel->skill["move"])->setSpeedAngular(s);
-				intel->mutex.unlock();
-
-			} else if(command[0] == 'p') {
-				cin >> x >> y;
-				cout << "setPoint(" << x << "," << y << ")" << endl;
-				intel->mutex.lock();
-				((Goto *)intel->skill["goto"])->setPoint(x, y);
-				intel->mutex.unlock();
-
-			}
-			else if(command == "side") {
-				string side;
-				cin >> side;
-				cout << "setSide(" << side << ")" << endl;
-				intel->mutex.lock();
-				if(side.compare("left") == 0){ //left
-					if(intel->team["us"]->color() == BLUE)
-						intel->stage["main"]->setIsLeftSideBlueGoal(true);
-					else
-						intel->stage["main"]->setIsLeftSideBlueGoal(false);
-				}
-				else{
-					if(intel->team["us"]->color() == BLUE)
-						intel->stage["main"]->setIsLeftSideBlueGoal(false);
-					else
-						intel->stage["main"]->setIsLeftSideBlueGoal(true);
-				}
-				intel->mutex.unlock();
-
-			}else if(command[0] == 's') {
-				cin >> s;
-				cout << "setSpeed(" << s << ")" << endl;
-				intel->mutex.lock();
-				((Goto *)intel->skill["goto"])->setSpeed(s);
-				intel->mutex.unlock();
-
-			} else if(command[0] == 'o') {
-				cin >> s;
-				cout << "setOrientarion(" << s << ")" << endl;
-				intel->mutex.lock();
-				((Goto *)intel->skill["goto"])->setOrientation(s);
-				intel->mutex.unlock();
-
-			} else if(command[0] == 'c') {
-				int i;
-				cin >> i;
-				cout << "controller robot " << i << endl;
-				intel->mutex.lock();
-				intel->tactic["controller"]->setRobot(intel->team["us"]->at(i));
-				intel->tactic["controller1"]->setRobot(intel->team["us"]->at(i));
-				intel->mutex.unlock();
-
-			} else if(command[0] == 'k') {
-				cin >> kp >> ki >> kd;
-				cout << "setPIDk(" << kp << "," << ki << "," << kd << ")" << endl;
-				intel->mutex.lock();
-				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
-				intel->mutex.unlock();
-
-			}else {
-				cout << "Comando nao reconhecido." << endl;
-
-			}
-			cin.clear();
-			cout.clear();
-		}
-	}
-};
-
 GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
 	useSimulation(true),
     mode(PLAY),
     alterStateVarsWindow(new AlterStateVars(this)),
     current_play_us(NULL),
-    current_play_them(NULL)
+    current_play_them(NULL),
+    current_tactic_us(NULL),
+    current_tactic_them(NULL)
 
 {
     load_configs();
@@ -238,8 +87,8 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["referee"] = new UpdaterReferee(this);
 
 	stage["main"] = new Stage();
-	team["us"] = stage["main"]->blueTeam();
-	team["they"] = stage["main"]->yellowTeam();
+    team["us"] = stage["main"]->blueTeam();
+    team["they"] = stage["main"]->yellowTeam();
 
 	updater["referee"]->add(stage["main"]);
 
@@ -252,15 +101,15 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-		team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i, BLUE)));
+        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i, BLUE)));
 		//real
-		commander["blueTx"]->add(team["us"]->last());
+        commander["blueTx"]->add(team["us"]->last());
 		updater["vision"]->add(team["us"]->last());
 		//simu
 		commander["blueSim"]->add(team["us"]->last());
 		updater["visionSim"]->add(team["us"]->last());
 
-		team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW)));
+        team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW)));
 		//real
 		commander["yellowTx"]->add(team["they"]->last());
 		updater["vision"]->add(team["they"]->last());
@@ -296,8 +145,33 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
 #ifdef HAVE_WINDOWS
-	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
-	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
+    tactic["controller_b1"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
+    tactic["controller_b2"] = new Controller2(this, team["us"]->at(1), 1, 3000); //controle no referencial do robo
+    tactic["controller_b3"] = new Controller2(this, team["us"]->at(2), 1, 3000); //controle no referencial do robo
+    tactic["controller_b4"] = new Controller2(this, team["us"]->at(3), 1, 3000); //controle no referencial do robo
+    tactic["controller_b5"] = new Controller2(this, team["us"]->at(4), 1, 3000); //controle no referencial do robo
+    tactic["controller_b6"] = new Controller2(this, team["us"]->at(5), 1, 3000); //controle no referencial do robo
+
+    tactic["controller_y1"] = new Controller2(this, team["they"]->at(0), 1, 3000); //controle no referencial do robo
+    tactic["controller_y2"] = new Controller2(this, team["they"]->at(1), 1, 3000); //controle no referencial do robo
+    tactic["controller_y3"] = new Controller2(this, team["they"]->at(2), 1, 3000); //controle no referencial do robo
+    tactic["controller_y4"] = new Controller2(this, team["they"]->at(3), 1, 3000); //controle no referencial do robo
+    tactic["controller_y5"] = new Controller2(this, team["they"]->at(4), 1, 3000); //controle no referencial do robo
+    tactic["controller_y6"] = new Controller2(this, team["they"]->at(5), 1, 3000); //controle no referencial do robo
+    tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
+
+    ui.cmbSelectTacticOurs->addItem("Controlar robô 1","controller_b1");
+    ui.cmbSelectTacticOurs->addItem("Controlar robô 2","controller_b2");
+    ui.cmbSelectTacticOurs->addItem("Controlar robô 3","controller_b3");
+    ui.cmbSelectTacticOurs->addItem("Controlar robô 4","controller_b4");
+    ui.cmbSelectTacticOurs->addItem("Controlar robô 5","controller_b5");
+    ui.cmbSelectTacticOurs->addItem("Controlar robô 6","controller_b6");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 1","controller_y1");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 2","controller_y2");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 3","controller_y3");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 4","controller_y4");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 5","controller_y5");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 6","controller_y6");
 #endif
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
@@ -311,79 +185,100 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	timer = new QTimer(this);
 
     // Fill dynamic dropdowns
+    ui.cmbSelectTacticTheirs->addItem("Attacker","attacker");
+    ui.cmbSelectTacticTheirs->addItem("Zickler 43","zickler43");
+    ui.cmbSelectTacticTheirs->addItem("Goleiro","gkpr");
+    ui.cmbSelectTacticTheirs->addItem("Defesa 1","def");
+    ui.cmbSelectTacticTheirs->addItem("Defesa 2","def2");
+    ui.cmbSelectTacticTheirs->addItem("Defesa 3","def3");
+
     ui.cmbSelectPlayOurs->addItem("CBR2011","cbr");
     ui.cmbSelectPlayOurs->addItem("Retaliação","retaliateU");
     ui.cmbSelectPlayOurs->addItem("Minmax","minimax2");
     ui.cmbSelectPlayOurs->addItem("Obedecer juiz","refereeU");
 
+
+    ui.cmbSelectMode->addItem("Play","PLAY");
+    ui.cmbSelectMode->addItem("Tática","TACTIC");
+    ui.cmbSelectMode->addItem("Skill","SKILL");
+
     ui.cmbSelectPlayTheirs->addItem("CBR2011","cbr2");
     ui.cmbSelectPlayTheirs->addItem("Retaliação","retaliateT");
     //ui.cmbSelectPlayTheirs->addItem("Minmax","minimax2");
+
     ui.cmbSelectPlayTheirs->addItem("Obedecer juiz","refereeT");
+
 
     //Connect signals to slots
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(ui.actionEditar_vari_veis_de_estado, SIGNAL(triggered()), alterStateVarsWindow, SLOT(show()));
     connect(ui.cmbSelectOutput, SIGNAL(currentIndexChanged(int)),this, SLOT(changeIntelligenceOutput()));
     connect(ui.cmbSelectPlayOurs, SIGNAL(currentIndexChanged(int)),this, SLOT(changePlayUs()));
+    connect(ui.cmbSelectTacticOurs, SIGNAL(currentIndexChanged(int)),this, SLOT(changeTacticUs()));
     connect(ui.cmbSelectPlayTheirs, SIGNAL(currentIndexChanged(int)),this, SLOT(changePlayThem()));
+    connect(ui.cmbSelectTacticTheirs, SIGNAL(currentIndexChanged(int)),this, SLOT(changeTacticThem()));
+    connect(ui.cmbSelectMode, SIGNAL(currentIndexChanged(int)),this, SLOT(changeMode()));
     connect(ui.cmbOurTeam, SIGNAL(currentIndexChanged(int)), this, SLOT(setTeamColor()));
-	timer->start(10.);
+    connect(ui.btnChangeSides, SIGNAL(clicked()), this, SLOT(changeSides()));
+    timer->start(10.);
 
-	resetPatterns();
-	cli->start();
+    resetPatterns();
+
+    ///
+
+    ///
 }
 
 GraphicalIntelligence::~GraphicalIntelligence()
 {
-	team.clear();
-	robot.clear();
-	stage.clear();
-	play.clear();
-	tactic.clear();
-	skill.clear();
-	updater.clear();
-	commander.clear();
-	delete timer;
-    delete cli;
+    team.clear();
+    robot.clear();
+    stage.clear();
+    play.clear();
+    tactic.clear();
+    skill.clear();
+    updater.clear();
+    commander.clear();
+    delete timer;
+//    delete cli;
 }
 
 void GraphicalIntelligence::resetPatterns()
 {
-	if(useSimulation) {
-		for(int i = 0; i < team["us"]->size(); i++)
-			team["us"]->at(i)->setPatternId(i);
-		for(int i = 0; i < team["they"]->size(); i++)
-			team["they"]->at(i)->setPatternId(i);
-	} else {
-		team["us"]->at(0)->setPatternId(0);
-		team["us"]->at(1)->setPatternId(1);
-		team["us"]->at(2)->setPatternId(2);
-		team["us"]->at(3)->setPatternId(3);
-		team["us"]->at(4)->setPatternId(4);
-		team["us"]->at(5)->setPatternId(5);
+    if(useSimulation) {
+        for(int i = 0; i < team["us"]->size(); i++)
+            team["us"]->at(i)->setPatternId(i);
+        for(int i = 0; i < team["they"]->size(); i++)
+            team["they"]->at(i)->setPatternId(i);
+    } else {
+        team["us"]->at(0)->setPatternId(0);
+        team["us"]->at(1)->setPatternId(1);
+        team["us"]->at(2)->setPatternId(2);
+        team["us"]->at(3)->setPatternId(3);
+        team["us"]->at(4)->setPatternId(4);
+        team["us"]->at(5)->setPatternId(5);
 
-		team["they"]->at(0)->setPatternId(0);
-		team["they"]->at(1)->setPatternId(1);
-		team["they"]->at(2)->setPatternId(2);
-		team["they"]->at(3)->setPatternId(3);
-		team["they"]->at(4)->setPatternId(4);
-		team["they"]->at(5)->setPatternId(5);
-	}
+        team["they"]->at(0)->setPatternId(0);
+        team["they"]->at(1)->setPatternId(1);
+        team["they"]->at(2)->setPatternId(2);
+        team["they"]->at(3)->setPatternId(3);
+        team["they"]->at(4)->setPatternId(4);
+        team["they"]->at(5)->setPatternId(5);
+    }
 }
 
 void GraphicalIntelligence::update()
 {
-	if (ui.chkUpdate->isChecked()) {
+    if (ui.chkUpdate->isChecked()) {
 #ifdef DEBUG_TIME
-		QTime t;
-		t.start();
+        QTime t;
+        t.start();
 #endif
 
 		mutex.lock();
 
 		if(useSimulation) {
-			updater["visionSim"]->step();
+            updater["visionSim"]->step();
 			updater["visionSim"]->apply();
 		} else {
 			updater["vision"]->step();
@@ -428,10 +323,20 @@ void GraphicalIntelligence::update()
 			break;
 
 		case TACTIC:
+            /*
 			tactic["attackerM"]->step();
 			tactic["zickler43"]->step();
 			//tactic["gkpr"]->step();
 			//tactic["def"]->step();
+            */
+            if(current_tactic_us != NULL)
+            {
+               current_tactic_us->step();
+            }
+            if(current_tactic_them != NULL)
+            {
+               current_tactic_them->step();
+            }
 			break;
 
 		case SKILL:
@@ -530,7 +435,7 @@ void GraphicalIntelligence::changeIntelligenceOutput()
 {
     if (this->ui.cmbSelectOutput->currentIndex()==0)
     {
-        cout << "Using simulation." << endl;
+        //cout << "Using simulation." << endl;
         mutex.lock();
         useSimulation = true;
         resetPatterns();
@@ -538,7 +443,7 @@ void GraphicalIntelligence::changeIntelligenceOutput()
     }
     else
     {
-        cout << "Using real transmission/SSL." << endl;
+        //cout << "Using real transmission/SSL." << endl;
         mutex.lock();
         useSimulation = false;
         resetPatterns();
@@ -550,7 +455,7 @@ void GraphicalIntelligence::changePlayUs()
 {
     int current_index = ui.cmbSelectPlayOurs->currentIndex();
     mutex.lock();
-    cout << "Initiating play " << ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString() << " for our team:" << endl;
+    //cout << "Initiating play " << ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString() << " for our team:" << endl;
     this->current_play_us = play[ui.cmbSelectPlayOurs->itemData(current_index).toString().toStdString()];
     mutex.unlock();
 
@@ -560,16 +465,59 @@ void GraphicalIntelligence::changePlayThem()
 {
     int current_index = ui.cmbSelectPlayTheirs->currentIndex();
     mutex.lock();
-    cout << "Initiating play " << ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString() << " for their team:" << endl;
+    //cout << "Initiating play " << ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString() << " for their team:" << endl;
     this->current_play_them = play[ui.cmbSelectPlayTheirs->itemData(current_index).toString().toStdString()];
     mutex.unlock();
+}
+
+void GraphicalIntelligence::changeTacticUs()
+{
+    int current_index = ui.cmbSelectTacticOurs->currentIndex();
+    mutex.lock();
+    //cout << "Initiating Tactics " << ui.cmbSelectTacticsOurs->itemData(current_index).toString().toStdString() << " for our team:" << endl;
+    this->current_tactic_us = tactic[ui.cmbSelectTacticOurs->itemData(current_index).toString().toStdString()];
+    mutex.unlock();
+
+}
+
+void GraphicalIntelligence::changeTacticThem()
+{
+    int current_index = ui.cmbSelectTacticTheirs->currentIndex();
+    mutex.lock();
+    //cout << "Initiating Tactics " << ui.cmbSelectTacticsTheirs->itemData(current_index).toString().toStdString() << " for their team:" << endl;
+    this->current_tactic_them = tactic[ui.cmbSelectTacticTheirs->itemData(current_index).toString().toStdString()];
+    mutex.unlock();
+}
+
+void GraphicalIntelligence::changeMode()
+{
+    int current_index = ui.cmbSelectMode->currentIndex();
+    mutex.lock();
+    if (ui.cmbSelectMode->itemData(current_index).toString().toStdString() == "PLAY")
+    {
+        this->mode = PLAY;
+    }
+    if (ui.cmbSelectMode->itemData(current_index).toString().toStdString() == "TACTIC")
+    {
+        this->mode = TACTIC;
+    }
+    if (ui.cmbSelectMode->itemData(current_index).toString().toStdString() == "SKILL")
+    {
+        this->mode = SKILL;
+    }
+    mutex.unlock();
+}
+
+void GraphicalIntelligence::changeSides()
+{
+    stage["main"]->setIsLeftSideBlueGoal(!stage["main"]->isLeftSideBlueGoal());
 }
 
 void GraphicalIntelligence::setTeamColor()
 {
     bool we_should_be_blue = (ui.cmbOurTeam->currentText() == "Azul");
 
-    cout << "Devemos ser azul?" << we_should_be_blue << endl;
+    //cout << "Devemos ser azul?" << we_should_be_blue << endl;
 
     if((we_should_be_blue && team["us"]->last()->color()==BLUE)|| (!we_should_be_blue && team["us"]->last()->color()==YELLOW))
     {
@@ -580,34 +528,33 @@ void GraphicalIntelligence::setTeamColor()
 
     if(we_should_be_blue)
     {
-        Team* t_us = team["us"];
-		t_us->setColor(BLUE);
-        Team* t_them = team["they"];
-		t_them->setColor(YELLOW);
-        our_colour = BLUE; their_colour=YELLOW;
+
+        //Team* t_us = team["us"];
+        //t_us->setColor(BLUE);
+        //Team* t_them = team["they"];
+        //t_them->setColor(YELLOW);
+        //our_colour = BLUE; their_colour=YELLOW;
 		
-		//stage["main"]->setBlueTeam(t_us);
-		//stage["main"]->setYellowTeam(t_them);
+        //stage["main"]->setBlueTeam(t_us);
+        //stage["main"]->setYellowTeam(t_them);
     }
     else
     {
-        Team* t_us = team["us"];
-		t_us->setColor(YELLOW);
-        Team* t_them = team["they"];
-		t_them->setColor(BLUE);
-        our_colour = YELLOW; their_colour=BLUE;
-		//stage["main"]->setYellowTeam(t_us);
-		//stage["main"]->setBlueTeam(t_them);
+        //Team* t_us = team["us"];
+        //t_us->setColor(YELLOW);
+        //Team* t_them = team["they"];
+        //t_them->setColor(BLUE);
+        //our_colour = YELLOW; their_colour=BLUE;
+        //stage["main"]->setYellowTeam(t_us);
+        //stage["main"]->setBlueTeam(t_them);
     }
     for(int i=0; i<team["us"]->count(); i++)
     {
-        team["us"]->at(i)->setColor(our_colour);
-        cout << "robo "<< i<< " nosso: " << team["us"]->at(i)->color() << endl;
+        //team["us"]->at(i)->setColor(our_colour);
     }
     for(int i=0; i<team["they"]->count(); i++)
     {
-        team["they"]->at(i)->setColor(their_colour);
-        cout << "robo "<< i<< " deles: " << team["us"]->at(i)->color() << endl;
+        //team["they"]->at(i)->setColor(their_colour);
     }
     resetPatterns();
 }
@@ -615,5 +562,4 @@ void GraphicalIntelligence::setTeamColor()
 void GraphicalIntelligence::load_configs()
 {
     QSettings settings("settings.ini", QSettings::IniFormat, this);
-    //alterStateVarsWindow->ui->cmbVariables->addItem("Brasil!","acimadetudo");
 }

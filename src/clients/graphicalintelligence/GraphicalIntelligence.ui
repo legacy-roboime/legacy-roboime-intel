@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -259,7 +259,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>10</y>
+          <y>70</y>
           <width>91</width>
           <height>16</height>
          </rect>
@@ -272,7 +272,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>40</y>
+          <y>100</y>
           <width>91</width>
           <height>16</height>
          </rect>
@@ -285,7 +285,7 @@
         <property name="geometry">
          <rect>
           <x>120</x>
-          <y>10</y>
+          <y>70</y>
           <width>91</width>
           <height>22</height>
          </rect>
@@ -295,11 +295,79 @@
         <property name="geometry">
          <rect>
           <x>120</x>
-          <y>40</y>
+          <y>100</y>
           <width>91</width>
           <height>22</height>
          </rect>
         </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>70</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Tática do time</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="cmbSelectTacticOurs">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>70</y>
+          <width>101</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="cmbSelectTacticTheirs">
+        <property name="geometry">
+         <rect>
+          <x>390</x>
+          <y>100</y>
+          <width>101</width>
+          <height>22</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>270</x>
+          <y>100</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Tática do adversário</string>
+        </property>
+       </widget>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>118</x>
+          <y>20</y>
+          <width>241</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_6">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Modo de entrada</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cmbSelectMode"/>
+         </item>
+        </layout>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_3">

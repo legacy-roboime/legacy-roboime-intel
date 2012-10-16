@@ -6,7 +6,7 @@
 
 using namespace LibIntelligence;
 #define BALL_RADIUS		21.5
-
+#define BORDER          200
 StageView::StageView(QWidget *parent)
 	: QGraphicsView(parent)
 {
@@ -39,12 +39,15 @@ void StageView::redraw()
 	
 
 	// Desenho do campo
-	ItemField* field = new ItemField(stage);
-	scene()->addItem(field);
-	field->setPos(0,0);
-
+    ItemField* field = new ItemField(stage);
+    scene()->addItem(field);
+    field->setPos(-stage->fieldLength()/2,-stage->fieldWidth()/2);
+    //field->setPos(0,0);
 	// Desenho da bola
-	QGraphicsEllipseItem* bola = new QGraphicsEllipseItem(stage->ball()->x()-BALL_RADIUS/2,stage->ball()->y()-BALL_RADIUS,BALL_RADIUS,BALL_RADIUS,NULL,scene());
+    QGraphicsEllipseItem* bola = new QGraphicsEllipseItem(
+                field->pos().x() + (stage->ball()->x() - BALL_RADIUS/2),
+                field->pos().y() + (stage->ball()->y()-BALL_RADIUS),
+                BALL_RADIUS,BALL_RADIUS,NULL,scene());
 	bola->setBrush(QBrush(orange));
 	bola->setPen(QPen(orange));
 
@@ -55,32 +58,41 @@ void StageView::redraw()
 	//QPointF mts = mapToScene(r);
 	//qreal scaleWidth = width()/mapToScene(r).x();
 	//scale(1/scaleWidth, 1);
-	fitInView(-stage->fieldWidth()/2, -stage->fieldLength()/2, stage->fieldWidth(), stage->fieldLength(),Qt::KeepAspectRatio);
+
 	//centerOn(0,0);
 	
 	LibIntelligence::Team* blueTeam = stage->blueTeam();
 	LibIntelligence::Team* yellowTeam = stage->yellowTeam();
-	qDebug() << blueTeam;
+
 	LibIntelligence::Robot* robot;
 	blueTeam->size();
 	for(int i=0; i<blueTeam->size(); i++) {
 		robot = blueTeam->at(i);
-		if (robot->isActive()) {
+        if (robot->isActive() &&
+                robot->x() > -stage->fieldLength()/2 - BORDER &&
+                robot->x() < stage->fieldLength()/2 + BORDER &&
+                robot->y() > -stage->fieldWidth()/2 - BORDER &&
+                robot->y() < stage->fieldWidth()/2 + BORDER) {
 			ItemRobot* grobot = new ItemRobot();
             grobot->setTeam(TeamBlue);
 			grobot->setDirection(-robot->orientation()*180/M_PI);
 			scene()->addItem(grobot);
-			grobot->setPos(robot->x(), robot->y());
+            grobot->setPos(field->pos().x() + robot->x(), field->pos().y() + robot->y());
 		}
 	}
 	for(int i=0; i<yellowTeam->size(); i++) {
 		robot = yellowTeam->at(i);
-		if (robot->isActive()) {
+        if (robot->isActive() &&
+                robot->x() > -stage->fieldLength()/2 - BORDER &&
+                robot->x() < stage->fieldLength()/2 + BORDER &&
+                robot->y() > -stage->fieldWidth()/2 - BORDER &&
+                robot->y() < stage->fieldWidth()/2 + BORDER) {
 			ItemRobot* grobot = new ItemRobot();
             grobot->setTeam(TeamYellow);
 			grobot->setDirection(-robot->orientation()*180/M_PI);
 			scene()->addItem(grobot);
-			grobot->setPos(robot->x(), robot->y());
+            grobot->setPos(field->pos().x() + robot->x(), field->pos().y() + robot->y());
 		}
 	}
+    fitInView(-stage->fieldLength()/2-5*BORDER, -stage->fieldWidth()/2-5*BORDER, stage->fieldLength()+10*BORDER, stage->fieldWidth()+10*BORDER,Qt::KeepAspectRatio);
 }
