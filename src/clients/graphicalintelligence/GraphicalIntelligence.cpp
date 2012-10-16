@@ -145,6 +145,9 @@ struct IntelligenceCli : public QThread
 				cout << "setSpeed(" << s << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setSpeed(s);
+				intel->tactic["zickler43"]->setSpeed(s);
+				intel->tactic["controller"]->setSpeed(s);
+				intel->tactic["controller1"]->setSpeed(s);
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'o') {
@@ -161,6 +164,8 @@ struct IntelligenceCli : public QThread
 				intel->mutex.lock();
 				intel->tactic["controller"]->setRobot(intel->team["us"]->at(i));
 				intel->tactic["controller1"]->setRobot(intel->team["us"]->at(i));
+				intel->tactic["zickler43"]->setRobot(intel->team["us"]->at(i));
+				intel->skill["goto"]->setRobot(intel->team["us"]->at(i));
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'k') {
@@ -296,9 +301,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
-	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
-	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
-	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
+	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), team["us"]->goal(), 500, 3000);
+	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), team["us"]->goal(), 500, 1000);
+	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), team["us"]->goal(), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
 
 	ui.stageView->setStage(stage["main"]);
@@ -371,42 +376,51 @@ void GraphicalIntelligence::update()
 
 		///BEGIN STEPS
 		switch(mode) {
-
 		case PLAY:
-			//play["cbr"]->step();
-			//play["cbr2"]->step();
-			if(!((QThread *)play["minimax2"])->isRunning())
-				((QThread *)play["minimax2"])->start();
-			play["minimax2"]->step();
-			//play["refereeU"]->step();
-			//play["refereeT"]->step();
-			//play["stoprefT"]->step();
-			play["retaliateT"]->step();
-			//play["retaliateU"]->step();
-			//tactic["zickler43"]->step();
-			//play["retaliateT"]->step();
+			if(!((UpdaterVision*)updater["vision"])->timeout()){
+				//play["cbr"]->step();
+				//play["cbr2"]->step();
+				//if(!((QThread *)play["minimax2"])->isRunning())
+				//	((QThread *)play["minimax2"])->sntart();
+				//play["minimax2"]->step();
+				//play["bgt"]->step();
+				play["refereeU"]->step();
+				play["refereeT"]->step();
+				//play["stoprefT"]->step();
+				//play["retaliateT"]->step();
+				//play["retaliateU"]->step();
+				//tactic["zickler43"]->step();
+				//play["retaliateT"]->step();
+			}
 			break;
 
 		case TACTIC:
-			tactic["attackerM"]->step();
-			tactic["zickler43"]->step();
-			//tactic["gkpr"]->step();
-			//tactic["def"]->step();
+			if(!((UpdaterVision*)updater["vision"])->timeout()){
+				//tactic["attackerM"]->step();
+				tactic["zickler43"]->step();
+				//tactic["bl"]->step();
+				//tactic["gkpr"]->step();
+				//tactic["def"]->step();
+			}
 			break;
 
 		case SKILL:
-			//skill["fac"]->step();
-			skill["drivetoBall"]->step();
-			skill["samd"]->step();
-			//cout << skill["gotoa"]->busy() << endl;
-			//skill["gotoa"]->step();
-			skill["samk"]->step();
-			//((Goto*)skill["goto"])->setAllowDefenseArea();
-			//skill["drivetoObj"]->step();
+			if(!((UpdaterVision*)updater["vision"])->timeout()){
+				//skill["fac"]->step();
+				//skill["drivetoBall"]->step();
+				//skill["samd"]->step();
+				//cout << skill["gotoa"]->busy() << endl;
+				skill["goto"]->step();
+				//skill["samk"]->step();
+				//((Goto*)skill["goto"])->setAllowDefenseArea();
+				//skill["drivetoObj"]->step();
+			}
 			break;
 
+#ifdef HAVE_WINDOWS
 		case CONTROLLER:
 			tactic["controller"]->step();
+#endif
 		default:
 			break;
 		}

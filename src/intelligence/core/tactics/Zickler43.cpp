@@ -35,12 +35,12 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	sampledMiniKick_->setObjectName("SampledMiniKick");
 	wait_->setObjectName("Wait");
 
-	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledGoalKick_/*sampledDribble_*/, 1.));
+	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledDribble_, 1.));
 	this->pushTransition(sampledDribble_, new DribbleToDriveT(this, sampledDribble_, driveToBall_, 1.));
 	this->pushTransition(sampledDribble_, new DribbleToGoalKickT(this, sampledDribble_, sampledGoalKick_, .1));
-	this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
-	this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
-	this->pushTransition(sampledMiniKick_, new DefaultTrueT(this, sampledMiniKick_, driveToBall_));
+    //this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
+    //this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
+    //this->pushTransition(sampledMiniKick_, new DefaultTrueT(this, sampledMiniKick_, driveToBall_));
 	this->pushTransition(sampledGoalKick_, new GoalKickToDriveT(this, sampledGoalKick_, driveToBall_));
 	//this->pushTransition(wait_, new DefaultTrueT(this, wait_, driveToBall_)); //loop maquina
 
@@ -52,6 +52,8 @@ Zickler43::Zickler43(QObject* p, Robot* r, qreal speed, bool deterministic)
 	sampledDribble_->setRefLookPoint(lookPoint);
 	sampledGoalKick_->setRefLookPoint(lookPoint);
 	sampledMiniKick_->setRefLookPoint(lookPoint);
+
+    maxHoleSize = -1;
 }
 
 //Zickler43::Zickler43(QObject* p, Robot* r, const Zickler43& zickler) : Tactic(p, r, zickler)
@@ -100,6 +102,7 @@ void Zickler43::step()
 	updateLookPoint();
 	current->step();
 	this->execute();
+    //cout << "SKILL: " << current->objectName().toStdString() << endl;
 }
 
 void Zickler43::updateLookPoint()
@@ -121,7 +124,7 @@ Point Zickler43::pointToKick() //chuta no meio do maior buraco
 
 	Point centerMax;
 	centerMax.setX(enemyGoal->x());
-	qreal maxHoleSize = -1;
+    maxHoleSize = -1;
 
 	qreal delta = hwidth/5;
 
@@ -139,10 +142,15 @@ Point Zickler43::pointToKick() //chuta no meio do maior buraco
 		}
 	}
 	if(holeSize>=maxHoleSize){
-		//maxHoleSize = holeSize;//SA: Dead store
+        maxHoleSize = holeSize;
 		centerMax.setY(p.y() + holeSize/2);
 	}
 	return centerMax;
+}
+
+qreal Zickler43::holeSize()
+{
+    return maxHoleSize;
 }
 
 bool Zickler43::isKickScored( Point kickPoint )
@@ -170,14 +178,6 @@ bool Zickler43::isKickScored( Point kickPoint )
 				return false;
 	}
 	return true;
-}
-
-void Zickler43::setSpeed(qreal speed)
-{
-	this->driveToBall_->setSpeed(speed);
-	this->sampledDribble_->setSpeed(speed);
-	this->sampledGoalKick_->setSpeed(speed);
-	this->sampledMiniKick_->setSpeed(speed);
 }
 
 bool DriveToDribbleT::condition()
@@ -212,7 +212,8 @@ DribbleToDribbleT::DribbleToDribbleT(QObject* parent, State* source, State* targ
 
 bool DribbleToGoalKickT::condition()
 {
-	return !source_->busy();
+    Zickler43* z = (Zickler43*) this->parent();
+    return !source_->busy();// && z->holeSize()>0;
 }
 
 DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

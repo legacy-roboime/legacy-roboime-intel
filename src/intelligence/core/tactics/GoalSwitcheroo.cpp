@@ -26,11 +26,6 @@ GoalSwitcheroo::~GoalSwitcheroo()
 {
 }
 
-void GoalSwitcheroo::setSpeed(qreal speed)
-{
-	this->goto_->setSpeed(speed);
-}
-
 void GoalSwitcheroo::step()
 {
 	//Stage* stage = this->stage();//unused

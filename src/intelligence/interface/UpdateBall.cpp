@@ -39,15 +39,16 @@ void UpdateBall::apply(Updater* u) {
 		//if(u->ball(k-1)->i()==_i) {
 			Ball* ball = u->ball(k-1);
 			ball->updatePosition(*this);
-			ball->updateSpeed(time_capture());
 
 #ifdef TRANSFORMADA_CAMPO
-			float A = 2*u->stage(0)->fieldWidth();
+			float A = 2*u->stage(0)->fieldWidth(); //length antigo
 			float x = ball->x();
 			float y = ball->y();
 			ball->setX(y);
 			ball->setY((-1.)*x + A/4.);
 #endif
+
+			ball->updateSpeed(time_capture());
 		//}
 	}
 }

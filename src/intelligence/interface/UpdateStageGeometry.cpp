@@ -65,49 +65,18 @@ void UpdateStageGeometry::apply(Updater* u)
 	//cout << to_string() << endl;//test
 	for(quint32 k = u->stagesSize(); k > 0; k--) {
 		Stage* stage = u->stage(k-1);
-		Goal* blueGoal = stage->blueGoal();
-		Goal* yellowGoal = stage->yellowGoal();
-		if(stage->isLeftSideBlueGoal()){
-			blueGoal->setX(-fieldLength()/2.);
-			blueGoal->setY(0);
-			blueGoal->setDepth(goal_depth());
-			blueGoal->setWallWidth(goal_wallWidth());
-			blueGoal->setWidth(goal_width());
-			blueGoal->setPenaltyLine(-fieldLength()/2. + stage->penaltySpotDistance() + stage->penaltyLineDistance());
-			blueGoal->setPenaltyMark(-fieldLength()/2. + stage->penaltySpotDistance(), 0);
 
-			yellowGoal->setX(fieldLength()/2.);
-			yellowGoal->setY(0);
-			yellowGoal->setDepth(goal_depth());
-			yellowGoal->setWallWidth(goal_wallWidth());
-			yellowGoal->setWidth(goal_width());
-			yellowGoal->setPenaltyLine(fieldLength()/2. - stage->penaltySpotDistance() - stage->penaltyLineDistance());
-			yellowGoal->setPenaltyMark(fieldLength()/2. - stage->penaltySpotDistance(), 0);
-		}
-		else{
-			blueGoal->setX(fieldLength()/2.);
-			blueGoal->setY(0);
-			blueGoal->setDepth(goal_depth());
-			blueGoal->setWallWidth(goal_wallWidth());
-			blueGoal->setWidth(goal_width());
-			blueGoal->setPenaltyLine(fieldLength()/2. - stage->penaltySpotDistance() - stage->penaltyLineDistance());
-			blueGoal->setPenaltyMark(fieldLength()/2. - stage->penaltySpotDistance(), 0);
-
-			yellowGoal->setX(-fieldLength()/2.);
-			yellowGoal->setY(0);
-			yellowGoal->setDepth(goal_depth());
-			yellowGoal->setWallWidth(goal_wallWidth());
-			yellowGoal->setWidth(goal_width());
-			yellowGoal->setPenaltyLine(-fieldLength()/2. + stage->penaltySpotDistance() + stage->penaltyLineDistance());
-			yellowGoal->setPenaltyMark(-fieldLength()/2. + stage->penaltySpotDistance(), 0);
-		}
-
-		stage->setBlueGoal(blueGoal);
-		stage->setYellowGoal(yellowGoal);
-
-		stage->setLineWidth(lineWidth());
 		stage->setFieldLength(fieldLength());
 		stage->setFieldWidth(fieldWidth());
+
+#ifdef TRANSFORMADA_CAMPO
+		float A = stage->fieldLength();
+		float B = stage->fieldWidth();
+		stage->setFieldLength(B);
+		stage->setFieldWidth(A/2.);
+#endif
+
+		stage->setLineWidth(lineWidth());
 		stage->setBoundaryWidth(boundaryWidth());
 		stage->setRefereeWidth(refereeWidth());
 		stage->setCenterCircleRadius(centerCircleRadius());
@@ -117,12 +86,45 @@ void UpdateStageGeometry::apply(Updater* u)
 		stage->setPenaltySpotDistance(penaltySpotDistance());
 		stage->setPenaltyLineDistance(penaltyLineDistance());
 
-#ifdef TRANSFORMADA_CAMPO
-		float A = stage->fieldLength();
-		float B = stage->fieldWidth();
-		stage->setFieldLength(B);
-		stage->setFieldWidth(A/2.);
-#endif
+		Goal* blueGoal = stage->blueGoal();
+		Goal* yellowGoal = stage->yellowGoal();
+		if(stage->isLeftSideBlueGoal()){
+			blueGoal->setX(-stage->fieldLength()/2.);
+			blueGoal->setY(0);
+			blueGoal->setDepth(goal_depth());
+			blueGoal->setWallWidth(goal_wallWidth());
+			blueGoal->setWidth(goal_width());
+			blueGoal->setPenaltyLine(-stage->fieldLength()/2. + stage->penaltySpotDistance() + stage->penaltyLineDistance());
+			blueGoal->setPenaltyMark(-stage->fieldLength()/2. + stage->penaltySpotDistance(), 0);
+
+			yellowGoal->setX(stage->fieldLength()/2.);
+			yellowGoal->setY(0);
+			yellowGoal->setDepth(goal_depth());
+			yellowGoal->setWallWidth(goal_wallWidth());
+			yellowGoal->setWidth(goal_width());
+			yellowGoal->setPenaltyLine(stage->fieldLength()/2. - stage->penaltySpotDistance() - stage->penaltyLineDistance());
+			yellowGoal->setPenaltyMark(stage->fieldLength()/2. - stage->penaltySpotDistance(), 0);
+		}
+		else{
+			blueGoal->setX(stage->fieldLength()/2.);
+			blueGoal->setY(0);
+			blueGoal->setDepth(goal_depth());
+			blueGoal->setWallWidth(goal_wallWidth());
+			blueGoal->setWidth(goal_width());
+			blueGoal->setPenaltyLine(stage->fieldLength()/2. - stage->penaltySpotDistance() - stage->penaltyLineDistance());
+			blueGoal->setPenaltyMark(stage->fieldLength()/2. - stage->penaltySpotDistance(), 0);
+
+			yellowGoal->setX(-stage->fieldLength()/2.);
+			yellowGoal->setY(0);
+			yellowGoal->setDepth(goal_depth());
+			yellowGoal->setWallWidth(goal_wallWidth());
+			yellowGoal->setWidth(goal_width());
+			yellowGoal->setPenaltyLine(-stage->fieldLength()/2. + stage->penaltySpotDistance() + stage->penaltyLineDistance());
+			yellowGoal->setPenaltyMark(-stage->fieldLength()/2. + stage->penaltySpotDistance(), 0);
+		}
+
+		stage->setBlueGoal(blueGoal);
+		stage->setYellowGoal(yellowGoal);
 	}
 }
 

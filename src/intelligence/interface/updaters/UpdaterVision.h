@@ -21,11 +21,13 @@ namespace LibIntelligence
 		void prepare();
 		void receive();
 		void step();
+		bool timeout();
 
 	private slots:
 		void receiveData();
 
 	private:
+		char cTimeout;
 		QUdpSocket* udpSocket;
 		QQueue<SSL_WrapperPacket*> packets;
 		unsigned int itr_vision;

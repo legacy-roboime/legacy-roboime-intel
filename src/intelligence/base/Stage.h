@@ -85,6 +85,9 @@ namespace LibIntelligence
 		void setTimeLeft(double);
 		double getTimeLeft() const;
 
+        // Regardless of the team:
+        Robot* getClosestPlayerToBallThatCanKick() const;
+        // From the given team:
 		Robot* getClosestPlayerToBall(const Team*) const;
 		Robot* getClosestPlayerToBallThatCanKick(const Team*) const;
 		map<qreal, Robot*> getClosestPlayersToBall(const Team* team) const;

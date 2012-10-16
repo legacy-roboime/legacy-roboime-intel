@@ -68,7 +68,34 @@ struct IntelligenceCli : public QThread
 				}
 				intel->mutex.unlock();
 
-			} else if(command == "kick") {
+			} else if(command == "kicker") {
+				int i;
+				float working;
+				cin >> i >> working;
+				if(i>=intel->team["us"]->size())
+					cout << "ID INVALIDO" << endl;
+				else{
+					cout << "SetWorkingKicker(" << working << ")" << endl;
+					intel->mutex.lock();
+					intel->team["us"]->at(i)->kicker().setWorking(working);
+					intel->mutex.unlock();
+				}
+
+			} else if(command == "dribbler") {
+				int i;
+				float working;
+				cin >> i >> working;
+				if(i>=intel->team["us"]->size())
+					cout << "ID INVALIDO" << endl;
+				else{
+					cout << "SetWorkingDribbler(" << working << ")" << endl;
+					intel->mutex.lock();
+					intel->team["us"]->at(i)->dribbler().setWorking(working);
+					intel->mutex.unlock();
+				}
+
+			} 
+			else if(command == "kick") {
 				int i;
 				cin >> i;
 				cout << "Kick once" << endl;
@@ -146,6 +173,9 @@ struct IntelligenceCli : public QThread
 				cout << "setSpeed(" << s << ")" << endl;
 				intel->mutex.lock();
 				((Goto *)intel->skill["goto"])->setSpeed(s);
+				intel->tactic["zickler43"]->setSpeed(s);
+				intel->tactic["controller"]->setSpeed(s);
+				intel->tactic["controller1"]->setSpeed(s);
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'o') {
@@ -162,6 +192,8 @@ struct IntelligenceCli : public QThread
 				intel->mutex.lock();
 				intel->tactic["controller"]->setRobot(intel->team["us"]->at(i));
 				intel->tactic["controller1"]->setRobot(intel->team["us"]->at(i));
+				intel->tactic["zickler43"]->setRobot(intel->team["us"]->at(i));
+				intel->skill["goto"]->setRobot(intel->team["us"]->at(i));
 				intel->mutex.unlock();
 
 			} else if(command[0] == 'k') {
@@ -171,7 +203,21 @@ struct IntelligenceCli : public QThread
 				((Goto *)intel->skill["goto"])->setPIDk(kp,ki,kd);
 				intel->mutex.unlock();
 
-			}else {
+            } else if(command[0] == 'g') {
+                int i;
+                cin >> i;
+                if(i>=intel->team["us"]->size())
+                    cout << "ID INVALIDO" << endl;
+                else{
+                    cout << "Goalkeeper(" << i << ")" << endl;
+                    intel->mutex.lock();
+                    ((ObeyReferee *)intel->play["refereeU"])->setGoalkeeper( intel->team["us"]->at(i) );
+					((AutoRetaliate *)intel->play["retaliateU"])->setGoalkeeper( intel->team["us"]->at(i) );
+                    intel->mutex.unlock();
+                }
+
+			}
+			else {
 				cout << "Comando nao reconhecido." << endl;
 
 			}
@@ -234,12 +280,17 @@ Intelligence::Intelligence(QObject *parent)
         commander["yellowGrSim"]->add(robot);
 		updater["visionSim"]->add(robot);
 	}
+
+	Robot* gkUs = team["us"]->at(3);
+	Robot* gkThem = team["they"]->at(0);
+	Robot* pKickerUs = team["us"]->at(1);
+	Robot* pKickerThem = team["they"]->at(1);
 	
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
 	skill["drivetoBall"] = new DriveToBall(this, team["us"]->at(0), team["they"]->at(0));
 	skill["steer"] = new SteerToBall(this, team["us"]->at(3), 0, 0);
-	skill["goto"] = new Goto(this, team["us"]->at(3), 0, 0, 0, 500, true);
+	skill["goto"] = new Goto(this, team["us"]->at(2), 0, 0, 0, 3000, true);
 	skill["gotoa"] = new GotoAvoid(this, team["us"]->at(0), new Point(0, 0), stage["main"]->ball(), stage["main"]->ball()->radius() + team["us"]->at(0)->body().cut(), 3000);
 	skill["move"] = new Move(this, team["us"]->at(0), 0, 0, 0);
 	skill["samk"] = new SampledKick(this, team["us"]->at(2), team["us"]->at(2), true, 0, 1, 3000, false);
@@ -249,15 +300,15 @@ Intelligence::Intelligence(QObject *parent)
 
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
-	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
-	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 3000);
 #ifdef HAVE_WINDOWS
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 #endif
-	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
+	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"], 6000);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
-	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2), team["us"]->at(1));
-	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
+	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], gkUs, 3000);
+	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], gkThem, 6000);
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, gkUs, pKickerUs);
+	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], gkThem, pKickerThem);
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
 	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
@@ -266,12 +317,14 @@ Intelligence::Intelligence(QObject *parent)
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
 #endif
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
-	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
+	tactic["zickler43U"] = new Zickler43(this, team["us"]->at(2), 3000, true);
+	tactic["goalkeeperT"] = new Goalkeeper(this, team["they"]->at(0),3000);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
-	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
-	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
-	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
+	tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), team["us"]->goal(), 500, 3000);
+	tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), team["us"]->goal(), 500, 1000);
+	tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), team["us"]->goal(), 500, 1000);
 	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
+	tactic["bl"] = new Blocker(this, team["they"]->at(4), 0, 6000);
 	
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(update()));
@@ -326,40 +379,42 @@ void Intelligence::update()
 	updater["referee"]->apply();
 
 	///BEGIN STEPS
-	switch(mode) {
+	if(!((UpdaterVision*)updater["vision"])->timeout()) switch(mode) {
+	case PLAY:
+		//play["cbr"]->step();
+		//play["cbr2"]->step();
+		//if(!((QThread *)play["minimax2"])->isRunning())
+		//	((QThread *)play["minimax2"])->sntart();
+		//play["minimax2"]->step();
+		//play["bgt"]->step();
+		play["refereeU"]->step();
+		play["refereeT"]->step();
+		//play["stoprefT"]->step();
+		//play["retaliateT"]->step();
+		//play["retaliateU"]->step();
+		//tactic["zickler43"]->step();
+		//play["retaliateT"]->step();
+		break;
 
-		case PLAY:
-			//play["cbr"]->step();
-			//play["cbr2"]->step();
-			//if(!((QThread *)play["minimax2"])->isRunning())
-			//	((QThread *)play["minimax2"])->start();
-			//play["minimax2"]->step();
-			//play["refereeU"]->step();
-			//play["refereeT"]->step();
-			//play["stoprefT"]->step();
-			play["retaliateT"]->step();
-			//play["retaliateU"]->step();
-			//tactic["zickler43"]->step();
-			//play["retaliateT"]->step();
-			break;
+	case TACTIC:
+		//tactic["attackerM"]->step();
+		tactic["zickler43U"]->step();
+		tactic["goalkeeperT"]->step();
+		//tactic["bl"]->step();
+		//tactic["gkpr"]->step();
+		//tactic["def"]->step();
+		break;
 
-		case TACTIC:
-			tactic["attackerM"]->step();
-			tactic["zickler43"]->step();
-			//tactic["gkpr"]->step();
-			//tactic["def"]->step();
-			break;
-
-		case SKILL:
-			//skill["fac"]->step();
-			skill["drivetoBall"]->step();
-			skill["samd"]->step();
-			//cout << skill["gotoa"]->busy() << endl;
-			//skill["gotoa"]->step();
-			skill["samk"]->step();
-			//((Goto*)skill["goto"])->setAllowDefenseArea();
-			//skill["drivetoObj"]->step();
-			break;
+	case SKILL:
+		//skill["fac"]->step();
+		//skill["drivetoBall"]->step();
+		//skill["samd"]->step();
+		//cout << skill["gotoa"]->busy() << endl;
+		skill["goto"]->step();
+		//skill["samk"]->step();
+		//((Goto*)skill["goto"])->setAllowDefenseArea();
+		//skill["drivetoObj"]->step();
+		break;
 
 #ifdef HAVE_WINDOWS
 	case CONTROLLER:
@@ -374,15 +429,15 @@ void Intelligence::update()
 
 	if(useSimulation) {
 #ifdef CONTROL_BLUE
-        commander["blueGrSim"]->step();
+		commander["blueGrSim"]->step();
 		commander["blueSim"]->step();
-        ((CommanderGrSim*)commander["blueGrSim"])->send();
+		((CommanderGrSim*)commander["blueGrSim"])->send();
 		((CommanderSim*)commander["blueSim"])->send();
 #endif
 #ifdef CONTROL_YELLOW
-        commander["yellowGrSim"]->step();
+		commander["yellowGrSim"]->step();
 		commander["yellowSim"]->step();
-        ((CommanderGrSim*)commander["yellowGrSim"])->send();
+		((CommanderGrSim*)commander["yellowGrSim"])->send();
 		((CommanderSim*)commander["yellowSim"])->send();
 #endif
 	} else {

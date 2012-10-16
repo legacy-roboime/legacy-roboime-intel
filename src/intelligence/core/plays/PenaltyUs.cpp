@@ -25,6 +25,11 @@ PenaltyUs::~PenaltyUs()
 		delete gotos.at(i);
 }
 
+void PenaltyUs::setGoalkeeper(Robot* gk)
+{
+    player_[0]->setRobot(gk);
+}
+
 /*
 The ball:
 is placed on the penalty mark

@@ -19,6 +19,7 @@ namespace LibIntelligence
 			PenaltyUs(QObject*, Team*,Stage*, Robot* penaltyKicker, Robot* goalkeeper);
 			~PenaltyUs();
 			virtual void step();
+            void setGoalkeeper(Robot* gk);
 
 		private:
 			QVector<Goto*> gotos;

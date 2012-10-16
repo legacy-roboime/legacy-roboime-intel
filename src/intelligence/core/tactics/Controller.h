@@ -31,7 +31,6 @@ namespace LibIntelligence
 			qreal speed;
 			Skills::SteerToBall* steer;
 			Tactics::Blocker* bl;
-			Tactics::GoalSwitcheroo* gs;
 			Tactics::Goalkeeper* gk;
 			Tactics::Zickler43 *zk;
 			Skills::Move* mv;
