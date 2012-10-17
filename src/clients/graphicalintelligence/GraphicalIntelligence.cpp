@@ -364,20 +364,22 @@ void GraphicalIntelligence::update()
 
 		if(useSimulation) {
 #ifdef CONTROL_BLUE
-			// WARNING: CommanderSim resets the robots' command, while CommanderGrSim doesn't. As such, when using both, always dispatch GrSim commands first!
+            //XXX: CommanderSim resets the robots' command, while CommanderGrSim doesn't.
+            // As such, when using both, always dispatch GrSim commands first!
 			commander["blueGrSim"]->step();
-			((CommanderGrSim*)commander["blueGrSim"])->send();
-
 			commander["blueSim"]->step();
+
+            ((CommanderGrSim*)commander["blueGrSim"])->send();
             ((CommanderSim*)commander["blueSim"])->send();
             
 #endif
 #ifdef CONTROL_YELLOW
-			// WARNING: CommanderSim resets the robots' command, while CommanderGrSim doesn't. As such, when using both, always dispatch GrSim commands first!
+            //XXX: CommanderSim resets the robots' command, while CommanderGrSim doesn't.
+            // As such, when using both, always dispatch GrSim commands first!
 			commander["yellowGrSim"]->step();
-			((CommanderGrSim*)commander["yellowGrSim"])->send();
+            commander["yellowSim"]->step();
 
-			commander["yellowSim"]->step();
+            ((CommanderGrSim*)commander["yellowGrSim"])->send();
             ((CommanderSim*)commander["yellowSim"])->send();
 #endif
 		} else {
