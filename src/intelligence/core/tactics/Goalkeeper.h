@@ -25,6 +25,7 @@ namespace LibIntelligence
             qreal holeSize();
 
 		protected:
+            Line homeline;
             Skills::Goto *goto_;
             Skills::SampledKick *kick;
             Point pointToKeep();
