@@ -35,8 +35,8 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	useSimulation(true),
     mode(PLAY),
     alterStateVarsWindow(new AlterStateVars(this)),
-    current_play_us(NULL),
-    current_play_them(NULL),
+    //current_play_us(NULL),
+    //current_play_them(NULL),
     current_tactic_us(NULL),
     current_tactic_them(NULL)
 
@@ -147,7 +147,10 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2), team["us"]->at(1));
 	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
-
+    play["haltU"] = new Plays::Halt(this, team["us"], team["us"]->stage());
+    current_play_us = play["haltU"];
+    play["haltT"] = new Plays::Halt(this, team["they"], team["they"]->stage());
+    current_play_them = play["haltT"];
 	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
 #ifdef HAVE_WINDOWS
     tactic["controller_b1"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
@@ -225,6 +228,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectTacticTheirs->addItem("Defesa 2","def2");
     ui.cmbSelectTacticTheirs->addItem("Defesa 3","def3");
 
+    ui.cmbSelectPlayOurs->addItem("Halt","haltU");
     ui.cmbSelectPlayOurs->addItem("CBR2011","cbr");
     ui.cmbSelectPlayOurs->addItem("Retaliação","retaliateU");
     ui.cmbSelectPlayOurs->addItem("Minmax","minimax2");
@@ -234,7 +238,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectMode->addItem("Play","PLAY");
     ui.cmbSelectMode->addItem("Tática","TACTIC");
     ui.cmbSelectMode->addItem("Skill","SKILL");
-
+    ui.cmbSelectPlayTheirs->addItem("Halt","haltT");
     ui.cmbSelectPlayTheirs->addItem("CBR2011","cbr2");
     ui.cmbSelectPlayTheirs->addItem("Retaliação","retaliateT");
     //ui.cmbSelectPlayTheirs->addItem("Minmax","minimax2");
@@ -242,6 +246,21 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectPlayTheirs->addItem("Obedecer juiz","refereeT");
 
 
+/*
+  TODO:
+
+    QSignalMapper signalIdMapChangedMapper = new QSignalMapper(this);
+    signalIdMapChangedMapper->setMapping(taxFileButton, QString("taxfile.txt"));
+    signalIdMapChangedMapper->setMapping(accountFileButton, QString("accountsfile.txt"));
+    signalIdMapChangedMapper->setMapping(reportFileButton, QString("reportfile.txt"));
+
+         connect(taxFileButton, SIGNAL(clicked()),
+             signalMapper, SLOT (map()));
+         connect(accountFileButton, SIGNAL(clicked()),
+             signalMapper, SLOT (map()));
+         connect(reportFileButton, SIGNAL(clicked()),
+             signalMapper, SLOT (map()));
+*/
     //Connect signals to slots
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(ui.actionEditar_vari_veis_de_estado, SIGNAL(triggered()), alterStateVarsWindow, SLOT(show()));
@@ -255,7 +274,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     connect(ui.btnChangeSides, SIGNAL(clicked()), this, SLOT(changeSides()));
     timer->start(10.);
 
-	resetPatterns();
+    resetPatterns();
 }
 
 GraphicalIntelligence::~GraphicalIntelligence()
