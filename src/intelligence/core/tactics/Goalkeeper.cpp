@@ -136,9 +136,11 @@ void Goalkeeper::step()
 	//values greater than 90 don't make much sense
     const qreal angle(0);//TODO parametrize this
 
+	//Sets the ratio between the perpendicular distance of the homeline to the goal and the GK's radius
+	const qreal homelineRatio(1.50);
 	//Auxiliar lines to translate the goal line ends
-    Line l1 = Line::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 - angle : angle);
-    Line l2 = Line::fromPolar(robot.body().radius(), goal.x() > 0 ? 180 + angle : -angle);
+    Line l1 = Line::fromPolar(robot.body().radius()*homelineRatio, goal.x() > 0 ? 180 - angle : angle);
+	Line l2 = Line::fromPolar(robot.body().radius()*homelineRatio, goal.x() > 0 ? 180 + angle : -angle);
 
     Line homeline(l1.translated(goal.p1()).p2(), l2.translated(goal.p2()).p2());
 
@@ -168,7 +170,6 @@ void Goalkeeper::step()
 	}
 
     //if the badguy has closest reach to the ball then watch it's orientation
-    //TODO:
     Robot* dangerBot = robot.stage()->getClosestPlayerToBallThatCanKick();
     //If dangerBot is an enemy, we shall watch his orientation. If he's a friend, we move on to a more
     //appropriate strategy

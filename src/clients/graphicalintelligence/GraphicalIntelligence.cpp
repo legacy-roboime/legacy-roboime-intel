@@ -246,11 +246,11 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectPlayTheirs->addItem("Obedecer juiz","refereeT");
 
 
-/*
-  TODO:
 
-    QSignalMapper signalIdMapChangedMapper = new QSignalMapper(this);
-    signalIdMapChangedMapper->setMapping(taxFileButton, QString("taxfile.txt"));
+//  TODO:
+    QSignalMapper* signalIdMapChangedMapper = new QSignalMapper(this);
+   /*
+	signalIdMapChangedMapper->setMapping(taxFileButton, QString("taxfile.txt"));
     signalIdMapChangedMapper->setMapping(accountFileButton, QString("accountsfile.txt"));
     signalIdMapChangedMapper->setMapping(reportFileButton, QString("reportfile.txt"));
 
@@ -299,9 +299,11 @@ void GraphicalIntelligence::resetPatterns()
         for(int i = 0; i < team["they"]->size(); i++)
             team["they"]->at(i)->setPatternId(i);
     } else {
-        team["us"]->at(0)->setPatternId(0);
+        team["us"]->at(0)->setPatternId(    2);
+			//0);
         team["us"]->at(1)->setPatternId(1);
-        team["us"]->at(2)->setPatternId(2);
+        team["us"]->at(2)->setPatternId(    0);
+			//2);
         team["us"]->at(3)->setPatternId(3);
         team["us"]->at(4)->setPatternId(4);
         team["us"]->at(5)->setPatternId(5);
