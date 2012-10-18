@@ -12,6 +12,7 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 {
 	qreal deltaTeta = (23*3.14)/180.;
 	player_[0] = new Goalkeeper(this, gk, 3000);
+	((Goalkeeper*)player_[0])->setAggressive(false);
 	//usei team->at(0), mas tanto faz pq a tatica é associada dinamicamente ao robo
 	player_[1] = new Blocker(this, team->at(0), 0);
 	player_[2] = new Blocker(this, team->at(0), -deltaTeta);

@@ -19,7 +19,8 @@ using namespace Skills;
 Goalkeeper::Goalkeeper(QObject* p, Robot* r, qreal s)
 	: Tactic(p,r),
     goto_(new Goto(this, r, 0.0, 0.0, 0.0, s, true)),
-    kick(new SampledKick(this, r, r->enemyGoal()))
+    kick(new SampledKick(this, r, r->enemyGoal())),
+	isAggressive_(true)
 {
 	((Steer *)goto_)->setLookPoint(stage()->ball());
 	goto_->setPoint(robot()->goal());
@@ -105,6 +106,16 @@ qreal Goalkeeper::holeSize()
     return maxHoleSize;
 }
 
+bool Goalkeeper::isAggressive()
+{
+	return isAggressive_;
+}
+
+void Goalkeeper::setAggressive(bool aggro)
+{
+	isAggressive_ = aggro;
+}
+
 void Goalkeeper::step()
 {
 	//shortcuts:
@@ -136,11 +147,13 @@ void Goalkeeper::step()
 	//watch the enemy
 	//TODO: get the chain of badguys, (badguy and who can it pass to)
 	//Robot &badguy = *enemyTeam.getClosestPlayerToBall();//unused
-
-    // if we are the closest to the ball then kick it
-    if (this->robot() == robot.stage()->getClosestPlayerToBallThatCanKick()) {
-        return kick->step();
-    }
+	if(isAggressive_)
+	{
+		// if we are the closest to the ball then kick it
+		if (this->robot() == robot.stage()->getClosestPlayerToBallThatCanKick()) {
+			return kick->step();
+		}
+	}
 
 	//if the ball is moving fast* torwards the goal, defend it: THE CATCH
     //*: define fast
