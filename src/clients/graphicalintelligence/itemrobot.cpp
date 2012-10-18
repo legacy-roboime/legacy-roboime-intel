@@ -19,7 +19,7 @@ ItemRobot::~ItemRobot()
 void ItemRobot::setTeam(TeamType newTeam)
 {
 	team = newTeam;
-	if (team==TeamBlue) {
+    if (team==TeamBlue) {
 		setColor(Qt::cyan);
 	}
 	else {

@@ -5,6 +5,7 @@ lib*/*
 
 # ignore Qt Creator .user files
 *.user
+*.autosave
 *.dat
 *.autosave
 

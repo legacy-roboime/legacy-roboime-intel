@@ -11,6 +11,7 @@ PenaltyThem::PenaltyThem(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 	: Play(parent, team, stage)
 {
 	player_[0] = new Goalkeeper(this, gk, 3000);
+	((Goalkeeper*)player_[0])->setAggressive(false);
 	for(int i = 0; i < team->size(); i++)
 		if(team->at(i)->id()!=gk->id())
 			gotos.push_back(new Goto(this, team->at(i), 0, 0, 0, 3000, false));

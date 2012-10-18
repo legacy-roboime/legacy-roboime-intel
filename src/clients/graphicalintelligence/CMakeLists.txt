@@ -17,11 +17,13 @@ set(GINTC_SRC
     itemfield.cpp
     itemrobot.cpp
     stageview.cpp
+    alterstatevars.cpp
     # add new sources here
 )
 
 qt4_wrap_ui(GINTC_UIS_H
     GraphicalIntelligence.ui
+    alterstatevars.ui
 )
 
 qt4_add_resources(GINTC_RC
@@ -29,6 +31,9 @@ qt4_add_resources(GINTC_RC
     ${SHARED_RC}
 )
 
+qt4_wrap_cpp(GINTC_MOC_SRCS
+    GraphicalIntelligence.h
+)
 
 ##############################
 # Intra dependencies
@@ -68,6 +73,7 @@ add_executable(graphicalintelligence-client
     ${GINTC_SRC}
     ${GINTC_UIS_H}
     ${GINTC_RC}
+    #${GINTC_MOC_SRCS}
 )
 
 target_link_libraries(graphicalintelligence-client
@@ -77,3 +83,4 @@ target_link_libraries(graphicalintelligence-client
 )
 
 set_property(TARGET graphicalintelligence-client PROPERTY FOLDER apps)
+
