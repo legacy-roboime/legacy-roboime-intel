@@ -160,7 +160,7 @@ void Goalkeeper::step()
     //If dangerBot is an enemy, we shall watch his orientation. If he's a friend, we move on to a more
     //appropriate strategy
     if(robot.color() != dangerBot->color() &&
-            Line(dangerBot->x(),dangerBot->y(),ball->x(), ball->y()).length() < DOMINATIONRADIUS)
+            Line(dangerBot->x(),dangerBot->y(),ball.x(), ball.y()).length() < DOMINATIONRADIUS)
     {
         qreal dangerAngle = dangerBot->orientation();
         //Line starting from the dangerBot spanning twice the distance from the bot
