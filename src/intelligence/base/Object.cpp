@@ -35,10 +35,15 @@ Object::Object(const Object& object)
     posOld_(object.posOld_)//,
 	//useFilter_(object.useFilter_)
 {
+	gain = 6.0;
 	coef[0] = 3.0;
 	coef[1] = 0.0;
 	coef[2] = -1.0 / 3.0;
 	coef[3] = 0.0;
+	memcpy(ux,object.ux,4*sizeof(float));
+	memcpy(vx,object.vx,4*sizeof(float));
+	memcpy(uy,object.uy,4*sizeof(float));
+	memcpy(vy,object.vy,4*sizeof(float));
 }
 
 void Object::updatePositionWithFilter(const Point &p)

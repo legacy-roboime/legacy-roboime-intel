@@ -16,18 +16,19 @@ namespace LibIntelligence
 			Q_OBJECT
 
 		public:
-			Defender(QObject* parent, Robot* slave, Object* enemy, Point* cover, qreal dist, qreal speed);
+			Defender(QObject* parent, Robot* slave, Object* enemy, Object* cover, qreal dist, qreal speed);
 			
 			void setEnemy(Object* enemy);
-			Object* enemy();
+			const Object* enemy();
 			
-			void setCover(Point* cover);
+			void setCover(Object* cover);
 			void follow();
+			Skills::FollowAndCover* fac;
+			void step();
 
 		protected:
 			Object* enemy_;
 			Skills::DriveToObject* driveToObj;
-			Skills::FollowAndCover* fac;
 		};
 	}	
 

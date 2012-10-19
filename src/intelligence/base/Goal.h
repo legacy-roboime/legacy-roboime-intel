@@ -9,7 +9,7 @@
 
 namespace LibIntelligence
 {
-	class Goal : public Line, public Object
+	class Goal : public Object, public Line 
 	{
 	public:
 		Goal(qreal x=0.0, qreal y=0.0, qreal width=0.0, qreal depth=0.0, qreal wallWidth=0.0);
