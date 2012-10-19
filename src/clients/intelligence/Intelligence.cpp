@@ -281,9 +281,9 @@ Intelligence::Intelligence(QObject *parent)
 		updater["visionSim"]->add(robot);
 	}
 
-	Robot* gkUs = team["us"]->at(3);
+	Robot* gkUs = team["us"]->at(2);
 	Robot* gkThem = team["they"]->at(0);
-	Robot* pKickerUs = team["us"]->at(1);
+	Robot* pKickerUs = team["us"]->at(3);
 	Robot* pKickerThem = team["they"]->at(1);
 	
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
@@ -387,11 +387,11 @@ void Intelligence::update()
 		//	((QThread *)play["minimax2"])->sntart();
 		//play["minimax2"]->step();
 		//play["bgt"]->step();
-		//play["refereeU"]->step();
+		play["refereeU"]->step();
 		//play["refereeT"]->step();
 		//play["stoprefT"]->step();
-		play["retaliateT"]->step();
-		play["retaliateU"]->step();
+		//play["retaliateT"]->step();
+		//play["retaliateU"]->step();
 		//tactic["zickler43"]->step();
 		//play["retaliateT"]->step();
 		break;
