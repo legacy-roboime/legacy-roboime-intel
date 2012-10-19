@@ -90,8 +90,14 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["referee"] = new UpdaterReferee(this);
 
 	stage["main"] = new Stage();
-    team["us"] = stage["main"]->blueTeam();
-    team["they"] = stage["main"]->yellowTeam();
+	
+	team["us"] = stage["main"]->yellowTeam();
+	team["they"] = stage["main"]->blueTeam();
+
+	/*
+	team["us"] = stage["main"]->blueTeam();
+	team["they"] = stage["main"]->yellowTeam();
+	*/
 
 	updater["referee"]->add(stage["main"]);
 
@@ -104,7 +110,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i, BLUE)));
+        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i, YELLOW)));//BLUE)));
 		//real
         commander["blueTx"]->add(team["us"]->last());
 		updater["vision"]->add(team["us"]->last());
@@ -113,7 +119,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
         commander["blueGrSim"]->add(team["us"]->last());
 		updater["visionSim"]->add(team["us"]->last());
 
-        team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, YELLOW)));
+        team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, BLUE)));//YELLOW)));
 		//real
 		commander["yellowTx"]->add(team["they"]->last());
 		updater["vision"]->add(team["they"]->last());
@@ -202,12 +208,12 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectTacticOurs->addItem("Controlar robô 3 (absoluto)","controller_b4a");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 4 (absoluto)","controller_b5a");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 5 (absoluto)","controller_b6a");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 1","controller_y1");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 2","controller_y2");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 3","controller_y3");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 4","controller_y4");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 5","controller_y5");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 6","controller_y6");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 0","controller_y1");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 1","controller_y2");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 2","controller_y3");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 3","controller_y4");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 4","controller_y5");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 5","controller_y6");
 #endif
 	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
@@ -249,18 +255,32 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 //  TODO:
     QSignalMapper* signalIdMapChangedMapper = new QSignalMapper(this);
-   /*
-	signalIdMapChangedMapper->setMapping(taxFileButton, QString("taxfile.txt"));
-    signalIdMapChangedMapper->setMapping(accountFileButton, QString("accountsfile.txt"));
-    signalIdMapChangedMapper->setMapping(reportFileButton, QString("reportfile.txt"));
 
-         connect(taxFileButton, SIGNAL(clicked()),
-             signalMapper, SLOT (map()));
-         connect(accountFileButton, SIGNAL(clicked()),
-             signalMapper, SLOT (map()));
-         connect(reportFileButton, SIGNAL(clicked()),
-             signalMapper, SLOT (map()));
-*/
+    connect(ui.cmbRobot_0, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbRobot_1, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbRobot_2, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbRobot_3, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbRobot_4, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbRobot_5, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+
+    connect(ui.cmbAdversary_0, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbAdversary_1, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbAdversary_2, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbAdversary_3, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbAdversary_4, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
+    connect(ui.cmbAdversary_5, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(resetPatterns()));
     //Connect signals to slots
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(ui.actionEditar_vari_veis_de_estado, SIGNAL(triggered()), alterStateVarsWindow, SLOT(show()));
@@ -275,6 +295,11 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     timer->start(10.);
 
     resetPatterns();
+}
+
+void GraphicalIntelligence::changePatternId()
+{
+    this->resetPatterns();
 }
 
 GraphicalIntelligence::~GraphicalIntelligence()
@@ -299,21 +324,21 @@ void GraphicalIntelligence::resetPatterns()
         for(int i = 0; i < team["they"]->size(); i++)
             team["they"]->at(i)->setPatternId(i);
     } else {
-        team["us"]->at(0)->setPatternId(    2);
-			//0);
-        team["us"]->at(1)->setPatternId(1);
-        team["us"]->at(2)->setPatternId(    0);
-			//2);
-        team["us"]->at(3)->setPatternId(3);
-        team["us"]->at(4)->setPatternId(4);
-        team["us"]->at(5)->setPatternId(5);
 
-        team["they"]->at(0)->setPatternId(0);
-        team["they"]->at(1)->setPatternId(1);
-        team["they"]->at(2)->setPatternId(2);
-        team["they"]->at(3)->setPatternId(3);
-        team["they"]->at(4)->setPatternId(4);
-        team["they"]->at(5)->setPatternId(5);
+        team["us"]->at(0)->setPatternId(ui.cmbRobot_0->currentText().toInt());
+        team["us"]->at(1)->setPatternId(ui.cmbRobot_1->currentText().toInt());
+        team["us"]->at(2)->setPatternId(ui.cmbRobot_2->currentText().toInt());
+        team["us"]->at(3)->setPatternId(ui.cmbRobot_3->currentText().toInt());
+        team["us"]->at(4)->setPatternId(ui.cmbRobot_4->currentText().toInt());
+        team["us"]->at(5)->setPatternId(ui.cmbRobot_5->currentText().toInt());
+
+        team["they"]->at(0)->setPatternId(ui.cmbAdversary_0->currentText().toInt());
+        team["they"]->at(1)->setPatternId(ui.cmbAdversary_1->currentText().toInt());
+        team["they"]->at(2)->setPatternId(ui.cmbAdversary_2->currentText().toInt());
+        team["they"]->at(3)->setPatternId(ui.cmbAdversary_3->currentText().toInt());
+        team["they"]->at(4)->setPatternId(ui.cmbAdversary_4->currentText().toInt());
+        team["they"]->at(5)->setPatternId(ui.cmbAdversary_5->currentText().toInt());
+
     }
 }
 
@@ -506,7 +531,7 @@ void GraphicalIntelligence::changeIntelligenceOutput()
         //cout << "Using real transmission/SSL." << endl;
         mutex.lock();
         useSimulation = false;
-        resetPatterns();
+        //resetPatterns();
         mutex.unlock();
     }
 }

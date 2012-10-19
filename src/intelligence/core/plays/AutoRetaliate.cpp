@@ -42,7 +42,7 @@ void AutoRetaliate::step(){
 	{
 		player_[0]->step();
 	}
-	else
+	/*else
 	{
 		map<qreal, Robot*> robotsCloseToGoal = stage()->getClosestPlayersToPoint(team, team->goal()->x(), team->goal()->y());
 		map<qreal, Robot*>::iterator goalIter = robotsCloseToGoal.begin();
@@ -58,7 +58,7 @@ void AutoRetaliate::step(){
 				break;
 			}
 		}
-	}
+	}*/
 
 	if(myGoal->width()>0){
 		Goal* goal = this->team()->goal();
