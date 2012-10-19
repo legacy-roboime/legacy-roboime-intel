@@ -41,6 +41,7 @@ void DriveToObject::step()
 	bAngle = M_PI + DEGTORAD(target.angle());
 	tAngle = bAngle - M_PI;
 
+	Goto::setPlusSpeed(object->speed());
 	DriveTo::step();
 }
 

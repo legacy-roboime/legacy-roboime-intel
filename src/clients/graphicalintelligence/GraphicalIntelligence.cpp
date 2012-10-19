@@ -324,7 +324,7 @@ void GraphicalIntelligence::resetPatterns()
         for(int i = 0; i < team["they"]->size(); i++)
             team["they"]->at(i)->setPatternId(i);
     } else {
-
+// TODO: Automate repeated bits of code to allow for more/less bots.
         team["us"]->at(0)->setPatternId(ui.cmbRobot_0->currentText().toInt());
         team["us"]->at(1)->setPatternId(ui.cmbRobot_1->currentText().toInt());
         team["us"]->at(2)->setPatternId(ui.cmbRobot_2->currentText().toInt());
@@ -340,6 +340,14 @@ void GraphicalIntelligence::resetPatterns()
         team["they"]->at(5)->setPatternId(ui.cmbAdversary_5->currentText().toInt());
 
     }
+}
+
+//TODO
+QObject* GraphicalIntelligence::getObjectFromNumberedId(int id, QString s)
+{
+    //Returns the object with name: s concatenated with the numeric id;
+    //return findChild(s + QString(id));
+    return NULL;
 }
 
 void GraphicalIntelligence::update()

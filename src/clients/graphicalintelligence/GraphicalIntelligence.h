@@ -43,8 +43,8 @@ public slots:
 	void update();
 
 private slots:
-        void changePatternId();
-	void updateValues();
+    void changePatternId();
+    void updateValues();
     //void on_btnIntStart_clicked();
     //void on_btnIntStop_clicked();
     void setTeamColor();
@@ -58,11 +58,12 @@ private slots:
     void load_configs();
     void resetPatterns();
 
-private:	
-	Ui::GraphicalIntelligenceClass ui;
+private:
+    QObject* getObjectFromNumberedId(int id, QString s);
+    Ui::GraphicalIntelligenceClass ui;
     AlterStateVars* alterStateVarsWindow;
-	QHash<char,QString> refereeFull;
-	int goalsBlue, goalsYellow;
+    QHash<char,QString> refereeFull;
+    int goalsBlue, goalsYellow;
 
     QSettings settings_manager;
 

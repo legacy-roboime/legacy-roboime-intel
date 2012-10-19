@@ -67,7 +67,8 @@ Goto::Goto(QObject* p, Robot* r, Point *t, qreal o, qreal s, bool a)
 	allowDefenseArea(a),
 	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
-	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	plusSpeed_(0, 0)
 {}
 
 Goto::Goto(QObject* p, Robot* r, Point t, Point *l, qreal s, bool a)
@@ -80,7 +81,8 @@ Goto::Goto(QObject* p, Robot* r, Point t, Point *l, qreal s, bool a)
 	allowDefenseArea(a),
 	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
-	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	plusSpeed_(0, 0)
 {}
 
 Goto::Goto(QObject* p, Robot* r, Point *t, Point *l, qreal s, bool a)
@@ -92,7 +94,8 @@ Goto::Goto(QObject* p, Robot* r, Point *t, Point *l, qreal s, bool a)
 	allowDefenseArea(a),
 	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
-	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	plusSpeed_(0, 0)
 {}
 
 Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
@@ -105,7 +108,8 @@ Goto::Goto(QObject* p, Robot* r, qreal x, qreal y, qreal o, qreal s, bool a)
 	allowDefenseArea(a), 
 	speed(s),
 	controllerSpeedX(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
-	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR)//valores carteados
+	controllerSpeedY(2, 0, 0.0, MAXCSPEED, LIMERR),//valores carteados
+	plusSpeed_(0, 0)
 {}
 
 Goto::~Goto()
@@ -305,6 +309,10 @@ void Goto::step(Point *optionalPoint)
 	speedTemp = vMax * ( 1 - exp(-cte*error) );
 	speedX = speedTemp*(errorX/error);
 	speedY = speedTemp*(errorY/error);
+
+	// adding plusSpeed
+	speedX += plusSpeed_.x();
+	speedY += plusSpeed_.y();
 
 	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot, *lookAt).angle()));
 	Steer::setSpeeds(speedX, speedY);
