@@ -16,7 +16,7 @@
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address) : Updater(), wantedCam(2) {
+UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address) : Updater(), wantedCam_(2) {
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);
@@ -76,7 +76,7 @@ void UpdaterVision::prepare() {
 
 		//XXX: this is to filter commits from certain cameras 
 		int cam_id = packet->detection().camera_id();
-		bool wanted = filter == 2 ? true : cam_id == wantedCam_;
+		bool wanted = wantedCam_ == 2 ? true : cam_id == wantedCam_;
 
 		if (wanted && packet->has_detection()) {
 			SSL_DetectionFrame detection = packet->detection();
