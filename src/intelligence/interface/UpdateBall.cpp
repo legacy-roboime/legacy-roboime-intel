@@ -38,7 +38,8 @@ void UpdateBall::apply(Updater* u) {
 		//TODO: identify which ball is which
 		//if(u->ball(k-1)->i()==_i) {
 			Ball* ball = u->ball(k-1);
-			ball->updatePosition(*this);
+			//ball->updatePosition(*this);
+			ball->updatePositionWithFilter(*this);
 
 #ifdef TRANSFORMADA_CAMPO
 			float A = 2*u->stage(0)->fieldWidth(); //length antigo

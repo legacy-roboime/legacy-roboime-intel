@@ -311,8 +311,8 @@ void Goto::step(Point *optionalPoint)
 	speedY = speedTemp*(errorY/error);
 
 	// adding plusSpeed
-	speedX += plusSpeed_.x();
-	speedY += plusSpeed_.y();
+	//speedX += 2 * plusSpeed_.x();
+	//speedY += 2 * plusSpeed_.y();
 
 	if(lookAt) Steer::setOrientation(DEGTORAD(Line(*robot, *lookAt).angle()));
 	Steer::setSpeeds(speedX, speedY);

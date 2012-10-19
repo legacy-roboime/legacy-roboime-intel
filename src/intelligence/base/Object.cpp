@@ -1,6 +1,7 @@
 #include "Object.h"
 #include <QVector>
 #include <QList>
+#include <cstdio>
 
 using namespace LibIntelligence;
 
@@ -11,8 +12,18 @@ Object::Object(qreal x, qreal y, qreal sx, qreal sy, qreal t, qreal o)
     omega_(o),
     timeOld_(0),
     thetaOld_(0),
-    posOld_(0, 0)
-{}
+    posOld_(0, 0)//,
+	//useFilter_(false)
+{
+	//low pass filter stuff
+	//NOTE: not initializing filter vectors
+	// they will get overriden anyway
+	gain = 6.0;
+	coef[0] = 3.0;
+	coef[1] = 0.0;
+	coef[2] = -1.0 / 3.0;
+	coef[3] = 0.0;
+}
 
 Object::Object(const Object& object)
 	: Point((Point) object),
@@ -21,8 +32,46 @@ Object::Object(const Object& object)
     omega_(object.omega_),
     timeOld_(object.timeOld_),
     thetaOld_(object.thetaOld_),
-    posOld_(object.posOld_)
-{}
+    posOld_(object.posOld_)//,
+	//useFilter_(object.useFilter_)
+{
+	coef[0] = 3.0;
+	coef[1] = 0.0;
+	coef[2] = -1.0 / 3.0;
+	coef[3] = 0.0;
+}
+
+void Object::updatePositionWithFilter(const Point &p)
+{
+	//XXX: TEST
+	//using namespace std;
+	//static FILE* f = fopen("teste.csv", "a");
+
+	// x-coord
+	ux[0] = ux[1];
+	ux[1] = ux[2];
+	ux[2] = ux[3];
+	ux[3] = p.x() / gain;
+	vx[0] = vx[1];
+	vx[1] = vx[2];
+	vx[2] = vx[3];
+	vx[3] = (ux[0] + ux[3]) + coef[0] * (ux[1] + ux[2]) + (coef[1] * vx[0]) + (coef[2] * vx[1]) + coef[3] * vx[2];
+	setX(vx[3]);
+
+	// y-coord
+	uy[0] = uy[1];
+	uy[1] = uy[2];
+	uy[2] = uy[3];
+	uy[3] = p.y() / gain;
+	vy[0] = vy[1];
+	vy[1] = vy[2];
+	vy[2] = vy[3];
+	vy[3] = (uy[0] + uy[3]) + coef[0] * (uy[1] + uy[2]) + (coef[1] * vy[0]) + (coef[2] * vy[1]) + coef[3] * vy[2];
+	setY(vy[3]);
+
+	//TODO: identify object
+	//fprintf(f, "%f;%f;%f;\n", bx, by, sx);
+}
 
 void Object::updatePosition(const Point &p)
 {
