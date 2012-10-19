@@ -28,8 +28,7 @@ Robot::Robot(const Robot& r)
 	kicker_.setParent(this);
 	body_.setParent(this);
 	battery_.setParent(this);
-	for(int i = 0; i < wheelsSize(); i++) wheels_[i].setParent(this);
-}
+	for(int i = 0; i < wheelsSize(); i++) wheels_[i].setParent(this);}
 
 Robot::Robot(QObject* parent, int id, int cc, TeamColor color)
 	: Component(parent),

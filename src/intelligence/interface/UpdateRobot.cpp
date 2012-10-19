@@ -47,6 +47,7 @@ void UpdateRobot::apply(Updater* u)
 		Robot* robot = u->robot(k-1);
 		if(robot->patternId() == patternId() && robot->color() == color()) {
 			robot->updatePosition(*this);
+			//robot->updatePositionWithFilter(*this);
 			robot->setOrientation(theta());
 
 #ifdef TRANSFORMADA_CAMPO

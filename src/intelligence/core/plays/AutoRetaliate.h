@@ -19,9 +19,9 @@ namespace LibIntelligence
             void setGoalkeeper(Robot* gk);
 
 		private:
-			Point* cover1;
-			Point* cover2;
-			Point* cover3;
+			Object* cover1;
+			Object* cover2;
+			Object* cover3;
 
 			bool init;
 

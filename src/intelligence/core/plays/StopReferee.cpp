@@ -22,8 +22,8 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 		player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), team->goal(), 600, 3000);
 	}
 
-	cover1 = new Point(0, 0);
-	cover2 = new Point(0, 0);
+	cover1 = new Object(0, 0);
+	cover2 = new Object(0, 0);
 
 	init = false;
 }
@@ -53,7 +53,7 @@ void StopReferee::step()
 		cover2->setX(myGoal->x());
 		cover2->setY(myGoal->y() - myGoal->width()/4);
 		for(int i = 4; i < this->team()->size(); i++){
-			Point* p;
+			Object* p;
 			if(i==4)
 				p = cover1;
 			else

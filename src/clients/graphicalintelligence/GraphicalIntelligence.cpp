@@ -86,7 +86,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	commander["yellowTx"] = new CommanderTxOld(this);
 
 	updater["vision"] = new UpdaterVision(this);
-	updater["visionSim"] = new UpdaterVision(this, 11002);
+	updater["visionSim"] = new UpdaterVision(this, 11007);
 	updater["referee"] = new UpdaterReferee(this);
 
 	stage["main"] = new Stage();
@@ -215,24 +215,33 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectTacticTheirs->addItem("Controlar robô 4","controller_y5");
     ui.cmbSelectTacticTheirs->addItem("Controlar robô 5","controller_y6");
 #endif
-	tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
+	//tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
-    //tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
+    tactic["defU32"] = new Defender(this, team["us"]->at(3), team["they"]->at(2),team["us"]->goal(), 500, 3000);
+	//tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
     //tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
     //tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
-	tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
+	//tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
+	tactic["zickler43T"] = new Zickler43(this, team["they"]->at(4), 3000, true);
+	tactic["gkprT"] = new Goalkeeper(this, team["they"]->at(0),3000);
+    tactic["defT32"] = new Defender(this, team["they"]->at(3), team["us"]->at(2),team["they"]->goal(), 500, 3000);
 
 	ui.stageView->setStage(stage["main"]);
 	timer = new QTimer(this);
 
     // Fill dynamic dropdowns
-    ui.cmbSelectTacticTheirs->addItem("Attacker","attacker");
-    ui.cmbSelectTacticTheirs->addItem("Zickler 43","zickler43");
-    ui.cmbSelectTacticTheirs->addItem("Goleiro","gkpr");
-    ui.cmbSelectTacticTheirs->addItem("Defesa 1","def");
-    ui.cmbSelectTacticTheirs->addItem("Defesa 2","def2");
-    ui.cmbSelectTacticTheirs->addItem("Defesa 3","def3");
+    //ui.cmbSelectTacticOurs->addItem("Attacker","attacker");
+    ui.cmbSelectTacticOurs->addItem("Zickler 43","zickler43");
+    ui.cmbSelectTacticOurs->addItem("Goleiro","gkpr");
+    ui.cmbSelectTacticOurs->addItem("Defesa 1","defU32");
+    //ui.cmbSelectTacticTheirs->addItem("Defesa 2","def2");
+    //ui.cmbSelectTacticTheirs->addItem("Defesa 3","def3");
+
+	//ui.cmbSelectTacticTheirs->addItem("Attacker","attacker");
+    ui.cmbSelectTacticTheirs->addItem("Zickler 43","zickler43T");
+    ui.cmbSelectTacticTheirs->addItem("Goleiro","gkprT");
+    ui.cmbSelectTacticTheirs->addItem("Defesa 1","defT32");
 
     ui.cmbSelectPlayOurs->addItem("Halt","haltU");
     ui.cmbSelectPlayOurs->addItem("CBR2011","cbr");
