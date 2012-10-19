@@ -38,6 +38,10 @@ namespace LibIntelligence
 			void setOrientation(qreal orientation);
 			void setOrientation(qreal dX, qreal dY);
 
+			
+			void setPlusSpeed(Vector speed) { plusSpeed_ = speed; }
+			Vector plusSpeed() { return plusSpeed_; }
+
 		protected:
 			Point *pTarget;//the point where we're trying to go to
 			Point target;
@@ -49,6 +53,8 @@ namespace LibIntelligence
 			qreal speed;//how fast can we go to that point, if possible we'll try to keep that speed
 			CONTROLLER_S controllerSpeedX;
 			CONTROLLER_S controllerSpeedY;
+			// This speed will be added to the final speed calculated
+			Vector plusSpeed_;
 		};
 	}
 }
