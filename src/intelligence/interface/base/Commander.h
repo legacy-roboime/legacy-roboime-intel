@@ -20,7 +20,7 @@ namespace LibIntelligence
 		virtual void add(Robot*);
 		virtual void del(Robot*);
 		virtual void prepare();
-		//virtual void send();
+        //virtual void send();
 		virtual void step();
 
 	protected:
