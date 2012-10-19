@@ -23,8 +23,12 @@ namespace LibIntelligence
 			bool busy();
 			void step();
             qreal holeSize();
+			void setAggressive(bool);
+			bool isAggressive();
 
 		protected:
+			bool isAggressive_;
+            Line homeline;
             Skills::Goto *goto_;
             Skills::SampledKick *kick;
             Point pointToKeep();

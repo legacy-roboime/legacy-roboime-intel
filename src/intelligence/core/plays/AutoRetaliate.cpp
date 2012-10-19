@@ -38,6 +38,28 @@ void AutoRetaliate::step(){
 	Team* team = this->team_;
 	Goal* myGoal = team->goal();
 
+	if(player_[0]->robot()->isActive())
+	{
+		player_[0]->step();
+	}
+	/*else
+	{
+		map<qreal, Robot*> robotsCloseToGoal = stage()->getClosestPlayersToPoint(team, team->goal()->x(), team->goal()->y());
+		map<qreal, Robot*>::iterator goalIter = robotsCloseToGoal.begin();
+		for(int j=0; j<robotsCloseToGoal.size(); j++){
+			Robot* r = goalIter.first;
+		}
+		for(int i=0; i<team->size(); i++)
+		{
+			if(team->at(i)->isActive())
+			{
+				player_[0]->setRobot(team->at(i));
+				player_[0]->step();
+				break;
+			}
+		}
+	}*/
+
 	if(myGoal->width()>0){
 		Goal* goal = this->team()->goal();
 		cover1->setX(goal->x());
@@ -68,6 +90,8 @@ void AutoRetaliate::step(){
 		map<qreal, Robot*> close = stage->getClosestPlayersToBallThatCanKick(team);
 		map<int, Robot*> ids;
 		map<qreal, Robot*> enemys = stage->getClosestPlayersToPointThatCanKick(team->enemyTeam(), (Point*)team->goal());
+
+
 
 		//Attacker e Blocker
 		int i=0;
@@ -116,8 +140,6 @@ void AutoRetaliate::step(){
 			it2++;
 		}
 
-		//Goleiro
-		if(player_[0]->robot())
-			player_[0]->step();
+		
 	}
 }

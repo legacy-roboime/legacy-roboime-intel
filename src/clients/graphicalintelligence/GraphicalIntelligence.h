@@ -43,6 +43,7 @@ public slots:
 	void update();
 
 private slots:
+        void changePatternId();
 	void updateValues();
     //void on_btnIntStart_clicked();
     //void on_btnIntStop_clicked();
@@ -55,6 +56,7 @@ private slots:
     void changeTacticThem();
     void changeSides();
     void load_configs();
+    void resetPatterns();
 
 private:	
 	Ui::GraphicalIntelligenceClass ui;
@@ -73,7 +75,7 @@ private:
 	map<string, Commander*> commander;
 	map<string, Updater*> updater;
 	bool useSimulation;
-	void resetPatterns();
+
 
     Plays::Play* current_play_us;
     Plays::Play* current_play_them;
