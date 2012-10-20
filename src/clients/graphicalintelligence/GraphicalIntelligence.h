@@ -43,6 +43,7 @@ public slots:
 	void update();
 
 private slots:
+    void setRobotKickAbility(Robot*);
     void changePatternId();
     void updateValues();
     //void on_btnIntStart_clicked();

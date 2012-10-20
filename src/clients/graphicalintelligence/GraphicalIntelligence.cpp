@@ -166,6 +166,8 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     tactic["controller_b5"] = new Controller2(this, team["us"]->at(4), 1, 3000); //controle no referencial do robo
     tactic["controller_b6"] = new Controller2(this, team["us"]->at(5), 1, 3000); //controle no referencial do robo
 
+    current_tactic_us = tactic["controller_b1"];
+
 	tactic["controller_b1a"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
     tactic["controller_b2a"] = new Controller(this, team["us"]->at(1), 1, 3000); //controle no referencial do robo
     tactic["controller_b3a"] = new Controller(this, team["us"]->at(2), 1, 3000); //controle no referencial do robo
@@ -180,6 +182,8 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     tactic["controller_y5"] = new Controller2(this, team["they"]->at(4), 1, 3000); //controle no referencial do robo
     tactic["controller_y6"] = new Controller2(this, team["they"]->at(5), 1, 3000); //controle no referencial do robo
     
+    current_tactic_them = tactic["controller_y1"];
+
 	tactic["controller_y1a"] = new Controller(this, team["they"]->at(0), 1, 3000); //controle no referencial do robo
     tactic["controller_y2a"] = new Controller(this, team["they"]->at(1), 1, 3000); //controle no referencial do robo
     tactic["controller_y3a"] = new Controller(this, team["they"]->at(2), 1, 3000); //controle no referencial do robo
@@ -268,6 +272,22 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 //  TODO:
     QSignalMapper* signalIdMapChangedMapper = new QSignalMapper(this);
 
+    connect(ui.kickAbilityT0, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityT1, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityT2, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityT3, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityT4, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityT5, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityU0, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityU1, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityU2, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityU3, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityU4, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(ui.kickAbilityU5, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
+    connect(signalIdMapChangedMapper, SIGNAL(mapped(QObject*)), this, SLOT(setRobotKickAbility(Robot*)));
+
+    signalIdMapChangedMapper->setMapping(ui.kickAbilityT0, team["us"]->at(0));
+
     connect(ui.cmbRobot_0, SIGNAL(currentIndexChanged(int)),
             this, SLOT(resetPatterns()));
     connect(ui.cmbRobot_1, SIGNAL(currentIndexChanged(int)),
@@ -308,6 +328,35 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
     resetPatterns();
 }
+
+
+void GraphicalIntelligence::setRobotKickAbility(Robot* robot)
+{
+    //TODO: Put a slider here for maximum prettiness
+
+    //robot_ = (Robot*) robot;
+    QLineEdit* edited;
+    if(robot->color() == team["us"]->color())
+    {
+        edited = this->findChild<QLineEdit*>(QString("KickAbilityU" + robot->id()));
+    }
+    else
+    {
+        edited = this->findChild<QLineEdit*>(QString("KickAbilityT" + robot->id()));
+    }
+    bool dummy;
+    double d;
+    d = edited->text().toDouble(&dummy);
+    if (dummy = true)
+    {
+        robot->kicker().setWorking(d);
+    }
+    else
+    {
+        cout << "seu idiota";
+    }
+}
+
 
 void GraphicalIntelligence::changePatternId()
 {
