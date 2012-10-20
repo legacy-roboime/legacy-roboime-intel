@@ -87,8 +87,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	updater["vision"] = new UpdaterVision(this);
 	updater["visionSim"] = new UpdaterVision(this, 11002);
-	updater["referee"] = new UpdaterReferee(this, "224.5.23.1",10101);
-//	updater["referee"] = new UpdaterReferee(this);
+
+	updater["referee"] = new UpdaterReferee(this);
+	updater["refereeSim"] = new UpdaterReferee(this, "224.5.23.1", 10101);
 
 	stage["main"] = new Stage();
 	
@@ -101,6 +102,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	
 
 	updater["referee"]->add(stage["main"]);
+	updater["refereeSim"]->add(stage["main"]);
 
 	//real
 	updater["vision"]->add(stage["main"]->ball());
@@ -384,17 +386,14 @@ void GraphicalIntelligence::update()
 		if(useSimulation) {
             updater["visionSim"]->step();
 			updater["visionSim"]->apply();
+			updater["refereeSim"]->step();
+			updater["refereeSim"]->apply();
 		} else {
 			updater["vision"]->step();
 			updater["vision"]->apply();
+			updater["referee"]->step();
+			updater["referee"]->apply();
 		}
-
-		updater["referee"]->step();
-		updater["referee"]->apply();
-
-
-
-
 
 		///BEGIN STEPS
 		switch(mode) {
