@@ -28,6 +28,9 @@ bool IndirectKick::finished(){
 
 void IndirectKick::step()
 {
+	map<qreal, Robot*> nearTeam;
+	map<qreal, Robot*> nearPos;
+
 	qreal distPasserBall=0;
 
 	StopReferee::step();
@@ -38,20 +41,29 @@ void IndirectKick::step()
 	Goal* myGoal = team->goal();
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
-	map<qreal, Robot*> nearTeam = stage->getClosestPlayersToBallThatCanKick(team); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
 
 	Object pos(*(stage->getGoalFromOtherColor(team->color())));
 	pos+=Point((pos.x()<0)?1000:-1000,0);
+
 	switch(stateMachine.currentState()){
 	case START:
+		nearTeam = stage->getClosestPlayersToBallThatCanKick(team); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
+		nearPos = stage->getClosestPlayersToPointThatCanKick(team,&pos);
 		passedRobot=NULL;
 		passerRobot=NULL;
+
 		//TODO refinar a seleção do passador e do recebedor
 		if(nearTeam.size()>=2){
+			if(nearPos.size()){
+				map<qreal, Robot*>::iterator it1 = nearPos.begin();
+				passedRobot=(*it1).second;
+			}
 			map<qreal, Robot*>::iterator it1 = nearTeam.begin();
 			passerRobot=(*it1).second;
-			it1++;
-			passedRobot=(*it1).second;
+			if(passerRobot==passedRobot){
+				it1++;
+				passerRobot=(*it1).second;
+			}
 		}
 		if(passedRobot){
 			passedGoto->setRobot(passedRobot);
@@ -85,6 +97,7 @@ void IndirectKick::step()
 			break;
 		}//no else
 		{
+			nearTeam = stage->getClosestPlayersToBallThatCanKick(team); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
 			map<qreal, Robot*>::iterator it1 = nearTeam.begin();
 			Robot* passerAlternative;
 			passerAlternative=(*it1).second;

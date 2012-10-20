@@ -86,8 +86,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	commander["yellowTx"] = new CommanderTxOld(this);
 
 	updater["vision"] = new UpdaterVision(this);
-	updater["visionSim"] = new UpdaterVision(this, 11007);
-	updater["referee"] = new UpdaterReferee(this);
+	updater["visionSim"] = new UpdaterVision(this, 11002);
+	updater["referee"] = new UpdaterReferee(this, "224.5.23.1",10101);
+//	updater["referee"] = new UpdaterReferee(this);
 
 	stage["main"] = new Stage();
 	
@@ -129,6 +130,11 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 		updater["visionSim"]->add(team["they"]->last());
 	}
 
+	Robot* gkUs = team["us"]->at(4);
+	Robot* gkThem = team["they"]->at(0);
+	Robot* pKickerUs = team["us"]->at(4);
+	Robot* pKickerThem = team["they"]->at(1);
+
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);
 	skill["drivetoObj"] = new DriveToObject(this, team["us"]->at(1), team["they"]->at(1), -500, stage["main"]->ball());
 	skill["drivetoBall"] = new DriveToBall(this, team["us"]->at(0), team["they"]->at(0));
@@ -143,15 +149,15 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
     play["cbr2"] = new Plays::CBR2011(this, team["they"], stage["main"]);
     play["cbr"] = new Plays::CBR2011(this, team["us"], stage["main"]);
-	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], team["us"]->at(2), 3000);
-	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], team["they"]->at(0), 3000);
+	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], gkUs, 3000);
+	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], gkThem, 3000);
 #ifdef HAVE_WINDOWS
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 #endif
 	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
-	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, team["us"]->at(2), team["us"]->at(1));
-	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], team["they"]->at(0), team["they"]->at(1));
+	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, gkUs, pKickerUs);
+	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], gkThem, pKickerThem);
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
     play["haltU"] = new Plays::Halt(this, team["us"], team["us"]->stage());
     current_play_us = play["haltU"];
@@ -307,6 +313,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     timer->start(10.);
 
     resetPatterns();
+
+	team["us"]->at(5)->kicker().setWorking(0);
+	//team["us"]->at(1)->kicker().setWorking(1);
 }
 
 void GraphicalIntelligence::changePatternId()
@@ -382,6 +391,10 @@ void GraphicalIntelligence::update()
 
 		updater["referee"]->step();
 		updater["referee"]->apply();
+
+
+
+
 
 		///BEGIN STEPS
 		switch(mode) {
