@@ -46,8 +46,8 @@ void UpdateRobot::apply(Updater* u)
 	for(quint32 k = u->robotsSize(); k > 0; k--) {
 		Robot* robot = u->robot(k-1);
 		if(robot->patternId() == patternId() && robot->color() == color()) {
-			robot->updatePosition(*this);
-			//robot->updatePositionWithFilter(*this);
+			//robot->updatePosition(*this);
+				robot->updatePositionWithFilter(*this);
 			robot->setOrientation(theta());
 			robot->setTouchedBall(false);
 			if(robot->checkIfTouched()){

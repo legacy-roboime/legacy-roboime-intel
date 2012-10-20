@@ -18,7 +18,7 @@
     <item row="0" column="2">
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -149,7 +149,7 @@
           <item>
            <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Time controlado</string>
+             <string>Time controlado (FIXME)</string>
             </property>
            </widget>
           </item>
@@ -694,7 +694,7 @@
         <item row="11" column="1">
          <widget class="QLabel" name="label_15">
           <property name="text">
-           <string>Adversario 0</string>
+           <string>Adversário 0</string>
           </property>
          </widget>
         </item>
@@ -1073,22 +1073,22 @@
          </widget>
         </item>
         <item row="3" column="4">
-         <widget class="QLineEdit" name="lineEdit"/>
+         <widget class="QLineEdit" name="kickAbilityU0"/>
         </item>
         <item row="4" column="4">
-         <widget class="QLineEdit" name="lineEdit_2"/>
+         <widget class="QLineEdit" name="lineEdkickAbilityU1"/>
         </item>
         <item row="5" column="4">
-         <widget class="QLineEdit" name="lineEdit_3"/>
+         <widget class="QLineEdit" name="kickAbilityU2"/>
         </item>
         <item row="6" column="4">
-         <widget class="QLineEdit" name="lineEdit_4"/>
+         <widget class="QLineEdit" name="kickAbilityU3"/>
         </item>
         <item row="7" column="4">
-         <widget class="QLineEdit" name="lineEdit_5"/>
+         <widget class="QLineEdit" name="kickAbilityU4"/>
         </item>
         <item row="8" column="4">
-         <widget class="QLineEdit" name="lineEdit_6"/>
+         <widget class="QLineEdit" name="kickAbilityU6"/>
         </item>
         <item row="1" column="3">
          <widget class="QLabel" name="label_21">
@@ -1116,6 +1116,24 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="11" column="4">
+         <widget class="QLineEdit" name="kickAbilityT0"/>
+        </item>
+        <item row="12" column="4">
+         <widget class="QLineEdit" name="kickAbilityT1"/>
+        </item>
+        <item row="14" column="4">
+         <widget class="QLineEdit" name="kickAbilityT3"/>
+        </item>
+        <item row="13" column="4">
+         <widget class="QLineEdit" name="kickAbilityT2"/>
+        </item>
+        <item row="15" column="4">
+         <widget class="QLineEdit" name="kickAbilityT4"/>
+        </item>
+        <item row="16" column="4">
+         <widget class="QLineEdit" name="kickAbilityT5"/>
         </item>
        </layout>
       </widget>
