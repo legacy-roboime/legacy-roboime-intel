@@ -38,6 +38,9 @@ namespace LibIntelligence
 		Team* blueTeam();
 		Team* yellowTeam();
 
+		Robot* lastToucherRobot(){ return lastToucherRobot_;}
+		void setLastToucherRobot(Robot* robot) { lastToucherRobot_=robot;}
+
 		void setBlueTeam(Team*);
 		void setYellowTeam(Team*);
 
@@ -131,6 +134,7 @@ namespace LibIntelligence
 		Team* blueTeam_;
 		Team* yellowTeam_;
 		bool isLeftSideBlueGoal_;
+		Robot* lastToucherRobot_;
 	};
 }
 

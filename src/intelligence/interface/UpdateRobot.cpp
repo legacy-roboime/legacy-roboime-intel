@@ -49,6 +49,15 @@ void UpdateRobot::apply(Updater* u)
 			//robot->updatePosition(*this);
 				robot->updatePositionWithFilter(*this);
 			robot->setOrientation(theta());
+			robot->setTouchedBall(false);
+			if(robot->checkIfTouched()){
+				Stage *stage=robot->stage();
+				if(stage->lastToucherRobot()){
+					stage->lastToucherRobot()->setLastToucher(false);
+				}
+				robot->setLastToucher(true);
+				stage->setLastToucherRobot(robot);
+			}
 
 #ifdef TRANSFORMADA_CAMPO
 			float A = 2*u->stage(0)->fieldWidth(); //length antigo

@@ -27,6 +27,7 @@ namespace LibIntelligence
 			Play *halt;
 			Play *penaltyUs;
 			Play *penaltyThem;
+			Play *indirectKick;
 			char cmd;
 			char lastCmd;
 			QPointF lastBall;

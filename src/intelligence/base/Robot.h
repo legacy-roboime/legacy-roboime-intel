@@ -87,7 +87,17 @@ namespace LibIntelligence
 		string toString() const;
 		void setParent(QObject*);
 
+		void setLastToucher(bool value)  { isLastToucher_ =value;}
+		bool isLastToucher() const { return isLastToucher_;}
+		bool checkIfTouched();
+		void setTouchedBall(bool value) { touchedBall_=value;}
+		bool touchedBall() const { return touchedBall_;}
+
 	private:
+		unsigned char ifTouchedState;
+		bool isLastToucher_;
+		bool touchedBall_;
+
 		Dribbler dribbler_;
 		Kicker kicker_;
 		Body body_;

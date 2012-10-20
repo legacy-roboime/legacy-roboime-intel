@@ -37,6 +37,7 @@ Game Notifications
 #include "Halt.h"
 #include "PenaltyThem.h"
 #include "PenaltyUs.h"
+#include "IndirectKick.h"
 
 #define DELTA 200
 
@@ -50,9 +51,11 @@ ObeyReferee::ObeyReferee(QObject *q, Play *p, Robot* gk, Robot* pKicker)
 	halt(new Halt(this, p->team(), p->stage())),
 	penaltyUs(new PenaltyUs(this, p->team(), p->stage(), pKicker, gk)),
 	penaltyThem(new PenaltyThem(this, p->team(), p->stage(), gk)),
+	indirectKick(new IndirectKick(this, p->team(), p->stage(), gk, 3000)),
 	cmd('H'),
 	lastCmd('H')
-{}
+{
+}
 
 ObeyReferee::~ObeyReferee()
 {
@@ -98,24 +101,26 @@ void ObeyReferee::setGoalkeeper(Robot* gk)
 
 void ObeyReferee::step()
 {
+	bool firstTime=false;
+
 	Stage *sta = this->stage();
 	qreal dist=-1;
 
 	Ball *ball = sta->ball();
 
 	dist = sqrt(pow(lastBall.x() - ball->x(), 2) + pow(lastBall.y() - ball->y(), 2));
-
-	
 	//Commands Referee
 	if(cmd != sta->getCmdReferee()){
 		lastCmd = cmd;
 		cmd = sta->getCmdReferee();
 		lastBall = *ball;
+		firstTime=true;
 	}
 
 #ifdef REFERRE_CMD
 	cout << "JUIZ: " << cmd << endl;
 #endif
+
 
 	//if(lastCmd != cmd){
 	////	lastCmd = cmd;
@@ -145,8 +150,17 @@ void ObeyReferee::step()
 	}
 	else if(cmd == 'F' && usColor == BLUE)
 		play->step();
-	else if(cmd == 'i' && usColor == YELLOW)
-		play->step();
+
+	else if(cmd == 'i' && usColor == YELLOW) {
+		if(firstTime){
+			((IndirectKick*)indirectKick)->restart();
+		}
+		indirectKick->step();
+		if(((IndirectKick*)indirectKick)->finished()){
+			play->step();
+		} 
+	}
+
 	else if(cmd == 'i' && usColor == BLUE){
 		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
@@ -155,7 +169,9 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
+
 	else if(cmd == 'I' && usColor == YELLOW){
+		//FIXME fix the the threshold
 		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
 		else{
@@ -163,8 +179,15 @@ void ObeyReferee::step()
 			play->step();
 		}
 	}
-	else if(cmd == 'I' && usColor == BLUE)
-		play->step();
+	else if(cmd == 'I' && usColor == BLUE) {
+		if(firstTime){
+			((IndirectKick*)indirectKick)->restart();
+		}
+		indirectKick->step();
+		if(((IndirectKick*)indirectKick)->finished()){
+			play->step();
+		}
+	}
 	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
     else if((cmd == 'p' && usColor == YELLOW) || (cmd == 'P' && usColor == BLUE))

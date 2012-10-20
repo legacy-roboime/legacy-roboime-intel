@@ -3,6 +3,10 @@
 #include "Stage.h"
 #include <sstream>
 //#include "Command.h"
+#include "geomutils.h"
+
+#include "Ball.h"
+#include "Stage.h"
 
 using namespace LibIntelligence;
 
@@ -28,7 +32,11 @@ Robot::Robot(const Robot& r)
 	kicker_.setParent(this);
 	body_.setParent(this);
 	battery_.setParent(this);
-	for(int i = 0; i < wheelsSize(); i++) wheels_[i].setParent(this);}
+	for(int i = 0; i < wheelsSize(); i++) wheels_[i].setParent(this);
+	isLastToucher_=false;
+	ifTouchedState=0;
+	touchedBall_=false;
+}
 
 Robot::Robot(QObject* parent, int id, int cc, TeamColor color)
 	: Component(parent),
@@ -73,6 +81,9 @@ Robot::Robot(QObject* parent, int id, int cc, TeamColor color)
 		enemyTeam_ = 0;*/
 		stage_ = qobject_cast<Stage*>(parent);
 	}
+	isLastToucher_=false;
+	ifTouchedState=0;
+	touchedBall_=false;
 }
 
 Robot::Robot(const Dribbler& d, const Kicker& k, const Body& b, const Battery& a, const QVector<Wheel>& w)
@@ -86,7 +97,13 @@ Robot::Robot(const Dribbler& d, const Kicker& k, const Body& b, const Battery& a
     id_(0),
     patternId_(0),
 	color_(BLUE),
-	command_(0) {}
+	command_(0) 
+{
+	isLastToucher_=false;
+	ifTouchedState=0;
+	touchedBall_=false;
+
+}
 
 Robot::~Robot() {}
 
@@ -317,4 +334,16 @@ void Robot::setParent(QObject* p)
 	} else {
 		stage_ = qobject_cast<Stage*>(p);
 	}
+}
+
+bool Robot::checkIfTouched() {
+	Ball *ball=this->stage_->ball();
+	qreal distBall=Line(*this,*ball).length();
+	if(ifTouchedState==0 && distBall < (this->body().radius() + 2 * ball->radius())){
+		ifTouchedState=1;
+	} else if(ifTouchedState==1 && distBall > (this->body().radius() + 2 * ball->radius())){
+		ifTouchedState=0;
+		touchedBall_=true;
+	}
+	return touchedBall_;
 }
