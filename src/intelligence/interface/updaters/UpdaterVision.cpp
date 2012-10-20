@@ -16,7 +16,12 @@
 //using namespace std;
 using namespace LibIntelligence;
 
-UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address) : Updater(), wantedCam_(2) {
+UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address) : 
+	Updater(), 
+	wantedCam_(2),
+	framesSinceLastSeenBlue(new int[MAX_NB_PATTERNS]),
+	framesSinceLastSeenYellow(new int[MAX_NB_PATTERNS])
+{
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);
@@ -32,6 +37,8 @@ UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address)
 
 UpdaterVision::~UpdaterVision() 
 {
+	delete framesSinceLastSeenBlue;
+	delete framesSinceLastSeenYellow;
 	delete udpSocket;
 }
 
@@ -93,7 +100,7 @@ void UpdaterVision::prepare() {
 					enqueue(new UpdateBall(detection.balls(i), t_sent, t_capture, detection.camera_id()));
 			}
 
-			//REFRESH VISION
+			//REFRESH VISION/
 			if(itr_vision>50){
 				itr_vision=0;
 

@@ -90,14 +90,14 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["referee"] = new UpdaterReferee(this);
 
 	stage["main"] = new Stage();
-	
+	/*
 	team["us"] = stage["main"]->yellowTeam();
 	team["they"] = stage["main"]->blueTeam();
-
-	/*
+	*/
+	
 	team["us"] = stage["main"]->blueTeam();
 	team["they"] = stage["main"]->yellowTeam();
-	*/
+	
 
 	updater["referee"]->add(stage["main"]);
 
@@ -110,7 +110,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i, YELLOW)));//BLUE)));
+        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i,BLUE)));
 		//real
         commander["blueTx"]->add(team["us"]->last());
 		updater["vision"]->add(team["us"]->last());
@@ -119,7 +119,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
         commander["blueGrSim"]->add(team["us"]->last());
 		updater["visionSim"]->add(team["us"]->last());
 
-        team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i, BLUE)));//YELLOW)));
+        team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i,YELLOW)));
 		//real
 		commander["yellowTx"]->add(team["they"]->last());
 		updater["vision"]->add(team["they"]->last());
@@ -195,6 +195,14 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectTacticOurs->addItem("Controlar robô 3","controller_b4");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 4","controller_b5");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 5","controller_b6");
+
+	ui.cmbSelectTacticTheirs->addItem("Controlar robô 0","controller_y1");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 1","controller_y2");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 2","controller_y3");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 3","controller_y4");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 4","controller_y5");
+    ui.cmbSelectTacticTheirs->addItem("Controlar robô 5","controller_y6");
+
     ui.cmbSelectTacticTheirs->addItem("Controlar robô 0 (absoluto)","controller_y1a");
     ui.cmbSelectTacticTheirs->addItem("Controlar robô 1 (absoluto)","controller_y2a");
     ui.cmbSelectTacticTheirs->addItem("Controlar robô 2 (absoluto)","controller_y3a");
@@ -208,12 +216,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectTacticOurs->addItem("Controlar robô 3 (absoluto)","controller_b4a");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 4 (absoluto)","controller_b5a");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 5 (absoluto)","controller_b6a");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 0","controller_y1");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 1","controller_y2");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 2","controller_y3");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 3","controller_y4");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 4","controller_y5");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 5","controller_y6");
+
 #endif
 	//tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);

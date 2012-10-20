@@ -22,6 +22,8 @@ namespace LibIntelligence
 		void receive();
 		void step();
 		bool timeout();
+		int* framesSinceLastSeenBlue;
+		int* framesSinceLastSeenYellow;
 		// What cameras do you want?
 		// 0 for cam0, 1 for cam1, 2 for both cams.
 		void setWantedCam(int i) { wantedCam_ = i; }
