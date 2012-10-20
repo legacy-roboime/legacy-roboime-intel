@@ -11,6 +11,7 @@
 #include <QMutex>
 #include <QThread>
 #include <map>
+#include <vector>
 
 #include "Team.h"
 #include "Stage.h"
@@ -43,6 +44,8 @@ public slots:
 	void update();
 
 private slots:
+	void setPenaltyKicker();
+	void setGoalkeeper();
     void setRobotKickAbility();
     void changePatternId();
     void updateValues();
@@ -67,6 +70,9 @@ private:
     int goalsBlue, goalsYellow;
 
     QSettings settings_manager;
+
+	std::vector<Plays::Play*> playsWithAssignedGoalkeeperUs;
+	std::vector<Plays::Play*> playsWithAssignedGoalkeeperThem;
 
 	// Basic objects
 	map<string, Team*> team;

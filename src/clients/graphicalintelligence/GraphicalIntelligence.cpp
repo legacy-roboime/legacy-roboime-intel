@@ -193,6 +193,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
 
+
+
+
     ui.cmbSelectTacticOurs->addItem("Controlar robô 0","controller_b1");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 1","controller_b2");
     ui.cmbSelectTacticOurs->addItem("Controlar robô 2","controller_b3");
@@ -222,14 +225,10 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectTacticOurs->addItem("Controlar robô 5 (absoluto)","controller_b6a");
 
 #endif
-	//tactic["attacker"] = new Attacker(this, team["us"]->at(1), 3000);
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
 	tactic["gkpr"] = new Goalkeeper(this, team["us"]->at(0),3000);
     tactic["defU32"] = new Defender(this, team["us"]->at(3), team["they"]->at(2),team["us"]->goal(), 500, 3000);
-	//tactic["def"] = new Defender(this, team["us"]->at(3), team["they"]->at(0), 500, 3000);
-    //tactic["def2"] = new Defender(this, team["they"]->at(2), team["us"]->at(2), 500, 1000);
-    //tactic["def3"] = new Defender(this, team["they"]->at(3), team["us"]->at(3), 500, 1000);
-	//tactic["atk"] = new Attacker(this, team["they"]->at(4), 1000);
+
 	tactic["zickler43T"] = new Zickler43(this, team["they"]->at(4), 3000, true);
 	tactic["gkprT"] = new Goalkeeper(this, team["they"]->at(0),3000);
     tactic["defT32"] = new Defender(this, team["they"]->at(3), team["us"]->at(2),team["they"]->goal(), 500, 3000);
@@ -238,14 +237,10 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	timer = new QTimer(this);
 
     // Fill dynamic dropdowns
-    //ui.cmbSelectTacticOurs->addItem("Attacker","attacker");
     ui.cmbSelectTacticOurs->addItem("Zickler 43","zickler43");
     ui.cmbSelectTacticOurs->addItem("Goleiro","gkpr");
     ui.cmbSelectTacticOurs->addItem("Defesa 1","defU32");
-    //ui.cmbSelectTacticTheirs->addItem("Defesa 2","def2");
-    //ui.cmbSelectTacticTheirs->addItem("Defesa 3","def3");
 
-	//ui.cmbSelectTacticTheirs->addItem("Attacker","attacker");
     ui.cmbSelectTacticTheirs->addItem("Zickler 43","zickler43T");
     ui.cmbSelectTacticTheirs->addItem("Goleiro","gkprT");
     ui.cmbSelectTacticTheirs->addItem("Defesa 1","defT32");
@@ -256,22 +251,15 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     ui.cmbSelectPlayOurs->addItem("Minmax","minimax2");
     ui.cmbSelectPlayOurs->addItem("Obedecer juiz","refereeU");
 
-
     ui.cmbSelectMode->addItem("Play","PLAY");
     ui.cmbSelectMode->addItem("Tática","TACTIC");
     ui.cmbSelectMode->addItem("Skill","SKILL");
     ui.cmbSelectPlayTheirs->addItem("Halt","haltT");
     ui.cmbSelectPlayTheirs->addItem("CBR2011","cbr2");
     ui.cmbSelectPlayTheirs->addItem("Retaliação","retaliateT");
-    //ui.cmbSelectPlayTheirs->addItem("Minmax","minimax2");
-
     ui.cmbSelectPlayTheirs->addItem("Obedecer juiz","refereeT");
 
-
-
-//  TODO:
-    QSignalMapper* signalIdMapChangedMapper = new QSignalMapper(this);
-
+	// TODO: automate this crap
     connect(ui.kickAbilityT0, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
     connect(ui.kickAbilityT1, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
     connect(ui.kickAbilityT2, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
@@ -311,10 +299,13 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
             this, SLOT(resetPatterns()));
     connect(ui.cmbAdversary_5, SIGNAL(currentIndexChanged(int)),
             this, SLOT(resetPatterns()));
+	// ENDTODO
     //Connect signals to slots
     connect(timer, SIGNAL(timeout()), this, SLOT(update()));
     connect(ui.actionEditar_vari_veis_de_estado, SIGNAL(triggered()), alterStateVarsWindow, SLOT(show()));
-    connect(ui.cmbSelectOutput, SIGNAL(currentIndexChanged(int)),this, SLOT(changeIntelligenceOutput()));
+    connect(ui.cmbPenalty, SIGNAL(currentIndexChanged(int)),this, SLOT(setPenaltyKicker()));
+	connect(ui.cmbGoalkeeper, SIGNAL(currentIndexChanged(int)),this, SLOT(setGoalkeeper()));
+	connect(ui.cmbSelectOutput, SIGNAL(currentIndexChanged(int)),this, SLOT(changeIntelligenceOutput()));
     connect(ui.cmbSelectPlayOurs, SIGNAL(currentIndexChanged(int)),this, SLOT(changePlayUs()));
     connect(ui.cmbSelectTacticOurs, SIGNAL(currentIndexChanged(int)),this, SLOT(changeTacticUs()));
     connect(ui.cmbSelectPlayTheirs, SIGNAL(currentIndexChanged(int)),this, SLOT(changePlayThem()));
@@ -327,9 +318,22 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     resetPatterns();
 }
 
+void GraphicalIntelligence::setGoalkeeper()
+{
+	((ObeyReferee *) play["refereeU"])->setGoalkeeper(team["us"]->at(ui.cmbGoalkeeper->currentText().toInt()));
+	((AutoRetaliate *) play["retaliateU"])->setGoalkeeper(team["us"]->at(ui.cmbGoalkeeper->currentText().toInt()));
+	((ObeyReferee *) play["refereeT"])->setGoalkeeper(team["they"]->at(ui.cmbGoalkeeper->currentText().toInt()));
+	((AutoRetaliate *) play["retaliateT"])->setGoalkeeper(team["they"]->at(ui.cmbGoalkeeper->currentText().toInt()));
+}
+void GraphicalIntelligence::setPenaltyKicker()
+{
+	((ObeyReferee *) play["refereeU"])->setPenaltyKicker(team["us"]->at(ui.cmbGoalkeeper->currentText().toInt()));
+	((ObeyReferee *) play["refereeT"])->setPenaltyKicker(team["they"]->at(ui.cmbGoalkeeper->currentText().toInt()));
+}
 
 void GraphicalIntelligence::setRobotKickAbility()
 {
+	// TODO: Automate repeated bits of code to allow for more/less bots.
 	bool* b = new bool(false);
 	double d;
     //TODO: Put a slider here for maximum prettiness

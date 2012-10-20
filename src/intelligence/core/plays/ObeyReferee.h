@@ -20,7 +20,7 @@ namespace LibIntelligence
 			void setTeam(Team *);
 			void setStage(Stage *);
             void setGoalkeeper(Robot* gk);
-
+			void setPenaltyKicker(Robot* pk);
 		private:
 			Play *play;
 			Play *stopReferee;

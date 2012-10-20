@@ -99,6 +99,11 @@ void ObeyReferee::setGoalkeeper(Robot* gk)
     ((PenaltyThem*)penaltyThem)->setGoalkeeper(gk);
 }
 
+void ObeyReferee::setPenaltyKicker(Robot* pk)
+{
+	((PenaltyUs*)penaltyUs)->setPenaltyKicker(pk);
+}
+
 void ObeyReferee::step()
 {
 	bool firstTime=false;
