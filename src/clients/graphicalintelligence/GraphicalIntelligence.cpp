@@ -272,21 +272,19 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 //  TODO:
     QSignalMapper* signalIdMapChangedMapper = new QSignalMapper(this);
 
-    connect(ui.kickAbilityT0, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityT1, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityT2, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityT3, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityT4, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityT5, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityU0, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityU1, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityU2, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityU3, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityU4, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(ui.kickAbilityU5, SIGNAL(textChanged(QString)), signalIdMapChangedMapper, SLOT(map()));
-    connect(signalIdMapChangedMapper, SIGNAL(mapped(QObject*)), this, SLOT(setRobotKickAbility(Robot*)));
-
-    signalIdMapChangedMapper->setMapping(ui.kickAbilityT0, team["us"]->at(0));
+    connect(ui.kickAbilityT0, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityT1, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityT2, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityT3, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityT4, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityT5, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityU0, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityU1, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityU2, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityU3, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityU4, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    connect(ui.kickAbilityU5, SIGNAL(returnPressed()), this, SLOT(setRobotKickAbility()));
+    
 
     connect(ui.cmbRobot_0, SIGNAL(currentIndexChanged(int)),
             this, SLOT(resetPatterns()));
@@ -330,31 +328,48 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 }
 
 
-void GraphicalIntelligence::setRobotKickAbility(Robot* robot)
+void GraphicalIntelligence::setRobotKickAbility()
 {
+	bool* b = new bool(false);
+	double d;
     //TODO: Put a slider here for maximum prettiness
-
-    //robot_ = (Robot*) robot;
-    QLineEdit* edited;
-    if(robot->color() == team["us"]->color())
-    {
-        edited = this->findChild<QLineEdit*>(QString("KickAbilityU" + robot->id()));
-    }
-    else
-    {
-        edited = this->findChild<QLineEdit*>(QString("KickAbilityT" + robot->id()));
-    }
-    bool dummy;
-    double d;
-    d = edited->text().toDouble(&dummy);
-    if (dummy = true)
-    {
-        robot->kicker().setWorking(d);
-    }
-    else
-    {
-        cout << "seu idiota";
-    }
+	d = ui.kickAbilityU0->text().toDouble(b);
+	if(*b)
+	    team["us"]->at(0)->kicker().setWorking(d);
+	d = ui.kickAbilityU1->text().toDouble(b);
+	if(*b)
+        team["us"]->at(1)->kicker().setWorking(d);
+	d = ui.kickAbilityU2->text().toDouble(b);
+	if(*b)
+        team["us"]->at(2)->kicker().setWorking(d);
+	d = ui.kickAbilityU3->text().toDouble(b);
+	if(*b)
+        team["us"]->at(3)->kicker().setWorking(d);
+	d = ui.kickAbilityU4->text().toDouble(b);
+	if(*b)
+        team["us"]->at(4)->kicker().setWorking(d);
+	d = ui.kickAbilityU5->text().toDouble(b);
+	if(*b)
+        team["us"]->at(5)->kicker().setWorking(d);
+	
+	d = ui.kickAbilityT0->text().toDouble(b);
+	if(*b)
+        team["they"]->at(0)->kicker().setWorking(d);
+	d = ui.kickAbilityT1->text().toDouble(b);
+	if(*b)
+        team["they"]->at(1)->kicker().setWorking(d);
+	d = ui.kickAbilityT2->text().toDouble(b);
+	if(*b)
+        team["they"]->at(2)->kicker().setWorking(d);
+	d = ui.kickAbilityT3->text().toDouble(b);
+	if(*b)
+        team["they"]->at(3)->kicker().setWorking(d);
+	d = ui.kickAbilityT4->text().toDouble(b);
+	if(*b)
+        team["they"]->at(4)->kicker().setWorking(d);
+	d = ui.kickAbilityT5->text().toDouble(b);
+	if(*b)
+        team["they"]->at(5)->kicker().setWorking(d);
 }
 
 
