@@ -90,8 +90,8 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["referee"] = new UpdaterReferee(this);
 
 	stage["main"] = new Stage();
-	/*
-	team["us"] = stage["main"]->yellowTeam();
+	
+	/*team["us"] = stage["main"]->yellowTeam();
 	team["they"] = stage["main"]->blueTeam();
 	*/
 	
