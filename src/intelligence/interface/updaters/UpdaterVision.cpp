@@ -97,8 +97,7 @@ void UpdaterVision::prepare() {
 			double t_sent = detection.t_sent();
 
 			for (int i = 0; i < detection.balls_size(); i++){
-				if(detection.camera_id() == 0)
-					enqueue(new UpdateBall(detection.balls(i), t_sent, t_capture, detection.camera_id()));
+				enqueue(new UpdateBall(detection.balls(i), t_sent, t_capture, detection.camera_id()));
 			}
 
 			SSL_DetectionRobot null_robot = SSL_DetectionRobot();
