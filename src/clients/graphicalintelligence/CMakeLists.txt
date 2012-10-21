@@ -12,6 +12,7 @@ file(GLOB GINTC_HDR "*.h")
 #
 
 set(GINTC_SRC
+    graphical.rc
     main.cpp
     GraphicalIntelligence.cpp
     itemfield.cpp
