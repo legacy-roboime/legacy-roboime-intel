@@ -48,7 +48,7 @@ namespace LibIntelligence
 		//TODO: make this a filter object??
 		//XXX: only works for 120hz sampling rate
 		//bool useFilter_;
-		float gain, ux[4], vx[4], uy[4], vy[4], uo[4], vo[4], coef[4];
+		float gain, ux[4], vx[4], uy[4], vy[4], uo[4], vo[4], coef[4], lo;
 	};
 }
 
