@@ -4,12 +4,14 @@
 
 #include "LibIntelligence.h"
 #include "GetBall.h"
+#include "PID.h"
+#include "Steer.h"
 
 namespace LibIntelligence
 {
 	namespace Skills
 	{
-		class KickTo : public GetBall
+		class KickTo : public Steer
 		{
 			Q_OBJECT
 
@@ -18,9 +20,13 @@ namespace LibIntelligence
 			void step();
 			void setAngle(qreal _angle);
 			qreal getAngle();
+			void setPoint(Point p) { point_=p ;	aproachSpeed=0; }
 
 		protected:
+			Point point_;
 			qreal angle;
+			CONTROLLER_S controllerDist;
+			qreal aproachSpeed;
 		};
 	}
 }

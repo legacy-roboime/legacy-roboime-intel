@@ -11,8 +11,11 @@ using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 KickTo::KickTo(QObject* p, Robot* r, qreal a)
-	: GetBall(p, r, 1600.0),
-	angle(a) {}
+	: Steer(p, r),
+	angle(a),
+	controllerDist(5,1,0,3000,1000)
+{
+}
 
 void KickTo::setAngle(qreal _angle)
 {
@@ -26,56 +29,50 @@ qreal KickTo::getAngle()
 
 void KickTo::step()
 {
-	static Robot* robot = this->robot();
+	Stage *stage=this->stage();
+	Ball *ball=stage->ball();
+	Robot *robot=this->robot();
+	
+	qreal g = 9.80665 * 1000;
+	qreal mi = 0.4;
+	qreal aMax = mi*g;
+	qreal vMax = 1600;
+	qreal cte = 4*(aMax/(vMax*vMax));
 
-	if(hasBall()) {
-		robot->kick();
-		GetBall::step();
-	}
-	else{
-		robot->kick(0);
-		GetBall::step();
-	}
+	qreal distToBall=Line(*robot,*ball).length();
 
-	/*static qreal dx, dy;
+	Line line(*ball,point_);
+	qreal h=line.distanceTo(*robot);
 
-	qreal rOrientation = robot()->orientation();
+	Line normal=line.normalVector().translated(*robot - line.p1());
+	Point closestPoint;
+	normal.intersect(line,&closestPoint);
 
-	qreal xRobot = robot()->x();
-	qreal yRobot = robot()->y();
-	qreal xBall = stage()->ball()->x();
-	qreal yBall = stage()->ball()->y();
+	Point directionToBall(*ball-closestPoint);
+	qreal d=Line(directionToBall,Point(0,0)).length();
 
-	dx = xBall - xRobot;
-	dy = yBall - yRobot;
-	Goto::setOrientation(angle);
-
-	//TODO: find geometry lib (QT) 
-	Line lineTo = Line(xRobot, yRobot, xRobot + 1., yRobot);
-	Line lineToBall = Line(xRobot, yRobot, xBall, yBall);
-
-	//Verifica alinhamento da bola com a frente do robo (sera substituido pelo sensor da bola)
-	lineTo.setAngle(rOrientation*180./M_PI);
-	qreal diffAngle = lineTo.angleTo(lineToBall) * M_PI / 180.;
-
-	qreal testa = abs(rOrientation-angle);
-	if(sqrt(dx * dx + dy * dy) < robot()->body().radius() + 2 * stage()->ball()->radius() && testa < M_PI/15. && abs(diffAngle) < M_PI / 15.) {
-		robot()->kick();
-		//printf("CHUTEI %f\n", testa);
-	}
-	else{
-		robot()->kick(0);
+	if(aproachSpeed<1){
+		aproachSpeed=d*vMax/(2*h);
+		aproachSpeed/=3;
+		if(aproachSpeed>800 && d<300) aproachSpeed=800;
 	}
 
-	static long wait =0;
-	if(sqrt(dx * dx + dy * dy) > robot()->body().radius() + 2 * stage()->ball()->radius() || abs(diffAngle) > M_PI / 90. //|| wait < 200//){
-		GetBall::step();
-		//printf("GETBALL %d\n",teste);
-		wait++;
+	Point direction=closestPoint-*robot;
+	direction/=Line(direction,Point(0,0)).length();
+	direction*=vMax*( 1 - exp(-cte*h/2) );
+		
+	directionToBall/=d;
+	directionToBall*=aproachSpeed;
+	direction+=directionToBall;
+
+	direction+=Point(ball->speed().x(), ball->speed().y());
+
+	Steer::setSpeed(Vector(direction));
+	Steer::setOrientation(Line(*robot,point_).angle()/180.0*M_PI);
+	Steer::step();
+
+	if(distToBall < (robot->body().radius()  + 2 * ball->radius())) {
+		robot->kick();		
 	}
-	else{
-		Goto::step();
-		//printf("ALINHEI %d\n",wait);
-		wait=0;
-	}*/
+
 }

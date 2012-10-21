@@ -2,6 +2,8 @@
 #define OBEYREFEREE_H
 
 #include "Play.h"
+#include "KickTo.h"
+#include "Goal.h"
 
 namespace LibIntelligence
 {
@@ -28,9 +30,12 @@ namespace LibIntelligence
 			Play *penaltyUs;
 			Play *penaltyThem;
 			Play *indirectKick;
+			Skills::KickTo* kickTo;
 			char cmd;
 			char lastCmd;
 			QPointF lastBall;
+			Point penaltyTarget;
+			Robot* pKicker_;
 		};
 	}
 }

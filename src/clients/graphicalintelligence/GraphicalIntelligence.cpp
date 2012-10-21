@@ -87,6 +87,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	commander["yellowTx"] = new CommanderTxOld(this);
 
 	updater["vision"] = new UpdaterVision(this);
+	//((UpdaterVision *)updater["vision"])->setWantedCam(0);
 	updater["visionSim"] = new UpdaterVision(this, 11002);
 
 	updater["referee"] = new UpdaterReferee(this);
@@ -94,9 +95,9 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	stage["main"] = new Stage();
 	
-	/*team["us"] = stage["main"]->yellowTeam();
-	team["they"] = stage["main"]->blueTeam();
-	*/
+//	team["us"] = stage["main"]->yellowTeam();
+//	team["they"] = stage["main"]->blueTeam();
+	
 	
 	team["us"] = stage["main"]->blueTeam();
 	team["they"] = stage["main"]->yellowTeam();
@@ -123,7 +124,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
         commander["blueGrSim"]->add(team["us"]->last());
 		updater["visionSim"]->add(team["us"]->last());
 
-        team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i,YELLOW)));
+		team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i,YELLOW)));
 		//real
 		commander["yellowTx"]->add(team["they"]->last());
 		updater["vision"]->add(team["they"]->last());
@@ -135,7 +136,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	Robot* gkUs = team["us"]->at(4);
 	Robot* gkThem = team["they"]->at(0);
-	Robot* pKickerUs = team["us"]->at(4);
+	Robot* pKickerUs = team["us"]->at(0);
 	Robot* pKickerThem = team["they"]->at(1);
 
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);

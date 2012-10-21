@@ -11,6 +11,7 @@
 #include "Zickler43.h"
 #include "Goto.h"
 #include "Move.h"
+#include "Attacker.h"
 
 namespace LibIntelligence
 {
@@ -32,6 +33,8 @@ namespace LibIntelligence
 			Tactics::Goalkeeper* gk;
 			Tactics::Zickler43 *zk;
 			Skills::Move* move;
+			Skills::KickTo *kt;
+			Tactics::Attacker* at;
 		};
 	}	
 }

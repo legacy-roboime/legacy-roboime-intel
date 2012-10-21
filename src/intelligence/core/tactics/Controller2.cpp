@@ -5,6 +5,7 @@
 #include "Robot.h"
 #include "Tactics.h"
 #include "Skills.h"
+#include "Goal.h"
 #include <iostream>
 #include <cmath>
 
@@ -22,6 +23,8 @@ Controller2::Controller2(QObject* p, Robot* r, int i, qreal s)
 	bl = new Blocker(this, robot(), 0, s);
 	zk = new Zickler43(this, robot(), s, true);
 	gk = new Goalkeeper(this, robot(), s);
+	kt = new KickTo(this,robot());
+	at = new Attacker(this,robot());
 	pushState(steer);
 	this->pushState(move);//this is important
 }
@@ -32,6 +35,7 @@ void Controller2::setSpeed(qreal speed)
 	bl->setSpeed(speed);
 	zk->setSpeed(speed);
 	gk->setSpeed(speed);
+	at->setSpeed(speed);
 }
 
 void Controller2::setRobot(Robot* r)
@@ -40,6 +44,8 @@ void Controller2::setRobot(Robot* r)
 	bl->setRobot(r);
 	gk->setRobot(r);
 	zk->setRobot(r);
+	kt->setRobot(r);
+	at->setRobot(r);
 }
 
 void Controller2::step() {
@@ -141,6 +147,13 @@ void Controller2::step() {
 		//zickler
 		else if(controller->ButtonPressed(XINPUT_GAMEPAD_Y)) {
 			zk->step();
+		}
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_START)) {
+			kt->setPoint(*(robot()->enemyGoal()));
+			kt->step();
+		}
+		else if(controller->ButtonPressed(XINPUT_GAMEPAD_BACK)) {
+			at->step();
 		}
 
 		else 

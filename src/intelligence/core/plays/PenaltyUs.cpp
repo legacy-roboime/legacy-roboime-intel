@@ -14,7 +14,7 @@ PenaltyUs::PenaltyUs(QObject* parent, Team* team ,Stage* stage, Robot* pKicker, 
 {
 	qreal deltaTeta = (23*3.14)/180.;
 	
-	player_[0] = new Blocker(this, pKicker, deltaTeta, 3000, 150);
+	player_[0] = new Blocker(this, pKicker, deltaTeta, 3000, 300);
 	player_[1] = new Goalkeeper(this, gk, 3000);
 	((Goalkeeper*)player_[1])->setAggressive(false);
 	for(int i = 0; i < team->size(); i++)
@@ -60,15 +60,17 @@ void PenaltyUs::step()
 	//Ball* ball = stage->ball();//SA: Dead store and unused variable
 	//Goal* myGoal = team->goal();//SA: Dead store and unused variable
 	qreal xPenalty = team->enemyGoal()->penaltyLine();
+	qreal xPenaltyPlus = xPenalty+(xPenalty>0?-150:150);
 
 	if(gotos.size()>0)
-		gotos.at(0)->setPoint(xPenalty, 0);
+		gotos.at(0)->setPoint(xPenaltyPlus, 0);
 	for(int i=1; i<gotos.size(); i++){
-		gotos.at(i)->setPoint(xPenalty, qPow(-1,i)*i*200);
+		gotos.at(i)->setPoint(xPenaltyPlus, qPow(-1,i)*i*200);
 	}
 
-	player_[0]->step();	
+	//Para funcionar se o goleiro for o batedor
 	player_[1]->step();	
+	player_[0]->step();	
 	for(int i=0; i<gotos.size(); i++){
 		if(xPenalty>0)
 			gotos.at(i)->setOrientation(0);

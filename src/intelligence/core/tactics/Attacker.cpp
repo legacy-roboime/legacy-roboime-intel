@@ -1,372 +1,260 @@
 #include "Attacker.h"
-#include "Steer.h"
 #include "Robot.h"
 #include "Stage.h"
 #include "Ball.h"
 #include "Goal.h"
-#include "Team.h"
-#include "Skills.h"
-#include "Loops.h"
-#include <cmath>
-#include "geomutils.h"
+#include "Sampler.h"
+#include <iostream>
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 using namespace Tactics;
 using namespace Skills;
+using namespace AttackerT;
 
-Attacker::Attacker(QObject* p, Robot* r, qreal s)
-	: Blocker(p,r,3.14/6,s),
-	goto_(new Goto(this, r)),
-	getBall_(new GetBall(this, r, 1000)),
-	kickTo_(new KickTo(this, r)),
-	orbit_(new Loops::Orbit(this,r,0,0,100,1000,1000)),
-	move_(new Move(this,r,0,0,0))
+#define MINDIST 500
+
+Attacker::Attacker(QObject* p, Robot* r, qreal speed, bool deterministic)
+	: Tactic(p,r, deterministic),
+	driveToBall_(new DriveToBall(this, r, lookPoint, speed, true)),
+    sampledDribble_(new SampledDribble(this, r, lookPoint, deterministic, 0., 1., speed)),
+    sampledGoalKick_(new SampledKick(this, r, lookPoint, deterministic, 0.9, 1., speed, false)),
+    sampledMiniKick_(new SampledKick(this, r, lookPoint, deterministic, 0., 0.3, speed, false)),
+	kickTo_(new KickTo(this,r)),
+    wait_(new Wait(p, r)),
+	lookPoint(new Object())
 {
-	speed = s;
-	goto_->setSpeed(speed);
-	this->pushState(goto_);//this is important
+	this->pushState(driveToBall_);//this is important to destructor
+	this->pushState(sampledGoalKick_);
+	this->pushState(sampledDribble_);
+	this->pushState(sampledMiniKick_);
 	this->pushState(kickTo_);
-	this->pushState(getBall_);
-	this->pushState(orbit_);
-	this->pushState(move_);
+	this->pushState(wait_);
 
-	//skills.append(goto_);//this is important
-	//skills.append(kickTo_);
-	//skills.append(getBall_);
-	//skills.append(orbit_);
-	//skills.append(move_);
+	driveToBall_->setObjectName("DriveToBall");
+	sampledDribble_->setObjectName("SampledDribble");
+	sampledGoalKick_->setObjectName("SampledGoalKick");
+	sampledMiniKick_->setObjectName("SampledMiniKick");
+	kickTo_->setObjectName("KickTo");
+	wait_->setObjectName("Wait");
+
+
+//	this->pushTransition(driveToBall_, new DriveToDribbleT(this, driveToBall_, sampledDribble_, 1.));
+//	this->pushTransition(sampledDribble_, new DribbleToDriveT(this, sampledDribble_, driveToBall_, 1.));
+//	this->pushTransition(sampledDribble_, new DribbleToGoalKickT(this, sampledDribble_, sampledGoalKick_, .1));
+    //this->pushTransition(sampledDribble_, new DribbleToMiniKickT(this, sampledDribble_, sampledMiniKick_, .2));
+    //this->pushTransition(sampledDribble_, new DribbleToDribbleT(this, sampledDribble_, sampledDribble_, .8));
+    //this->pushTransition(sampledMiniKick_, new DefaultTrueT(this, sampledMiniKick_, driveToBall_));
+	this->pushTransition(sampledGoalKick_, new GoalKickToDriveT(this, sampledGoalKick_, driveToBall_));
+	//this->pushTransition(wait_, new DefaultTrueT(this, wait_, driveToBall_)); //loop maquina
+	this->pushTransition(sampledDribble_, new KickToT(this, sampledDribble_, kickTo_, 1.0));
+	this->pushTransition(kickTo_, new KickToT(this, kickTo_, driveToBall_));
+
+	this->pushTransition(driveToBall_, new DribbleToDribbleT(this, driveToBall_, kickTo_));
+	this->pushTransition(kickTo_, new KickToT(this, kickTo_, driveToBall_));
+
+
+
+	this->setInitialState(driveToBall_);
+
+	this->reset();
+
+	driveToBall_->setRefLookPoint(lookPoint);
+	sampledDribble_->setRefLookPoint(lookPoint);
+	sampledGoalKick_->setRefLookPoint(lookPoint);
+	sampledMiniKick_->setRefLookPoint(lookPoint);
+
+    maxHoleSize = -1;
 }
 
+//Attacker::Attacker(QObject* p, Robot* r, const Attacker& zickler) : Tactic(p, r, zickler)
+//{
+//	this->speed = zickler.speed;
+//	*driveToBall_ = *zickler.driveToBall_;
+//	*sampledDribble_ = *zickler.sampledDribble_;
+//	*sampledGoalKick_ = *zickler.sampledGoalKick_;
+//	*sampledMiniKick_ = *zickler.sampledMiniKick_;
+//	*wait_ = *zickler.wait_;
+//
+//	this->pushState(driveToBall_);//this is important for destructor
+//	this->pushState(sampledGoalKick_);
+//	this->pushState(sampledDribble_);
+//	this->pushState(sampledMiniKick_);
+//	this->pushState(wait_);
+//
+//	Goal* enemyGoal = this->robot()->enemyGoal();
+//	driveToBall_->setRefLookPoint(enemyGoal);
+//	sampledDribble_->setRefLookPoint(enemyGoal);
+//	sampledMiniKick_->setRefLookPoint(enemyGoal);
+//	sampledGoalKick_->setRefLookPoint(enemyGoal);
+//
+//	this->createTransition(this, "driveToDribble", driveToBall_, sampledDribble_, 1.);
+//	this->createTransition(this, "dribbleToGoalKick", sampledDribble_, sampledGoalKick_, .1);
+//	this->createTransition(this, "dribbleToMiniKick", sampledDribble_, sampledMiniKick_, .2);
+//	this->createTransition(this, "dribbleToDribble", sampledDribble_, sampledDribble_, .8);
+//	this->createTransition(this, "defaultTrue", sampledMiniKick_, driveToBall_);
+//	this->createTransition(this, "defaultTrue", sampledGoalKick_, wait_);
+//	this->createTransition(this, "defaultTrue", wait_, driveToBall_); //loop maquina
+//}
 
-/// Estratégia:
-/// Move para a bola, domina e chuta a gol
+Attacker::~Attacker()
+{
+	delete driveToBall_;
+	delete sampledDribble_;
+	delete sampledGoalKick_;
+	delete sampledMiniKick_;
+	delete wait_;
+	delete lookPoint;
+}
+
 void Attacker::step()
 {
-	qreal distance = 300;
+	Skill* current = (Skill*)this->getCurrentState();
+	updateLookPoint();
+	kickTo_->setPoint(*lookPoint);
+	current->step();
+	this->execute();
+    //cout << "SKILL: " << current->objectName().toStdString() << endl;
+}
 
-	static Stage* stage = this->stage();
-	static Robot* robot = this->robot();
-	//goto_->step();
-	float PI = std::atan(1.0f) * 4.0f;
-	// Gol Inimigo
-	qreal GolX = robot->enemyGoal()->x();
-	qreal GolY = robot->enemyGoal()->y();
-	qreal ballX = stage->ball()->x();
-	qreal ballY = stage->ball()->y();
-	qreal rx =robot->x();
-	qreal ry = robot->y();
+void Attacker::updateLookPoint()
+{
+	Point p = pointToKick();
+	lookPoint->setX(p.x());
+	lookPoint->setY(p.y());
+}
 
-	qreal dx = robot->x() - stage->ball()->x();
-	qreal dy = robot->y() - stage->ball()->y();
+Point Attacker::pointToKick() //chuta no meio do maior buraco
+{
+	Goal* enemyGoal = this->robot()->enemyGoal();
+	qreal hwidth = enemyGoal->width()/2;
 
-	qreal dist = sqrt(dx*dx + dy*dy);
+	qreal initial = enemyGoal->y()-hwidth;
 
-	Line BallGoalLine = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
-	Line linePlayer = Line(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
-	Line PlayerGoalLine = Line(GolX , GolY, robot->x(), robot->y());
-	Line lineGoal = Line( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
+	Point p(enemyGoal->x(), initial);
+	qreal holeSize = 0;
 
-	//Nova implementaçao
+	Point centerMax;
+	centerMax.setX(enemyGoal->x());
+    maxHoleSize = -1;
 
-	qreal goalWidth = robot->enemyGoal()->width();
+	qreal delta = hwidth/5;
 
-	//Linha das traves à bola
-	Line ballGoalBorderLine1 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
-	Line ballGoalBorderLine2 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
-
-	//Linha da bola ao robo
-	Line playerBallLine = Line(robot->x() , robot->y(), ballX, ballY);
-
-	qreal xGBL1 =  stage->ball()->x() - GolX;
-	qreal yGBL1 =  stage->ball()->y() - (GolY + goalWidth/2);
-
-	qreal xGBL2 =  stage->ball()->x() - GolX;
-	qreal yGBL2 =  stage->ball()->y() - (GolY - goalWidth/2);
-
-	qreal xPBL = robot->x() - ballX;
-	qreal yPBL = robot->y() - ballY;
-
-
-	qreal crossProduct1 = xPBL*yGBL1 - xGBL1 * yPBL;
-	qreal crossProduct2 = xPBL*yGBL2 - xGBL2 * yPBL;
-
-	qreal criteria = crossProduct1 * crossProduct2 ;
-	bool condition;// = crossProduct1 < 0;//unused
-
-	if(robot->goal()->x() < 0) condition = rx < ballX;
-	else condition = rx > ballX;
-
-	if( criteria < 0 && condition ) { //esta no cone de chute
-
-		Line GoalLine = Line(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
-
-		Point GoalPos;
-
-		GoalLine.intersect(linePlayer, &GoalPos);
-
-		qreal reducedSpeed = dist<500?(speed/4): speed;
-		goto_->setIgnoreBrake();
-
-		goto_->setAll(GoalPos.x() , GoalPos.y(), reducedSpeed);
-		robot->kick(1);
-		goto_->setOrientation(ballX - rx, ballY - ry );
-		goto_->step();
-	}
-	//else if(false && criteria < 0 && !condition) {
-	//	//move-se perpendicular em direcao ao centro, saindo do do cone
-	//	
-	//	qreal ballGoalAngle = BallGoalLine.angle();
-	//	qreal radAngle = ballGoalAngle * PI/180;
-	//	//if(radAngle < 0) radAngle = -1 * radAngle;
-
-
-	//	qreal destX = ballX - distance * cos(radAngle);
-	//	qreal destY = ballY + distance * sin(radAngle);
-
-	//	goto_->setNotIgnoreBrake();
-	//	//goto_->setNotIgnoreBall();
-	//	goto_->setAll(destX , destY, speed);
-	//	
-	//	goto_->setOrientation(ballX - destX, ballY - destY );
-	//	goto_->step();
-
-	//}
-	else { //nao esta no cone de chute, move-se para dentro
-		
-		if(!condition) {
-			Blocker::step();
+	for(qreal t = initial; t < enemyGoal->y()+hwidth; t+=delta){ //10 pontos
+		if( isKickScored( Point(enemyGoal->x(),t) ) ){
+			holeSize+=delta;
 		}
-		else {
-			qreal ballGoalAngle = BallGoalLine.angle();
-			qreal radAngle = ballGoalAngle * PI/180;
-			//if(radAngle < 0) radAngle = -1 * radAngle;
-
-			//int side = robot->goal()->x() < 0 ? -1 : 1;//unused
-		
-
-			qreal destX = ballX - distance * cos(radAngle);
-			qreal destY = ballY + distance * sin(radAngle);
-
-			goto_->setNotIgnoreBrake();
-			goto_->setAll(destX , destY, speed);
-		
-			goto_->setOrientation(ballX - destX, ballY - destY );
-			goto_->step();
+		else{
+			if(holeSize>maxHoleSize){
+				maxHoleSize = holeSize;
+				centerMax.setY(p.y() + holeSize/2);
+			}
+			holeSize = 0;
+			p.setY(t+delta);
 		}
 	}
-	
-	
-	//qreal dist = 200;
-	//qreal angle =BallGoalLine.angle();
-	//qreal cx = ballX - (dist * cos( BallGoalLine.angle() * PI/180  ) );
-	//qreal cy = ballY + (dist * sin( BallGoalLine.angle() * PI/180  ) );
+	if(holeSize>=maxHoleSize){
+        maxHoleSize = holeSize;
+		centerMax.setY(p.y() + holeSize/2);
+	}
+	return centerMax;
+}
 
-	//qreal tol = 300;
-	//
+qreal Attacker::holeSize()
+{
+    return maxHoleSize;
+}
 
+bool Attacker::isKickScored( Point kickPoint )
+{
+	Ball* ball = this->stage()->ball();
+	Line ball_kickpoint = Line(*ball, kickPoint);
+	Team* team = this->robot()->team();
+	for(int i=0; i<team->size(); i++){
+		Robot* obst = team->at(i);
+			Point obstP(obst->x(), obst->y());
+			Line ball_obst = Line(*ball, obstP);
+			qreal dist = ball_kickpoint.distanceTo(obstP);
+			qreal dotproduct = ball_kickpoint.dx()*ball_obst.dx() + ball_kickpoint.dy()*ball_obst.dy();
+			if(dist<obst->body().radius() && dotproduct>0)
+				return false;
+	}
+	team = this->robot()->enemyTeam();
+	for(int i=0; i<team->size(); i++){
+		Robot* obst = team->at(i);
+			Point obstP(obst->x(), obst->y());
+			Line ball_obst = Line(*ball, obstP);
+			qreal dist = ball_kickpoint.distanceTo(obstP);
+			qreal dotproduct = ball_kickpoint.dx()*ball_obst.dx() + ball_kickpoint.dy()*ball_obst.dy();
+			if(dist<obst->body().radius() && dotproduct>0)
+				return false;
+	}
+	return true;
+}
 
-	//if(distance <=270)
-	//{
-	//	
+bool DriveToDribbleT::condition()
+{
+	//Attacker* z = (Attacker*) this->parent();//SA: Dead store
+	return !source_->busy(); //Vector(*z->robot() - *z->stage()->ball()).length() < MINDIST;//
+}
 
-	//	
+DriveToDribbleT::DriveToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
-	//		if(getBall_->hasBall()) { //se esta ao alcance da bola, chuta
-	//			qreal angle = linePlayer.angle();
-	//			qreal speedx = +speed * cos(BallGoalLine.angle() * PI/180);
-	//			qreal speedy = +speed * sin(BallGoalLine.angle() * PI/180);
-	//			robot->kick(1);
-	//			move_->setAll(1000,0,0);
-	//			move_->step();
+bool DribbleToDriveT::condition()
+{
+	//SampledDribble* dribble = (SampledDribble*)source_;
+	//DriveToBall* drive = (DriveToBall*)target_;
+	//const Object* backup = drive->getRefLookPoint();
+	//drive->setRefLookPoint(dribble->getRefLookPoint());
+	//bool busy = drive->busy();
+	//drive->setRefLookPoint(backup);
+	//return busy;
+	//Attacker* z = (Attacker*) this->parent();//SA: Dead store
+	return source_->busy();//Vector(*z->robot() - *z->stage()->ball()).length() >= MINDIST;//!source_->busy(); //
+}
 
-	//			/*
-	//			Line BallGoalLine = Line(stage->ball()->x(), stage->ball()->y(), GolX, GolY);
-	//			float PI = std::atan(1.0f) * 4.0f;
+DribbleToDriveT::DribbleToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
-	//			qreal AngGraus = BallGoalLine.angle();
-	//			qreal AngRad = AngGraus * PI/180;
+bool DribbleToDribbleT::condition()
+{
+	return !source_->busy();
+}
 
-	//			kickTo_->setAngle(AngRad);
-	//			kickTo_->step();
-	//			*/
-	//	
-	//		}
-	//		else { //senao se aproxima
-	//			qreal speed = 1000;
-	//			qreal speedx = speed * cos(linePlayer.angle() * 3.14/180);
-	//			qreal speedy = speed * sin(linePlayer.angle() * 3.14/180);
-	//			robot->kick(1);
-	//			move_->setAll(1000,0,0);
-	//			move_->step();
-	//		}
+DribbleToDribbleT::DribbleToDribbleT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
+bool DribbleToGoalKickT::condition()
+{
+    Attacker* z = (Attacker*) this->parent();
+    return !source_->busy();// && z->holeSize()>0;
+}
 
-	//	
-	//}
-	//else 
-	//{
-	//	//getBall_->setOrientation(GolX - robot->x(), GolY - robot->y());
-	//	//getBall_->step();
-	//	goto_->setIgnoreBall();
-	//	goto_->setAll(cx , cy, speed);
-	//	
-	//	goto_->setOrientation(ballX - cx, ballY - cy );
-	//	goto_->step();
-	//}
+DribbleToGoalKickT::DribbleToGoalKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
+bool GoalKickToDriveT::condition()
+{
+	return source_->busy();
+}
 
-	///*
-	//float PI = std::atan(1.0f) * 4.0f;
-	//qreal ballX = stage->ball()->x();
-	//qreal ballY = stage->ball()->y();
-	//qreal dist = 300;
-	//qreal angle =BallGoalLine.angle();
-	//qreal cx = ballX - (dist * cos( BallGoalLine.angle() * PI/180  ) );
-	//qreal cy = ballY + (dist * sin( BallGoalLine.angle() * PI/180  ) );
+GoalKickToDriveT::GoalKickToDriveT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
-	//qreal tol = 300;
-	//qreal rx =robot->x();
-	//qreal ry = robot->y();
+bool DribbleToMiniKickT::condition()
+{
+	return !source_->busy();
+}
 
-	//if( distance <= 350   )
-	//{
-	//			qreal angle = linePlayer.angle();
-	//			qreal speed = 500;
-	//			qreal speedx = -speed * cos(BallGoalLine.angle() * PI/180);
-	//			qreal speedy = +speed * sin(BallGoalLine.angle() * PI/180);
-	//			robot->kick(1);
-	//			move_->setAll(speedx,speedy,0);
-	//			move_->step();
-	//}
-	//else {
-	//	goto_->setIgnoreBall();
-	//	goto_->setAll(cx , cy, 500);
-	//	
-	//	goto_->setOrientation(GolX - ballX, GolY - ballY );
-	//	goto_->step();
-	//}
-	////}
-	//	
-	//	*/
-	//
+KickToT::KickToT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
-	//
-
+bool KickToT::condition()
+{
+	return !source_->busy();
 }
 
 
-//void Attacker::stepConducao() {
-//
-//	qreal distance = 100;
-//
-//	Stage* stage = this->stage();
-//	Robot* robot = this->robot();
-//	goto_->step();
-//	float PI = std::atan(1.0f) * 4.0f;
-//	// Gol Inimigo
-//	qreal GolX = robot->enemyGoal()->x();
-//	qreal GolY = robot->enemyGoal()->y();
-//	qreal ballX = stage->ball()->x();
-//	qreal ballY = stage->ball()->y();
-//	qreal rx =robot->x();
-//	qreal ry = robot->y();
-//
-//	qreal dx = robot->x() - stage->ball()->x();
-//	qreal dy = robot->y() - stage->ball()->y();
-//
-//	qreal dist = sqrt(dx*dx + dy*dy);
-//
-//	
-//
-//	Line BallGoalLine = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY);
-//	Line linePlayer = Line(stage->ball()->x() , stage->ball()->y(), robot->x(), robot->y());
-//	Line PlayerGoalLine = Line(GolX , GolY, robot->x(), robot->y());
-//	Line lineGoal = Line( stage->ball()->x() , stage->ball()->y() , robot->enemyGoal()->x() , robot->enemyGoal()->y() );
-//
-//
-//	//Nova implementaçao
-//
-//	qreal goalWidth = robot->enemyGoal()->width();
-//
-//	//Linha das traves à bola
-//	Line ballGoalBorderLine1 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY + goalWidth/2);
-//	Line ballGoalBorderLine2 = Line(stage->ball()->x() , stage->ball()->y(), GolX, GolY - goalWidth/2);
-//
-//	//Linha da bola ao robo
-//	Line playerBallLine = Line(robot->x() , robot->y(), ballX, ballY);
-//
-//	qreal xGBL1 =  stage->ball()->x() - GolX;
-//	qreal yGBL1 =  stage->ball()->y() - (GolY + goalWidth/2);
-//
-//	qreal xGBL2 =  stage->ball()->x() - GolX;
-//	qreal yGBL2 =  stage->ball()->y() - (GolY - goalWidth/2);
-//
-//	qreal xPBL = robot->x() - ballX;
-//	qreal yPBL = robot->y() - ballY;
-//
-//
-//	qreal crossProduct1 = xPBL*yGBL1 - xGBL1 * yPBL;
-//	qreal crossProduct2 = xPBL*yGBL2 - xGBL2 * yPBL;
-//
-//	qreal criteria = crossProduct1 * crossProduct2 ;
-//
-//	if( criteria < 0 ) { //esta no cone de chute
-//
-//		
-//		Line GoalLine = Line(robot->enemyGoal()->x(), 0.0, robot->enemyGoal()->x(), 1.0);
-//
-//		Point GoalPos;
-//
-//		GoalLine.intersect(linePlayer, &GoalPos);
-//
-//		
-//		goto_->setIgnoreBrake();
-//		goto_->setIgnoreBall();
-//
-//		goto_->setAll(GoalPos.x() , GoalPos.y(), 500);
-//		goto_->setOrientation(ballX - rx, ballY - ry );
-//		goto_->step();
-//
-//
-//	}
-//	/*else if(criteria < 0 && crossProduct1 > 0) {
-//		//move-se perpendicular em direcao ao centro, saindo do do cone
-//		
-//		qreal ballGoalAngle = BallGoalLine.angle();
-//		qreal radAngle = ballGoalAngle * PI/180;
-//		//if(radAngle < 0) radAngle = -1 * radAngle;
-//
-//
-//		qreal destX = ballX - distance * cos(radAngle);
-//		qreal destY = ballY + distance * sin(radAngle);
-//
-//		goto_->setNotIgnoreBrake();
-//		goto_->setNotIgnoreBall();
-//		goto_->setAll(destX , destY, speed);
-//		
-//		goto_->setOrientation(ballX - destX, ballY - destY );
-//		goto_->step();
-//
-//	}*/
-//	else { //nao esta no cone de chute, move-se para dentro
-//		
-//		qreal ballGoalAngle = BallGoalLine.angle();
-//		qreal radAngle = ballGoalAngle * PI/180;
-//		//if(radAngle < 0) radAngle = -1 * radAngle;
-//
-//		int side = robot->goal()->x() < 0 ? -1 : 1; 
-//		
-//
-//		qreal destX = ballX - distance * cos(radAngle);
-//		qreal destY = ballY + distance * sin(radAngle);
-//
-//		goto_->setNotIgnoreBrake();
-//		goto_->setIgnoreBall();
-//		goto_->setAll(destX , destY, speed);
-//		
-//		goto_->setOrientation(ballX - destX, ballY - destY );
-//		goto_->step();
-//
-//	}
-//
-//}
+DribbleToMiniKickT::DribbleToMiniKickT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
+bool DefaultTrueT::condition() 
+{
+	return true;
+}
+
+DefaultTrueT::DefaultTrueT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}

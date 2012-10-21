@@ -42,8 +42,20 @@ void IndirectKick::step()
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
 
-	Object pos(*(stage->getGoalFromOtherColor(team->color())));
-	pos+=Point((pos.x()<0)?1000:-1000,0);
+
+	map<qreal, Point*> bestPositions=stage->getBestIndirectPositions(team, 10);
+
+
+	Point ponto(0,0);
+	if(bestPositions.size()){
+		map<qreal, Point*>::iterator it1 = bestPositions.begin();
+		ponto=*((*it1).second);
+	} else {
+		ponto=Point(*(stage->getGoalFromOtherColor(team->color())));
+		ponto+=Point((ponto.x()<0)?1000:-1000,0);
+	}
+	Object pos(ponto.x(),ponto.y());
+
 
 	switch(stateMachine.currentState()){
 	case START:
@@ -105,6 +117,8 @@ void IndirectKick::step()
 				it1++;
 				passerAlternative=(*it1).second;
 			}
+			passedGoto->setPoint(&pos);
+			passedGoto->step();
 			attack->setRobot(passerAlternative);
 			attack->step();
 		}

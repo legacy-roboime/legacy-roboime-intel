@@ -53,8 +53,10 @@ ObeyReferee::ObeyReferee(QObject *q, Play *p, Robot* gk, Robot* pKicker)
 	penaltyThem(new PenaltyThem(this, p->team(), p->stage(), gk)),
 	indirectKick(new IndirectKick(this, p->team(), p->stage(), gk, 3000)),
 	cmd('H'),
-	lastCmd('H')
+	lastCmd('H'),
+	kickTo(new KickTo(this,pKicker))
 {
+	pKicker_=pKicker;
 }
 
 ObeyReferee::~ObeyReferee()
@@ -137,6 +139,14 @@ void ObeyReferee::step()
 	//Comportamento muda caso a bola tenha se deslocado
 	if(cmd == 'f' && usColor == YELLOW)
 		play->step();
+	else if((cmd ==' ' || cmd =='s') && ((lastCmd=='p' && usColor==YELLOW) || (lastCmd=='P' && usColor==BLUE))){
+		kickTo->setPoint(penaltyTarget);
+		kickTo->step();
+		if(pKicker_->touchedBall())
+		{
+			lastCmd='s';
+		}
+	}
 	else if(cmd == 'f' && usColor == BLUE){
 		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
@@ -195,8 +205,10 @@ void ObeyReferee::step()
 	}
 	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
-    else if((cmd == 'p' && usColor == YELLOW) || (cmd == 'P' && usColor == BLUE))
+    else if((cmd == 'p' && usColor == YELLOW) || (cmd == 'P' && usColor == BLUE)){
 		penaltyUs->step();
+		penaltyTarget=Point(*(pKicker_->enemyGoal()));
+	}
     else if((cmd == 'P' && usColor == YELLOW) || (cmd == 'p' && usColor == BLUE))
 		penaltyThem->step();
 
