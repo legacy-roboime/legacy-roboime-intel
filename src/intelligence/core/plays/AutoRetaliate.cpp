@@ -13,8 +13,8 @@ AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, Robot* g
 {
 	player_[0] = new Goalkeeper(this, gk, speed);
 	//usei team->at(0), mas tanto faz pq a tatica é associada dinamicamente ao robo
-	//player_[1] = new Zickler43(this, team->at(0), speed, true);
-	player_[1] = new Attacker(this, team->at(0), speed);
+	player_[1] = new Zickler43(this, team->at(0), speed, true);
+	//player_[1] = new Attacker(this, team->at(0), speed);
 	player_[2] = new Blocker(this, team->at(0), 0, speed);
 	//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
 	for(int i = 3; i < this->team()->size(); i++){

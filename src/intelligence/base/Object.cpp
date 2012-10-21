@@ -17,7 +17,7 @@ Object::Object(qreal x, qreal y, qreal sx, qreal sy, qreal t, qreal o)
     omega_(o),
     timeOld_(0),
     thetaOld_(0),
-    posOld_(0, 0)//,
+    posOld_(0, 0)
 	//useFilter_(false)
 {
 	//low pass filter stuff
@@ -29,6 +29,13 @@ Object::Object(qreal x, qreal y, qreal sx, qreal sy, qreal t, qreal o)
 		uo[i] = 0;
 		vo[i] = 0;
 	}
+
+	unsigned int objectHistorySize=sizeof(objectHistory_)/sizeof(Point);
+	for(int i=0;i<objectHistorySize;i++){
+		objectHistory_[i]=Point(x,y);
+	}
+
+
 }
 
 Object::Object(const Object& object)
@@ -70,7 +77,6 @@ void Object::updatePositionWithFilter(const Point &p)
 	vx[1] = vx[2];
 	vx[2] = vx[3];
 	vx[3] = (ux[0] + ux[3]) + coef[0] * (ux[1] + ux[2]) + (coef[1] * vx[0]) + (coef[2] * vx[1]) + coef[3] * vx[2];
-	setX(vx[3]);
 
 	// y-coord
 	uy[0] = uy[1];
@@ -81,7 +87,8 @@ void Object::updatePositionWithFilter(const Point &p)
 	vy[1] = vy[2];
 	vy[2] = vy[3];
 	vy[3] = (uy[0] + uy[3]) + coef[0] * (uy[1] + uy[2]) + (coef[1] * vy[0]) + (coef[2] * vy[1]) + coef[3] * vy[2];
-	setY(vy[3]);
+
+	updatePosition(Point(vx[3],vy[3]));
 
 	//TODO: identify object
 	//fprintf(f, "%f;%f;%f;\n", bx, by, sx);
@@ -89,6 +96,12 @@ void Object::updatePositionWithFilter(const Point &p)
 
 void Object::updatePosition(const Point &p)
 {
+	unsigned int objectHistorySize=sizeof(objectHistory_)/sizeof(Point);
+	for(int i=1;i<objectHistorySize;i++){
+		objectHistory_[i]=objectHistory_[i-1];
+	}
+	objectHistory_[0]=p;
+
 	setX(p.x());
 	setY(p.y());
 }

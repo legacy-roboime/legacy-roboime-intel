@@ -12,7 +12,7 @@ PenaltyUs::PenaltyUs(QObject* parent, Team* team ,Stage* stage, Robot* pKicker, 
 	: Play(parent, team, stage),
 	penaltyKicker(pKicker)
 {
-	qreal deltaTeta = (23*3.14)/180.;
+	qreal deltaTeta = (0*3.14)/180.;
 	
 	player_[0] = new Blocker(this, pKicker, deltaTeta, 3000, 300);
 	player_[1] = new Goalkeeper(this, gk, 3000);
@@ -60,7 +60,7 @@ void PenaltyUs::step()
 	//Ball* ball = stage->ball();//SA: Dead store and unused variable
 	//Goal* myGoal = team->goal();//SA: Dead store and unused variable
 	qreal xPenalty = team->enemyGoal()->penaltyLine();
-	qreal xPenaltyPlus = xPenalty+(xPenalty>0?-150:150);
+	qreal xPenaltyPlus = xPenalty+(xPenalty>0?-300:300);
 
 	if(gotos.size()>0)
 		gotos.at(0)->setPoint(xPenaltyPlus, 0);

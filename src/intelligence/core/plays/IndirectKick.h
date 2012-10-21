@@ -45,6 +45,7 @@ namespace LibIntelligence
 			SampledKick* sk;
 			Robot* passerRobot;
 			Robot* passedRobot;
+			Object bestPos;
 		};
 
 		

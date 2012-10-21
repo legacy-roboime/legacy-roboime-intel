@@ -50,6 +50,9 @@ namespace LibIntelligence
 		//bool useFilter_;
 		float ux[4], vx[4], uy[4], vy[4], uo[4], vo[4], lo;
 		static float gain, coef[4];
+
+
+		Point objectHistory_[10];
 	};
 }
 

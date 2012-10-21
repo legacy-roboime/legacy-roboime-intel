@@ -137,7 +137,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	}
 	Robot* gkUs = team["us"]->at(4);
 	Robot* gkThem = team["they"]->at(0);
-	Robot* pKickerUs = team["us"]->at(0);
+	Robot* pKickerUs = team["us"]->at(4);
 	Robot* pKickerThem = team["they"]->at(1);
 
 	skill["driveto"] = new DriveTo(this, team["us"]->at(1), 100, 0.174, (M_PI/4)*3., Point(0,0), 1000, (M_PI/4)*3.);

@@ -69,6 +69,7 @@ void ItemRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setBrush(isSelected() ? Qt::green : color());
     painter->drawEllipse(-radius(), -radius(), 2*radius(), 2*radius());
     painter->drawLine(0,0,radius()*cos(p_direction*M_PI/-180),radius()*sin(p_direction*M_PI/-180));
+	painter->drawText(0,0,"Teste");
 }
 
 int ItemRobot::type() const

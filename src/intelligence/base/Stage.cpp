@@ -543,8 +543,8 @@ map<qreal, Point*> Stage::getBestIndirectPositions(const Team* team, int qtd_x) 
 		
 
 	//definindo o retângulo que conterá os pontos da matriz dos pontos candidatos
-	qreal len = ( 0.35 * fieldLength_ - defenseRadius_ - 2.*team->at(0)->body().radius() );
-	qreal wid = (0.35 * fieldWidth_ - 2.*team->at(0)->body().radius() ); //nao esquecer de somar aqui o raio do robô também
+	qreal len = ( 0.42 * fieldLength_ - defenseRadius_ - 2.*team->at(0)->body().radius() );
+	qreal wid = (0.42 * fieldWidth_ - 2.*team->at(0)->body().radius() ); //nao esquecer de somar aqui o raio do robô também
 	qreal delta_x = 2.*len / qtd_x,
 		  delta_y = 2.*wid / qtd_y,
 		  temp_x = -1.*len,

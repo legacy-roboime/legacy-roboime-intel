@@ -30,6 +30,9 @@ void IndirectKick::step()
 {
 	map<qreal, Robot*> nearTeam;
 	map<qreal, Robot*> nearPos;
+	map<qreal, Point*> bestPositions;
+
+	bool relocateWhilePassing=false;
 
 	qreal distPasserBall=0;
 
@@ -41,26 +44,25 @@ void IndirectKick::step()
 	Goal* myGoal = team->goal();
 	Stage* stage = this->stage_;
 	Ball* ball = stage->ball();
-
-
-	map<qreal, Point*> bestPositions=stage->getBestIndirectPositions(team, 10);
-
-
+	
 	Point ponto(0,0);
-	if(bestPositions.size()){
-		map<qreal, Point*>::iterator it1 = bestPositions.begin();
-		ponto=*((*it1).second);
-	} else {
-		ponto=Point(*(stage->getGoalFromOtherColor(team->color())));
-		ponto+=Point((ponto.x()<0)?1000:-1000,0);
-	}
-	Object pos(ponto.x(),ponto.y());
-
 
 	switch(stateMachine.currentState()){
 	case START:
+		bestPositions=stage->getBestIndirectPositions(team, 10);
+
+		if(0 && bestPositions.size()){
+			map<qreal, Point*>::iterator it1 = bestPositions.begin();
+			ponto=*((*it1).second);
+		} else {
+			ponto=Point(*(stage->getGoalFromOtherColor(team->color())));
+			ponto+=Point((ponto.x()<0)?1000:-1000,0);
+		}
+		bestPos=Object(ponto.x(),ponto.y());
+
+
 		nearTeam = stage->getClosestPlayersToBallThatCanKick(team); //Nossos robos por ordem de proximidade da bola (exceto o goleiro)
-		nearPos = stage->getClosestPlayersToPointThatCanKick(team,&pos);
+		nearPos = stage->getClosestPlayersToPointThatCanKick(team,&bestPos);
 		passedRobot=NULL;
 		passerRobot=NULL;
 
@@ -85,11 +87,11 @@ void IndirectKick::step()
 		}
 		break;
 	case GO_POSITION:
-		if(Line(*passedRobot,Point(pos)).length()<200){
+		if(Line(*passedRobot,Point(bestPos)).length()<200){
 			stateMachine.setState(PASS);
 			break;
 		}
-		passedGoto->setPoint(pos);
+		passedGoto->setPoint(bestPos);
 		passedGoto->step();
 		break;
 	case PASS:
@@ -97,10 +99,23 @@ void IndirectKick::step()
 			stateMachine.setState(TOUCHED);
 			break;
 		}
+
+		if(relocateWhilePassing){
+			bestPositions=stage->getBestIndirectPositions(team, 10);
+
+			if(bestPositions.size()){
+				map<qreal, Point*>::iterator it1 = bestPositions.begin();
+				ponto=*((*it1).second);
+			} else {
+				ponto=Point(*(stage->getGoalFromOtherColor(team->color())));
+				ponto+=Point((ponto.x()<0)?1000:-1000,0);
+			}
+			bestPos=Object(ponto.x(),ponto.y());
+		}
 		sk->setRobot(passerRobot);
 		sk->setRefLookPoint(passedRobot);
 		sk->step();
-		passedGoto->setPoint(&pos);
+		passedGoto->setPoint(&bestPos);
 		passedGoto->step();
 		break;
 	case TOUCHED:
@@ -117,7 +132,7 @@ void IndirectKick::step()
 				it1++;
 				passerAlternative=(*it1).second;
 			}
-			passedGoto->setPoint(&pos);
+			passedGoto->setPoint(&bestPos);
 			passedGoto->step();
 			attack->setRobot(passerAlternative);
 			attack->step();
