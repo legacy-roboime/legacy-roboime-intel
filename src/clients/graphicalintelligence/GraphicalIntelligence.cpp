@@ -95,12 +95,12 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 
 	stage["main"] = new Stage();
 	
-//	team["us"] = stage["main"]->yellowTeam();
-//	team["they"] = stage["main"]->blueTeam();
+	team["us"] = stage["main"]->yellowTeam();
+	team["they"] = stage["main"]->blueTeam();
 	
 	
-	team["us"] = stage["main"]->blueTeam();
-	team["they"] = stage["main"]->yellowTeam();
+	/*team["us"] = stage["main"]->blueTeam();
+	team["they"] = stage["main"]->yellowTeam();*/
 	
 
 	updater["referee"]->add(stage["main"]);
@@ -115,7 +115,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i,BLUE)));
+        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i,YELLOW)));
 		//real
         commander["blueTx"]->add(team["us"]->last());
 		updater["vision"]->add(team["us"]->last());
@@ -123,8 +123,10 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 		commander["blueSim"]->add(team["us"]->last());
         commander["blueGrSim"]->add(team["us"]->last());
 		updater["visionSim"]->add(team["us"]->last());
-
-		team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i,YELLOW)));
+	}
+	// FIXME: THE GAMBIARRATION
+	for(quint8 i = 0; i < 9; i++) {
+		team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i,BLUE)));
 		//real
 		commander["yellowTx"]->add(team["they"]->last());
 		updater["vision"]->add(team["they"]->last());
@@ -133,7 +135,6 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
         commander["yellowGrSim"]->add(team["they"]->last());
 		updater["visionSim"]->add(team["they"]->last());
 	}
-
 	Robot* gkUs = team["us"]->at(4);
 	Robot* gkThem = team["they"]->at(0);
 	Robot* pKickerUs = team["us"]->at(0);
