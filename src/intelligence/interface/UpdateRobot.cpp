@@ -48,7 +48,7 @@ void UpdateRobot::apply(Updater* u)
 		if(robot->patternId() == patternId() && robot->color() == color()) {
 			//robot->updatePosition(*this);
 				robot->updatePositionWithFilter(*this);
-			robot->setOrientation(theta());
+			robot->setOrientationWithFilter(theta());
 			robot->setTouchedBall(false);
 			if(robot->checkIfTouched()){
 				Stage *stage=robot->stage();
@@ -65,11 +65,11 @@ void UpdateRobot::apply(Updater* u)
 			float y = robot->y();
 			robot->setX(y);
 			robot->setY((-1.)*x + A/4.);
-			robot->setOrientation(robot->orientation() - PI/2.);
+			robot->setOrientationWithFilter(robot->orientation() - PI/2.);
 			if(robot->orientation()>PI) 
-				robot->setOrientation(robot->orientation() - 2.*PI);
+				robot->setOrientationWithFilter(robot->orientation() - 2.*PI);
 			else if(robot->orientation()<-PI) 
-				robot->setOrientation(robot->orientation() + 2.*PI);
+				robot->setOrientationWithFilter(robot->orientation() + 2.*PI);
 #endif
 
 			robot->updateSpeed(time_capture());

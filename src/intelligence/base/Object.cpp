@@ -44,6 +44,8 @@ Object::Object(const Object& object)
 	memcpy(vx,object.vx,4*sizeof(float));
 	memcpy(uy,object.uy,4*sizeof(float));
 	memcpy(vy,object.vy,4*sizeof(float));
+	memcpy(uo,object.uo,4*sizeof(float));
+	memcpy(vo,object.vo,4*sizeof(float));
 }
 
 void Object::updatePositionWithFilter(const Point &p)
@@ -112,6 +114,22 @@ void Object::setOrientation(qreal o)
 {
 	theta_ = o;
 }
+
+void Object::setOrientationWithFilter(qreal o)
+{
+	// orientation
+	uo[0] = uo[1];
+	uo[1] = uo[2];
+	uo[2] = uo[3];
+	uo[3] = o / gain;
+	vo[0] = vo[1];
+	vo[1] = vo[2];
+	vo[2] = vo[3];
+	vo[3] = (uo[0] + uo[3]) + coef[0] * (uo[1] + uo[2]) + (coef[1] * vo[0]) + (coef[2] * vo[1]) + coef[3] * vo[2];
+	
+	theta_ = vo[3];
+}
+
 
 Vector Object::speed() const
 {

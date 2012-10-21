@@ -36,7 +36,7 @@ PenaltyUs::~PenaltyUs()
 
 void PenaltyUs::setGoalkeeper(Robot* gk)
 {
-    player_[0]->setRobot(gk);
+    player_[1]->setRobot(gk);
 }
 
 /*
