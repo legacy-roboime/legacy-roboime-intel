@@ -5,6 +5,9 @@
 
 using namespace LibIntelligence;
 
+float Object::gain = 6.0;
+float Object::coef[4] = {3.0, 0.0, -1.0/3.0, 0.0};
+
 Object::Object(qreal x, qreal y, qreal sx, qreal sy, qreal t, qreal o)
 	: Point(x, y),
 	speed_(sx, sy),
@@ -18,11 +21,7 @@ Object::Object(qreal x, qreal y, qreal sx, qreal sy, qreal t, qreal o)
 	//low pass filter stuff
 	//NOTE: not initializing filter vectors
 	// they will get overriden anyway
-	gain = 6.0;
-	coef[0] = 3.0;
-	coef[1] = 0.0;
-	coef[2] = -1.0 / 3.0;
-	coef[3] = 0.0;
+
 }
 
 Object::Object(const Object& object)
