@@ -68,7 +68,7 @@ source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
 #Now add these generated files to the ADD_EXECUTABLE step
 # If this is NOT done, then the ui_*.h files will not be generated
-add_executable(graphicalintelligence-client
+add_executable(graphicalintelligence-client WIN32
     ${GINTC_HDR}
     ${GINTC_SRC}
     ${GINTC_UIS_H}
