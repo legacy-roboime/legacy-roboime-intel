@@ -14,3 +14,4 @@
 #include "LinearCombPlay.h"
 #include "ObeyReferee.h"
 #include "AutoRetaliate.h"
+#include "IndirectKick.h"

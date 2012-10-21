@@ -14,10 +14,10 @@ using namespace Tactics;
 using namespace Skills;
 using namespace DefenderT;
 
-Defender::Defender(QObject* p, Robot* r, Object* enemy, Point* cover, qreal dist, qreal speed)
+Defender::Defender(QObject* p, Robot* r, Object* enemy, Object* cover, qreal dist, qreal speed)
 	: Tactic(p,r),
 	enemy_(enemy),
-	driveToObj(new DriveToObject(this, r, (const Object*) cover, -(dist + r->body().cut()), enemy_, 100, 0.1745329251, speed, true)),
+	driveToObj(new DriveToObject(this, r, cover, -(dist + r->body().cut()), enemy_, 100, 0.1745329251, speed, true)),
 	fac(new FollowAndCover(this, r, (Point*) enemy_, cover, 300, speed))
 {
 	this->pushState(driveToObj);
@@ -41,10 +41,10 @@ void Defender::setEnemy(Object* enemy)
 	fac->setFollow(enemy);
 }
 
-void Defender::setCover(Point* cover)
+void Defender::setCover(Object* cover)
 {
 	fac->setCover(cover);
-	driveToObj->setObject((const Object*)cover);
+	driveToObj->setObject(cover);
 }
 
 void Defender::follow()
@@ -52,7 +52,7 @@ void Defender::follow()
 	this->setCurrentState(fac);
 }
 
-Object* Defender::enemy()
+const Object* Defender::enemy() 
 {
 	return enemy_;
 }
@@ -73,6 +73,11 @@ bool FacToDriveObjT::condition()
 
 FacToDriveObjT::FacToDriveObjT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
 
+void Defender::step()
+{
+	this->fac->setPlusSpeed(enemy()->speed());
+	Tactic::step();
+}
 //Tática do Zagueiro
 // Se não pode chutar a bola, fica na mesma coordenada Y da bola
 //void Defender::step()

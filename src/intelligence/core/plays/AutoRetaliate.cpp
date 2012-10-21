@@ -20,9 +20,9 @@ AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, Robot* g
 		player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), team->goal(), 600, speed);
 	}
 
-	cover1 = new Point(0, 0);
-	cover2 = new Point(0, 0);
-	cover3 = new Point(0, 0);
+	cover1 = new Object(0, 0);
+	cover2 = new Object(0, 0);
+	cover3 = new Object(0, 0);
 
 	init = false;
 
@@ -42,7 +42,7 @@ void AutoRetaliate::step(){
 	{
 		player_[0]->step();
 	}
-	else
+	/*else
 	{
 		map<qreal, Robot*> robotsCloseToGoal = stage()->getClosestPlayersToPoint(team, team->goal()->x(), team->goal()->y());
 		map<qreal, Robot*>::iterator goalIter = robotsCloseToGoal.begin();
@@ -58,7 +58,7 @@ void AutoRetaliate::step(){
 				break;
 			}
 		}
-	}
+	}*/
 
 	if(myGoal->width()>0){
 		Goal* goal = this->team()->goal();
@@ -70,7 +70,7 @@ void AutoRetaliate::step(){
 		cover3->setY(goal->y());
 		//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
 		for(int i = 3; i < this->team()->size(); i++){
-			Point* p;
+			Object* p;
 			if(i==3)
 				p = cover1;
 			else if(i==4)

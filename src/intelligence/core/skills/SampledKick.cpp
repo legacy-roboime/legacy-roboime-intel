@@ -17,7 +17,7 @@ using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
 SampledKick::SampledKick(QObject* parent, Robot* slave, Object* lookPoint, bool deterministic, qreal minPower, qreal maxPower, qreal speed, bool pass)
-	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15, 5 * 50., 20 * 5 * M_PI/180.),
+	: DriveToBall(parent, slave, lookPoint, speed, deterministic, 15,  50., 5 *  M_PI/180.),
 	minPower_(minPower),
 	maxPower_(maxPower),
 	powerK(KICKPOWERK),

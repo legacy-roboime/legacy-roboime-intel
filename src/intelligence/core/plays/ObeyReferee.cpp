@@ -37,6 +37,9 @@ Game Notifications
 #include "Halt.h"
 #include "PenaltyThem.h"
 #include "PenaltyUs.h"
+#include "IndirectKick.h"
+
+#define DELTA 200
 
 using namespace LibIntelligence;
 using namespace LibIntelligence::Plays;
@@ -48,9 +51,11 @@ ObeyReferee::ObeyReferee(QObject *q, Play *p, Robot* gk, Robot* pKicker)
 	halt(new Halt(this, p->team(), p->stage())),
 	penaltyUs(new PenaltyUs(this, p->team(), p->stage(), pKicker, gk)),
 	penaltyThem(new PenaltyThem(this, p->team(), p->stage(), gk)),
+	indirectKick(new IndirectKick(this, p->team(), p->stage(), gk, 3000)),
 	cmd('H'),
 	lastCmd('H')
-{}
+{
+}
 
 ObeyReferee::~ObeyReferee()
 {
@@ -94,26 +99,33 @@ void ObeyReferee::setGoalkeeper(Robot* gk)
     ((PenaltyThem*)penaltyThem)->setGoalkeeper(gk);
 }
 
+void ObeyReferee::setPenaltyKicker(Robot* pk)
+{
+	((PenaltyUs*)penaltyUs)->setPenaltyKicker(pk);
+}
+
 void ObeyReferee::step()
 {
+	bool firstTime=false;
+
 	Stage *sta = this->stage();
 	qreal dist=-1;
 
 	Ball *ball = sta->ball();
 
 	dist = sqrt(pow(lastBall.x() - ball->x(), 2) + pow(lastBall.y() - ball->y(), 2));
-
-	
 	//Commands Referee
 	if(cmd != sta->getCmdReferee()){
 		lastCmd = cmd;
 		cmd = sta->getCmdReferee();
 		lastBall = *ball;
+		firstTime=true;
 	}
 
 #ifdef REFERRE_CMD
 	cout << "JUIZ: " << cmd << endl;
 #endif
+
 
 	//if(lastCmd != cmd){
 	////	lastCmd = cmd;
@@ -126,7 +138,7 @@ void ObeyReferee::step()
 	if(cmd == 'f' && usColor == YELLOW)
 		play->step();
 	else if(cmd == 'f' && usColor == BLUE){
-		if(dist<200 && ball->speed().length() < 200)
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -134,7 +146,7 @@ void ObeyReferee::step()
 		}
 	}
 	else if(cmd == 'F' && usColor == YELLOW){
-		if(dist<200 && ball->speed().length() < 200)
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -143,26 +155,44 @@ void ObeyReferee::step()
 	}
 	else if(cmd == 'F' && usColor == BLUE)
 		play->step();
-	else if(cmd == 'i' && usColor == YELLOW)
-		play->step();
+
+	else if(cmd == 'i' && usColor == YELLOW) {
+		if(firstTime){
+			((IndirectKick*)indirectKick)->restart();
+		}
+		indirectKick->step();
+		if(((IndirectKick*)indirectKick)->finished()){
+			play->step();
+		} 
+	}
+
 	else if(cmd == 'i' && usColor == BLUE){
-		if(dist<200 && ball->speed().length() < 200)
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
 			play->step();
 		}
 	}
+
 	else if(cmd == 'I' && usColor == YELLOW){
-		if(dist<200 && ball->speed().length() < 200)
+		//FIXME fix the the threshold
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
 			play->step();
 		}
 	}
-	else if(cmd == 'I' && usColor == BLUE)
-		play->step();
+	else if(cmd == 'I' && usColor == BLUE) {
+		if(firstTime){
+			((IndirectKick*)indirectKick)->restart();
+		}
+		indirectKick->step();
+		if(((IndirectKick*)indirectKick)->finished()){
+			play->step();
+		}
+	}
 	else if(cmd == 'k' || cmd == 'K')
 		stopReferee->step();
     else if((cmd == 'p' && usColor == YELLOW) || (cmd == 'P' && usColor == BLUE))
@@ -174,7 +204,7 @@ void ObeyReferee::step()
 	else if(cmd == ' ' && (lastCmd == 'k' || lastCmd == 'p') && usColor == YELLOW)
 		play->step();
     else if(cmd == ' ' && lastCmd == 'k' && usColor == BLUE){
-		if(dist<200 && ball->speed().length() < 200)
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -182,7 +212,7 @@ void ObeyReferee::step()
 		}
 	}
     else if(cmd == ' ' && lastCmd == 'p' && usColor == BLUE){
-		if(dist<200 && ball->speed().length() < 200)
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			penaltyThem->step();
 		else{
 			//lastBall = *ball;
@@ -190,7 +220,7 @@ void ObeyReferee::step()
 		}
 	}
     else if(cmd == ' ' && lastCmd == 'K' && usColor == YELLOW){
-		if(dist<200 && ball->speed().length() < 200)
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			stopReferee->step();
 		else{
 			//lastBall = *ball;
@@ -198,7 +228,7 @@ void ObeyReferee::step()
 		}
 	}
     else if(cmd == ' ' && lastCmd == 'P' && usColor == YELLOW){
-		if(dist<200 && ball->speed().length() < 200)
+		if(dist<DELTA && ball->speed().length() < DELTA)
 			penaltyThem->step();
 		else{
 			//lastBall = *ball;

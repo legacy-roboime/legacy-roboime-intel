@@ -29,7 +29,9 @@ Stage::Stage()
 	blueTeam_(new Team(this, BLUE)),
 	yellowTeam_(new Team(this, YELLOW)),
     isLeftSideBlueGoal_(true)
-{}
+{
+	lastToucherRobot_=NULL;
+}
 
 Stage::Stage(const Stage& stage)
 	: QObject(),
@@ -55,6 +57,7 @@ Stage::Stage(const Stage& stage)
 	yellowGoal_ = new Goal(*(stage.yellowGoal()));
 	blueTeam_ = new Team(this, *(stage.blueTeam()));
 	yellowTeam_ = new Team(this, *(stage.yellowTeam()));
+	lastToucherRobot_=NULL;
 }
 
 Stage::~Stage()
