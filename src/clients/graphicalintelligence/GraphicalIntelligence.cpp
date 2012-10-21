@@ -29,6 +29,7 @@ using namespace LibIntelligence::Tactics;
 using namespace LibIntelligence::Plays;
 
 #include "config.h"
+#include "winmain.h"
 
 GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags),
