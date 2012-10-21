@@ -16,11 +16,12 @@
 //using namespace std;
 using namespace LibIntelligence;
 
+int* UpdaterVision::framesSinceLastSeenYellow = new int[MAX_NB_PATTERNS];
+int* UpdaterVision::framesSinceLastSeenBlue = new int[MAX_NB_PATTERNS];
+
 UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address) : 
 	Updater(), 
-	wantedCam_(2),
-	framesSinceLastSeenBlue(new int[MAX_NB_PATTERNS]),
-	framesSinceLastSeenYellow(new int[MAX_NB_PATTERNS])
+	wantedCam_(2)
 {
 	QHostAddress groupAddress = QHostAddress(address);
 
@@ -96,7 +97,7 @@ void UpdaterVision::prepare() {
 			double t_sent = detection.t_sent();
 
 			for (int i = 0; i < detection.balls_size(); i++){
-				//if(detection.camera_id() == 0)
+				if(detection.camera_id() == 0)
 					enqueue(new UpdateBall(detection.balls(i), t_sent, t_capture, detection.camera_id()));
 			}
 

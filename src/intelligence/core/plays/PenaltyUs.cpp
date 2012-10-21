@@ -18,8 +18,7 @@ PenaltyUs::PenaltyUs(QObject* parent, Team* team ,Stage* stage, Robot* pKicker, 
 	player_[1] = new Goalkeeper(this, gk, 3000);
 	((Goalkeeper*)player_[1])->setAggressive(false);
 	for(int i = 0; i < team->size(); i++)
-		if(team->at(i)->id()!=pKicker->id() && team->at(i)->id()!=gk->id())
-			gotos.push_back(new Goto(this, team->at(i), 0, 0, 0, 3000, false));
+		gotos.push_back(new Goto(this, team->at(i), 0, 0, 0, 3000, false));
 }
 
 void PenaltyUs::setPenaltyKicker(Robot* pk)
@@ -75,7 +74,8 @@ void PenaltyUs::step()
 			gotos.at(i)->setOrientation(0);
 		else
 			gotos.at(i)->setOrientation(M_PI);
-		gotos.at(i)->step();
+		if(team->at(i)->id()!=penaltyKicker->id() && team->at(i)->id()!=((Goalkeeper*)player_[1])->robot()->id())
+			gotos.at(i)->step();
 	}
 }
 

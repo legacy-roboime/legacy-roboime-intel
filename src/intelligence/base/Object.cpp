@@ -2,6 +2,8 @@
 #include <QVector>
 #include <QList>
 #include <cstdio>
+#include "Robot.h"
+#include "mathutils.h"
 
 using namespace LibIntelligence;
 
@@ -22,6 +24,11 @@ Object::Object(qreal x, qreal y, qreal sx, qreal sy, qreal t, qreal o)
 	//NOTE: not initializing filter vectors
 	// they will get overriden anyway
 
+	lo = 0;
+	for (int i = 0; i < 4; ++i) {
+		uo[i] = 0;
+		vo[i] = 0;
+	}
 }
 
 Object::Object(const Object& object)
@@ -31,7 +38,8 @@ Object::Object(const Object& object)
     omega_(object.omega_),
     timeOld_(object.timeOld_),
     thetaOld_(object.thetaOld_),
-    posOld_(object.posOld_)//,
+    posOld_(object.posOld_),
+	lo(object.lo)
 	//useFilter_(object.useFilter_)
 {
 	gain = 6.0;
@@ -93,7 +101,7 @@ void Object::updateSpeed(double time)
 		speed_.setX((x() - posOld_.x())/deltaTime);
 		speed_.setY((y() - posOld_.y())/deltaTime);
 
-		if(abs((long)(this->orientation() - thetaOld_)) <  1){		//TODO: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
+		if(abs((long)(this->orientation() - thetaOld_)) <  1){//FIXME: GAMBIARRA PARA SOLUCIONAR O PROBLEMA DE TRANSIÇÃO DE 2PI PARA 0 
 			omega_ =  (this->orientation() - thetaOld_)/deltaTime;
 		}
 
@@ -116,17 +124,32 @@ void Object::setOrientation(qreal o)
 
 void Object::setOrientationWithFilter(qreal o)
 {
+	//XXX: TEST
+	//using namespace std;
+	//static FILE* f = fopen("teste.csv", "w");
+	//bool t = ((Robot*)this)->id() == 2;
+
+	float d = o - lo;
+	// Normalize d to stay between -180 and 180 degrees to add correctly
+	while(d >= M_PI) d -= M_2PI;
+	while(d < -M_PI) d += M_2PI;
+
 	// orientation
 	uo[0] = uo[1];
 	uo[1] = uo[2];
 	uo[2] = uo[3];
-	uo[3] = o / gain;
+	uo[3] = d / gain;
 	vo[0] = vo[1];
 	vo[1] = vo[2];
 	vo[2] = vo[3];
 	vo[3] = (uo[0] + uo[3]) + coef[0] * (uo[1] + uo[2]) + (coef[1] * vo[0]) + (coef[2] * vo[1]) + coef[3] * vo[2];
 	
-	theta_ = vo[3];
+	theta_ = theta_ + vo[3];
+	while(theta_ >= M_PI) theta_ -= M_2PI;
+	while(theta_ < -M_PI) theta_ += M_2PI;
+	
+	lo = o;
+	//if(t) fprintf(f, "%f;%f;\n", d, vo[3]);
 }
 
 

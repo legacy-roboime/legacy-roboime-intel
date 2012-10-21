@@ -339,8 +339,9 @@ void GraphicalIntelligence::setGoalkeeper()
 }
 void GraphicalIntelligence::setPenaltyKicker()
 {
-	((ObeyReferee *) play["refereeU"])->setPenaltyKicker(team["us"]->at(ui.cmbGoalkeeper->currentText().toInt()));
-	((ObeyReferee *) play["refereeT"])->setPenaltyKicker(team["they"]->at(ui.cmbGoalkeeper->currentText().toInt()));
+	int id = ui.cmbPenalty->currentText().toInt();
+	((ObeyReferee *) play["refereeU"])->setPenaltyKicker(team["us"]->at(id));
+	((ObeyReferee *) play["refereeT"])->setPenaltyKicker(team["they"]->at(id));
 }
 
 void GraphicalIntelligence::setRobotKickAbility()
