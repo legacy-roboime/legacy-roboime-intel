@@ -12,6 +12,7 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 {
 	qreal deltaTeta = (23*3.14)/180.;
 	player_[0] = new Goalkeeper(this, gk, 3000);
+	((Goalkeeper*)player_[0])->setAggressive(false);
 	//usei team->at(0), mas tanto faz pq a tatica é associada dinamicamente ao robo
 	player_[1] = new Blocker(this, team->at(0), 0);
 	player_[2] = new Blocker(this, team->at(0), -deltaTeta);
@@ -21,8 +22,8 @@ StopReferee::StopReferee(QObject* parent, Team* team ,Stage* stage, Robot* gk)
 		player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), team->goal(), 600, 3000);
 	}
 
-	cover1 = new Point(0, 0);
-	cover2 = new Point(0, 0);
+	cover1 = new Object(0, 0);
+	cover2 = new Object(0, 0);
 
 	init = false;
 }
@@ -52,7 +53,7 @@ void StopReferee::step()
 		cover2->setX(myGoal->x());
 		cover2->setY(myGoal->y() - myGoal->width()/4);
 		for(int i = 4; i < this->team()->size(); i++){
-			Point* p;
+			Object* p;
 			if(i==4)
 				p = cover1;
 			else

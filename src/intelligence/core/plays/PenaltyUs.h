@@ -20,8 +20,9 @@ namespace LibIntelligence
 			~PenaltyUs();
 			virtual void step();
             void setGoalkeeper(Robot* gk);
-
+			void setPenaltyKicker(Robot* pk);
 		private:
+			Robot* penaltyKicker;
 			QVector<Goto*> gotos;
 		};
 	}

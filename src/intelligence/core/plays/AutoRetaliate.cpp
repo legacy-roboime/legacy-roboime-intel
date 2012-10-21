@@ -20,9 +20,9 @@ AutoRetaliate::AutoRetaliate(QObject *parent, Team* team, Stage* stage, Robot* g
 		player_[i] = new Defender(this, this->team()->at(0), this->team()->enemyTeam()->at(0), team->goal(), 600, speed);
 	}
 
-	cover1 = new Point(0, 0);
-	cover2 = new Point(0, 0);
-	cover3 = new Point(0, 0);
+	cover1 = new Object(0, 0);
+	cover2 = new Object(0, 0);
+	cover3 = new Object(0, 0);
 
 	init = false;
 
@@ -38,6 +38,28 @@ void AutoRetaliate::step(){
 	Team* team = this->team_;
 	Goal* myGoal = team->goal();
 
+	if(player_[0]->robot()->isActive())
+	{
+		player_[0]->step();
+	}
+	/*else
+	{
+		map<qreal, Robot*> robotsCloseToGoal = stage()->getClosestPlayersToPoint(team, team->goal()->x(), team->goal()->y());
+		map<qreal, Robot*>::iterator goalIter = robotsCloseToGoal.begin();
+		for(int j=0; j<robotsCloseToGoal.size(); j++){
+			Robot* r = goalIter.first;
+		}
+		for(int i=0; i<team->size(); i++)
+		{
+			if(team->at(i)->isActive())
+			{
+				player_[0]->setRobot(team->at(i));
+				player_[0]->step();
+				break;
+			}
+		}
+	}*/
+
 	if(myGoal->width()>0){
 		Goal* goal = this->team()->goal();
 		cover1->setX(goal->x());
@@ -48,7 +70,7 @@ void AutoRetaliate::step(){
 		cover3->setY(goal->y());
 		//usei team->enemyTeam()->at(0), mas tanto faz pq o enemy eh associada dinamicamente ao robo
 		for(int i = 3; i < this->team()->size(); i++){
-			Point* p;
+			Object* p;
 			if(i==3)
 				p = cover1;
 			else if(i==4)
@@ -68,6 +90,8 @@ void AutoRetaliate::step(){
 		map<qreal, Robot*> close = stage->getClosestPlayersToBallThatCanKick(team);
 		map<int, Robot*> ids;
 		map<qreal, Robot*> enemys = stage->getClosestPlayersToPointThatCanKick(team->enemyTeam(), (Point*)team->goal());
+
+
 
 		//Attacker e Blocker
 		int i=0;
@@ -116,8 +140,6 @@ void AutoRetaliate::step(){
 			it2++;
 		}
 
-		//Goleiro
-		if(player_[0]->robot())
-			player_[0]->step();
+		
 	}
 }

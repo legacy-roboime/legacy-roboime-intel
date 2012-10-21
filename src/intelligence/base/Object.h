@@ -22,6 +22,7 @@ namespace LibIntelligence
 		void updateSpeed(double time);
 
 		void setOrientation(qreal);
+		void setOrientationWithFilter(qreal);
 		qreal orientation() const;
 
 		//TODO: implement speed estimation
@@ -32,12 +33,22 @@ namespace LibIntelligence
 		void setAngSpeed(const qreal &);
 		qreal angSpeed() const;
 
+		//bool useFilter() { return useFilter_; }
+		//void setUseFilter(bool b) { useFilter_ = b; }
+		void updatePositionWithFilter(const Point &);
+
 	private:
 		Vector speed_;
 		qreal theta_, omega_;
 
 		qreal timeOld_, thetaOld_;
 		Point posOld_;
+
+		//low pass filter stuff
+		//TODO: make this a filter object??
+		//XXX: only works for 120hz sampling rate
+		//bool useFilter_;
+		float gain, ux[4], vx[4], uy[4], vy[4], uo[4], vo[4], coef[4];
 	};
 }
 

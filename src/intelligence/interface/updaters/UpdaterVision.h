@@ -22,14 +22,21 @@ namespace LibIntelligence
 		void receive();
 		void step();
 		bool timeout();
+		int* framesSinceLastSeenBlue;
+		int* framesSinceLastSeenYellow;
+		// What cameras do you want?
+		// 0 for cam0, 1 for cam1, 2 for both cams.
+		void setWantedCam(int i) { wantedCam_ = i; }
 
 	private slots:
 		void receiveData();
 
 	private:
+		int wantedCam_;
 		char cTimeout;
 		QUdpSocket* udpSocket;
 		QQueue<SSL_WrapperPacket*> packets;
 		unsigned int itr_vision;
+
 	};
 }

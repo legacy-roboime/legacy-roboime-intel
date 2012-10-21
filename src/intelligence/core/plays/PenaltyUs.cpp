@@ -9,14 +9,22 @@ using namespace Plays;
 using namespace Tactics;
 
 PenaltyUs::PenaltyUs(QObject* parent, Team* team ,Stage* stage, Robot* pKicker, Robot* gk)
-	: Play(parent, team, stage)
+	: Play(parent, team, stage),
+	penaltyKicker(pKicker)
 {
 	qreal deltaTeta = (23*3.14)/180.;
+	
 	player_[0] = new Blocker(this, pKicker, deltaTeta, 3000, 150);
 	player_[1] = new Goalkeeper(this, gk, 3000);
+	((Goalkeeper*)player_[1])->setAggressive(false);
 	for(int i = 0; i < team->size(); i++)
-		if(team->at(i)->id()!=pKicker->id() && team->at(i)->id()!=gk->id())
-			gotos.push_back(new Goto(this, team->at(i), 0, 0, 0, 3000, false));
+		gotos.push_back(new Goto(this, team->at(i), 0, 0, 0, 3000, false));
+}
+
+void PenaltyUs::setPenaltyKicker(Robot* pk)
+{
+	this->penaltyKicker = pk;
+	((Blocker*) player_[0])->setRobot(pk);
 }
 
 PenaltyUs::~PenaltyUs()
@@ -27,7 +35,7 @@ PenaltyUs::~PenaltyUs()
 
 void PenaltyUs::setGoalkeeper(Robot* gk)
 {
-    player_[0]->setRobot(gk);
+    player_[1]->setRobot(gk);
 }
 
 /*
@@ -66,7 +74,8 @@ void PenaltyUs::step()
 			gotos.at(i)->setOrientation(0);
 		else
 			gotos.at(i)->setOrientation(M_PI);
-		gotos.at(i)->step();
+		if(team->at(i)->id()!=penaltyKicker->id() && team->at(i)->id()!=((Goalkeeper*)player_[1])->robot()->id())
+			gotos.at(i)->step();
 	}
 }
 
