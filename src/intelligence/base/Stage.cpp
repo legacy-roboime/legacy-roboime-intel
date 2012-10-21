@@ -4,7 +4,9 @@
 #include "Goal.h"
 #include <cmath>
 #include <cfloat>
+#include <vector>
 #include <limits.h>
+#include <map>
 
 using namespace LibIntelligence;
 
@@ -497,6 +499,186 @@ map<qreal, Robot*> Stage::getClosestPlayersToBallThatCanKick(const Team* team) c
 {
 	return getClosestPlayersToPointThatCanKick(team, (Point*)ball_);
 }
+
+
+
+//----------------------- INÍCIO DO getBestPositionsToIndirectPass -----------------
+//----------------------- INÍCIO DO getBestPositionsToIndirectPass -----------------
+//----------------------- INÍCIO DO getBestPositionsToIndirectPass -----------------
+//qtd_x e qtd_y definem a qtd de pontos a serem mapeados
+//alteração: qtd_x define a precisão!
+
+map<qreal, Point*> Stage::getBestIndirectPositions(const Team* team, int qtd_x) const
+{
+		map<qreal, Point*> finalCandidates;
+	int qtd_y = qtd_x;
+
+
+
+//-------------------- início do getBestPositions
+		
+	//define a qtd de pontos a serem mapeados
+	
+	
+	vector< vector<Point*> > matrix(qtd_y, vector<Point*>(qtd_x));
+	vector< vector<Line*> > matrixLines(qtd_y, vector<Line*>(qtd_x));
+	vector< vector<bool> > matrixCandidates(qtd_y, vector<bool>(qtd_x));
+	vector< vector<qreal> > matrixDistance1(qtd_y, vector<qreal>(qtd_x));
+	vector< vector<qreal> > matrixDistance2(qtd_y, vector<qreal>(qtd_x));
+	
+		
+
+	Point* finalTarget = team->enemyGoal(); //alvo final, onde deve ser executado o chute
+											//AJUSTAR PARA O MEIO DO MAIOR ESPAÇO VAZIO EXISTENTE NO ENEMYGOAL!!!!
+
+	Point* start = (Point*)ball_;
+
+			
+	bool tempCandidate = false; //bool temporário que receberá true caso não haja robô inimigo obstruindo
+		
+
+		
+
+	//definindo o retângulo que conterá os pontos da matriz dos pontos candidatos
+	qreal len = ( 0.5 * fieldLength_ - defenseRadius_ - 2.*team->at(0)->body().radius() );
+	qreal wid = (0.5 * fieldWidth_ - 2.*team->at(0)->body().radius() ); //nao esquecer de somar aqui o raio do robô também
+	qreal delta_x = 2.*len / qtd_x,
+		  delta_y = 2.*wid / qtd_y,
+		  temp_x = -1.*len,
+		  temp_y = -1.*wid;
+
+
+	//Calculando primeiro passe: Distance1
+	for(int j = 0; j < qtd_y; j++){
+		if(j==0) temp_y = -1.*wid;
+
+		for(int i = 0; i < qtd_x; i++){
+			if(i==0) temp_x = -1.*len;
+			matrix[i][j] = new Point(temp_x, temp_y); //matriz de pontos candidatos
+			matrixLines[i][j] = new Line(start->x(), start->y(), matrix[i][j]->x(), matrix[i][j]->y() ); //matriz de linhas entre a bola e cada ponto candidato
+			matrixCandidates[i][j] = false;
+			matrixDistance1[i][j] = -1.;
+			matrixDistance2[i][j] = -1.;
+			tempCandidate = true;
+			
+			//atualizando valores das coordenadas
+			temp_x += delta_x;
+			temp_y += delta_y;
+
+			//passando por todos os robôs inimigos
+			for(int k = 0; k < team->enemyTeam()->size(); k++){ 
+				Point* temp = new Point(team->enemyTeam()->at(k)->x() , team->enemyTeam()->at(k)->y()); //ponto onde se encontra o robô inimigo
+				qreal temp_dist = matrixLines[i][j]->distanceTo(*temp); //distância da linha até o robô inimigo
+					
+				if( temp_dist <= (team->enemyTeam()->at(k)->body().radius() + ball()->radius()) ){ //se não houver algum robô na trajetória...
+					tempCandidate = false;
+				}
+				delete temp;
+			}
+			
+			//passando por todos os nossos robôs
+			for(int m = 0; m < team->size(); m++){ 
+				Point* temp2 = new Point(team->at(m)->x() , team->at(m)->y()); //ponto onde se encontra o robô
+				qreal temp_dist2 = matrixLines[i][j]->distanceTo(*temp2); //distância da linha até o robô
+					
+				if(temp_dist2 <= (team->at(m)->body().radius() + ball()->radius()) ){ //se não houver robô amigo na trajetória...
+					tempCandidate = false;
+					//qreal tempDist = Line(matrix[i][j]->x(), matrix[i][j]->y(), temp2->x(), temp2->y()).length();
+				}
+				delete temp2;
+			}
+
+			if(tempCandidate==true){
+				matrixDistance1[i][j] = Line(matrix[i][j]->x(), matrix[i][j]->y(), start->x(), start->y()).length();
+				matrixCandidates[i][j] = true; //se nao houver inimigo nem amigo obstruindo, o ponto é candidato.
+			}
+		}
+	}
+	
+	//Calculando chute para o gol: Distance2
+	for(int j=0; j < qtd_y; j++){
+		for(int i = 0; i < qtd_x; i++){
+			if(matrixCandidates[i][j] == true){ //só calcula a segunda trajetória se o primeiro passe for possível
+				delete matrixLines[i][j];
+				matrixLines[i][j] = new Line(finalTarget->x(), finalTarget->y(), matrix[i][j]->x(), matrix[i][j]->y() ); //linha entre pt candidato e finalTarget
+				tempCandidate = true;
+						
+				//passando por todos os robôs inimigos
+				for(int k = 0; k < team->enemyTeam()->size(); k++){ 
+					Point* temp = new Point(team->enemyTeam()->at(k)->x() , team->enemyTeam()->at(k)->y()); //ponto onde se encontra o robô inimigo
+					qreal temp_dist = matrixLines[i][j]->distanceTo(*temp); //distância da linha até o robô inimigo
+					
+					if( temp_dist <= (team->enemyTeam()->at(k)->body().radius() + ball()->radius()) ){ //se não houver algum robô na trajetória...
+						tempCandidate = false;
+						matrixCandidates[i][j] = false;
+					}
+					delete temp;
+				}
+
+				//passando por todos os nossos robôs
+				for(int m = 0; m < team->size(); m++){ 
+					Point* temp2 = new Point(team->at(m)->x() , team->at(m)->y()); //ponto onde se encontra o robô
+					qreal temp_dist2 = matrixLines[i][j]->distanceTo(*temp2); //distância da linha até o robô
+					
+					if( temp_dist2 <= (team->at(m)->body().radius() + ball()->radius()) ){ //se não houver robô amigo na trajetória...
+						tempCandidate = false; //se houver obstrução, o ponto deixa de ser candidato.
+						matrixCandidates[i][j] = false;
+					}
+					delete temp2;
+				}
+			}
+			if(matrixCandidates[i][j] == true){
+				matrixDistance2[i][j] = Line(matrix[i][j]->x(), matrix[i][j]->y(), finalTarget->x(), finalTarget->y()).length();
+			}
+		}//for int i
+	}//for int j
+					
+
+
+	
+	
+	bool allFalseCheck = false;
+	for(int j = 0; j < qtd_y; j++){
+		for(int i = 0; i < qtd_x; i++){
+			if(matrixCandidates[i][j] == true){
+				qreal totalDist = matrixDistance1[i][j] + matrixDistance2[i][j];
+				finalCandidates[ totalDist ] = matrix[i][j];
+				allFalseCheck = true;
+			}
+		}
+	}
+
+
+	for(int j = 0; j < qtd_y; j++){
+		for(int i = 0; i < qtd_x; i++){
+			//delete matrix[i][j];
+			delete matrixLines[i][j];
+		}
+	}
+	
+
+
+	//-------------------- fim do getBestPositions
+
+		
+	if(allFalseCheck==false){
+		//adicionar ponto genérico no map
+		return finalCandidates;
+	}
+
+	else
+		return finalCandidates;
+}
+//-----------------------   FIM DO getBestPositionsToIndirectPass   -----------------
+//-----------------------   FIM DO getBestPositionsToIndirectPass   -----------------
+//-----------------------   FIM DO getBestPositionsToIndirectPass   -----------------
+
+
+
+
+
+
+
 
 Robot* Stage::getClosestOrderPlayerToBall(const Team* team, int order) const
 {
