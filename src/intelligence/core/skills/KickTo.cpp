@@ -1,3 +1,4 @@
+#include <cmath>
 #include "KickTo.h"
 #include "GetBall.h"
 #include "Robot.h"
@@ -5,8 +6,7 @@
 #include "Ball.h"
 #include "geomutils.h"
 
-#define M_PI	3.1415926535897932
-
+using std::exp;
 using namespace LibIntelligence;
 using namespace LibIntelligence::Skills;
 
