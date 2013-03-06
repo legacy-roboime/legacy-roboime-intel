@@ -40,7 +40,6 @@ set(INT_SRC
 
     core/plays/Play.cpp
     core/plays/CBR2011.cpp
-    core/plays/MultiController.cpp
     core/plays/FreeKickThem.cpp
     core/plays/Halt.cpp
     core/plays/LinearCombPlay.cpp
@@ -79,9 +78,7 @@ set(INT_SRC
     core/tactics/Zickler43.cpp
     core/tactics/Blocker.cpp
     core/tactics/Tactic.cpp
-    core/tactics/Controller.cpp
     core/tactics/LinearCombTactic.cpp
-    core/tactics/Controller2.cpp
     core/tactics/KeyboardController.cpp
     core/tactics/Defender.cpp
     core/tactics/GoalSwitcheroo.cpp
@@ -109,20 +106,26 @@ set(INT_SRC
     # add new sources here
 
     interface/updaters/UpdaterReferee.cpp
-    interface/updaters/UpdaterSIMi.cpp
-    interface/updaters/UpdaterSIM.cpp
     interface/updaters/UpdaterVision.cpp
     # add new sources here
 
     prototypes/Robots.cpp
     # add new sources here
 
-    utils/CXBOXController.cpp
     utils/PID.cpp
     utils/LinearRegression.cpp
     utils/Sampler.cpp
     # add new sources here
 )
+if(MSVC)
+set(INT_SRC
+    ${INT_SRC}
+    utils/CXBOXController.cpp
+    core/plays/MultiController.cpp
+    core/tactics/Controller.cpp
+    core/tactics/Controller2.cpp
+)
+endif()
 
 aux_source_directory(utils/tree INT_SRC_UTILS_TREE)
 
