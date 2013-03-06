@@ -303,7 +303,6 @@ Intelligence::Intelligence(QObject *parent)
 #ifdef HAVE_WINDOWS
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 #endif
-	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"], 6000);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], gkUs, 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], gkThem, 6000);
@@ -311,7 +310,6 @@ Intelligence::Intelligence(QObject *parent)
 	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], gkThem, pKickerThem);
 	play["stoprefT"] = new Plays::StopReferee(this, team["they"], stage["main"], team["they"]->at(0));
 
-	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
 #ifdef HAVE_WINDOWS
 	tactic["controller"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo

@@ -99,7 +99,7 @@ namespace LibIntelligence
 		map<qreal, Robot*> getClosestPlayersToPointThatCanKick(const Team* team, Point* point) const;
 		map<qreal, Robot*> getClosestPlayersToBallThatCanKick(const Team* team) const;
 		//método novo
-		map<qreal, Point*> Stage::getBestIndirectPositions(const Team* team, int qtd_x) const;
+		map<qreal, Point*> getBestIndirectPositions(const Team* team, int qtd_x) const;
 
 		Robot* getClosestOrderPlayerToBall(const Team* team, int order) const;
 		Team* getTeamFromColor(const TeamColor& color);

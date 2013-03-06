@@ -39,7 +39,7 @@ namespace LibIntelligence
 		private:
 			qreal speed;
 			PlayStateMachine stateMachine;
-			typedef enum StateName {START, GO_POSITION, PASS, TOUCHED, END};
+			enum StateName {START, GO_POSITION, PASS, TOUCHED, END};
 			Goto* passedGoto;
 			Tactics::Zickler43* attack;
 			SampledKick* sk;
