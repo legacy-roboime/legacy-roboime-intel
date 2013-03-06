@@ -1,22 +1,24 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.9)
+
+project(roboime-cli)
 
 ##############################
 # Include all headers
 #
 
-include_directories(.)
-file(GLOB INTC_HDR "*.h")
+set(src src)
+include_directories(${src})
+file(GLOB CLI_HDR RELATIVE ${src} "*.h")
 
 ##############################
 # Files which will be compiled
 #
 
-set(INTC_SRC
-    main.cpp
-    Intelligence.cpp
+set(CLI_SRC
+    ${src}/main.cpp
+    ${src}/Intelligence.cpp
     # add new sources here
 )
-
 
 
 ##############################
@@ -25,7 +27,6 @@ set(INTC_SRC
 
 # Intelligence
 include_directories(${INT_INC_DIRS})
-
 
 
 ##############################
@@ -37,19 +38,16 @@ directory_source_group(headers . *.h)
 directory_source_group(src . *.cpp)
 source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
-add_executable(intelligence-client
-    ${INTC_HDR}
-    ${INTC_SRC}
+set(app roboime-cli)
+
+add_executable(${app}
+    ${CLI_HDR}
+    ${CLI_SRC}
 )
 
-target_link_libraries(intelligence-client
-    intelligence
-)
+target_link_libraries(${app} roboime-intel)
 
-qt5_use_modules(intelligence-client
-    Core
-    Widgets
-)
+qt5_use_modules(${app} Core Widgets)
 
-set_property(TARGET intelligence-client PROPERTY FOLDER apps)
+set_property(TARGET ${app} PROPERTY FOLDER apps)
 
