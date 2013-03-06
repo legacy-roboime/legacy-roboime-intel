@@ -11,6 +11,7 @@ standard_paths(${PROJECT_SOURCE_DIR} bin lib)
 
 # Qt stuff
 find_package(Qt5)
+find_package(Qt5Core)
 
 #add_definitions(-DUSE_PHYSX)
 #add_definitions(-DUSE_SIMULATION)
