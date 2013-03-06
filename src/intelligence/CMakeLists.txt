@@ -23,7 +23,6 @@ set(INT_SRC
     base/Body.cpp
     base/StageY.cpp
     base/Component.cpp
-    base/StageX.cpp
     base/Dribbler.cpp
     base/Stage.cpp
     base/Goal.cpp
@@ -39,13 +38,10 @@ set(INT_SRC
     core/filters/Filter.cpp
     # add new sources here
 
-    core/plays/BGT.cpp
     core/plays/Play.cpp
     core/plays/CBR2011.cpp
     core/plays/MultiController.cpp
     core/plays/FreeKickThem.cpp
-    core/plays/Minmax.cpp
-    core/plays/Minmax2.cpp
     core/plays/Halt.cpp
     core/plays/LinearCombPlay.cpp
     core/plays/StopReferee.cpp
@@ -80,7 +76,6 @@ set(INT_SRC
 
     core/tactics/GotoTactic.cpp
     core/tactics/Attacker.cpp
-    core/tactics/AttackerMinMax2.cpp
     core/tactics/Zickler43.cpp
     core/tactics/Blocker.cpp
     core/tactics/Tactic.cpp

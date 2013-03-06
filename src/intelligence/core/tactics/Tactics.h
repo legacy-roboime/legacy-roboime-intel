@@ -12,5 +12,4 @@
 #include "GoalSwitcheroo.h"
 #include "Zickler43.h"
 #include "LinearCombTactic.h"
-#include "AttackerMinMax2.h"
 #include "GotoTactic.h"
