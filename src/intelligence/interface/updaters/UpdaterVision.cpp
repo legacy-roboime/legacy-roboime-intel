@@ -26,7 +26,7 @@ UpdaterVision::UpdaterVision(QObject* parent, quint16 port, const char* address)
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);
-	udpSocket->bind(port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
+	udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 	udpSocket->joinMulticastGroup(groupAddress);
 
 	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(receiveData()));

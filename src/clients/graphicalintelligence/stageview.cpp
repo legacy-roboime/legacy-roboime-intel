@@ -52,7 +52,7 @@ void StageView::redraw()
 		QGraphicsEllipseItem* bola = new QGraphicsEllipseItem(
 					field->pos().x() + (stage->ball()->x() - BALL_RADIUS/2),
 					field->pos().y() + (stage->ball()->y() - BALL_RADIUS),
-					BALL_RADIUS,BALL_RADIUS,NULL,scene());
+					BALL_RADIUS,BALL_RADIUS,NULL);
 
 		bola->setBrush(QBrush(orange));
 		bola->setPen(QPen(orange));

@@ -1,7 +1,7 @@
 #ifndef GRAPHICALINTELLIGENCE_H
 #define GRAPHICALINTELLIGENCE_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include "ui_GraphicalIntelligence.h"
 #include "alterstatevars.h"
 
@@ -30,7 +30,7 @@ class GraphicalIntelligence : public QMainWindow
 	Q_OBJECT
 
 public:
-	GraphicalIntelligence(QWidget *parent = 0, Qt::WFlags flags = 0);
+	GraphicalIntelligence(QWidget *parent = 0);
 	~GraphicalIntelligence();
 
 	// STP utils

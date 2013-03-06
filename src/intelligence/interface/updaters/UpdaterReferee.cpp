@@ -15,7 +15,7 @@ UpdaterReferee::UpdaterReferee(QObject* parent, const char* address, int port)
 	QHostAddress groupAddress = QHostAddress(address);
 
 	udpSocket = new QUdpSocket(this);
-	udpSocket->bind(port, QUdpSocket::ShareAddress);
+	udpSocket->bind(QHostAddress::AnyIPv4, port, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);
 	udpSocket->joinMulticastGroup(groupAddress);
 
 	connect(udpSocket, SIGNAL(readyRead()), this, SLOT(receiveData()));

@@ -1,6 +1,6 @@
 #include "GraphicalIntelligence.h"
-#include <QtGui/QApplication>
-#include <QtCore/QCoreApplication>
+#include <QApplication>
+#include <QCoreApplication>
 #include <iostream>
 #include "config.h"
 

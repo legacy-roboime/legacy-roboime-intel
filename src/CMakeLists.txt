@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.9)
 
 project(RoboIME)
 
@@ -26,10 +26,7 @@ if(UNIX)
 endif()
 
 # Qt stuff
-set(QT_USE_QTNETWORK true)
-set(QT_USE_QTOPENGL true)
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
+find_package(Qt5Core)
 
 #add_definitions(-DUSE_PHYSX)
 #add_definitions(-DUSE_SIMULATION)
@@ -38,7 +35,6 @@ include(${QT_USE_FILE})
 find_package(Protobuf REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS})
 
-add_subdirectory(communication)
 add_subdirectory(intelligence)
 add_subdirectory(clients/intelligence)
 add_subdirectory(clients/graphicalintelligence)

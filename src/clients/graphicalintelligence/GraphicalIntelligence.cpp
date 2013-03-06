@@ -31,8 +31,8 @@ using namespace LibIntelligence::Plays;
 #include "config.h"
 #include "winmain.h"
 
-GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
-	: QMainWindow(parent, flags),
+GraphicalIntelligence::GraphicalIntelligence(QWidget *parent)
+	: QMainWindow(parent),
 	useSimulation(true),
     mode(PLAY),
     alterStateVarsWindow(new AlterStateVars(this)),

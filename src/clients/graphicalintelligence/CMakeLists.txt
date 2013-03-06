@@ -20,21 +20,35 @@ set(GINTC_SRC
     stageview.cpp
     alterstatevars.cpp
     # add new sources here
-)
-
-qt4_wrap_ui(GINTC_UIS_H
     GraphicalIntelligence.ui
     alterstatevars.ui
-)
-
-qt4_add_resources(GINTC_RC
     GraphicalIntelligence.qrc
     ${SHARED_RC}
 )
 
-qt4_wrap_cpp(GINTC_MOC_SRCS
-    GraphicalIntelligence.h
+set(GINTC_UI
+    GraphicalIntelligence.ui
+    alterstatevars.ui
 )
+
+set(GINT_RC
+    GraphicalIntelligence.qrc
+    ${SHARED_RC}
+)
+
+#qt5_wrap_ui(GINTC_UIS_H
+#    GraphicalIntelligence.ui
+#    alterstatevars.ui
+#)
+#
+#qt5_add_resources(GINTC_RC
+#    GraphicalIntelligence.qrc
+#    ${SHARED_RC}
+#)
+#
+#qt5_wrap_cpp(GINTC_MOC_SRCS
+#    GraphicalIntelligence.h
+#)
 
 ##############################
 # Intra dependencies
@@ -51,11 +65,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 # Qt stuff
 #
 
-set(QT_USE_QTNETWORK true)
-set(QT_USE_QTOPENGL true)
-find_package(Qt4 REQUIRED)
-include(${QT_USE_FILE})
+find_package(Qt5Core)
+find_package(Qt5Widgets)
 
+qt5_wrap_ui(GINTC_UIS_H ${GINTC_UI})
+qt5_add_resources(GINTC_RC_CXX ${GINTC_RC})
 
 
 ##############################
@@ -73,14 +87,19 @@ add_executable(graphicalintelligence-client WIN32
     ${GINTC_HDR}
     ${GINTC_SRC}
     ${GINTC_UIS_H}
-    ${GINTC_RC}
+    ${GINTC_RC_CXX}
     #${GINTC_MOC_SRCS}
 )
 
 target_link_libraries(graphicalintelligence-client
     intelligence
-    ${GLUT_LIBRARIES}
-    ${QT_LIBRARIES}
+)
+
+qt5_use_modules(graphicalintelligence-client
+    Core
+    Widgets
+    OpenGL
+    Gui
 )
 
 set_property(TARGET graphicalintelligence-client PROPERTY FOLDER apps)

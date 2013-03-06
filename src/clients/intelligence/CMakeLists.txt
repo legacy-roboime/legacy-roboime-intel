@@ -44,8 +44,11 @@ add_executable(intelligence-client
 
 target_link_libraries(intelligence-client
     intelligence
-    ${GLUT_LIBRARIES}
-    ${QT_LIBRARIES}
+)
+
+qt5_use_modules(intelligence-client
+    Core
+    Widgets
 )
 
 set_property(TARGET intelligence-client PROPERTY FOLDER apps)

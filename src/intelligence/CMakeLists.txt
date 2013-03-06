@@ -104,6 +104,7 @@ set(INT_SRC
     interface/base/Update.cpp
     interface/base/Commander.cpp
     interface/base/Updater.cpp
+    interface/base/UdpServer.cpp
     # add new sources here
 
     interface/commanders/CommanderTxOld.cpp
@@ -130,19 +131,24 @@ set(INT_SRC
 
 aux_source_directory(utils/tree INT_SRC_UTILS_TREE)
 
-
 ##############################
-# Intra dependencies
+# Protobuf files
 #
 
-# Simulation
-include_directories(${SIM_INC_DIRS})
+set(COMM_PROTO
+    interface/messages/messages_internal_command.proto
+    interface/messages/messages_robocup_ssl_detection.proto
+    interface/messages/messages_robocup_ssl_geometry.proto
+    interface/messages/messages_robocup_ssl_refbox_log.proto
+    interface/messages/messages_robocup_ssl_wrapper.proto
+    interface/messages/grSim_Commands.proto
+    interface/messages/grSim_Replacement.proto
+    interface/messages/grSim_Packet.proto
+    # add new protos here
+)
 
-# Soccer
-include_directories(${SOC_INC_DIRS})
-
-# Communication
-include_directories(${COMM_INC_DIRS})
+protobuf_generate_cpp(INT_PROTO_SRC INT_PROTO_HDR ${COMM_PROTO})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
 
@@ -153,6 +159,7 @@ include_directories(${COMM_INC_DIRS})
 # adding to group
 directory_source_group(headers . *.h)
 directory_source_group(src . *.cpp)
+directory_source_group(proto . *.proto)
 source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
 foreach(DIR ${INT_INC})
@@ -165,21 +172,25 @@ endforeach()
 
 set(INT_INC_DIRS
     ${INC_INC_DIRS}
-    ${COMM_INC_DIRS}
-    ${SOC_INC_DIRS}
-    ${SIM_INC_DIRS}
     PARENT_SCOPE
 )
 
 add_library(intelligence
-    ${GEN_FILES}
+    #${GEN_FILES}
+    ${INT_PROTO_SRC}
+    ${INT_PROTO_HDR}
     ${INT_HDR}
     ${INT_SRC}
 )
 
 target_link_libraries(intelligence
-    ${QT_LIBRARIES}
-    communication
+    ${PROTOBUF_LIBRARIES}
+)
+
+qt5_use_modules(intelligence
+    Core
+    Network
+    Widgets
 )
 
 set_property(TARGET intelligence PROPERTY FOLDER modules)
