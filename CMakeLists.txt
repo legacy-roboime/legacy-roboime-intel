@@ -186,7 +186,6 @@ protobuf_generate_cpp(INT_PROTO_SRC INT_PROTO_HDR ${COMM_PROTO})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
-
 ##############################
 # Le finale
 #
@@ -223,6 +222,11 @@ target_link_libraries(${lib}
 qt5_use_modules(${lib} Core Network Widgets)
 
 set_property(TARGET ${lib} PROPERTY FOLDER modules)
+
+
+##############################
+# Optionally build clients.
+#
 
 option(BUILD_CLI "Build command line client?" ON)
 if(BUILD_CLI)
