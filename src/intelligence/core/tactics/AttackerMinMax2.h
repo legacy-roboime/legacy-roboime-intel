@@ -1,4 +1,5 @@
 #pragma once
+#define ATTACKERMINMAX2_H
 #ifndef ATTACKERMINMAX2_H
 #define ATTACKERMINMAX2_H
 

@@ -1,4 +1,5 @@
 #include "AttackerMinMax2.h"
+#ifndef ATTACKERMINMAX2_H
 #include "Robot.h"
 #include "Stage.h"
 #include "Ball.h"
@@ -253,3 +254,5 @@ bool DefaultTrueT::condition()
 }
 
 DefaultTrueT::DefaultTrueT(QObject* parent, State* source, State* target, qreal probability) : MachineTransition(parent, source, target, probability){}
+
+#endif

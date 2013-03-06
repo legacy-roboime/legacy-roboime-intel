@@ -159,7 +159,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
 #ifdef HAVE_WINDOWS
 	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
 #endif
-	play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
+	//play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, gkUs, pKickerUs);
 	play["refereeT"] = new Plays::ObeyReferee(this, play["retaliateT"], gkThem, pKickerThem);
@@ -168,7 +168,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent, Qt::WFlags flags)
     current_play_us = play["haltU"];
     play["haltT"] = new Plays::Halt(this, team["they"], team["they"]->stage());
     current_play_them = play["haltT"];
-	tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
+	//tactic["attackerM"] =  new AttackerMinMax2(this, team["us"]->at(1), team["they"]->at(1), team["they"]->at(1), team["they"]->at(1), 3000, 3000);
 #ifdef HAVE_WINDOWS
     tactic["controller_b1"] = new Controller2(this, team["us"]->at(0), 1, 3000); //controle no referencial do robo
     tactic["controller_b2"] = new Controller2(this, team["us"]->at(1), 1, 3000); //controle no referencial do robo

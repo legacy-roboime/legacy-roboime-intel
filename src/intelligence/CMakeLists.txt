@@ -179,15 +179,8 @@ add_library(intelligence
 
 target_link_libraries(intelligence
     ${QT_LIBRARIES}
-    soccer
     communication
 )
-
-if(PHYSX_FOUND)
-    target_link_libraries(intelligence
-        simulation
-    )
-endif()
 
 set_property(TARGET intelligence PROPERTY FOLDER modules)
 

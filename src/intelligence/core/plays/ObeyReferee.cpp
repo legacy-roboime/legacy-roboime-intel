@@ -38,6 +38,9 @@ Game Notifications
 #include "PenaltyThem.h"
 #include "PenaltyUs.h"
 #include "IndirectKick.h"
+#include <cmath>
+
+using std::pow;
 
 #define DELTA 200
 

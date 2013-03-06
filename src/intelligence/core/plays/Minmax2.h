@@ -1,4 +1,7 @@
 #pragma once
+#define MINMAX2_H
+#ifndef MINMAX2_H
+#define MINMAX2_H
 #include <deque>
 #include <QVector>
 #include <limits>
@@ -56,3 +59,4 @@ namespace LibIntelligence
 		};
 	}
 }
+#endif

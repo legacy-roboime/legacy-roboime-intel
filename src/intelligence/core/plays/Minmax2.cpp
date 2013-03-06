@@ -1,4 +1,5 @@
 #include "Minmax2.h"
+#ifndef MINMAX2_H
 #include "Goal.h"
 #include "Ball.h"
 #include "Robot.h"
@@ -314,3 +315,4 @@ void Minmax2::act(SoccerAction& action, Team* team)
 		}
 	}
 }
+#endif
