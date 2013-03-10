@@ -1,4 +1,4 @@
-#include "GraphicalIntelligence.h"
+ï»¿#include "GraphicalIntelligence.h"
 #include "alterstatevars.h"
 
 #include <QtCore>
@@ -201,36 +201,32 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent)
 
 	tactic["controller1"] = new Controller(this, team["us"]->at(0), 1, 3000); //controle no referencial do campo
 
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 0"),"controller_b1");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 1"),"controller_b2");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 2"),"controller_b3");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 3"),"controller_b5");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 5"),"controller_b6");
 
+	ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 0"),"controller_y1");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 1"),"controller_y2");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 2"),"controller_y3");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 3"),"controller_y4");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 4"),"controller_y5");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 5"),"controller_y6");
 
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 0 (absoluto)"),"controller_y1a");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 1 (absoluto)"),"controller_y2a");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 2 (absoluto)"),"controller_y3a");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 3 (absoluto)"),"controller_y4a");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 4 (absoluto)"),"controller_y5a");
+    ui.cmbSelectTacticTheirs->addItem(QStringLiteral("Controlar robÃ´ 5 (absoluto)"),"controller_y6a");
 
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 0","controller_b1");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 1","controller_b2");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 2","controller_b3");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 3","controller_b4");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 4","controller_b5");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 5","controller_b6");
-
-	ui.cmbSelectTacticTheirs->addItem("Controlar robô 0","controller_y1");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 1","controller_y2");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 2","controller_y3");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 3","controller_y4");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 4","controller_y5");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 5","controller_y6");
-
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 0 (absoluto)","controller_y1a");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 1 (absoluto)","controller_y2a");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 2 (absoluto)","controller_y3a");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 3 (absoluto)","controller_y4a");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 4 (absoluto)","controller_y5a");
-    ui.cmbSelectTacticTheirs->addItem("Controlar robô 5 (absoluto)","controller_y6a");
-
-	ui.cmbSelectTacticOurs->addItem("Controlar robô 0 (absoluto)","controller_b1a");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 1 (absoluto)","controller_b2a");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 2 (absoluto)","controller_b3a");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 3 (absoluto)","controller_b4a");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 4 (absoluto)","controller_b5a");
-    ui.cmbSelectTacticOurs->addItem("Controlar robô 5 (absoluto)","controller_b6a");
+	ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 0 (absoluto)"),"controller_b1a");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 1 (absoluto)"),"controller_b2a");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 2 (absoluto)"),"controller_b3a");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 3 (absoluto)"),"controller_b4a");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 4 (absoluto)"),"controller_b5a");
+    ui.cmbSelectTacticOurs->addItem(QStringLiteral("Controlar robÃ´ 5 (absoluto)"),"controller_b6a");
 
 #endif
 	tactic["zickler43"] = new Zickler43(this, team["us"]->at(4), 3000, true);
@@ -255,16 +251,16 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent)
 
     ui.cmbSelectPlayOurs->addItem("Halt","haltU");
     ui.cmbSelectPlayOurs->addItem("CBR2011","cbr");
-    ui.cmbSelectPlayOurs->addItem("Retaliação","retaliateU");
+    ui.cmbSelectPlayOurs->addItem(QStringLiteral("RetaliaÃ§Ã£o"),"retaliateU");
     ui.cmbSelectPlayOurs->addItem("Minmax","minimax2");
     ui.cmbSelectPlayOurs->addItem("Obedecer juiz","refereeU");
 
     ui.cmbSelectMode->addItem("Play","PLAY");
-    ui.cmbSelectMode->addItem("Tática","TACTIC");
+    ui.cmbSelectMode->addItem(QStringLiteral("TÃ¡tica"),"TACTIC");
     ui.cmbSelectMode->addItem("Skill","SKILL");
     ui.cmbSelectPlayTheirs->addItem("Halt","haltT");
     ui.cmbSelectPlayTheirs->addItem("CBR2011","cbr2");
-    ui.cmbSelectPlayTheirs->addItem("Retaliação","retaliateT");
+    ui.cmbSelectPlayTheirs->addItem(QStringLiteral("RetaliaÃ§Ã£o"),"retaliateT");
     ui.cmbSelectPlayTheirs->addItem("Obedecer juiz","refereeT");
 
 	// TODO: automate this crap
