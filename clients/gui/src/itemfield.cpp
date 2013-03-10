@@ -4,8 +4,6 @@
 
 ItemField::ItemField(Stage* stage, QGraphicsItem *parent)
 	: QGraphicsItem(parent),
-	width_(stage->fieldLength()),
-	height_(stage->fieldWidth()),
 	stage_(stage)
 {
 
@@ -19,6 +17,12 @@ ItemField::~ItemField()
 
 QRectF ItemField::boundingRect() const
 {
+	
+	int width_, height_;
+
+	width_ = stage_->fieldLength();
+	height_ = stage_->fieldWidth();
+
     return QRectF(-width_/2, -height_/2, width_, height_);
 }
 
@@ -27,6 +31,12 @@ void ItemField::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
 
 	int temp, tempB;
+	int width_, height_;
+
+	width_ = stage_->fieldLength();
+	height_ = stage_->fieldWidth();
+
+	// TODO: Mudar exibição de linhas por exibição de retângulos!!!
 
     painter->setPen(Qt::white);
     //painter->drawEllipse(-radius(), -radius(), 2*radius(), 2*radius());
@@ -51,7 +61,7 @@ void ItemField::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 	// Gols
 	temp = stage_->blueGoal()->width();
-	tempB = 200; // goal length
+	tempB = stage_->blueGoal()->depth();
 	painter->drawRect(-width_/2-tempB, -temp/2, tempB, temp);
 	painter->drawRect(width_/2, -temp/2, tempB, temp);
 }

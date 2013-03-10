@@ -10,7 +10,7 @@ class ItemField : public QGraphicsItem
 {
 
 public:
-    enum { Type = UserType + 2 };
+    //enum { Type = UserType + 2 };
 	ItemField(Stage* stage, QGraphicsItem *parent=NULL);
 	~ItemField();
     int type() const;
@@ -19,8 +19,6 @@ public:
                QWidget *widget);
 
 private:
-	int width_;
-	int height_;
 	Stage* stage_;
 };
 

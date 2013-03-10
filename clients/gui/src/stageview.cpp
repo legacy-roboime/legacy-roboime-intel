@@ -27,6 +27,8 @@ void StageView::setStage(Stage* sta)
 
 	QGraphicsScene *scene = new QGraphicsScene(-sta->fieldWidth()/2, -sta->fieldLength()/2, sta->fieldWidth(), sta->fieldLength());
 	setScene(scene);
+	
+	// BUG!!!
 	scale(1,-1);
 
 }
@@ -72,18 +74,21 @@ void StageView::redraw()
 	LibIntelligence::Team* yellowTeam = stage->yellowTeam();
 	LibIntelligence::Robot* robot;
 	blueTeam->size();
+	/*
 	for(int i=0; i<blueTeam->size(); i++) {
 		robot = blueTeam->at(i);
         if (robot->isActive() &&
                 robot->x() > -stage->fieldLength()/2 - BORDER &&
                 robot->x() < stage->fieldLength()/2 + BORDER &&
                 robot->y() > -stage->fieldWidth()/2 - BORDER &&
-                robot->y() < stage->fieldWidth()/2 + BORDER) {
+                robot->y() < stage->fieldWidth()/2 + BORDER)
+		{
 			ItemRobot* grobot = new ItemRobot();
             grobot->setTeam(TeamBlue);
 			grobot->setDirection(-robot->orientation()*180/M_PI);
 			scene()->addItem(grobot);
             grobot->setPos(field->pos().x() + robot->x(), field->pos().y() + robot->y());
+
 		}
 	}
 	for(int i=0; i<yellowTeam->size(); i++) {
@@ -100,5 +105,6 @@ void StageView::redraw()
             grobot->setPos(field->pos().x() + robot->x(), field->pos().y() + robot->y());
 		}
 	}
+	*/
     fitInView(-stage->fieldLength()/2-5*BORDER, -stage->fieldWidth()/2-5*BORDER, stage->fieldLength()+10*BORDER, stage->fieldWidth()+10*BORDER,Qt::KeepAspectRatio);
 }

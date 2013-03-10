@@ -2,12 +2,15 @@
 #include <QtCore>
 #include <QtGui>
 
-#define DEFAULT_RADIUS  90
+#include <Stage.h>
+#include <Body.h>
+
+using LibIntelligence::Stage;
+using LibIntelligence::Body;
 
 ItemRobot::ItemRobot(QGraphicsItem *parent)
 	: QGraphicsItem(parent)
 {
-	setRadius(DEFAULT_RADIUS);
 	setFlag(ItemIsMovable);
 }
 
@@ -16,76 +19,66 @@ ItemRobot::~ItemRobot()
 
 }
 
-void ItemRobot::setTeam(TeamType newTeam)
+void ItemRobot::setRobot( Robot * r )
 {
-	team = newTeam;
-    if (team==TeamBlue) {
-		setColor(Qt::cyan);
-	}
-	else {
-		setColor(Qt::yellow);
-	}
-}
+	robot = r;
 
-void ItemRobot::setRadius(qreal radius)
-{
-    //! Configura novo raio
-    prepareGeometryChange();
-    p_radius = radius;
-}
+	qreal cut = robot->body().cut(),
+		radius = robot->body().radius();
 
-qreal ItemRobot::radius() const
-{
-    //! Retorna o raio
-    return p_radius;
-}
+	cutAngle = acos( cut/radius )*180.0/M_PI;
 
-void ItemRobot::setColor(QColor color)
-{
-    //! Configura nova cor
-    p_color = color;
-}
-
-void ItemRobot::setColor(enum Qt::GlobalColor color)
-{
-    //! Configura nova cor
-    p_color = QColor(color);
-}
-
-QColor ItemRobot::color()
-{
-    //! Retorna a cor do ItemRoboto
-    return p_color;
+	// Cria a forma do robo
+	robotOutline.moveTo ( radius,0 );
+    robotOutline.arcTo ( -radius,-radius,2*radius,2*radius,0,360-2*cutAngle );
+	robotOutline.closeSubpath();
 }
 
 QRectF ItemRobot::boundingRect() const
 {
-    return QRectF(-radius(), -radius(), 2*radius(), 2*radius());
+    return QRectF(-robot->body().radius(), -robot->body().radius(), 2*robot->body().radius(), 2*robot->body().radius());
 }
 
 void ItemRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                     QWidget *widget)
 {
-    painter->setBrush(isSelected() ? Qt::green : color());
-    painter->drawEllipse(-radius(), -radius(), 2*radius(), 2*radius());
-    painter->drawLine(0,0,radius()*cos(p_direction*M_PI/-180),radius()*sin(p_direction*M_PI/-180));
-	painter->drawText(0,0,"Teste");
-}
+	// Verifica a cor do time, amarelo ou azul
+	QColor p_color = ( robot->color() == YELLOW ) ? QColor(255,255,0) : QColor(0,0,255);
 
-int ItemRobot::type() const
-{
-    //! Permite o uso de qgraphicsitem_cast com este item.
-    return Type;
-}
+    // Save transformation:
+    QTransform oldTransformation = painter->worldTransform();
+    // Draw robot shape:
+	painter->translate(-robot->stage()->fieldLength()/2, -robot->stage()->fieldWidth()/2 );
+    painter->translate(robot->x(),-robot->y());
+    painter->setBrush(p_color);
+    painter->setPen(p_color);
+    double robotRotation = robot->orientation()*180.0/M_PI;
+     
+	painter->rotate(-cutAngle-robotRotation);
+	painter->drawPath(robotOutline);
+    painter->rotate( cutAngle+robotRotation);
 
-qreal ItemRobot::direction()
-{
-    return p_direction;
-}
+	// Draw id
+     QString robotId("?");
+     robotId.setNum(robot->id());
+     painter->setBrush(QColor(0,0,0));    
+     painter->setPen(QColor(0,0,0)); 
+     painter->setFont(QFont ( "Courier",80,2,false ));
+     painter->drawText(-90,-210,1000,1000,0,robotId);
 
-void ItemRobot::setDirection(qreal dir)
-{
-    if (dir>180) dir-=360;
-    else if (dir<-180) dir+=360;
-    p_direction = dir;
+	// Reset transformation
+	painter->setTransform(oldTransformation);
+
+	/*
+    // Draw team marker
+    painter->setBrush(p_color);    
+    painter->setPen(p_color); 
+    painter->drawEllipse(QPoint(0,0),25,25);
+     // Draw confidence
+     painter->setBrush(color);    
+     painter->setPen(color); 
+     painter->drawRect ( -90,-190, ( int ) ( ( ( double ) 180 ) * robot.confidence() ),80 );
+     
+     
+	 */
 }
