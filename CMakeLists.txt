@@ -10,8 +10,8 @@ standard_paths(${PROJECT_SOURCE_DIR} bin lib)
 #message(STATUS "Project src dir: ${PROJECT_SOURCE_DIR}")
 
 # Qt stuff
-find_package(Qt5)
-find_package(Qt5Core)
+find_package(Qt5 REQUIRED)
+find_package(Qt5Core REQUIRED)
 
 #add_definitions(-DUSE_PHYSX)
 #add_definitions(-DUSE_SIMULATION)
