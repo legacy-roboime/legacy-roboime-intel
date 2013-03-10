@@ -156,9 +156,6 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent)
     play["cbr"] = new Plays::CBR2011(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], gkUs, 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], gkThem, 3000);
-#ifdef HAVE_WINDOWS
-	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
-#endif
 	//play["minimax2"] = new Plays::Minmax2(this, team["us"], stage["main"]);
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["refereeU"] = new Plays::ObeyReferee(this, play["retaliateU"]/*play["minimax2"]*/, gkUs, pKickerUs);

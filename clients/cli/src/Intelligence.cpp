@@ -300,9 +300,6 @@ Intelligence::Intelligence(QObject *parent)
 
 	play["cbr"] = new Plays::CBR2011(this, team["they"], stage["main"]);
 	play["cbr2"] = new Plays::CBR2011(this, team["us"], stage["main"]);
-#ifdef HAVE_WINDOWS
-	play["bgt"] = new Plays::BGT(this, team["us"], stage["main"]);
-#endif
 	play["freekickem"] = new Plays::FreeKickThem(this, team["us"], stage["main"]);
 	play["retaliateU"] = new Plays::AutoRetaliate(this, team["us"], stage["main"], gkUs, 3000);
 	play["retaliateT"] = new Plays::AutoRetaliate(this, team["they"], stage["main"], gkThem, 6000);

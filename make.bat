@@ -27,7 +27,7 @@ if errorlevel 1 (
 ) else (
 	mkdir build
 	cd build
-	start cmake-gui ..\src
+	start cmake-gui ..
 	cd ..
 )
 
