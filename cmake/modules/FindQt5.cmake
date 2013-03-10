@@ -1,10 +1,16 @@
 if(NOT QT5_PREFIX_PATH)
-    find_path(QT5_PREFIX_PATH
+    find_path(
+	    QT5_PREFIX_PATH
+		NAMES
         bin/qmake
+		bin/qmake.exe
         PATHS
         /usr/local/Qt-5.0.0/
         /usr/local/Qt-5.0.1/
         /usr/local/Qt-5.0.2/
+		/Qt/Qt5.0.0/5.0.0/msvc2010
+		/Qt/Qt5.0.1/5.0.1/msvc2010
+		/Qt/Qt5.0.2/5.0.2/msvc2010
         DOC "Path where Qt5 base is located."
         NO_DEFAULT_PATH
     )
