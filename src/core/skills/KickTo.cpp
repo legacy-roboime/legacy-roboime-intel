@@ -5,6 +5,7 @@
 #include "Stage.h"
 #include "Ball.h"
 #include "geomutils.h"
+#include "mathutils.h"
 
 using std::exp;
 using namespace LibIntelligence;

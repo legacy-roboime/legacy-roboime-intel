@@ -13,6 +13,7 @@ public:
     //enum { Type = UserType + 2 };
 	ItemField(Stage* stage, QGraphicsItem *parent=NULL);
 	~ItemField();
+
     int type() const;
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,

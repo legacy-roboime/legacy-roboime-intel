@@ -47,13 +47,15 @@ void ItemRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
     // Save transformation:
     QTransform oldTransformation = painter->worldTransform();
-    // Draw robot shape:
+    
+	// Change position
 	painter->translate(-robot->stage()->fieldLength()/2, -robot->stage()->fieldWidth()/2 );
     painter->translate(robot->x(),-robot->y());
     painter->setBrush(p_color);
     painter->setPen(p_color);
     double robotRotation = robot->orientation()*180.0/M_PI;
-     
+    
+	// Draw robot shape
 	painter->rotate(-cutAngle-robotRotation);
 	painter->drawPath(robotOutline);
     painter->rotate( cutAngle+robotRotation);

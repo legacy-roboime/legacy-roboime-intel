@@ -21,6 +21,7 @@ set(GUI_SRC
     ${src}/itemfield.cpp
     ${src}/itemrobot.cpp
     ${src}/stageview.cpp
+	${src}/sslfield.cpp
     ${src}/alterstatevars.cpp
     # add new sources here
 )
