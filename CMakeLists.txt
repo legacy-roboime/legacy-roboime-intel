@@ -13,13 +13,6 @@ standard_paths(${PROJECT_SOURCE_DIR} bin lib)
 find_package(Qt5 REQUIRED)
 find_package(Qt5Core REQUIRED)
 
-# Google Test
-find_package(GTest)
-if(GTEST_FOUND)
-    enable_testing()
-    include_directories(${GTEST_INCLUDE_DIRS})
-endif()
-
 # Protobuf stuff
 find_package(Protobuf REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS})
@@ -173,18 +166,6 @@ aux_source_directory(${src}/utils/tree INT_SRC_UTILS_TREE)
 
 
 ##############################
-# Test source files
-#
-
-set(test tests)
-set(INT_TEST_SRC
-    ${test}/main.cc
-    ${test}/sample1.cc
-    ${test}/sample1_unittest.cc
-)
-
-
-##############################
 # Protobuf files
 #
 
@@ -241,26 +222,29 @@ qt5_use_modules(${lib} Core Network Widgets)
 
 set_property(TARGET ${lib} PROPERTY FOLDER modules)
 
-if(GTEST_FOUND)
-    set(testapp roboime-intel-test)
-    add_executable(${testapp} ${INT_TEST_SRC})
-    target_link_libraries(${testapp} ${GTEST_BOTH_LIBRARIES})
-    #XXX note that the path to the test is not flexible, and should be
-    # properly updated if the bin dir changes
-    gtest_add_tests(${CMAKE_CURRENT_SOURCE_DIR}/bin/${testapp} "" ${INT_TEST_SRC})
-endif()
-
 
 ##############################
 # Optionally build clients.
 #
 
+find_package(GTest REQUIRED)
+if(GTEST_FOUND)
+    set(BUILD_TESTS_DEFAULT on)
+else()
+    set(BUILD_TESTS_DEFAULT OFF)
+endif()
+option(BUILD_TESTS "Build unit tests?" ${BUILD_TESTS_DEFAULT})
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 option(BUILD_CLI "Build command line client?" ON)
 if(BUILD_CLI)
     add_subdirectory(clients/cli)
 endif()
+
 option(BUILD_GUI "Build graphical client?" ON)
 if(BUILD_GUI)
     add_subdirectory(clients/gui)
 endif()
-
