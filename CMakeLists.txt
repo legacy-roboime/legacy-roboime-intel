@@ -13,8 +13,12 @@ standard_paths(${PROJECT_SOURCE_DIR} bin lib)
 find_package(Qt5 REQUIRED)
 find_package(Qt5Core REQUIRED)
 
-#add_definitions(-DUSE_PHYSX)
-#add_definitions(-DUSE_SIMULATION)
+# Google Test
+find_package(GTest)
+if(GTEST_FOUND)
+    enable_testing()
+    include_directories(${GTEST_INCLUDE_DIRS})
+endif()
 
 # Protobuf stuff
 find_package(Protobuf REQUIRED)
@@ -167,11 +171,24 @@ endif()
 
 aux_source_directory(${src}/utils/tree INT_SRC_UTILS_TREE)
 
+
+##############################
+# Test source files
+#
+
+set(test tests)
+set(INT_TEST_SRC
+    ${test}/main.cc
+    ${test}/sample1.cc
+    ${test}/sample1_unittest.cc
+)
+
+
 ##############################
 # Protobuf files
 #
 
-set(COMM_PROTO
+set(INT_PROTO
     ${src}/interface/messages/messages_internal_command.proto
     ${src}/interface/messages/messages_robocup_ssl_detection.proto
     ${src}/interface/messages/messages_robocup_ssl_geometry.proto
@@ -183,7 +200,7 @@ set(COMM_PROTO
     # add new protos here
 )
 
-protobuf_generate_cpp(INT_PROTO_SRC INT_PROTO_HDR ${COMM_PROTO})
+protobuf_generate_cpp(INT_PROTO_SRC INT_PROTO_HDR ${INT_PROTO})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
@@ -223,6 +240,15 @@ target_link_libraries(${lib}
 qt5_use_modules(${lib} Core Network Widgets)
 
 set_property(TARGET ${lib} PROPERTY FOLDER modules)
+
+if(GTEST_FOUND)
+    set(testapp roboime-intel-test)
+    add_executable(${testapp} ${INT_TEST_SRC})
+    target_link_libraries(${testapp} ${GTEST_BOTH_LIBRARIES})
+    #XXX note that the path to the test is not flexible, and should be
+    # properly updated if the bin dir changes
+    gtest_add_tests(${CMAKE_CURRENT_SOURCE_DIR}/bin/${testapp} "" ${INT_TEST_SRC})
+endif()
 
 
 ##############################
