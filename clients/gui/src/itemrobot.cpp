@@ -61,12 +61,12 @@ void ItemRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->rotate( cutAngle+robotRotation);
 
 	// Draw id
-     QString robotId("?");
-     robotId.setNum(robot->id());
-     painter->setBrush(QColor(0,0,0));    
-     painter->setPen(QColor(0,0,0)); 
-     painter->setFont(QFont ( "Courier",80,2,false ));
-     painter->drawText(-90,-210,1000,1000,0,robotId);
+    QString robotId("?");
+    robotId.setNum(robot->id());
+    painter->setBrush(QColor(0,0,0));
+    painter->setPen(QColor(0,0,0)); 
+    painter->setFont(QFont ( "Courier",80,2,false ));
+    painter->drawText(-90,-210,1000,1000,0,robotId);
 
 	// Reset transformation
 	painter->setTransform(oldTransformation);

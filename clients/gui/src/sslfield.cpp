@@ -78,7 +78,7 @@ void SSLField::redraw()
 	{
 		scene()->addEllipse(
 			field->pos().x() + (stage->ball()->x() - stage->ball()->radius()/2),
-			field->pos().y() + (stage->ball()->y() - stage->ball()->radius()),
+			field->pos().y() - (stage->ball()->y() - stage->ball()->radius()),
 			stage->ball()->radius(),
 			stage->ball()->radius(),
 			QPen(orange),
@@ -90,9 +90,11 @@ void SSLField::redraw()
 	LibIntelligence::Team* yellowTeam = stage->yellowTeam();
 	LibIntelligence::Robot* robot;
 
-	blueTeam->size();
-	for(int i=0; i<blueTeam->size(); i++) {
+
+	for(int i=0; i<blueTeam->size(); i++)
+	{
 		robot = blueTeam->at(i);
+
         if (robot->isActive() &&
                 robot->x() > -stage->fieldLength()/2 - BORDER &&
                 robot->x() < stage->fieldLength()/2 + BORDER &&
@@ -104,7 +106,9 @@ void SSLField::redraw()
 			scene()->addItem(grobot);
 		}
 	}
-	for(int i=0; i<yellowTeam->size(); i++) {
+
+	for(int i=0; i<yellowTeam->size(); i++)
+	{
 		robot = yellowTeam->at(i);
         if (robot->isActive() &&
                 robot->x() > -stage->fieldLength()/2 - BORDER &&

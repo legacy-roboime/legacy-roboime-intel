@@ -23,4 +23,6 @@ private:
 	Stage* stage_;
 };
 
+void drawArc(qreal x, qreal y, qreal radiusIn, qreal radiusOut, qreal angleInit, qreal angleEnd, QPainter *painter);
+
 #endif // ITEMFIELD_H
