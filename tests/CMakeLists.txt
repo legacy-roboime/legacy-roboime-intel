@@ -9,8 +9,6 @@ set(test .)
 
 set(INT_TEST_SRC
     ${test}/main.cc
-    ${test}/sample1.cc
-    ${test}/sample1_unittest.cc
     ${test}/robot_unittest.cc
 )
 
