@@ -9,10 +9,10 @@ all: cmake
 	@@$(MAKE) -C $(BUILDDIR)
 
 mkbuilddir:
-	[ -d $(BUILDDIR) ] || mkdir $(BUILDDIR)
+	@@[ -d $(BUILDDIR) ] || mkdir $(BUILDDIR)
 
-cmake: mkbuilddir CMakeLists.txt
-	cd $(BUILDDIR) && cmake -DCMAKE_BUILD_TYPE=$(BUILDTYPE) ..
+cmake: mkbuilddir
+	@@[ ! -f "$(BUILDDIR)/CMakeCache.txt" ] && cd $(BUILDDIR) && cmake -DCMAKE_BUILD_TYPE=$(BUILDTYPE) .. || true
 
 test:
 	@@$(MAKE) -C $(BUILDDIR) test
@@ -20,7 +20,7 @@ test:
 debdeps:
 	apt-get install cmake libprotobuf-dev protobuf-compiler libqt4-dev freeglut3-dev libxi-dev libxmu-dev
 
-clean: mkbuilddir
+clean: cmake
 	@@$(MAKE) -C $(BUILDDIR) clean
 
 clean-all:
