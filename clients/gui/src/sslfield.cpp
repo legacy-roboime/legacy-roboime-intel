@@ -28,6 +28,7 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+
 using LibIntelligence::Stage;
 using LibIntelligence::Ball;
 
@@ -39,6 +40,12 @@ SSLField::SSLField(QWidget * parent) : QGraphicsView(parent)
 	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 	setBackgroundBrush(QBrush(Qt::darkGreen));
 	setCacheMode(QGraphicsView::CacheNone);
+
+	viewScale = 0.1f;
+	viewXOffset = 0;
+	viewYOffset = 0;
+
+	scale(viewScale,viewScale);
 }
 
 // 
@@ -71,18 +78,20 @@ void SSLField::redraw()
     field->setPos(-stage->fieldLength()/2,-stage->fieldWidth()/2);
 
 	// Desenho da bola
+	/*
 	if(			stage->ball()->x() > -stage->fieldLength()/2 - BORDER &&
                 stage->ball()->x() < stage->fieldLength()/2 + BORDER &&
                 stage->ball()->y() > -stage->fieldWidth()/2 - BORDER &&
                 stage->ball()->y() < stage->fieldWidth()/2 + BORDER)
+	*/
 	{
 		scene()->addEllipse(
-			field->pos().x() + (stage->ball()->x() - stage->ball()->radius()/2),
-			field->pos().y() - (stage->ball()->y() - stage->ball()->radius()),
-			stage->ball()->radius(),
-			stage->ball()->radius(),
-			QPen(orange),
-			QBrush(orange) );
+		field->pos().x() + stage->ball()->x() - stage->ball()->radius(),
+		field->pos().y() - stage->ball()->y() - stage->ball()->radius(),
+		stage->ball()->radius()*2,
+		stage->ball()->radius()*2,
+		QPen(orange),
+		QBrush(orange) );
 	}
 
 	// Desenho dos robos
@@ -95,11 +104,13 @@ void SSLField::redraw()
 	{
 		robot = blueTeam->at(i);
 
-        if (robot->isActive() &&
+        if (robot->isActive() )
+		/*	&&
                 robot->x() > -stage->fieldLength()/2 - BORDER &&
                 robot->x() < stage->fieldLength()/2 + BORDER &&
                 robot->y() > -stage->fieldWidth()/2 - BORDER &&
                 robot->y() < stage->fieldWidth()/2 + BORDER)
+		*/
 		{
 			ItemRobot* grobot = new ItemRobot();
 			grobot->setRobot(robot);
@@ -110,17 +121,89 @@ void SSLField::redraw()
 	for(int i=0; i<yellowTeam->size(); i++)
 	{
 		robot = yellowTeam->at(i);
-        if (robot->isActive() &&
+		
+        if (robot->isActive() )
+		/*
+		&&
                 robot->x() > -stage->fieldLength()/2 - BORDER &&
                 robot->x() < stage->fieldLength()/2 + BORDER &&
                 robot->y() > -stage->fieldWidth()/2 - BORDER &&
                 robot->y() < stage->fieldWidth()/2 + BORDER)
+		*/
 		{
 			ItemRobot* grobot = new ItemRobot();
 			grobot->setRobot(robot);
 			scene()->addItem(grobot);
 		}
 	}
-	
-    fitInView(-stage->fieldLength()/2-5*BORDER, -stage->fieldWidth()/2-5*BORDER, stage->fieldLength()+10*BORDER, stage->fieldWidth()+10*BORDER,Qt::KeepAspectRatio);
+
+	centerOn(-stage->fieldLength()/2-viewXOffset,-stage->fieldWidth()/2-viewYOffset);
+}
+
+void SSLField::wheelEvent ( QWheelEvent * event )
+{
+  double zoomRatio = -double(event->delta())/1000.0;
+  double oldScale = viewScale;
+  viewScale = viewScale*(1.0+zoomRatio);
+
+  scale(oldScale/viewScale,oldScale/viewScale);
+}
+
+void SSLField::mouseMoveEvent(QMouseEvent* event)
+{
+  bool leftButton = event->buttons().testFlag(Qt::LeftButton);
+  bool midButton = event->buttons().testFlag(Qt::MidButton);
+  bool rightButton = event->buttons().testFlag(Qt::RightButton);
+  
+  if(leftButton)
+  {
+    //Pan
+    viewXOffset += (event->x() - mouseStartX);//*viewScale;
+    viewYOffset += (event->y() - mouseStartY);//*viewScale
+    mouseStartX = event->x();
+    mouseStartY = event->y();
+  }
+}
+
+void SSLField::mousePressEvent(QMouseEvent* event)
+{
+  bool leftButton = event->buttons().testFlag(Qt::LeftButton);
+  bool midButton = event->buttons().testFlag(Qt::MidButton);
+  bool rightButton = event->buttons().testFlag(Qt::RightButton);
+  bool shiftKey = event->modifiers().testFlag(Qt::ShiftModifier);
+  bool ctrlKey = event->modifiers().testFlag(Qt::ControlModifier);
+  
+  if(leftButton)
+    setCursor(Qt::ClosedHandCursor);
+  if(midButton)
+  {
+	  viewXOffset = 0;
+	  viewYOffset = 0;
+  }
+  if(leftButton){
+    // Start Pan / Zoom
+    mouseStartX = event->x();
+    mouseStartY = event->y();
+  }
+
+  // Arrastar com o meio do mouse
+  /*
+  else if(midButton)
+  {
+    //Zoom
+    double zoomRatio = double(event->y() - mouseStartY)/500.0;
+    double oldScale = viewScale;
+    viewScale = viewScale*(1.0+zoomRatio);
+
+    mouseStartX = event->x();
+    mouseStartY = event->y();
+  }
+  */
+}
+
+void SSLField::mouseReleaseEvent(QMouseEvent* event)
+{
+  bool shiftKey = event->modifiers().testFlag(Qt::ShiftModifier);
+  bool ctrlKey = event->modifiers().testFlag(Qt::ControlModifier);
+  setCursor(Qt::ArrowCursor);
 }

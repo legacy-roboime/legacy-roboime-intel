@@ -23,8 +23,8 @@ void ItemRobot::setRobot( Robot * r )
 {
 	robot = r;
 
-	qreal cut = robot->body().cut(),
-		radius = robot->body().radius();
+	qreal cut = robot->body().cut();
+	radius = robot->body().radius();
 
 	cutAngle = acos( cut/radius )*180.0/M_PI;
 
@@ -32,11 +32,13 @@ void ItemRobot::setRobot( Robot * r )
 	robotOutline.moveTo ( radius,0 );
     robotOutline.arcTo ( -radius,-radius,2*radius,2*radius,0,360-2*cutAngle );
 	robotOutline.closeSubpath();
+
+	setPos( robot->x() - robot->stage()->fieldLength()/2 , -robot->y() - robot->stage()->fieldWidth()/2 );
 }
 
 QRectF ItemRobot::boundingRect() const
 {
-    return QRectF(-robot->body().radius(), -robot->body().radius(), 2*robot->body().radius(), 2*robot->body().radius());
+	return QRectF(-2*robot->body().radius(), -2*robot->body().radius(), 4*robot->body().radius(), 4*robot->body().radius());
 }
 
 void ItemRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
@@ -49,8 +51,6 @@ void ItemRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     QTransform oldTransformation = painter->worldTransform();
     
 	// Change position
-	painter->translate(-robot->stage()->fieldLength()/2, -robot->stage()->fieldWidth()/2 );
-    painter->translate(robot->x(),-robot->y());
     painter->setBrush(p_color);
     painter->setPen(p_color);
     double robotRotation = robot->orientation()*180.0/M_PI;
@@ -70,17 +70,4 @@ void ItemRobot::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
 	// Reset transformation
 	painter->setTransform(oldTransformation);
-
-	/*
-    // Draw team marker
-    painter->setBrush(p_color);    
-    painter->setPen(p_color); 
-    painter->drawEllipse(QPoint(0,0),25,25);
-     // Draw confidence
-     painter->setBrush(color);    
-     painter->setPen(color); 
-     painter->drawRect ( -90,-190, ( int ) ( ( ( double ) 180 ) * robot.confidence() ),80 );
-     
-     
-	 */
 }

@@ -20,21 +20,20 @@ ItemField::~ItemField()
 
 QRectF ItemField::boundingRect() const
 {
-	
 	int width_, height_;
 
 	width_ = stage_->fieldLength();
 	height_ = stage_->fieldWidth();
 
-    return QRectF(-width_/2, -height_/2, width_, height_);
+    return QRectF(-1.5*width_, -1.5*height_, 3*width_, 3*height_);
 }
 
 void ItemField::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                     QWidget *widget)
 {
-	int temp, tempB;
-	int width_, height_;
-	int line;
+	qreal temp, tempB, tempC,
+		width_, height_,
+		line;
 
 	width_ = stage_->fieldLength();
 	height_ = stage_->fieldWidth();
@@ -51,7 +50,7 @@ void ItemField::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
     painter->setPen(Qt::white);
 
 	// Centro
-	drawArc(width_/2, height_/2,0,2*line,0,360,painter);
+	drawArc(width_/2, height_/2,0,1.5*line,0,360,painter);
 
 	// Laterais
 	painter->drawRect(0,0,line,height_);
@@ -84,13 +83,15 @@ void ItemField::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 	// Gols
 	temp = stage_->blueGoal()->width();
 	tempB = stage_->blueGoal()->depth();
-	painter->drawRect(-tempB-line	,(height_-temp)/2-line	,tempB	,line);
-	painter->drawRect(-tempB-line	,(height_-temp)/2		,line	,temp);
-	painter->drawRect(-tempB-line	,(height_+temp)/2		,tempB	,line);
+	tempC = stage_->blueGoal()->wallWidth();
 
-	painter->drawRect(width_			,(height_-temp)/2-line	,tempB+line	,line);
-	painter->drawRect(width_+tempB		,(height_-temp)/2		,line		,temp);
-	painter->drawRect(width_			,(height_+temp)/2		,tempB+line	,line);
+	painter->drawRect(-tempB-tempC	,(height_-temp)/2-tempC	,tempB+tempC	,tempC);
+	painter->drawRect(-tempB-tempC	,(height_-temp)/2		,tempC			,temp);
+	painter->drawRect(-tempB-tempC	,(height_+temp)/2		,tempB+tempC	,tempC);
+
+	painter->drawRect(width_			,(height_-temp)/2-tempC	,tempB+tempC	,tempC);
+	painter->drawRect(width_+tempB		,(height_-temp)/2		,tempC			,temp);
+	painter->drawRect(width_			,(height_+temp)/2		,tempB+tempC	,tempC);
 
 
 	// Reset transformation

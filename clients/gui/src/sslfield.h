@@ -26,6 +26,8 @@
 #include <Stage.h>
 #include <Robot.h>
 
+#include <QMouseEvent>
+
 using LibIntelligence::Stage;
 using LibIntelligence::Robot;
 
@@ -39,11 +41,21 @@ public:
 
 	void redraw();
 
+	void wheelEvent( QWheelEvent * event );
+	void mousePressEvent(QMouseEvent* event);
+	void mouseReleaseEvent(QMouseEvent* event);
+	void mouseMoveEvent(QMouseEvent* event);
+
 protected:
     void paintRobot(const Robot& robot, const QColor& teamColor);
 
 private:
     Stage *stage;
+
+	qreal viewScale;
+	qreal viewXOffset, viewYOffset;
+	int mouseStartX;
+	int mouseStartY;
 };
 
 #endif

@@ -28,6 +28,7 @@ public:
 private:
 	// Parent
 	Robot * robot;
+	qreal radius;
 
 	// Angulo de corte
 	qreal cutAngle;
