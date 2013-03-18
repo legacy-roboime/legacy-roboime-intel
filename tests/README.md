@@ -21,3 +21,18 @@ Browse to this folder and use cmake to compile the library:
 
     # copy or symlink libgtest.a and libgtest_main.a to your /usr/lib folder
     sudo cp *.a /usr/lib
+
+	
+### Visual Studio GTests Config
+
+(source: <http://stackoverflow.com/questions/2728649/error-lnk2005-xxx-already-defined-in-msvcrt-libmsvcr100-dllc-something-libc>)
+
+In order to fully integrate the "intel-tests" project with Visual Studio versions, you need to build the release
+and debug versions of "gtest-md" solution (<gtest-1.6.0/msvc/gtest-md.sln>) instead of the standard <gtest.sln>.
+Otherwise, there will be library conflicts, such as MT and MD, and GTest won't work.
+Do not forget to update the cmake references and paths properly.
+
+
+
+
+

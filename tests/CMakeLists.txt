@@ -14,6 +14,8 @@ set(INT_TEST_SRC
     ${test}/ball_unittest.cc
     ${test}/battery_unittest.cc
     ${test}/component_unittest.cc
+    ${test}/body_unittest.cc
+    ${test}/dribbler_unittest.cc
 )
 
 find_package(GTest REQUIRED)
