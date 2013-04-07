@@ -4,7 +4,7 @@
 
 using namespace LibIntelligence;
 
-class DribblerTest : public testing::Test {
+class DribblerTest : public ::testing::Test {
  protected:
 
   virtual void SetUp() {

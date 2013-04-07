@@ -4,7 +4,7 @@
 using namespace LibIntelligence;
 
 
-class RobotTest : public testing::Test {
+class RobotTest : public ::testing::Test {
  protected:
 
   virtual void SetUp() {

@@ -4,7 +4,7 @@
 using namespace LibIntelligence;
 
 
-class GoalTest : public testing::Test {
+class GoalTest : public ::testing::Test {
  protected:
 
   virtual void SetUp() {
