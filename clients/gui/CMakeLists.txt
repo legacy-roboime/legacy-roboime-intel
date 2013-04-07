@@ -3,16 +3,20 @@ cmake_minimum_required(VERSION 2.8.9)
 project(roboime-gui)
 
 ##############################
-# Include all headers
+# Source files
 #
 
 set(src src)
 include_directories(${src})
-file(GLOB GUI_HDR "*.h")
 
-##############################
-# Files which will be compiled
-#
+set(GUI_HDR
+    ${src}/alterstatevars.h
+    ${src}/GraphicalIntelligence.h
+    ${src}/itemfield.h
+    ${src}/itemrobot.h
+    ${src}/stageview.h
+    ${src}/winmain.h
+)
 
 set(GUI_SRC
     ${src}/graphical.rc
@@ -22,7 +26,6 @@ set(GUI_SRC
     ${src}/itemrobot.cpp
     ${src}/stageview.cpp
     ${src}/alterstatevars.cpp
-    # add new sources here
 )
 
 set(GUI_UI
@@ -62,17 +65,24 @@ qt5_add_resources(GUI_RC_CXX ${GUI_RC})
 #
 
 # adding to group
-directory_source_group(headers . *.h)
-directory_source_group(src . *.cpp)
+directory_source_group(headers ${src} *.h)
+directory_source_group(headers ${src} *.hh)
+directory_source_group(headers ${src} *.hpp)
+directory_source_group(src ${src} *.cc)
+directory_source_group(src ${src} *.cxx)
+directory_source_group(src ${src} *.cpp)
 source_group(generated REGULAR_EXPRESSION ".*_automoc[.]cpp")
 
 set(app roboime-gui)
+
+qt5_wrap_cpp(GUI_MOC_SRC ${GUI_HDR} OPTIONS -nn)
 
 #Now add these generated files to the ADD_EXECUTABLE step
 # If this is NOT done, then the ui_*.h files will not be generated
 add_executable(${app} WIN32
     ${GUI_HDR}
     ${GUI_SRC}
+    ${GUI_MOC_SRC}
     ${GUI_UIS_H}
     ${GUI_RC_CXX}
 )

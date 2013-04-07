@@ -13,6 +13,7 @@ namespace LibIntelligence
 
 	public:
 		Body(const Body&);
+		Body(const Body*);
 		Body(QObject* parent=0, qreal height=0.0, qreal radius=0.0, qreal cut=0.);
 
 		void setHeight(qreal);

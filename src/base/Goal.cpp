@@ -8,7 +8,8 @@ Goal::Goal(qreal x, qreal y, qreal w, qreal d, qreal ww)
 	Object(x, y),
 	width_(w),
 	depth_(d),
-	wallWidth_(ww)
+	wallWidth_(ww),
+	penaltyLine_(0.0)
 {
 	updatePoints();
 }
@@ -21,6 +22,15 @@ Goal::Goal(const Goal& goal)
 	wallWidth_(goal.wallWidth()),
 	penaltyMark_(goal.penaltyMark()),
 	penaltyLine_(goal.penaltyLine()) {}
+
+Goal::Goal(const Goal* goal)
+	: Line(*goal),
+	Object(*goal),
+	width_(goal->width()),
+	depth_(goal->depth()),
+	wallWidth_(goal->wallWidth()),
+	penaltyMark_(goal->penaltyMark()),
+	penaltyLine_(goal->penaltyLine()) {}
 
 Point Goal::randomPoint() const
 {

@@ -13,6 +13,7 @@ namespace LibIntelligence
 
 	public:
 		Kicker(const Kicker&);
+		Kicker(const Kicker*);
 		Kicker(QObject* parent=0, qreal speed=0.0);
 
 	private:

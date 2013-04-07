@@ -14,6 +14,7 @@ namespace LibIntelligence
 	public:
 		Goal(qreal x=0.0, qreal y=0.0, qreal width=0.0, qreal depth=0.0, qreal wallWidth=0.0);
 		Goal(const Goal &goal);
+		Goal(const Goal *goal);
 
 		void setX(qreal);
 		void setY(qreal);
