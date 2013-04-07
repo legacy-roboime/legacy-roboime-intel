@@ -12,9 +12,6 @@ standard_paths(${PROJECT_SOURCE_DIR} bin lib)
 # Qt stuff
 find_package(Qt5 REQUIRED)
 
-#add_definitions(-DUSE_PHYSX)
-#add_definitions(-DUSE_SIMULATION)
-
 # Protobuf stuff
 find_package(Protobuf REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIRS})
@@ -330,12 +327,24 @@ source_group(generated REGULAR_EXPRESSION ".*.pb.hh")
 # Optionally build clients.
 #
 
+find_package(GTest REQUIRED)
+if(GTEST_FOUND)
+    set(BUILD_TESTS_DEFAULT on)
+else()
+    set(BUILD_TESTS_DEFAULT OFF)
+endif()
+option(BUILD_TESTS "Build unit tests?" ${BUILD_TESTS_DEFAULT})
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
+
 option(BUILD_CLI "Build command line client?" ON)
 if(BUILD_CLI)
     add_subdirectory(clients/cli)
 endif()
+
 option(BUILD_GUI "Build graphical client?" ON)
 if(BUILD_GUI)
     add_subdirectory(clients/gui)
 endif()
-

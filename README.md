@@ -1,29 +1,23 @@
 RoboIME Artificial Intelligence
 ===============================
 
-
 This project aims to provide a set of software to take full control of the
 robots on an autonomous match, and to aid its development by providing
 facilities such as a Simulation environment.
-
-There is a proposal to strip the simulator out of the project and make it either
-standalone or merge it with grSim.
 
 
 Requirements
 ------------
 
-- Git
+- Git (if you intend to contribute)
 - CMake
-- Qt SDK 4.8.x
-- OpenGL
-- Glut
-- Protobuf
-- PhysX SDK 2.8.4 (Required only to build the simulator)
+- Qt5 (core, widgets, network and opengl)
+- Google Protobuf
+- Google Test (read [tests readme](tests/README.md) for more details.
 
-On Ubuntu 12.04 the following should suffice:
+On Ubuntu 13.04 the following should suffice:
 
-    apt-get install git cmake libqt4-dev protobuf-compiler libprotobuf-dev freeglut3-dev libxmu-dev libxi-dev
+    apt-get install git cmake ubuntu-sdk protobuf-compiler libprotobuf-dev
 
 You're recommended to use QtCreator, but not mandatory, use your preferred IDE,
 or no IDE at all, plain vim, make and gdb will do just fine.
