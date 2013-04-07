@@ -91,7 +91,7 @@ void Object::updatePositionWithFilter(const Point &p)
 	updatePosition(Point(vx[3],vy[3]));
 
 	//TODO: identify object
-	//fprintf(f, "%f;%f;%f;\n", bx, by, sx);
+	//fprintf(f, "%f;%f;\n", vy[3], p.y());
 }
 
 void Object::updatePosition(const Point &p)
