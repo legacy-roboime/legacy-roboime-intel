@@ -4,22 +4,22 @@
 using namespace LibIntelligence;
 
 
-class KickerTest : public testing::Test {
+class KickerTest : public ::testing::Test {
  protected:
 
-  virtual void SetUp() {
-    kicker_default = new Kicker();
-	kicker = new Kicker(NULL, 11.11);
-	kicker_copy_pointer = new Kicker(kicker);
-	kicker_copy = new Kicker(*kicker);
-  }
+   virtual void SetUp() {
+     kicker_default = new Kicker();
+     kicker = new Kicker(NULL, 11.11);
+     kicker_copy_pointer = new Kicker(kicker);
+     kicker_copy = new Kicker(*kicker);
+   }
 
-  virtual void TearDown() {
-    delete kicker_default;
-	delete kicker_copy_pointer;
-	delete kicker_copy;
-	delete kicker;
-  }
+   virtual void TearDown() {
+     delete kicker_default;
+     delete kicker_copy_pointer;
+     delete kicker_copy;
+     delete kicker;
+   }
 
   Kicker *kicker_default;
   Kicker *kicker;

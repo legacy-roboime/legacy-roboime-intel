@@ -4,7 +4,7 @@
 using namespace LibIntelligence;
 
 
-class RobotTest : public testing::Test {
+class RobotTest : public ::testing::Test {
  protected:
 
   virtual void SetUp() {
@@ -19,7 +19,7 @@ class RobotTest : public testing::Test {
 };
 
 
-TEST_F(RobotTest, Constructor) {
+TEST_F(RobotTest, DefaultConstructor) {
   EXPECT_EQ(BLUE, robot->color());
   EXPECT_EQ(NULL, robot->parent());
   EXPECT_EQ(0, robot->wheels().size());

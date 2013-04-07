@@ -22,7 +22,7 @@ Browse to this folder and use cmake to compile the library:
     # copy or symlink libgtest.a and libgtest_main.a to your /usr/lib folder
     sudo cp *.a /usr/lib
 
-	
+
 ### Visual Studio GTests Config
 
 (source: <http://stackoverflow.com/questions/2728649/error-lnk2005-xxx-already-defined-in-msvcrt-libmsvcr100-dllc-something-libc>)

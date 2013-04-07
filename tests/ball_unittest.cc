@@ -3,7 +3,7 @@
 
 using namespace LibIntelligence;
 
-class BallTest : public testing::Test {
+class BallTest : public ::testing::Test {
  protected:
 
   virtual void SetUp() {

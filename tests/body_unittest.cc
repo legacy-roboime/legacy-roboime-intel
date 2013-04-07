@@ -4,21 +4,21 @@
 
 using namespace LibIntelligence;
 
-class BodyTest : public testing::Test {
+class BodyTest : public ::testing::Test {
  protected:
 
   virtual void SetUp() {
     body_default = new Body();
-	body = new Body(NULL, 11.11, 22.22, 33.33);
-	body_copy = new Body(*body);
-	body_copy_pointer = new Body(body);
+    body = new Body(NULL, 11.11, 22.22, 33.33);
+    body_copy = new Body(*body);
+    body_copy_pointer = new Body(body);
   }
 
   virtual void TearDown() {
     delete body_default;
-	delete body_copy_pointer;
-	delete body_copy;
-	delete body;
+    delete body_copy_pointer;
+    delete body_copy;
+    delete body;
   }
 
   Body *body_default;

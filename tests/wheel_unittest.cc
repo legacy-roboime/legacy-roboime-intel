@@ -4,22 +4,22 @@
 using namespace LibIntelligence;
 
 
-class WheelTest : public testing::Test {
+class WheelTest : public ::testing::Test {
  protected:
 
-  virtual void SetUp() {
-    wheel_default = new Wheel();
-	wheel = new Wheel(NULL, 11.11, 22.22, 33.33, 44.44);
-	wheel_copy = new Wheel(*wheel);
-	wheel_copy_pointer = new Wheel(wheel);
-  }
+   virtual void SetUp() {
+     wheel_default = new Wheel();
+     wheel = new Wheel(NULL, 11.11, 22.22, 33.33, 44.44);
+     wheel_copy = new Wheel(*wheel);
+     wheel_copy_pointer = new Wheel(wheel);
+   }
 
-  virtual void TearDown() {
-    delete wheel_default;
-	delete wheel_copy_pointer;
-	delete wheel_copy;
-	delete wheel;
-  }
+   virtual void TearDown() {
+     delete wheel_default;
+     delete wheel_copy_pointer;
+     delete wheel_copy;
+     delete wheel;
+   }
 
   Wheel *wheel_default;
   Wheel *wheel;
