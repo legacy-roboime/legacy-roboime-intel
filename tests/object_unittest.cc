@@ -29,5 +29,24 @@ class ObjectTest : public testing::Test {
 
 TEST_F(ObjectTest, SetOrientation) {
   object->setOrientation(0.123);
-  EXPECT_FLOAT_EQ(0.123, object->orientation());
+  EXPECT_EQ(0.123, object->orientation());
+}
+
+TEST_F(ObjectTest, SetSpeedFromVector) {
+  Vector *temp_vector = new Vector(1.5, -2.5);
+  object->setSpeed(*temp_vector);
+  EXPECT_EQ(1.5, (object->speed()).x());
+  EXPECT_EQ(-2.5, (object->speed()).y());
+  delete temp_vector;
+}
+
+TEST_F(ObjectTest, SetSpeed) {
+  object->setSpeed(1.5, -2.5);
+  EXPECT_EQ(1.5, (object->speed()).x());
+  EXPECT_EQ(-2.5, (object->speed()).y());
+}
+
+TEST_F(ObjectTest, SetAngSpeed) {
+  object->setAngSpeed(-3.33);
+  EXPECT_EQ(-3.33, object->angSpeed());
 }

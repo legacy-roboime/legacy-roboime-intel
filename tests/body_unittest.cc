@@ -40,13 +40,13 @@ TEST_F(BodyTest, Constructor) {
   EXPECT_EQ(33.33, body->cut());
 }
 
-TEST_F(BodyTest, CopyConstructor_PointerParameter) {
+TEST_F(BodyTest, CopyConstructorPointerParameter) {
   EXPECT_EQ(11.11, body_copy_pointer->height());
   EXPECT_EQ(22.22, body_copy_pointer->radius());
   EXPECT_EQ(33.33, body_copy_pointer->cut());
 }
 
-TEST_F(BodyTest, CopyConstructor_NonPointerParameter) {
+TEST_F(BodyTest, CopyConstructorNonPointerParameter) {
   EXPECT_EQ(11.11, body_copy->height());
   EXPECT_EQ(22.22, body_copy->radius());
   EXPECT_EQ(33.33, body_copy->cut());
