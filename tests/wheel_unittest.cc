@@ -9,8 +9,7 @@ class WheelTest : public ::testing::Test {
 
    virtual void SetUp() {
      wheel_default = new Wheel();
-     parameter = new QObject();
-     wheel = new Wheel(parameter, 11.11, 22.22, 33.33, 44.44);
+     wheel = new Wheel(NULL, 11.11, 22.22, 33.33, 44.44);
      wheel_copy = new Wheel(*wheel);
      wheel_copy_pointer = new Wheel(wheel);
    }
@@ -20,10 +19,8 @@ class WheelTest : public ::testing::Test {
      delete wheel_copy_pointer;
      delete wheel_copy;
      delete wheel;
-     delete parameter;
    }
 
-  QObject *parameter;
   Wheel *wheel_default;
   Wheel *wheel;
   Wheel *wheel_copy;
@@ -43,13 +40,13 @@ TEST_F(WheelTest, Constructor) {
   EXPECT_EQ(33.33, wheel->distance());
 }
 
-TEST_F(WheelTest, CopyConstructor_NonPointerParameter) {
+TEST_F(WheelTest, CopyConstructorNonPointerParameter) {
   EXPECT_EQ(11.11, wheel_copy->angle());
   EXPECT_EQ(22.22, wheel_copy->radius());
   EXPECT_EQ(33.33, wheel_copy->distance());
 }
 
-TEST_F(WheelTest, CopyConstructor_PointerParameter) {
+TEST_F(WheelTest, CopyConstructorPointerParameter) {
   EXPECT_EQ(11.11, wheel_copy_pointer->angle());
   EXPECT_EQ(22.22, wheel_copy_pointer->radius());
   EXPECT_EQ(33.33, wheel_copy_pointer->distance());

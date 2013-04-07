@@ -36,11 +36,11 @@ TEST_F(KickerTest, Constructor) {
   EXPECT_EQ(11.11, kicker->speed());
 }
 
-TEST_F(KickerTest, CopyConstructor_NonPointerParameter) {
+TEST_F(KickerTest, CopyConstructorNonPointerParameter) {
   EXPECT_EQ(11.11, kicker_copy->speed());
 }
 
-TEST_F(KickerTest, CopyConstructor_PointerParameter) {
+TEST_F(KickerTest, CopyConstructorPointerParameter) {
   EXPECT_EQ(11.11, kicker_copy_pointer->speed());
 }
 
