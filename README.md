@@ -13,11 +13,11 @@ Requirements
 - CMake
 - Qt5 (core, widgets, network and opengl)
 - Google Protobuf
+- Google Test (read [tests readme](tests/README.md) for more details.
 
-TODO: update the following to qt5.
 On Ubuntu 13.04 the following should suffice:
 
-    apt-get install git cmake libqt4-dev protobuf-compiler libprotobuf-dev
+    apt-get install git cmake ubuntu-sdk protobuf-compiler libprotobuf-dev
 
 You're recommended to use QtCreator, but not mandatory, use your preferred IDE,
 or no IDE at all, plain vim, make and gdb will do just fine.
