@@ -32,14 +32,16 @@ macro(standard_paths ARG0 ARG1 ARG2)
 endmacro()
 
 macro(standard_config)
-    set(CMAKE_AUTOMOC YES)
-    set(CMAKE_INCLUDE_CURRENT_DIR YES)
+    #set(CMAKE_AUTOMOC YES)
+    #set(CMAKE_INCLUDE_CURRENT_DIR YES)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-    set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "CMakeTargets")
+    set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
     set_property(GLOBAL PROPERTY FOLDER generated)
 
     if(MSVC)
         add_definitions(-DHAVE_WINDOWS)
+        # ignore some unnecessarily annoying warnings:
+        add_definitions(-D_SCL_SECURE_NO_WARNINGS)
     endif()
 
     if(UNIX)
@@ -51,5 +53,4 @@ macro(standard_config)
             add_definitions(-DHAVE_LINUX)
         endif()
     endif()
-
 endmacro()
