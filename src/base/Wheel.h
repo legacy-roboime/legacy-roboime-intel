@@ -13,6 +13,7 @@ namespace LibIntelligence
 
 	public:
 		Wheel(const Wheel&);
+		Wheel(const Wheel*);
 		Wheel(QObject* parent=0, qreal angle=0.0, qreal radius=0.0, qreal distance=0.0, qreal speed=0.0);
 
 		void setAngle(qreal);

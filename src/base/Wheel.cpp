@@ -8,6 +8,12 @@ Wheel::Wheel(const Wheel& w)
 	radius_(w.radius()),
 	distance_(w.distance()) {}
 
+Wheel::Wheel(const Wheel* w)
+	: Actuator(w->parent(), w->speed()),
+	angle_(w->angle()),
+	radius_(w->radius()),
+	distance_(w->distance()) {}
+
 Wheel::Wheel(QObject* p, qreal a, qreal r, qreal d, qreal s)
 	: Actuator(p, s),
 	angle_(a),

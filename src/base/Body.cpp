@@ -9,6 +9,13 @@ Body::Body(const Body& b)
 	cut_(b.cut())
 {}
 
+Body::Body(const Body *b)
+	: Component(b->parent()),
+	height_(b->height()),
+	radius_(b->radius()),
+	cut_(b->cut())
+{}
+
 Body::Body(QObject* p, qreal h, qreal r, qreal c)
 	: Component(p),
 	height_(h),
