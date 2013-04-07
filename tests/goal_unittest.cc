@@ -30,6 +30,26 @@ TEST_F(GoalTest, DefaultConstructor) {
   EXPECT_EQ(0.0, goal->penaltyLine());
 }
 
+TEST_F(GoalTest, CopyConstructorByPointer) {
+  goal->setX(1.11);
+  goal->setY(2.22);
+  goal->setWidth(3.33);
+  goal->setDepth(4.44);
+  goal->setWallWidth(5.55);
+  goal->setPenaltyMark(6.66, 7.77);
+  goal->setPenaltyLine(8.88);
+  Goal *goal_copy = new Goal(goal);
+  EXPECT_EQ(1.11, goal_copy->x());
+  EXPECT_EQ(2.22, goal_copy->y());
+  EXPECT_EQ(3.33, goal_copy->width());
+  EXPECT_EQ(4.44, goal_copy->depth());
+  EXPECT_EQ(5.55, goal_copy->wallWidth());
+  EXPECT_EQ(6.66, goal_copy->penaltyMark().x());
+  EXPECT_EQ(7.77, goal_copy->penaltyMark().y());
+  EXPECT_EQ(8.88, goal_copy->penaltyLine());
+  delete goal_copy;
+}
+
 TEST_F(GoalTest, SetX) {
   goal->setX(13.3);
   EXPECT_EQ(13.3, goal->x());
