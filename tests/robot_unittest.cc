@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <Robot.h>
+#include <Stage.h>
 
 using namespace LibIntelligence;
 
@@ -23,12 +24,22 @@ class RobotTest : public ::testing::Test {
 TEST_F(RobotTest, DefaultConstructor) {
   EXPECT_EQ(BLUE, robot->color());
   EXPECT_EQ(NULL, robot->parent());
+  EXPECT_EQ(NULL, robot->team());
+  EXPECT_EQ(NULL, robot->stage());
   EXPECT_EQ(0, robot->wheels().size());
+  EXPECT_EQ(0, robot->id());
+  EXPECT_EQ(0, robot->patternId());
+  EXPECT_FALSE(robot->isLastToucher());
+  EXPECT_FALSE(robot->touchedBall());
 }
 
 
 //TODO test copy constructor
 //Robot(const Robot&);
+
+
+//TODO test copy constructor by pointer
+//Robot(const Robot*);
 
 
 //TODO test prototype constructor
@@ -50,37 +61,85 @@ TEST_F(RobotTest, SetColor) {
 }
 
 
-//TODO test dribbler
 //const Dribbler& dribbler() const;
 //Dribbler& dribbler();
 //bool canDribble() const;
+TEST_F(RobotTest, Dribbler) {
+  Dribbler &d = robot->dribbler();
+  EXPECT_EQ(robot, d.parent());
+
+  const Dribbler &dc = robot->dribbler();
+  EXPECT_EQ(robot, dc.parent());
+
+  //TODO what else?
+}
 
 
-//TODO test kicker
 //const Kicker& kicker() const;
 //Kicker& kicker();
 //bool canKick() const;
+TEST_F(RobotTest, Kicker) {
+  Kicker &k = robot->kicker();
+  EXPECT_EQ(robot, k.parent());
+
+  const Kicker &kc = robot->kicker();
+  EXPECT_EQ(robot, kc.parent());
+
+  //TODO what else?
+}
 
 
-//TODO test body
 //const Body& body() const;
 //Body& body();
+TEST_F(RobotTest, Body) {
+  Body &b = robot->body();
+  EXPECT_EQ(robot, b.parent());
+
+  const Body &bc = robot->body();
+  EXPECT_EQ(robot, bc.parent());
+
+  //TODO what else?
+}
 
 
-//TODO test battery
 //const Battery& battery() const;
 //Battery& battery();
+TEST_F(RobotTest, Battery) {
+  Battery &b = robot->battery();
+  EXPECT_EQ(robot, b.parent());
+
+  const Battery &bc = robot->battery();
+  EXPECT_EQ(robot, bc.parent());
+
+  //TODO what else?
+}
 
 
-//TODO test wheels
 //const QVector<Wheel>& wheels() const;
 //QVector<Wheel>& wheels();
 //quint32 wheelsSize() const;
+TEST_F(RobotTest, Wheels) {
+  QVector<Wheel> &w = robot->wheels();
+  EXPECT_EQ(0, w.size());
+
+  const QVector<Wheel> &wc = robot->wheels();
+  EXPECT_EQ(0, wc.size());
+
+  //TODO what else?
+}
 
 
-//TODO test stage
 //Stage* stage() const;
 //void setStage(Stage* stage);
+TEST_F(RobotTest, Stage) {
+  Stage *s = robot->stage();
+  EXPECT_EQ(NULL, s);
+
+  s = new Stage();
+  robot->setStage(s);
+
+  EXPECT_EQ(s, robot->stage());
+}
 
 
 //TODO test team
