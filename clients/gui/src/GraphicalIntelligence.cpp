@@ -115,7 +115,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent)
 	updater["visionSim"]->add(stage["main"]);
 
 	for(quint8 i = 0; i < NPLAYERS; i++) {
-        team["us"]->push_back(new Robot(Robots::RoboIME2012(team["us"], i, i,YELLOW)));
+        team["us"]->push_back(new Robot(Robots::RoboIME2013(team["us"], i, i,YELLOW)));
 		//real
         commander["blueTx"]->add(team["us"]->last());
 		updater["vision"]->add(team["us"]->last());
@@ -126,7 +126,7 @@ GraphicalIntelligence::GraphicalIntelligence(QWidget *parent)
 	}
 	// FIXME: THE GAMBIARRATION
 	for(quint8 i = 0; i < 9; i++) {
-		team["they"]->push_back(new Robot(Robots::RoboIME2012(team["they"], i, i,BLUE)));
+		team["they"]->push_back(new Robot(Robots::RoboIME2013(team["they"], i, i,BLUE)));
 		//real
 		commander["yellowTx"]->add(team["they"]->last());
 		updater["vision"]->add(team["they"]->last());

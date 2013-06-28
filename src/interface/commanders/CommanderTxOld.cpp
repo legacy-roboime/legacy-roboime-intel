@@ -49,7 +49,8 @@ void CommanderTxOld::step()
 					<< c.wheelSpeedAt(1) << " "
 					<< 0.0               << " "
 					<< 0.0               << " "
-					<< d << " " << k << " ";
+					<< d << " " << k << " "
+					<< 0.0               << " ";
 				r->newCommand();
 			} else if(c.wheelsSize() == 4) {
 				qreal k = c.kickSpeed();
@@ -58,7 +59,8 @@ void CommanderTxOld::step()
 					<< c.wheelSpeedAt(1) << " "
 					<< c.wheelSpeedAt(2) << " "
 					<< c.wheelSpeedAt(3) << " "
-					<< d << " " << k << " ";
+					<< d << " " << k << " "
+					<< 0.0               << " ";
 				r->newCommand();
 			} else {
 				qCritical("prepare: Wrong number of wheels!");

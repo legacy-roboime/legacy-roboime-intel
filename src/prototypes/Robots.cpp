@@ -4,6 +4,35 @@
 using namespace LibIntelligence;
 using namespace LibIntelligence::Robots;
 
+//RoboIME2013 robot assembly line:
+const QVector<Wheel> RoboIME2013_wheels()
+{
+	QVector<Wheel> wheels;
+	wheels
+		//TODO: correct the distance of the wheel to the center of the robot.
+		<< Wheel(0, -1.0471975511965976, 28.9, 80.6)
+		<< Wheel(0, -2.3561944901923450, 28.9, 80.6)
+		<< Wheel(0,  2.3561944901923450, 28.9, 80.6)
+		<< Wheel(0, -1.0471975511965976, 28.9, 80.6);
+	return wheels;
+}
+
+const Robot& LibIntelligence::Robots::RoboIME2013(QObject* p, int id, int pid, TeamColor c) {
+	static Robot RoboIME2013_(
+		Dribbler(),
+		Kicker(),
+		Body(0, 149.5, 90.0, 70.),
+		Battery(),
+		RoboIME2013_wheels());
+
+	RoboIME2013_.setParent(p);
+	RoboIME2013_.setId(id);
+	RoboIME2013_.setPatternId(pid);
+	RoboIME2013_.setColor(c);
+
+	return RoboIME2013_;
+}
+
 //RoboIME2012 robot assembly line:
 const QVector<Wheel> RoboIME2012_wheels()
 {
